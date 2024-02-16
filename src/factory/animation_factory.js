@@ -6,13 +6,32 @@ class AnimationFactory {
 
     init_anims() {
         this.scene.anims.create({
-            key: "shermie_walk",
+            key: "shermie_idle",
             frames: this.scene.anims.generateFrameNumbers("shermie", {
                 start: 0,
-                end: 1,
+                end: 3,
             }),
-            frameRate: 2,
+            frameRate: 8,
             repeat: -1,
+        });
+
+        this.scene.anims.create({
+            key: "shermie_walk",
+            frames: this.scene.anims.generateFrameNumbers("shermie", {
+                start: 6,
+                end: 11,
+            }),
+            frameRate: 8,
+            repeat: -1,
+        });
+
+        this.scene.anims.create({
+            key: "shermie_shoot",
+            frames: this.scene.anims.generateFrameNumbers("shermie", {
+                start: 12,
+                end: 15,
+            }),
+            frameRate: 16,
         });
 
         this.scene.anims.create({
@@ -40,7 +59,7 @@ class AnimationFactory {
                 start: 0, end: 3,
             }),
             frameRate: 8,
-        })
+        });
         /* Note: We are not using necromancer spritesheets, these are just examples on how to implement new sprites. */
         /*
         this.scene.anims.create({

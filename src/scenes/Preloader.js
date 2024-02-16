@@ -49,8 +49,8 @@ export class Preloader extends Scene {
         });
 
         this.load.spritesheet("shermie", "shermie.png", {
-            frameWidth: 64,
-            frameHeight: 64,
+            frameWidth: 80,
+            frameHeight: 80,
         });
 
         this.load.spritesheet("cottonball_explosion_sheet", "cottonball_explode.png", {

@@ -33,8 +33,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         );
 
         this.last_fired = 0;
-        this.play("shermie_walk");
-        // this.play("player_idle");
+        this.play("shermie_idle");
     }
 
     preUpdate(time, delta) {
@@ -49,19 +48,19 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         } else if (keys.a.isDown) {
             this.move(false);
         }
-        // else if (
-        //     this.anims.isPlaying &&
-        //     this.anims.currentAnim.key !== "player_idle" &&
-        //     this.anims.currentAnim.key !== "player_shoot"
-        // )
-        //     this.play("player_idle");
+        else if (
+            this.anims.isPlaying &&
+            this.anims.currentAnim.key !== "shermie_idle" &&
+            this.anims.currentAnim.key !== "shermie_shoot"
+        )
+            this.play("shermie_idle");
 
         if (keys.space.isDown || keys.w.isDown) this.shoot(time);
     }
 
     move(moving_right) {
-        // if (this.anims.isPlaying && this.anims.currentAnim.key === "player_idle")
-        //     this.play("player_walk");
+        if (this.anims.isPlaying && this.anims.currentAnim.key === "shermie_idle")
+            this.play("shermie_walk");
 
         if (moving_right) {
             if (this.flipX) this.flipX = false;
@@ -95,8 +94,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                     };
                 // set the bullet to its spawn position
                 bullet.setPosition(bullet_start_pos.x, bullet_start_pos.y);
-                this.anims.play("player_shoot");
-                this.anims.nextAnim = "player_idle";
+                this.anims.play("shermie_shoot");
+                this.anims.nextAnim = "shermie_idle";
             }
         }
     }
