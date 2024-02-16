@@ -1,8 +1,8 @@
 const PlayerConstDefs = {
-    dims: { w: 48, h: 48 },
+    dims: { w: 64, h: 48 },
     speed: { x: 3, y: 0 },
     offset: {
-        body: { x: 8, y: 8 },
+        body: { x: 8, y: 24 },
         // The necromancer's staff changes position when flipping the sprite, so we need to define different bullet spawns for left/right. We probably won't need this anymore after we have our actual assets.
         bullet: {
             left: { x: -15, y: -15 },

@@ -21,7 +21,7 @@ class AnimationFactory {
                 start: 6,
                 end: 11,
             }),
-            frameRate: 8,
+            frameRate: 16,
             repeat: -1,
         });
 
@@ -37,7 +37,8 @@ class AnimationFactory {
         this.scene.anims.create({
             key: "bullet",
             frames: this.scene.anims.generateFrameNumbers("bullet", {
-                frames: [1, 2, 3, 4],
+                start: 1,
+                end: 4,
             }),
             frameRate: 8,
             repeat: -1,
