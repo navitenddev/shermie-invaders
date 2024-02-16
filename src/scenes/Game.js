@@ -8,7 +8,7 @@ export class Game extends Scene {
     }
 
     create() {
-        this.cameras.main.setBackgroundColor(0x00ff00);
+        this.cameras.main.setBackgroundColor(0x2e2e2e);
         this.add.image(512, 384, 'background').setAlpha(0.5);
 
         this.anim_factory = new AnimationFactory(this);
