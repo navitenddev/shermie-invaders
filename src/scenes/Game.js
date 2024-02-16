@@ -39,12 +39,15 @@ export class Game extends Scene {
 
         this.physics.world.on(
             "overlap",
-            (bullet_obj, enemy_obj
-                // bullet_body: Phaser.Physics.Arcade.Body,
-                // enemy_body: Phaser.Physics.Arcade.Body
+            (bullet_obj, enemy_obj,
+                bullet_body, // : Phaser.Physics.Arcade.Body,
+                enemy_body, // Phaser.Physics.Arcade.Body,
             ) => {
                 bullet_obj.activate(false);
                 enemy_obj.die();
+                // spawn explosion
+                console.log(`bullet body: (${bullet_body.x},${bullet_body.y})`)
+                this.explode_at(bullet_body.x, bullet_body.y);
             }
         );
 
@@ -60,33 +63,50 @@ export class Game extends Scene {
         this.check_gameover();
     }
 
+    explode_at(x, y) {
+        console.log(`Exploding at (${x},${y})`)
+        let explosion = this.objs.explosions.getFirstDead(false, 0, 0, "explosion");
+        if (explosion !== null) {
+            console.log(explosion)
+            console.log("step 1")
+            explosion.activate(x, y);
+            console.log("step 2")
+            explosion.on('animationcomplete', () => {
+                explosion.deactivate();
+                console.log("step 3")
+            })
+        }
+    }
+
     /* TODO: If there are any performance problems, it's probably because of this function. */
-    // return true if player should gameover 
     ai_enemy1(time) {
+        let entries = this.objs.enemies.children.entries;
         // check if enemy is out of bounds
-        for (let enemy of this.objs.enemies.children.entries) {
+        for (let enemy of entries) {
             if (!enemy.is_x_inbounds()) {
                 console.log("Enemy1 is changing rows!")
-                for (let enemy of this.objs.enemies.children.entries)
+                for (let enemy of entries)
                     enemy.change_row(time)
                 break;
             }
 
             if (!enemy.is_y_inbounds())
-                return true;
+                this.goto_lose_scene();
         }
-        return false;
     }
 
     check_gameover() {
         if (this.objs.enemies.children.entries.length === 0) {
-            this.goto_gameover_screen();
-            console.log("Player win event stuff goes here")
+            this.goto_win_scene();
         }
 
     }
 
-    goto_gameover_screen() {
-        this.scene.start("GameOver");
+    goto_win_scene() {
+        this.scene.start("Player Win");
+    }
+
+    goto_lose_scene() {
+        this.scene.start("Player Lose");
     }
 }

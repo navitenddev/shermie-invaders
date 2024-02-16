@@ -1,9 +1,11 @@
 import { Enemy, EnemyConstDefs } from "./enemy";
 import { Bullet, BulletConstDefs } from "./bullet";
+import { Explosion, ExplosionConstDefs } from "./explosions";
 import { Player } from "./player";
 import "../factory/object_factory";
 
 const bull_defs = BulletConstDefs;
+const expl_defs = ExplosionConstDefs;
 
 class ObjectSpawner {
     // player
@@ -16,8 +18,12 @@ class ObjectSpawner {
         this.bullets = this.scene.physics.add.group({
             runChildUpdate: true,
         });
+        this.explosions = this.scene.physics.add.group({
+            runChildUpdate: true,
+        });
         this.init_enemies();
         this.init_bullets();
+        this.init_explosions();
     }
 
     cleanup_enemies() {
@@ -62,9 +68,16 @@ class ObjectSpawner {
         for (let i = 0; i < bull_defs.max_bullets; ++i) {
             console.log(`Adding bullet #${i + 1}`);
             let bullet = this.scene.add.bullet(this.scene);
-            bullet.body.onOverlap = true;
             this.bullets.add(bullet);
-            bullet.activate(false);
+        }
+    }
+
+    init_explosions() {
+        console.log("Initializing explosions");
+        for (let i = 0; i < expl_defs.max_explosions; ++i) {
+            console.log(`Added explosion #${i + 1}`)
+            let explosion = this.scene.add.explosion(this.scene);
+            this.explosions.add(explosion);
         }
     }
 }

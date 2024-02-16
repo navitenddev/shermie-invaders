@@ -51,7 +51,12 @@ export class Preloader extends Scene {
         this.load.spritesheet("shermie", "shermie.png", {
             frameWidth: 64,
             frameHeight: 64,
-        })
+        });
+
+        this.load.spritesheet("cottonball_explosion_sheet", "cottonball_explode.png", {
+            frameWidth: 32,
+            frameHeight: 32,
+        });
     }
     create() {
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
