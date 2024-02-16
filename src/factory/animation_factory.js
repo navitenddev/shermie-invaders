@@ -33,6 +33,14 @@ class AnimationFactory {
             frameRate: 4,
             repeat: -1,
         });
+
+        this.scene.anims.create({
+            key: "cottonball_explode",
+            frames: this.scene.anims.generateFrameNumbers("cottonball_explosion_sheet", {
+                start: 0, end: 3,
+            }),
+            frameRate: 16,
+        })
         /* Note: We are not using necromancer spritesheets, these are just examples on how to implement new sprites. */
         /*
         this.scene.anims.create({

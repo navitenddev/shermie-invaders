@@ -1,6 +1,7 @@
 import { Boot } from './scenes/Boot';
 import { Game } from './scenes/Game';
-import { GameOver } from './scenes/GameOver';
+import { PlayerWin } from './scenes/PlayerWin';
+import { PlayerLose } from './scenes/PlayerLose';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
 
@@ -28,7 +29,8 @@ const config = {
         Preloader,
         MainMenu,
         Game,
-        GameOver
+        PlayerWin,
+        PlayerLose,
     ]
 };
 

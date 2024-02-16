@@ -1,6 +1,7 @@
 import { Player } from "../objects/player";
 import { Enemy1 } from "../objects/enemy";
 import { Bullet } from "../objects/bullet";
+import { Explosion } from "../objects/explosions"
 import "../factory/object_factory";
 
 /* All factory object defintions are responsible for handling object spawning. Put them in this file */
@@ -37,6 +38,18 @@ Phaser.GameObjects.GameObjectFactory.register(
         bullet.setVisible(false);
         bullet.setActive(false);
         bullet.setAngle(-90);
+        bullet.body.onOverlap = true;
         return bullet;
+    }
+);
+
+Phaser.GameObjects.GameObjectFactory.register(
+    "explosion",
+    function (scene) {
+        let explosion = new Explosion(scene);
+        explosion.setVisible(false);
+        explosion.setActive(false);
+        scene.add.existing(explosion);
+        return explosion;
     }
 );

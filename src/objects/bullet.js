@@ -1,5 +1,5 @@
 const BulletConstDefs = {
-    max_bullets: 3, // max bullets that the player can have on the screen at once
+    max_bullets: 20, // max bullets that the player can have on the screen at once
     dims: { w: 16, h: 16 },
     speed: { x: 0, y: -3.5 },
     offset: { x: 0, y: 0 },
@@ -8,8 +8,7 @@ const BulletConstDefs = {
 
 class Bullet extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y) {
-        super(scene, x, y, "Enemy");
-
+        super(scene, x, y, "Bullet");
         scene.physics.add.existing(this);
         scene.add.existing(this);
         this.setSize(BulletConstDefs.dims.w, BulletConstDefs.dims.h);
@@ -50,6 +49,7 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
         this.setVisible(flag);
         this.setActive(flag);
     }
+
 }
 
 export { Bullet, BulletConstDefs };
