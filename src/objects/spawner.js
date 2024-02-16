@@ -1,5 +1,5 @@
 import { Enemy, EnemyConstDefs } from "./enemy";
-import { Bullet, BulletConstDefs } from ".//bullet";
+import { Bullet, BulletConstDefs } from "./bullet";
 import { Player } from "./player";
 import "../factory/object_factory";
 

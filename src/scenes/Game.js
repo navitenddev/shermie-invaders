@@ -1,8 +1,5 @@
 import { Scene } from 'phaser';
 import { AnimationFactory } from "../factory/animation_factory";
-import { Bullet } from "../objects/bullet";
-import { Enemy } from "../objects/enemy";
-import { Player } from "../objects/player";
 import { ObjectSpawner } from "../objects/spawner";
 
 export class Game extends Scene {
@@ -56,11 +53,40 @@ export class Game extends Scene {
     update(time, delta) {
         this.objs.player.update(time, delta, this.keys)
         this.objs.cleanup_enemies();
+        let is_gameover = this.ai_enemy1(time);
+        if (is_gameover)
+            this.goto_gameover_screen();
+
         this.check_gameover();
     }
 
+    /* TODO: If there are any performance problems, it's probably because of this function. */
+    // return true if player should gameover 
+    ai_enemy1(time) {
+        // check if enemy is out of bounds
+        for (let enemy of this.objs.enemies.children.entries) {
+            if (!enemy.is_x_inbounds()) {
+                console.log("Enemy1 is changing rows!")
+                for (let enemy of this.objs.enemies.children.entries)
+                    enemy.change_row(time)
+                break;
+            }
+
+            if (!enemy.is_y_inbounds())
+                return true;
+        }
+        return false;
+    }
+
     check_gameover() {
-        if (this.objs.enemies.children.entries.length === 0)
-            this.scene.start("GameOver");
+        if (this.objs.enemies.children.entries.length === 0) {
+            this.goto_gameover_screen();
+            console.log("Player win event stuff goes here")
+        }
+
+    }
+
+    goto_gameover_screen() {
+        this.scene.start("GameOver");
     }
 }

@@ -1,8 +1,9 @@
 const BulletConstDefs = {
     max_bullets: 3, // max bullets that the player can have on the screen at once
-    dims: { w: 8, h: 16 },
+    dims: { w: 16, h: 16 },
     speed: { x: 0, y: -3.5 },
     offset: { x: 0, y: 0 },
+    rotation_speed: 0.1,
 };
 
 class Bullet extends Phaser.Physics.Arcade.Sprite {
@@ -12,7 +13,9 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         scene.add.existing(this);
         this.setSize(BulletConstDefs.dims.w, BulletConstDefs.dims.h);
-        this.play("bullet");
+        console.log(this)
+        // this.play("bullet");
+
     }
 
     preUpdate(time, delta) {
@@ -22,7 +25,10 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
     create() { }
 
     update(time, delta) {
-        if (this.active) this.move();
+        if (this.active) {
+            this.move();
+            this.rotate();
+        }
         this.check_bounds();
         this.debugBodyColor = this.body?.touching.none ? 0x0099ff : 0xff9900;
     }
@@ -31,14 +37,16 @@ class Bullet extends Phaser.Physics.Arcade.Sprite {
         this.y += BulletConstDefs.speed.y;
     }
 
+    rotate() {
+        this.setRotation(this.rotation + BulletConstDefs.rotation_speed);
+    }
+
     check_bounds() {
         if (this.y < -16) this.activate(false);
     }
 
     activate(flag) {
-        if (!flag) {
-            this.setPosition(-64, -64);
-        }
+        if (!flag) this.setPosition(-64, -64);
         this.setVisible(flag);
         this.setActive(flag);
     }

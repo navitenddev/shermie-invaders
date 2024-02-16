@@ -1,5 +1,5 @@
 import { Player } from "../objects/player";
-import { Enemy } from "../objects/enemy";
+import { Enemy1 } from "../objects/enemy";
 import { Bullet } from "../objects/bullet";
 import "../factory/object_factory";
 
@@ -21,7 +21,7 @@ Phaser.GameObjects.GameObjectFactory.register(
 Phaser.GameObjects.GameObjectFactory.register(
     "enemy",
     function (scene, x, y) {
-        let enemy = new Enemy(scene, x, y);
+        let enemy = new Enemy1(scene, x, y);
         enemy.setCollideWorldBounds(true);
         scene.add.existing(enemy);
         return enemy;
@@ -33,6 +33,7 @@ Phaser.GameObjects.GameObjectFactory.register(
     function (scene, x, y) {
         let bullet = new Bullet(scene, x, y);
         scene.add.existing(bullet);
+        bullet.setTexture("cottonball");
         bullet.setVisible(false);
         bullet.setActive(false);
         bullet.setAngle(-90);

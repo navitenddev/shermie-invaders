@@ -31,6 +31,8 @@ export class Preloader extends Scene {
 
         this.load.image("background", "bg.png");
 
+        this.load.image("cottonball", "cottonball.png");
+
         this.load.spritesheet("necromancer", "necromancer.png", {
             frameWidth: 160,
             frameHeight: 128,
@@ -41,7 +43,7 @@ export class Preloader extends Scene {
             frameHeight: 16,
         });
 
-        this.load.spritesheet("enemy", "alan.png", {
+        this.load.spritesheet("enemy1", "alan.png", {
             frameWidth: 16,
             frameHeight: 16,
         });

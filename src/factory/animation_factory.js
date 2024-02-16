@@ -14,6 +14,25 @@ class AnimationFactory {
             frameRate: 2,
             repeat: -1,
         });
+
+        this.scene.anims.create({
+            key: "bullet",
+            frames: this.scene.anims.generateFrameNumbers("bullet", {
+                frames: [1, 2, 3, 4],
+            }),
+            frameRate: 8,
+            repeat: -1,
+        });
+
+        this.scene.anims.create({
+            key: "enemy1_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy1", {
+                start: 3,
+                end: 5,
+            }),
+            frameRate: 4,
+            repeat: -1,
+        });
         /* Note: We are not using necromancer spritesheets, these are just examples on how to implement new sprites. */
         /*
         this.scene.anims.create({
@@ -45,25 +64,6 @@ class AnimationFactory {
             frameRate: 32,
         });
         */
-
-        this.scene.anims.create({
-            key: "bullet",
-            frames: this.scene.anims.generateFrameNumbers("bullet", {
-                frames: [1, 2, 3, 4],
-            }),
-            frameRate: 8,
-            repeat: -1,
-        });
-
-        this.scene.anims.create({
-            key: "enemy_idle",
-            frames: this.scene.anims.generateFrameNumbers("enemy", {
-                start: 3,
-                end: 5,
-            }),
-            frameRate: 4,
-            repeat: -1,
-        });
     }
 
     /* TODO: Add impact explosion animation, alternatively we could try and use some particle effects */
