@@ -24,7 +24,6 @@ class Explosion extends Phaser.GameObjects.Sprite {
     activate(x, y) {
         console.log(`Activating explosion at (${x},${y})`)
         this.setPosition(x, y);
-        console.log("playing cottonball explode")
         this.play("cottonball_explode");
         this.setVisible(true);
         this.setActive(true);
