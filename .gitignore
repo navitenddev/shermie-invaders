@@ -16,3 +16,4 @@ dist/
 
 # History
 .history/
+package-lock.json
