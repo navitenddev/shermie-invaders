@@ -48,9 +48,10 @@ export class Game extends Scene {
                 // spawn explosion
                 console.log(`bullet body: (${bullet_body.x},${bullet_body.y})`)
                 this.explode_at(bullet_body.x, bullet_body.y);
+                this.diesfx = this.sound.add('explosion',{ volume: 0.1, loop: false });
+                this.diesfx.play();
             }
         );
-
     }
 
     update(time, delta) {

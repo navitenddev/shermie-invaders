@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import gam from '../main';
 
 export class Preloader extends Scene {
     constructor() {
@@ -33,6 +34,14 @@ export class Preloader extends Scene {
 
         this.load.image("cottonball", "cottonball.png");
 
+        //this.load.audio(['bgmusic','shoot','explosion'], ['SFX/spacebg.wav','SFX/shoot.wav', 'SFX/explosion.wav']);
+
+        this.load.audio('bgmusic', 'SFX/spacebg.wav');
+
+        this.load.audio('explosion', ['SFX/explosion.wav']);
+
+        this.load.audio('shoot', ['SFX/shoot.wav']);
+
         this.load.spritesheet("necromancer", "necromancer.png", {
             frameWidth: 160,
             frameHeight: 128,
@@ -59,6 +68,8 @@ export class Preloader extends Scene {
         });
     }
     create() {
+        this.titleMusic = this.sound.add('bgmusic',{ volume: 0.1, loop: true });
+        this.titleMusic.play();
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
         //  For example, you can define global animations here, so we can use them in other scenes.
 

@@ -33,5 +33,5 @@ const config = {
         PlayerLose,
     ]
 };
-
-export default new Phaser.Game(config);
+var gam=new Phaser.Game(config);
+export default gam;
