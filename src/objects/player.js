@@ -99,7 +99,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 bullet.setPosition(bullet_start_pos.x, bullet_start_pos.y);
                 this.anims.play("shermie_shoot");
                 this.anims.nextAnim = "shermie_idle";
-                this.shootsfx = gam.sound.add('shoot',{ volume: 0.1, loop: false });
+                this.shootsfx = this.scene.game.sound.add('shoot',{ volume: 0.1, loop: false });
                 this.shootsfx.play();
             }
         }
