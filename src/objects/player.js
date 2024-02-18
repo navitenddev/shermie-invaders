@@ -6,20 +6,11 @@ const PlayerConstDefs = {
     speed: { x: 3, y: 0 },
     offset: {
         body: { x: 8, y: 24 },
-        // The necromancer's staff changes position when flipping the sprite, so we need to define different bullet spawns for left/right. We probably won't need this anymore after we have our actual assets.
-        bullet: {
-            left: { x: -15, y: -15 },
-            right: { x: 15, y: -15 },
-        },
     },
     shoot_delay: 150,
 };
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
-    // game: Phaser.Game;
-    // last_fired: number;
-    // const_defs: any;
-
     constructor(scene, x, y) {
         super(scene, x, y, "Player");
 
@@ -37,6 +28,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.last_fired = 0;
         this.play("shermie_idle");
+
+        this.is_dead = false;
+        this.dead_vel = {
+            x: 0,
+            y: -4,
+        };
+        this.dead_rot_vel = 0.2;
     }
 
     preUpdate(time, delta) {
@@ -46,6 +44,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     create() { }
 
     update(time, delta, keys) {
+        if (this.is_dead) {
+            this.x += this.dead_vel.x;
+            this.y += this.dead_vel.y;
+            this.setRotation(this.rotation + this.dead_rot_vel);
+            return;
+        }
+
         if (keys.d.isDown) {
             this.move(true);
         } else if (keys.a.isDown) {
@@ -59,6 +64,19 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             this.play("shermie_idle");
 
         if (keys.space.isDown || keys.w.isDown) this.shoot(time);
+
+    }
+
+    die() {
+        this.is_dead = true;
+        // allow player to fly off screen
+        this.setCollideWorldBounds(false);
+
+        // if player dies on left half of screen, they should fly top right
+        // if player dies on right half of screen, they should fly top left
+        this.dead_vel.x =
+            (this.x < this.scene.game.config.width / 2) ? 4 : -4;
+
     }
 
     move(moving_right) {
@@ -82,26 +100,21 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 this.last_fired = time + this.const_defs.shoot_delay;
                 bullet.activate(true);
 
-                let bullet_start_pos = { x: 0, y: 0 };
-
-                // get the proper bullet spawn position
-                if (!this.flipX)
-                    bullet_start_pos = {
-                        x: this.x + this.const_defs.offset.bullet.right.x,
-                        y: this.y + this.const_defs.offset.bullet.right.y,
-                    };
-                else
-                    bullet_start_pos = {
-                        x: this.x + this.const_defs.offset.bullet.left.x,
-                        y: this.y + this.const_defs.offset.bullet.left.y,
-                    };
                 // set the bullet to its spawn position
-                bullet.setPosition(bullet_start_pos.x, bullet_start_pos.y);
+                bullet.setPosition(this.x, this.y);
                 this.anims.play("shermie_shoot");
                 this.anims.nextAnim = "shermie_idle";
                 this.shootsfx = this.scene.game.sound.add('shoot', { volume: 0.1, loop: false });
                 this.shootsfx.play();
             }
         }
+    }
+
+    is_inbounds() {
+        console.log(this.x, this.y, this.const_defs.dims.w, this.const_defs.dims.h)
+        return (this.y > -this.const_defs.dims.h &&
+            this.y < this.scene.game.config.height + this.const_defs.dims.h &&
+            this.x > -this.const_defs.dims.w &&
+            this.x < this.scene.game.config.width + this.const_defs.dims.w);
     }
 }

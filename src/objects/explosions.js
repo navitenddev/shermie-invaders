@@ -8,6 +8,7 @@ class Explosion extends Phaser.GameObjects.Sprite {
         // scene.physics.add.existing(this);
         scene.add.existing(this);
         this.setSize(32, 32);
+        this.setPosition(-1024, -1024);
     }
 
     preUpdate(time, delta) {

@@ -100,7 +100,7 @@ export class Game extends Scene {
         // deactivate bullet
         enemy_bullet.activate(false);
         // kill player 
-        // player.die();
+        player.die();
         this.diesfx = this.sound.add('explosion', { volume: 0.1, loop: false });
         this.diesfx.play();
     }
@@ -140,10 +140,10 @@ export class Game extends Scene {
     }
 
     check_gameover() {
-        if (this.objs.enemies.children.entries.length === 0) {
+        if (this.objs.enemies.children.entries.length === 0)
             this.goto_win_scene();
-        }
-
+        if (!this.objs.player.is_inbounds())
+            this.goto_lose_scene();
     }
 
     goto_win_scene() {
