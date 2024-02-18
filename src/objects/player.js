@@ -18,6 +18,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         scene.add.existing(this);
 
+        this.sounds = scene.scene.get('Preloader').sound_bank;
+
         this.setPosition(x, y);
         this.setSize(this.const_defs.dims.w, this.const_defs.dims.h);
         this.setOffset(
@@ -104,7 +106,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 bullet.setPosition(this.x, this.y);
                 this.anims.play("shermie_shoot");
                 this.anims.nextAnim = "shermie_idle";
-                this.scene.sound_bank.play('shoot');
+                this.sounds.bank.shoot.play();
             }
         }
     }

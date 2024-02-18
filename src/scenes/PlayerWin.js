@@ -10,7 +10,7 @@ export class PlayerWin extends Scene {
 
         this.add.image(512, 384, 'background').setAlpha(0.5);
 
-        this.scene.get('Preloader').sound_bank.play('win');
+        this.scene.get('Preloader').sound_bank.bank.win.play();
 
         this.add.text(512, 384, 'You Win', {
             fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',

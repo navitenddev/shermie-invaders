@@ -4,7 +4,7 @@ class SoundBank {
     constructor(scene) {
         this.scene = scene;
         this.muted = false;
-        this.sounds = {
+        this.bank = {
             win: null,
             lose: null,
             shoot: null,
@@ -16,41 +16,16 @@ class SoundBank {
     }
 
     init_sounds() {
-        this.sounds.shoot =
+        this.bank.shoot =
             this.scene.game.sound.add('shoot', { volume: 0.1, loop: false });
-        this.sounds.explosion =
+        this.bank.explosion =
             this.scene.game.sound.add('explosion', { volume: 0.1, loop: false });
-        this.sounds.win =
+        this.bank.win =
             this.scene.game.sound.add('win', { volume: 0.1, loop: false });
-        this.sounds.lose =
+        this.bank.lose =
             this.scene.game.sound.add('lose', { volume: 0.1, loop: false });
-        this.sounds.bgm =
+        this.bank.bgm =
             this.scene.game.sound.add('bgmusic', { volume: 0.2, loop: true });
-    }
-
-    /* TODO: This function is redundant now, maybe remove it */
-    play(sound_key) {
-        console.log(this)
-        switch (sound_key) {
-            case 'shoot':
-                this.sounds.shoot.play();
-                break;
-            case 'explosion':
-                this.sounds.explosion.play();
-                break;
-            case 'win':
-                this.sounds.win.play();
-                break;
-            case 'lose':
-                this.sounds.lose.play();
-                break;
-            case 'bgm':
-                this.sounds.bgm.play();
-                break;
-            default:
-                console.error(`Error: Tried to play invalid sound "${sound_key}"!`)
-                break;
-        }
     }
 
     toggle_mute = () => {

@@ -14,7 +14,7 @@ export class Game extends Scene {
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
 
-        this.sound_bank = this.scene.get('Preloader').sound_bank;
+        this.sounds = this.scene.get('Preloader').sound_bank;
 
         const key_defs = KB_INPUT_DEFS;
         this.keys = {};
@@ -49,9 +49,9 @@ export class Game extends Scene {
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player,
             this.player_hit_enemy_bullet);
 
-        this.sound_bank.play('bgm');
+        this.sounds.bank.bgm.play();
 
-        this.keys.m.on('down', this.sound_bank.toggle_mute);
+        this.keys.m.on('down', this.sounds.toggle_mute);
 
         console.log(this);
     }
@@ -87,7 +87,7 @@ export class Game extends Scene {
         player_bullet.activate(false);
         // kill enemy
         enemy.die();
-        this.sound_bank.play('explosion');
+        this.sounds.bank.explosion.play();
     }
 
     // callback function for when player bullet collides w/ enemy
@@ -99,7 +99,7 @@ export class Game extends Scene {
         enemy_bullet.activate(false);
         // kill player 
         player.die();
-        this.sound_bank.play('explosion');
+        this.sounds.bank.explosion.play();
     }
 
     ai_enemy1(time) {
@@ -144,12 +144,12 @@ export class Game extends Scene {
     }
 
     goto_win_scene() {
-        this.sound_bank.sounds.bgm.stop();
+        this.sounds.bank.bgm.stop();
         this.scene.start("Player Win");
     }
 
     goto_lose_scene() {
-        this.sound_bank.sounds.bgm.stop();
+        this.sounds.bank.bgm.stop();
         this.scene.start("Player Lose");
     }
 }

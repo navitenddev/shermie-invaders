@@ -91,23 +91,6 @@ export class Preloader extends Scene {
         // we can access sound_bank from another scene with:
         // sound_bank = this.scene.get('Preloader').sound_bank;
 
-        this.keys = {
-            w: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
-            a: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-            s: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
-            d: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
-            p: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P),
-            m: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M),
-            space: this.input.keyboard.addKey(
-                Phaser.Input.Keyboard.KeyCodes.SPACE
-            ),
-            enter: this.input.keyboard.addKey(
-                Phaser.Input.Keyboard.KeyCodes.ENTER
-            ),
-            esc: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC),
-        };
-
-
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
         this.scene.start('MainMenu');
     }
