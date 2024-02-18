@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import { AnimationFactory } from "../factory/animation_factory";
 import { ObjectSpawner } from "../objects/spawner";
+import { EnemyBullet } from '../objects/bullet';
 
 export class Game extends Scene {
     constructor() {
@@ -35,24 +36,16 @@ export class Game extends Scene {
         this.physics.world.setBounds(0, 0, this.game.config.width, this.game.config.height);
 
 
-        this.physics.add.overlap(this.objs.bullets, this.objs.enemies);
+        this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies,
+            this.player_bullet_hit_enemy);
 
-        this.physics.world.on(
-            "overlap",
-            (bullet_obj, enemy_obj,
-                bullet_body, // : Phaser.Physics.Arcade.Body,
-                enemy_body, // Phaser.Physics.Arcade.Body,
-            ) => {
-                bullet_obj.activate(false);
-                enemy_obj.die();
-                // spawn explosion
-                console.log(`bullet body: (${bullet_body.x},${bullet_body.y})`)
-                this.explode_at(bullet_body.x, bullet_body.y);
-                this.diesfx = this.sound.add('explosion',{ volume: 0.1, loop: false });
-                this.diesfx.play();
-            }
-        );
+        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player,
+            this.player_hit_enemy_bullet);
+
+
+        console.log(this)
     }
+
 
     update(time, delta) {
         this.objs.player.update(time, delta, this.keys)
@@ -69,14 +62,42 @@ export class Game extends Scene {
         let explosion = this.objs.explosions.getFirstDead(false, 0, 0, "explosion");
         if (explosion !== null) {
             console.log(explosion)
-            console.log("step 1")
             explosion.activate(x, y);
-            console.log("step 2")
             explosion.on('animationcomplete', () => {
                 explosion.deactivate();
-                console.log("step 3")
             })
         }
+    }
+
+    // callback function for when player bullet collides w/ enemy
+    player_bullet_hit_enemy = (player_bullet, enemy) => {
+        console.log("PLAYER BULLET HIT ENEMY")
+        // spawn explosion
+        this.explode_at(enemy.x, enemy.y);
+        // deactivate bullet
+        player_bullet.activate(false);
+        // kill enemy
+        enemy.die();
+        this.diesfx = this.sound.add('explosion', { volume: 0.1, loop: false });
+        this.diesfx.play();
+    }
+
+    // callback function for when player bullet collides w/ enemy
+    player_hit_enemy_bullet = (player, enemy_bullet) => {
+        console.log("ENEMY BULLET HIT PLAYER")
+        console.log(enemy_bullet)
+        // spawn explosion
+        this.explode_at(player.x, player.y);
+        // deactivate bullet
+        // TODO: IDK why i can't use .activate() here, figure this out later
+        enemy_bullet.activate(false);
+        // enemy_bullet.setActive(false);
+        // enemy_bullet.setVisible(false);
+        // enemy_bullet.setPosition(-64, -64);
+        // kill player 
+        // player.die();
+        this.diesfx = this.sound.add('explosion', { volume: 0.1, loop: false });
+        this.diesfx.play();
     }
 
     /* TODO: If there are any performance problems, it's probably because of this function. */

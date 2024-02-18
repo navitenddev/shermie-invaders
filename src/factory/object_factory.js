@@ -1,6 +1,6 @@
 import { Player } from "../objects/player";
 import { Enemy1 } from "../objects/enemy";
-import { Bullet } from "../objects/bullet";
+import { PlayerBullet, EnemyBullet } from "../objects/bullet";
 import { Explosion } from "../objects/explosions"
 import "../factory/object_factory";
 
@@ -30,16 +30,29 @@ Phaser.GameObjects.GameObjectFactory.register(
 );
 
 Phaser.GameObjects.GameObjectFactory.register(
-    "bullet",
+    "player_bullet",
     function (scene, x, y) {
-        let bullet = new Bullet(scene, x, y);
-        scene.add.existing(bullet);
-        bullet.setTexture("cottonball");
-        bullet.setVisible(false);
-        bullet.setActive(false);
-        bullet.setAngle(-90);
-        bullet.body.onOverlap = true;
-        return bullet;
+        let player_bullet = new PlayerBullet(scene, x, y);
+        scene.add.existing(player_bullet);
+        player_bullet.setTexture("cottonball");
+        player_bullet.setVisible(false);
+        player_bullet.setActive(false);
+        player_bullet.body.onOverlap = true;
+        return player_bullet;
+    }
+);
+
+Phaser.GameObjects.GameObjectFactory.register(
+    "enemy_bullet",
+    function (scene, x, y) {
+        let enemy_bullet = new EnemyBullet(scene, x, y);
+        scene.add.existing(enemy_bullet);
+        enemy_bullet.play("bullet");
+        enemy_bullet.setVisible(false);
+        enemy_bullet.setActive(false);
+        enemy_bullet.setAngle(90);
+        enemy_bullet.body.onOverlap = true;
+        return enemy_bullet;
     }
 );
 

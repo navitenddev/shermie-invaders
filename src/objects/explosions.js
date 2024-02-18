@@ -8,8 +8,6 @@ class Explosion extends Phaser.GameObjects.Sprite {
         // scene.physics.add.existing(this);
         scene.add.existing(this);
         this.setSize(32, 32);
-        console.log(this)
-        // this.play("bullet");
     }
 
     preUpdate(time, delta) {
