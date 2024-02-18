@@ -58,7 +58,7 @@ class AnimationFactory {
             key: "enemy2_idle",
             frames: this.scene.anims.generateFrameNumbers("enemy2", {
                 start: 0,
-                end: 0,
+                end: 3,
             }),
             frameRate: 4,
             repeat: -1,
