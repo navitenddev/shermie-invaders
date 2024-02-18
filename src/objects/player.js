@@ -77,7 +77,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     shoot(time) {
         if (time > this.last_fired) {
             // get the next available bullet, if one is available.
-            let bullet = this.scene.objs.bullets.getFirstDead(false, 0, 0, "bullet");
+            let bullet = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
             if (bullet !== null) {
                 this.last_fired = time + this.const_defs.shoot_delay;
                 bullet.activate(true);
@@ -99,7 +99,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
                 bullet.setPosition(bullet_start_pos.x, bullet_start_pos.y);
                 this.anims.play("shermie_shoot");
                 this.anims.nextAnim = "shermie_idle";
-                this.shootsfx = this.scene.game.sound.add('shoot',{ volume: 0.1, loop: false });
+                this.shootsfx = this.scene.game.sound.add('shoot', { volume: 0.1, loop: false });
                 this.shootsfx.play();
             }
         }

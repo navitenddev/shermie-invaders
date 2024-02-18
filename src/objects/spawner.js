@@ -1,12 +1,8 @@
-import { Enemy, EnemyConstDefs } from "./enemy";
-import { Bullet, BulletConstDefs } from "./bullet";
-import { Explosion, ExplosionConstDefs } from "./explosions";
+import { Enemy, EnemyConstDefs as enemy_defs } from "./enemy";
+import { PlayerBullet, PlayerBulletConstDefs as player_bull_defs, EnemyBullet, EnemyBulletConstDefs as enemy_bull_defs } from "./bullet";
+import { Explosion, ExplosionConstDefs as expl_defs } from "./explosions";
 import { Player } from "./player";
 import "../factory/object_factory";
-
-const bull_defs = BulletConstDefs;
-const expl_defs = ExplosionConstDefs;
-const enemy_defs = EnemyConstDefs;
 
 class ObjectSpawner {
     // player
@@ -16,14 +12,20 @@ class ObjectSpawner {
         this.enemies = this.scene.physics.add.group({
             runChildUpdate: true,
         });
-        this.bullets = this.scene.physics.add.group({
-            runChildUpdate: true,
-        });
+        this.bullets = {
+            player: this.scene.physics.add.group({
+                runChildUpdate: true
+            }),
+            enemy: this.scene.physics.add.group({
+                runChildUpdate: true
+            }),
+        }
         this.explosions = this.scene.physics.add.group({
             runChildUpdate: true,
         });
         this.init_enemies();
-        this.init_bullets();
+        this.init_player_bullets();
+        this.init_enemy_bullets();
         this.init_explosions();
     }
 
@@ -62,12 +64,21 @@ class ObjectSpawner {
         }
     }
 
-    init_bullets() {
-        console.log("Initializing bullets");
-        for (let i = 0; i < bull_defs.max_bullets; ++i) {
+    init_player_bullets() {
+        console.log("Initializing player bullets");
+        for (let i = 0; i < player_bull_defs.max_bullets; ++i) {
             console.log(`Adding bullet #${i + 1}`);
-            let bullet = this.scene.add.bullet(this.scene);
-            this.bullets.add(bullet);
+            let bullet = this.scene.add.player_bullet(this.scene);
+            this.bullets.player.add(bullet);
+        }
+    }
+
+    init_enemy_bullets() {
+        console.log("Initializing enemy bullets");
+        for (let i = 0; i < enemy_bull_defs.max_bullets; ++i) {
+            console.log(`Adding bullet #${i + 1}`);
+            let bullet = this.scene.add.enemy_bullet(this.scene);
+            this.bullets.enemy.add(bullet);
         }
     }
 
