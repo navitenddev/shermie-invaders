@@ -56,9 +56,9 @@ export class Preloader extends Scene {
             frameHeight: 16,
         });
 
-        this.load.spritesheet("enemy1", "alan.png", {
-            frameWidth: 16,
-            frameHeight: 16,
+        this.load.spritesheet("enemy2", "enemy_l1_virus.png", {
+            frameWidth: 80,
+            frameHeight: 80,
         });
 
         this.load.spritesheet("shermie", "shermie.png", {
@@ -72,7 +72,7 @@ export class Preloader extends Scene {
         });
     }
     create() {
-        this.titleMusic = this.sound.add('bgmusic',{ volume: 0.3, loop: true });
+        this.titleMusic = this.sound.add('bgmusic', { volume: 0.3, loop: true });
         this.titleMusic.play();
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
         //  For example, you can define global animations here, so we can use them in other scenes.

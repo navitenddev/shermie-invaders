@@ -1,10 +1,11 @@
+// grid gap and spawn_start are not scaled factors
 const EnemyConstDefs = {
-    dims: { w: 16, h: 16 },
-    scale: { w: 2, h: 2 },
-    spawn_start: { x: 36, y: 20 },
-    grid_gap: { x: 4, y: 4 },
-    grid_count: { row: 6, col: 20 },
-    move_gap: { x: 8, y: 8 },
+    dims: { w: 80, h: 80 },
+    scale: { w: .5, h: .5 },
+    spawn_start: { x: 80, y: 80 },
+    grid_gap: { x: 12, y: 6 },
+    grid_count: { row: 6, col: 16 },
+    move_gap: { x: 4, y: 20 },
 };
 
 class Enemy1 extends Phaser.Physics.Arcade.Sprite {
@@ -12,7 +13,7 @@ class Enemy1 extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, "Enemy");
         scene.physics.add.existing(this);
         scene.add.existing(this);
-        this.play("enemy1_idle");
+        this.play("enemy2_idle");
         this.setPosition(x, y);
         this.setSize(EnemyConstDefs.dims.w, EnemyConstDefs.dims.h);
         this.setScale(EnemyConstDefs.scale.w, EnemyConstDefs.scale.h);
@@ -30,7 +31,7 @@ class Enemy1 extends Phaser.Physics.Arcade.Sprite {
             max: this.scene.game.config.width - this.const_defs.dims.w,
         }
         // when enemy reaches y_bound, it's gameover
-        this.y_bound = this.scene.game.config.height - this.const_defs.dims.h * 10;
+        this.y_bound = this.scene.game.config.height - this.const_defs.dims.h;
 
         console.log(this)
     }

@@ -6,6 +6,7 @@ import "../factory/object_factory";
 
 const bull_defs = BulletConstDefs;
 const expl_defs = ExplosionConstDefs;
+const enemy_defs = EnemyConstDefs;
 
 class ObjectSpawner {
     // player
@@ -37,21 +38,19 @@ class ObjectSpawner {
     }
 
     init_enemies() {
-        let const_defs = EnemyConstDefs;
-        let gc = const_defs.grid_count;
+        let gc = enemy_defs.grid_count;
+        console.log(enemy_defs)
         for (let y = 0; y < gc.row; ++y) {
             for (let x = 0; x < gc.col; ++x) {
                 let spawn_pos = {
                     x:
-                        const_defs.spawn_start.x * const_defs.scale.w +
-                        (const_defs.dims.w + const_defs.grid_gap.x) *
-                        x *
-                        const_defs.scale.w,
+                        enemy_defs.spawn_start.x +
+                        (enemy_defs.grid_gap.x * x) +
+                        (enemy_defs.dims.w * x * enemy_defs.scale.w),
                     y:
-                        const_defs.spawn_start.y * const_defs.scale.h +
-                        (const_defs.dims.h + const_defs.grid_gap.y) *
-                        y *
-                        const_defs.scale.h,
+                        enemy_defs.spawn_start.y +
+                        (enemy_defs.grid_gap.y * y) +
+                        (enemy_defs.dims.h * y * enemy_defs.scale.h),
                 };
                 let enemy = this.scene.add.enemy(
                     this.scene,

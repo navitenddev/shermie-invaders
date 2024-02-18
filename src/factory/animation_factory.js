@@ -55,6 +55,16 @@ class AnimationFactory {
         });
 
         this.scene.anims.create({
+            key: "enemy2_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy2", {
+                start: 0,
+                end: 0,
+            }),
+            frameRate: 4,
+            repeat: -1,
+        });
+
+        this.scene.anims.create({
             key: "cottonball_explode",
             frames: this.scene.anims.generateFrameNumbers("cottonball_explosion_sheet", {
                 start: 0, end: 3,
