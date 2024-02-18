@@ -42,12 +42,14 @@ export class Game extends Scene {
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player,
             this.player_hit_enemy_bullet);
 
-        /* TODO: This values will be useful for tweaking difficulty */
-        this.enemy_timers = {
-            e1_last_fired: 0,
-            e1_shoot_cd: { // the cooldown range interval that the enemies will shoot at
-                min: 50,
-                max: 500,
+        // The timers will be useful for tweaking the difficulty
+        this.timers = {
+            e1: {
+                last_fired: 0,
+                shoot_cd: { // the cooldown range interval that the enemies will shoot at
+                    min: 50,
+                    max: 500,
+                }
             }
         }
 
@@ -119,12 +121,12 @@ export class Game extends Scene {
         }
 
         // handle enemy shooting ai
-        let e_timers = this.enemy_timers;
-        if (time > e_timers.e1_last_fired) {
+        let timers = this.timers;
+        if (time > timers.e1.last_fired) {
             let enemies = this.objs.enemies.children.entries;
             if (enemies && enemies.length) {
-                let rand_cd = Math.round(Math.random() * (e_timers.e1_shoot_cd.max - e_timers.e1_shoot_cd.min) + e_timers.e1_shoot_cd.min);
-                e_timers.e1_last_fired = time + rand_cd;
+                let rand_cd = Math.round(Math.random() * (timers.e1.shoot_cd.max - timers.e1.shoot_cd.min) + timers.e1.shoot_cd.min);
+                timers.e1.last_fired = time + rand_cd;
                 // choose a random enemy
                 let rand_index = Math.round(Math.random() * (enemies.length - 1));
                 let player = this.objs.player;
