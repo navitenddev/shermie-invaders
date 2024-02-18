@@ -7,7 +7,6 @@ const PlayerConstDefs = {
     offset: {
         body: { x: 8, y: 24 },
     },
-    shoot_delay: 150,
 };
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
@@ -93,25 +92,25 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     shoot(time) {
-        if (time > this.last_fired) {
+        let timer = this.scene.timers.player;
+        if (time > timer.last_fired) {
             // get the next available bullet, if one is available.
             let bullet = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
             if (bullet !== null) {
-                this.last_fired = time + this.const_defs.shoot_delay;
+                timer.last_fired = time + timer.shoot_cd;
                 bullet.activate(true);
 
                 // set the bullet to its spawn position
                 bullet.setPosition(this.x, this.y);
                 this.anims.play("shermie_shoot");
                 this.anims.nextAnim = "shermie_idle";
-                this.shootsfx = this.scene.game.sound.add('shoot', { volume: 0.1, loop: false });
-                this.shootsfx.play();
+                this.scene.sound_bank.play('shoot');
             }
         }
     }
 
     is_inbounds() {
-        console.log(this.x, this.y, this.const_defs.dims.w, this.const_defs.dims.h)
+        // console.log(this.x, this.y, this.const_defs.dims.w, this.const_defs.dims.h)
         return (this.y > -this.const_defs.dims.h &&
             this.y < this.scene.game.config.height + this.const_defs.dims.h &&
             this.x > -this.const_defs.dims.w &&

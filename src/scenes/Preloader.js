@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import gam from '../main';
+import { SoundBank } from '../sounds';
 
 export class Preloader extends Scene {
     constructor() {
@@ -83,8 +83,6 @@ export class Preloader extends Scene {
         });
     }
     create() {
-        this.titleMusic = this.sound.add('bgmusic', { volume: 0.3, loop: true });
-        this.titleMusic.play();
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
         //  For example, you can define global animations here, so we can use them in other scenes.
 

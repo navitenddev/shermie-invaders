@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import { AnimationFactory } from "../factory/animation_factory";
 import { ObjectSpawner } from "../objects/spawner";
+import { SoundBank } from '../sounds';
 import { EnemyBullet } from '../objects/bullet';
 
 export class Game extends Scene {
@@ -13,6 +14,7 @@ export class Game extends Scene {
         this.add.image(512, 384, 'background').setAlpha(0.5);
 
         this.anim_factory = new AnimationFactory(this);
+        this.sound_bank = new SoundBank(this);
         this.objs = new ObjectSpawner(this);
 
         this.keys = {
@@ -21,6 +23,7 @@ export class Game extends Scene {
             s: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
             d: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
             p: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P),
+            m: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M),
             space: this.input.keyboard.addKey(
                 Phaser.Input.Keyboard.KeyCodes.SPACE
             ),
@@ -29,6 +32,21 @@ export class Game extends Scene {
             ),
             esc: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC),
         };
+
+        // The timers will be useful for tweaking the difficulty
+        this.timers = {
+            e1: {
+                last_fired: 0,
+                shoot_cd: { // the cooldown range interval that the enemies will shoot at
+                    min: 50,
+                    max: 500,
+                }
+            },
+            player: {
+                last_fired: 0,
+                shoot_cd: 150,
+            }
+        }
 
         const player = this.add.player(this, this.game.config.width / 2, this.game.config.height - 64);
         this.objs.player = player;
@@ -42,16 +60,8 @@ export class Game extends Scene {
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player,
             this.player_hit_enemy_bullet);
 
-        // The timers will be useful for tweaking the difficulty
-        this.timers = {
-            e1: {
-                last_fired: 0,
-                shoot_cd: { // the cooldown range interval that the enemies will shoot at
-                    min: 50,
-                    max: 500,
-                }
-            }
-        }
+        this.sound_bank.play('bgm');
+        this.keys.m.on('down', this.sound_bank.toggle_mute);
 
         console.log(this);
     }
@@ -65,7 +75,6 @@ export class Game extends Scene {
             this.goto_gameover_screen();
 
         this.check_gameover();
-
     }
 
     explode_at(x, y) {
@@ -88,8 +97,7 @@ export class Game extends Scene {
         player_bullet.activate(false);
         // kill enemy
         enemy.die();
-        this.diesfx = this.sound.add('explosion', { volume: 0.1, loop: false });
-        this.diesfx.play();
+        this.sound_bank.play('explosion');
     }
 
     // callback function for when player bullet collides w/ enemy
@@ -101,8 +109,7 @@ export class Game extends Scene {
         enemy_bullet.activate(false);
         // kill player 
         player.die();
-        this.diesfx = this.sound.add('explosion', { volume: 0.1, loop: false });
-        this.diesfx.play();
+        this.sound_bank.play('explosion');
     }
 
     ai_enemy1(time) {
@@ -147,10 +154,12 @@ export class Game extends Scene {
     }
 
     goto_win_scene() {
+        this.sound_bank.sounds.bgm.stop();
         this.scene.start("Player Win");
     }
 
     goto_lose_scene() {
+        this.sound_bank.sounds.bgm.stop();
         this.scene.start("Player Lose");
     }
 }
