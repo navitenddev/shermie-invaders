@@ -35,9 +35,7 @@ class Enemy1 extends Phaser.Physics.Arcade.Sprite {
         // when enemy reaches y_bound, it's gameover
         this.y_bound = this.scene.game.config.height - this.const_defs.dims.h;
 
-        this.last_fired = 0;
-        this.shoot_cd = 300;
-        this.shoot_prob = .1;
+        this.x_shoot_bound = 200;
     }
 
     preUpdate(time, delta) {
@@ -45,20 +43,14 @@ class Enemy1 extends Phaser.Physics.Arcade.Sprite {
     }
     update(time, delta) {
         this.move_x(time, delta);
-
-        this.shoot(time, delta);
     }
-    shoot(time, delta) {
-        let rng = Math.random();
+    shoot() {
         // if condition
-        if (time > this.last_fired && rng <= this.shoot_prob) {
-            let bullet = this.scene.objs.bullets.enemy.getFirstDead(false, 0, 0, "enemy_bullet");
-            if (bullet !== null) {
-                this.last_fired = time + this.shoot_cd;
-                bullet.activate(true);
-                // set the bullet to its spawn position
-                bullet.setPosition(this.x, this.y);
-            }
+        let bullet = this.scene.objs.bullets.enemy.getFirstDead(false, 0, 0, "enemy_bullet");
+        if (bullet !== null) {
+            bullet.activate(true);
+            // set the bullet to its spawn position
+            bullet.setPosition(this.x, this.y);
         }
     }
 

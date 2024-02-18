@@ -19,7 +19,6 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         scene.add.existing(this);
         this.setSize(PlayerBulletConstDefs.dims.w, PlayerBulletConstDefs.dims.h);
-        console.log(this)
     }
 
     preUpdate(time, delta) {
@@ -90,7 +89,7 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
     }
 
     activate(flag) {
-        console.log("Activating enemy bullet: " + false)
+        // console.log("Activating enemy bullet: " + false)
         if (!flag) this.setPosition(-64, -64);
         this.setVisible(flag);
         this.setActive(flag);
