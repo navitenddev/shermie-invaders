@@ -1,10 +1,10 @@
 // grid gap and spawn_start are not scaled factors
 const EnemyConstDefs = {
     dims: { w: 80, h: 80 },
-    scale: { w: .5, h: .5 },
-    spawn_start: { x: 80, y: 80 },
-    grid_gap: { x: 12, y: 6 },
-    grid_count: { row: 6, col: 16 },
+    scale: { w: .6, h: .6 },
+    spawn_start: { x: 80, y: 130 },
+    grid_gap: { x: 10, y: 12 },
+    grid_count: { row: 5, col: 11 },
     move_gap: { x: 4, y: 20 },
 };
 
@@ -19,7 +19,7 @@ class Enemy1 extends Phaser.Physics.Arcade.Sprite {
         this.setScale(EnemyConstDefs.scale.w, EnemyConstDefs.scale.h);
 
         /* modify move_frame_delay to tweak the difficulty */
-        this.move_frame_delay = 100;
+        this.move_frame_delay = 200;
 
         this.const_defs = EnemyConstDefs;
         this.dead = false;
