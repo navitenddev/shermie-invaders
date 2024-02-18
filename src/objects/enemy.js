@@ -10,39 +10,36 @@ const EnemyConstDefs = {
     move_gap: { x: 4, y: 20 },
 };
 
-class Enemy1 extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y) {
-        super(scene, x, y, "Enemy");
+class BaseEnemy extends Phaser.Physics.Arcade.Sprite {
+    constructor(scene, x, y, animKey, constDefs) {
+        super(scene, x, y);
+        this.scene = scene;
+        this.constDefs = constDefs; 
         scene.physics.add.existing(this);
         scene.add.existing(this);
-        this.play("enemy2_idle");
+        this.play(animKey);
         this.setPosition(x, y);
-        this.setSize(EnemyConstDefs.dims.w, EnemyConstDefs.dims.h);
-        this.setScale(EnemyConstDefs.scale.w, EnemyConstDefs.scale.h);
+        this.setSize(this.constDefs.dims.w, this.constDefs.dims.h);
+        this.setScale(this.constDefs.scale.w, this.constDefs.scale.h);
 
         /* modify move_frame_delay to tweak the difficulty */
         this.move_frame_delay = 200;
-
-        this.const_defs = EnemyConstDefs;
         this.dead = false;
         this.move_direction = 1;
         this.last_move = 0;
         // when enemy1 reaches x_bound, it changes row and direction
         this.x_bound = {
-            min: this.const_defs.dims.w,
-            max: this.scene.game.config.width - this.const_defs.dims.w,
-        }
+            min: this.constDefs.dims.w,
+            max: scene.game.config.width - this.constDefs.dims.w,
+        };
         // when enemy reaches y_bound, it's gameover
-        this.y_bound = this.scene.game.config.height - this.const_defs.dims.h;
+        this.y_bound = scene.game.config.height - this.constDefs.dims.h;
 
         this.x_shoot_bound = 200;
     }
 
-    preUpdate(time, delta) {
-        super.preUpdate(time, delta);
-    }
     update(time, delta) {
-        this.move_x(time, delta);
+        this.move_x(time);
     }
     shoot() {
         // if condition
@@ -57,14 +54,14 @@ class Enemy1 extends Phaser.Physics.Arcade.Sprite {
     move_x(time) {
         if (time > this.last_move) {
             this.last_move = time + this.move_frame_delay;
-            this.x += (this.const_defs.move_gap.x * this.move_direction);
+            this.x += (this.constDefs.move_gap.x * this.move_direction);
         }
     }
 
-    change_row(time) {
+    change_row() {
         this.move_direction *= -1;
-        this.y += this.const_defs.move_gap.y;
-        this.x += (this.const_defs.move_gap.x * this.move_direction);
+        this.y += this.constDefs.move_gap.y;
+        this.x += (this.constDefs.move_gap.x * this.move_direction);
     }
 
 
@@ -84,4 +81,22 @@ class Enemy1 extends Phaser.Physics.Arcade.Sprite {
     }
 }
 
-export { Enemy1, EnemyConstDefs };
+class Enemy1 extends BaseEnemy {
+    constructor(scene, x, y) {
+        super(scene, x, y, "enemy_l1_top_idle", EnemyConstDefs);
+    }
+}
+
+class Enemy2 extends BaseEnemy {
+    constructor(scene, x, y) {
+        super(scene, x, y, "enemy_l1_middle_idle", EnemyConstDefs);
+    }
+}
+
+class Enemy3 extends BaseEnemy {
+    constructor(scene, x, y) {
+        super(scene, x, y, "enemy_l1_bottom_idle", EnemyConstDefs);
+    }
+}
+
+export { Enemy1, Enemy2, Enemy3, EnemyConstDefs };

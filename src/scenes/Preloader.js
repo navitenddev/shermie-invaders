@@ -56,10 +56,21 @@ export class Preloader extends Scene {
             frameHeight: 16,
         });
 
-        this.load.spritesheet("enemy2", "enemy_l1_virus.png", {
+        this.load.spritesheet("enemy_l1_top", "enemy_l1_lock.png", {
             frameWidth: 80,
             frameHeight: 80,
         });
+
+        this.load.spritesheet("enemy_l1_bottom", "enemy_l1_virus.png", {
+            frameWidth: 80,
+            frameHeight: 80,
+        });
+
+        this.load.spritesheet("enemy_l1_middle", "enemy_l1_worm.png", {
+            frameWidth: 80,
+            frameHeight: 80,
+        });
+
 
         this.load.spritesheet("shermie", "shermie.png", {
             frameWidth: 80,

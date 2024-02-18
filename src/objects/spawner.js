@@ -41,7 +41,7 @@ class ObjectSpawner {
 
     init_enemies() {
         let gc = enemy_defs.grid_count;
-        console.log(enemy_defs)
+        console.log(enemy_defs);
         for (let y = 0; y < gc.row; ++y) {
             for (let x = 0; x < gc.col; ++x) {
                 let spawn_pos = {
@@ -54,17 +54,34 @@ class ObjectSpawner {
                         (enemy_defs.grid_gap.y * y) +
                         (enemy_defs.dims.h * y * enemy_defs.scale.h),
                 };
-                let enemy = this.scene.add.enemy(
-                    this.scene,
-                    spawn_pos.x,
-                    spawn_pos.y
-                );
+                let enemy;
+                
+                // spawn enemy based on row
+                if (y == 0) {
+                    enemy = this.scene.add.enemy_l1_top(
+                        this.scene,
+                        spawn_pos.x,
+                        spawn_pos.y
+                    );
+                } else if (y == 1 || y == 2) {
+                    enemy = this.scene.add.enemy_l1_middle(
+                        this.scene,
+                        spawn_pos.x,
+                        spawn_pos.y
+                    );
+                } else { 
+                    enemy = this.scene.add.enemy_l1_bottom(
+                        this.scene,
+                        spawn_pos.x,
+                        spawn_pos.y
+                    );
+                }
                 this.enemies.add(enemy);
             }
         }
     }
 
-    init_player_bullets() {
+        init_player_bullets() {
         console.log("Initializing player bullets");
         for (let i = 0; i < player_bull_defs.max_bullets; ++i) {
             console.log(`Adding bullet #${i + 1}`);

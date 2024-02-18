@@ -1,5 +1,5 @@
 import { Player } from "../objects/player";
-import { Enemy1 } from "../objects/enemy";
+import { Enemy1, Enemy2, Enemy3 } from "../objects/enemy";
 import { PlayerBullet, EnemyBullet } from "../objects/bullet";
 import { Explosion } from "../objects/explosions"
 import "../factory/object_factory";
@@ -20,10 +20,27 @@ Phaser.GameObjects.GameObjectFactory.register(
 );
 
 Phaser.GameObjects.GameObjectFactory.register(
-    "enemy",
+    "enemy_l1_top",
     function (scene, x, y) {
         let enemy = new Enemy1(scene, x, y);
-        enemy.setCollideWorldBounds(true);
+        scene.add.existing(enemy);
+        return enemy;
+    }
+);
+
+Phaser.GameObjects.GameObjectFactory.register(
+    "enemy_l1_middle",
+    function (scene, x, y) {
+        let enemy = new Enemy2(scene, x, y);
+        scene.add.existing(enemy);
+        return enemy;
+    }
+);
+
+Phaser.GameObjects.GameObjectFactory.register(
+    "enemy_l1_bottom",
+    function (scene, x, y) {
+        let enemy = new Enemy3(scene, x, y);
         scene.add.existing(enemy);
         return enemy;
     }
