@@ -47,8 +47,8 @@ class AnimationFactory {
         this.scene.anims.create({
             key: "enemy_l1_top_idle",
             frames: this.scene.anims.generateFrameNumbers("enemy_l1_top", {
-                start: 3,
-                end: 5,
+                start: 0,
+                end: 3,
             }),
             frameRate: 4,
             repeat: -1,
@@ -63,7 +63,7 @@ class AnimationFactory {
             frameRate: 4,
             repeat: -1,
         });
-  
+
         this.scene.anims.create({
             key: "enemy_l1_bottom_idle",
             frames: this.scene.anims.generateFrameNumbers("enemy_l1_bottom", {

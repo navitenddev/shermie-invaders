@@ -28,9 +28,9 @@ class SoundBank {
             this.scene.game.sound.add('bgmusic', { volume: 0.2, loop: true });
     }
 
+    /* TODO: This function is redundant now, maybe remove it */
     play(sound_key) {
         console.log(this)
-        // if (!this.muted) {
         switch (sound_key) {
             case 'shoot':
                 this.sounds.shoot.play();
@@ -51,16 +51,9 @@ class SoundBank {
                 console.error(`Error: Tried to play invalid sound "${sound_key}"!`)
                 break;
         }
-        // }
     }
 
     toggle_mute = () => {
-        // this.muted = !this.muted;
-        // console.log(`Muted: ${this.muted}`);
-        // if (this.muted)
-        //     this.sounds.
-        // else
-        //     this.sounds.bgm.play();
         if (this.scene.game.sound.mute)
             this.scene.game.sound.mute = false;
         else
