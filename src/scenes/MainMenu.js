@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { KB_INPUT_DEFS } from '../keyboard_input';
 
 export class MainMenu extends Scene {
     constructor() {
@@ -7,8 +8,13 @@ export class MainMenu extends Scene {
 
     create() {
         this.add.image(512, 384, 'background');
-
         this.add.image(512, 300, 'logo');
+
+        const key_defs = KB_INPUT_DEFS;
+        this.keys = {};
+        for (const [key_name, key_code] of Object.entries(key_defs))
+            this.keys[key_name] = this.input.keyboard.addKey(key_code);
+        this.keys.m.on('down', this.scene.get('Preloader').sound_bank.toggle_mute);
 
         this.add.text(512, 460, 'Main Menu', {
             fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',

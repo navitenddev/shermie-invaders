@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { SoundBank } from '../sounds';
-
+import { AnimationFactory } from '../factory/animation_factory';
 export class Preloader extends Scene {
     constructor() {
         super('Preloader');
@@ -85,6 +85,12 @@ export class Preloader extends Scene {
     create() {
         //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
         //  For example, you can define global animations here, so we can use them in other scenes.
+        this.anim_factory = new AnimationFactory(this);
+
+        this.sound_bank = new SoundBank(this);
+        // we can access sound_bank from another scene with:
+        // sound_bank = this.scene.get('Preloader').sound_bank;
+
 
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
         this.scene.start('MainMenu');

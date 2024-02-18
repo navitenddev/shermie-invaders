@@ -30,37 +30,41 @@ class SoundBank {
 
     play(sound_key) {
         console.log(this)
-        if (!this.muted) {
-            switch (sound_key) {
-                case 'shoot':
-                    this.sounds.shoot.play();
-                    break;
-                case 'explosion':
-                    this.sounds.explosion.play();
-                    break;
-                case 'win':
-                    this.sounds.win.play();
-                    break;
-                case 'lose':
-                    this.sounds.lose.play();
-                    break;
-                case 'bgm':
-                    this.sounds.bgm.play();
-                    break;
-                default:
-                    console.error(`Error: Tried to play invalid sound "${sound_key}"!`)
-                    break;
-            }
+        // if (!this.muted) {
+        switch (sound_key) {
+            case 'shoot':
+                this.sounds.shoot.play();
+                break;
+            case 'explosion':
+                this.sounds.explosion.play();
+                break;
+            case 'win':
+                this.sounds.win.play();
+                break;
+            case 'lose':
+                this.sounds.lose.play();
+                break;
+            case 'bgm':
+                this.sounds.bgm.play();
+                break;
+            default:
+                console.error(`Error: Tried to play invalid sound "${sound_key}"!`)
+                break;
         }
+        // }
     }
 
     toggle_mute = () => {
-        this.muted = !this.muted;
-        console.log(`Muted: ${this.muted}`);
-        if (this.muted)
-            this.sounds.bgm.stop();
+        // this.muted = !this.muted;
+        // console.log(`Muted: ${this.muted}`);
+        // if (this.muted)
+        //     this.sounds.
+        // else
+        //     this.sounds.bgm.play();
+        if (this.scene.game.sound.mute)
+            this.scene.game.sound.mute = false;
         else
-            this.sounds.bgm.play();
+            this.scene.game.sound.mute = true;
     }
 }
 

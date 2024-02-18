@@ -1,8 +1,6 @@
 import { Scene } from 'phaser';
-import { AnimationFactory } from "../factory/animation_factory";
 import { ObjectSpawner } from "../objects/spawner";
-import { SoundBank } from '../sounds';
-import { EnemyBullet } from '../objects/bullet';
+import { KB_INPUT_DEFS } from '../keyboard_input';
 
 export class Game extends Scene {
     constructor() {
@@ -13,25 +11,16 @@ export class Game extends Scene {
         this.cameras.main.setBackgroundColor(0x2e2e2e);
         this.add.image(512, 384, 'background').setAlpha(0.5);
 
-        this.anim_factory = new AnimationFactory(this);
-        this.sound_bank = new SoundBank(this);
+        // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
 
-        this.keys = {
-            w: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
-            a: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-            s: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
-            d: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
-            p: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P),
-            m: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.M),
-            space: this.input.keyboard.addKey(
-                Phaser.Input.Keyboard.KeyCodes.SPACE
-            ),
-            enter: this.input.keyboard.addKey(
-                Phaser.Input.Keyboard.KeyCodes.ENTER
-            ),
-            esc: this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC),
-        };
+        this.sound_bank = this.scene.get('Preloader').sound_bank;
+
+        const key_defs = KB_INPUT_DEFS;
+        this.keys = {};
+        for (const [key_name, key_code] of Object.entries(key_defs))
+            this.keys[key_name] = this.input.keyboard.addKey(key_code);
+
 
         // The timers will be useful for tweaking the difficulty
         this.timers = {
@@ -61,6 +50,7 @@ export class Game extends Scene {
             this.player_hit_enemy_bullet);
 
         this.sound_bank.play('bgm');
+
         this.keys.m.on('down', this.sound_bank.toggle_mute);
 
         console.log(this);
