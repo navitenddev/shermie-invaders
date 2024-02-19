@@ -4,7 +4,7 @@ const PlayerConstDefs = {
     dims: { w: 64, h: 48 },
     speed: { x: 3, y: 0 },
     offset: {
-        body: { x: 8, y: 24 },
+        body: { x: 16, y: 36 },
     },
 };
 
@@ -30,7 +30,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         scene.add.existing(this);
         this.setCollideWorldBounds(true);
-        this.setSize(this.const_defs.dims.w, this.const_defs.dims.h);
+        this.setSize(this.const_defs.dims.w - 16, this.const_defs.dims.h - 8);
         this.setOffset(
             this.const_defs.offset.body.x,
             this.const_defs.offset.body.y

@@ -64,9 +64,6 @@ Phaser.GameObjects.GameObjectFactory.register(
     "explosion",
     function (scene) {
         let explosion = new Explosion(scene);
-        scene.add.existing(explosion);
-        explosion.setVisible(false);
-        explosion.setActive(false);
         return explosion;
     }
 );
