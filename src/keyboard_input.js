@@ -1,6 +1,10 @@
-/* Any keys that will be needed for the game should be defined here, then imported as needed. */
+/* NO key functionality belongs in this file. */
 
-const KB_INPUT_DEFS = {
+/**  
+ * @description Any keys that will be needed for the game should be defined here, then imported as needed. 
+ */
+
+const KEYBOARD_INPUT_DEFS = {
     w: Phaser.Input.Keyboard.KeyCodes.W,
     a: Phaser.Input.Keyboard.KeyCodes.A,
     s: Phaser.Input.Keyboard.KeyCodes.S,
@@ -12,5 +16,16 @@ const KB_INPUT_DEFS = {
     esc: Phaser.Input.Keyboard.KeyCodes.ESC,
 };
 
+/**
+ * @param {Phaser.Scene} scene The scene in which to add the key defs too.
+ * @returns {Object.<string, Phaser.Input.Keyboard.Key>} Returns an array of phaser key objects to use for gameplay. The keycodes are defined in `KEYBOARD_INPUT_DEFS` located in `keyboard_input.js`. 
+ */
+function InitKeyDefs(scene) {
+    let keys = {};
+    for (const [key_name, key_code] of Object.entries(KEYBOARD_INPUT_DEFS))
+        keys[key_name] = scene.input.keyboard.addKey(key_code);
+    return keys;
+}
 
-export { KB_INPUT_DEFS };
+
+export { InitKeyDefs };

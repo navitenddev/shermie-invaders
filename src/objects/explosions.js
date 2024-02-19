@@ -1,6 +1,18 @@
 const ExplosionConstDefs = {
     max_explosions: 10,
 }
+
+/**
+ * @classdesc An object that encapsulates the explosion animation.
+ * 
+ * Note: Reusable objects (like bullets and explosions) are not constantly created and destroyed. Reusable objects are first initialized as invisble, inactive, and offscreen when the game begins. 
+ * 
+ * When they are needed, the caller will first find if any of said object is available (aka, inactive). If so, that object is teleported to where it should appear and activated.
+ * 
+ * Then, they are automatically set to inactive and invisible again when they are no longer needed.
+ * 
+ * This way we don't have to waste resources on constantly creating and destroying objects.
+ */
 class Explosion extends Phaser.GameObjects.Sprite {
     constructor(scene) {
         super(scene, 0, 0, "explosion");
