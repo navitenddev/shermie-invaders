@@ -11,10 +11,11 @@ export class LevelSelect extends Scene {
 
         this.add.image(512, 300, 'levelSelectlogo');
         
-        var spacing = 400;
+        let spacing = 400;
+        let gamefont = '"Press Start 2P", system-ui'
         for (var i = 1; i <= 5; i++){
             this.add.text(512, spacing, 'Level ' + i, {
-                fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
+                fontFamily: gamefont, fontSize: 30, color: '#ffffff',
                 stroke: '#000000', strokeThickness: 8,
                 align: 'center'
             })
@@ -28,7 +29,7 @@ export class LevelSelect extends Scene {
         
         spacing += 20;
         this.backButton = this.add.text(512, spacing, 'Back', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
+            fontFamily: gamefont, fontSize: 30, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
         })

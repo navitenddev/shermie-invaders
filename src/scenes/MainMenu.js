@@ -13,10 +13,11 @@ export class MainMenu extends Scene {
 
         this.add.image(512, 300, 'titlelogo');
         this.keys = InitKeyDefs(this);
+        let gamefont = '"Press Start 2P", system-ui'
 
         // Start Button
         this.startButton = this.add.text(512, 460, 'Start!', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
+            fontFamily: gamefont, fontSize: 30, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
         })
@@ -24,7 +25,7 @@ export class MainMenu extends Scene {
         .setInteractive();
 
         this.LevelSelectButton = this.add.text(512, 510, 'Level Select', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
+            fontFamily: gamefont, fontSize: 30, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
         })
@@ -32,7 +33,7 @@ export class MainMenu extends Scene {
         .setInteractive();
 
         this.HowToPlayButton = this.add.text(512, 560, 'How to play', {
-            fontFamily: 'Arial Black', fontSize: 38, color: '#ffffff',
+            fontFamily: gamefont, fontSize: 30, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
         })
