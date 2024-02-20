@@ -12,6 +12,7 @@ export class MainMenu extends Scene {
         this.animatedBg.setOrigin(0.5, 0.5);
 
         this.add.image(512, 300, 'titlelogo');
+        this.keys = InitKeyDefs(this);
 
         // Start Button
         this.startButton = this.add.text(512, 460, 'Start!', {
