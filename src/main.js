@@ -4,6 +4,8 @@ import { PlayerWin } from './scenes/PlayerWin';
 import { PlayerLose } from './scenes/PlayerLose';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
+import { LevelSelect } from './scenes/LevelSelect';
+import { HowToPlay } from './scenes/HowToPlay';
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -31,6 +33,8 @@ const config = {
         Game,
         PlayerWin,
         PlayerLose,
+        LevelSelect,
+        HowToPlay,
     ]
 };
 export default new Phaser.Game(config);
