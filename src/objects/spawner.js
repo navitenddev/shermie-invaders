@@ -3,11 +3,17 @@ import { PlayerBullet, PlayerBulletConstDefs as player_bull_defs, EnemyBullet, E
 import { Explosion, ExplosionConstDefs as expl_defs } from "./explosions";
 import { Player } from "./player";
 import "../factory/object_factory";
+/**
+ * @classdesc An object that encapsulates all Phaser Groups. It initializes and spawns them to the game world when it is constructed.
+ * @property {Phaser.Physics.Arcade.Group} enemies - Phaser Group of all enemies
+ * @property {Phaser.Physics.Arcade.Group} bullets.player - Phaser Group player's bullets
+ * @property {Phaser.Physics.Arcade.Group} bullets.enemy - Phaser Group of enemy bullets
+ * @property {Phaser.Physics.Arcade.Group} explosions - Phaser group of explosion objects
+ */
 
+/* TODO: I don't know how to get VSCode to find the Phaser defintions for the jsdoc descriptors. Would be nice to figure that out later. */
 class ObjectSpawner {
-    // player
-    // enemies, bullets
-    constructor(scene, player) {
+    constructor(scene) {
         this.scene = scene;
         this.enemies = this.scene.physics.add.group({
             runChildUpdate: true,
@@ -23,12 +29,15 @@ class ObjectSpawner {
         this.explosions = this.scene.physics.add.group({
             runChildUpdate: true,
         });
-        this.init_enemies();
+        this.init_enemy_grid();
         this.init_player_bullets();
         this.init_enemy_bullets();
         this.init_explosions();
     }
-
+    /**
+     * @public
+     * @description Deletes all enemies that have been marked as dead from this.enemies
+     */
     cleanup_enemies() {
         let entries = this.enemies.children.entries;
         // check each enemy
@@ -39,7 +48,11 @@ class ObjectSpawner {
         }
     }
 
-    init_enemies() {
+    /**
+     * @private
+     * @description initializes the grid of the enemies. Should only be called at the start of the level.
+     */
+    init_enemy_grid() {
         let gc = enemy_defs.grid_count;
         console.log(enemy_defs);
         for (let y = 0; y < gc.row; ++y) {
@@ -55,7 +68,7 @@ class ObjectSpawner {
                         (enemy_defs.dims.h * y * enemy_defs.scale.h),
                 };
                 let enemy;
-                
+
                 // spawn enemy based on row
                 if (y == 0) {
                     enemy = this.scene.add.enemy_l1_top(
@@ -69,7 +82,7 @@ class ObjectSpawner {
                         spawn_pos.x,
                         spawn_pos.y
                     );
-                } else { 
+                } else {
                     enemy = this.scene.add.enemy_l1_bottom(
                         this.scene,
                         spawn_pos.x,
@@ -81,7 +94,11 @@ class ObjectSpawner {
         }
     }
 
-        init_player_bullets() {
+    /**
+     * @private
+     * @description Initializes all of the player's bullets. Should only be called at the start of the level.
+     */
+    init_player_bullets() {
         console.log("Initializing player bullets");
         for (let i = 0; i < player_bull_defs.max_bullets; ++i) {
             console.log(`Adding bullet #${i + 1}`);
@@ -90,6 +107,10 @@ class ObjectSpawner {
         }
     }
 
+    /**
+     * @private
+     * @description Initializes all of the enemies' bullets. Should only be called at the start of the level.
+     */
     init_enemy_bullets() {
         console.log("Initializing enemy bullets");
         for (let i = 0; i < enemy_bull_defs.max_bullets; ++i) {
@@ -99,6 +120,10 @@ class ObjectSpawner {
         }
     }
 
+    /**
+     * @private
+     * @description Initializes all of the enemies' bullets. Should only be called at the start of the level.
+     */
     init_explosions() {
         console.log("Initializing explosions");
         for (let i = 0; i < expl_defs.max_explosions; ++i) {

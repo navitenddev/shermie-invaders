@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { InitKeyDefs } from '../keyboard_input';
 
 export class MainMenu extends Scene {
     constructor() {

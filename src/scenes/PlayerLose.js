@@ -11,8 +11,7 @@ export class PlayerLose extends Scene {
 
         this.add.image(512, 384, 'background').setAlpha(0.5);
 
-        this.sound_bank = new SoundBank(this);
-        this.sound_bank.play('lose');
+        this.scene.get('Preloader').sound_bank.bank.sfx.lose.play();
 
         this.add.text(512, 384, 'You Lose', {
             fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
@@ -21,9 +20,7 @@ export class PlayerLose extends Scene {
         }).setOrigin(0.5);
 
         this.input.once('pointerdown', () => {
-
             this.scene.start('MainMenu');
-
         });
     }
 }

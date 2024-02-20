@@ -13,22 +13,45 @@ const EnemyBulletConstDefs = {
     offset: { x: 0, y: 0 },
 };
 
+/**
+ * @classdesc A bullet that the player shoots.
+ * 
+ * Note: Reusable objects (like bullets and explosions) are not constantly created and destroyed. Reusable objects are first initialized as invisble, inactive, and offscreen when the game begins. 
+ * 
+ * When they are needed, the caller will first find if any of said object is available (aka, inactive). If so, that object is teleported to where it should appear and activated.
+ * 
+ * Then, they are automatically set to inactive and invisible again when they are no longer needed.
+ * 
+ * This way we don't have to waste resources on constantly creating and destroying objects.
+ */
 class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y) {
-        super(scene, x, y, "player_bullet");
+    /**
+     * @constructor
+     * @param {Phaser.Scene} scene - The scene in which the bullet exists.
+     * @param {number} x - The x-coord of the bullet's initial position.
+     * @param {number} y - The y-coord of the bullet's initial position.
+     */
+    constructor(scene) {
+        super(scene, -1024, -1024, "player_bullet");
         scene.physics.add.existing(this);
         scene.add.existing(this);
-        this.setSize(PlayerBulletConstDefs.dims.w, PlayerBulletConstDefs.dims.h);
-        this.setPosition(-1024, -1024);
+        this.setTexture("cottonball");
+        this.setVisible(false);
+        this.setActive(false);
+        this.body.onOverlap = true;
     }
 
+    /* It's important to add this to every subclass that extends a phaser object.
+    * See: https://phaser.discourse.group/t/problem-with-preupdate-in-extend-classes/6232
+    */
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
     }
 
-    create() { }
-
     update(time, delta) {
+        /* `update()` will implicitly be called every frame if it is contained in a group where `runChildUpdate = true`.
+        * See:`ObjectSpawner.js`
+        */
         if (this.active) {
             this.move();
             this.rotate();
@@ -36,65 +59,130 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
             this.debugBodyColor = this.body?.touching.none ? 0x0099ff : 0xff9900;
         }
     }
-
+    /**
+     * @private
+     * @description The bullet movement per `update()`
+     */
     move() {
         this.y += PlayerBulletConstDefs.speed.y;
     }
 
+    /**
+     * @private
+     * @description The bullet rotation per `update()`
+     */
     rotate() {
         this.setRotation(this.rotation + PlayerBulletConstDefs.rotation_speed);
     }
 
+    /**
+     * @public
+     * @description Checks if the bullet is offscreen. If so, then the bullet is deactivated.
+     */
     check_bounds() {
-        if (this.y < -16) this.activate(false);
+        if (this.y < -16) this.deactivate();
     }
 
-    activate(flag) {
-        if (!flag) this.setPosition(-1024, -1024);
-        this.setVisible(flag);
-        this.setActive(flag);
+    /**
+     * @public
+     * @description Activate the bullet at (x,y)
+     * @param {*} x The x-coord in which the bullet should appear at
+     * @param {*} y The y-coord in which the bullet should appear at
+     */
+    activate(x, y) {
+        this.setPosition(x, y);
+        this.setVisible(true);
+        this.setActive(true);
+    }
+
+    /** 
+     * @public
+     * @description Deactivate the bullet and move it offscreen
+     */
+    deactivate() {
+        this.setPosition(-1024, -1024);
+        this.setVisible(false);
+        this.setActive(false);
     }
 
 }
 
+/** 
+ * @classdesc A bullet that the enemy shoots.
+ * 
+ * Note: Reusable objects (like bullets and explosions) are not constantly created and destroyed. Reusable objects are first initialized as invisble, inactive, and offscreen when the game begins. 
+ * 
+ * When they are needed, the caller will first find if any of said object is available (aka, inactive). If so, that object is teleported to where it should appear and activated.
+ * 
+ * Then, they are automatically set to inactive and invisible again when they are no longer needed.
+ * 
+ * This way we don't have to waste resources on constantly creating and destroying objects.
+ */
 class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y) {
-        super(scene, x, y, "enemy_bullet");
-        scene.physics.add.existing(this);
-        scene.add.existing(this);
-        this.setSize(EnemyBulletConstDefs.dims.w, EnemyBulletConstDefs.dims.h);
+    /**
+     * @constructor
+     * @param {Phaser.Scene} scene - The scene in which the bullet exists.
+     * @param {number} x - The x-coord of the bullet's initial position.
+     * @param {number} y - The y-coord of the bullet's initial position.
+     */
+    constructor(scene) {
+        super(scene, -1024, -1024, "enemy_bullet");
+        this.scene.physics.add.existing(this);
+        this.scene.add.existing(this);
         this.play("bullet");
-        this.setPosition(-1024, -1024);
+        this.setSize(EnemyBulletConstDefs.dims.w, EnemyBulletConstDefs.dims.h);
+        this.setVisible(false);
+        this.setActive(false);
+        this.setAngle(90);
     }
 
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
     }
 
-    create() { }
-
     update(time, delta) {
         if (this.active) this.move();
         this.check_bounds();
         this.debugBodyColor = this.body?.touching.none ? 0x0099ff : 0xff9900;
     }
-
+    /**
+     * @private
+     * @description The bullet movement per `update()`
+     */
     move() {
         this.y += EnemyBulletConstDefs.speed.y;
     }
 
-    // deactivates the bullet if out of bounds
+    /**
+     * @public
+     * @description deactivates the bullet if it's out of bounds
+     */
     check_bounds() {
         if (this.y < -EnemyBulletConstDefs.dims.w ||
             this.y > this.scene.game.config.height + EnemyBulletConstDefs.dims.h)
-            this.activate(false);
+            this.deactivate();
     }
 
-    activate(flag) {
-        // console.log("Activating enemy bullet: " + false)
-        if (!flag) this.setPosition(-1024, -1024);
-        this.setVisible(flag);
-        this.setActive(flag);
+    /**
+     * @public
+     * @description Activate the bullet at (x,y)
+     * @param {*} x The x-coord in which the bullet should appear at
+     * @param {*} y The y-coord in which the bullet should appear at
+     */
+    activate(x, y) {
+        this.setPosition(x, y);
+        this.setVisible(true);
+        this.setActive(true);
+    }
+
+    /** 
+     * @public
+     * @description Deactivate the bullet and move it offscreen
+     */
+    deactivate() {
+        this.setPosition(-1024, -1024);
+        this.setVisible(false);
+        this.setActive(false);
     }
 
 }

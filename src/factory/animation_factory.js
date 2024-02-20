@@ -1,9 +1,17 @@
+/**
+ * @description Any animations used in the game should be defined in this object.
+ * 
+ * This class does not need to be referenced, as no functions actually need to be called. However, this class does need to be instantiated before any phaser animations can be used.
+ */
 class AnimationFactory {
     constructor(scene) {
         this.scene = scene;
         this.init_anims();
     }
-
+    /**
+     * @private
+     * @description Initialize all sprite animations
+     */
     init_anims() {
         this.scene.anims.create({
             key: "shermie_idle",
@@ -47,8 +55,8 @@ class AnimationFactory {
         this.scene.anims.create({
             key: "enemy_l1_top_idle",
             frames: this.scene.anims.generateFrameNumbers("enemy_l1_top", {
-                start: 3,
-                end: 5,
+                start: 0,
+                end: 3,
             }),
             frameRate: 4,
             repeat: -1,
@@ -63,7 +71,7 @@ class AnimationFactory {
             frameRate: 4,
             repeat: -1,
         });
-  
+
         this.scene.anims.create({
             key: "enemy_l1_bottom_idle",
             frames: this.scene.anims.generateFrameNumbers("enemy_l1_bottom", {
