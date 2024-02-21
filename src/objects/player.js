@@ -26,7 +26,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y) {
         super(scene, x, y, "Player");
         this.lives = 3; // player starts with 3 lives
-
+        this.isInvincible = false; 
+        
         this.const_defs = PlayerConstDefs;
         scene.physics.add.existing(this);
         scene.add.existing(this);
@@ -81,7 +82,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * Marks the player as dead so that phaser knows to do start the death animation.
      */
     die() {
-        if (this.lives > 0) {
+        if (this.lives > 0 && !this.isInvincible) {
             this.lives -= 1;
             if (this.lives === 0) {
                 this.is_dead = true;
@@ -112,6 +113,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @description Flashes the player to indicate that they've been hit
      */
     flashPlayer() {
+        this.isInvincible = true;
         this.scene.tweens.add({
             targets: this,
             alpha: { from: 0.5, to: 1 }, // toggle between semi-transparent and visible
@@ -121,6 +123,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             yoyo: true,
             onComplete: () => {
                 this.setAlpha(1); // make sure the player is fully visible after flashing
+                this.isInvincible = false; // player is no longer invincible
             }
         });
     }
