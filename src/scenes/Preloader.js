@@ -34,6 +34,8 @@ export class Preloader extends Scene {
 
         this.load.image("cottonball", "cottonball.png");
 
+        this.load.image("lives", "lives.png");
+
         //this.load.audio(['bgmusic','shoot','explosion'], ['SFX/spacebg.wav','SFX/shoot.wav', 'SFX/explosion.wav']);
 
         this.load.audio('bgmusic', 'SFX/bgmusic.mp3');

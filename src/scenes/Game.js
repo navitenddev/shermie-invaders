@@ -26,7 +26,6 @@ export class Game extends Scene {
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
         this.sounds = this.scene.get('Preloader').sound_bank;
-        this.livesText = this.add.text(16, this.game.config.height - 48, 'Lives: 3', fontStyle);
 
         this.keys = InitKeyDefs(this);
 
@@ -49,9 +48,15 @@ export class Game extends Scene {
         }
 
         this.objs.player = this.add.player(this, this.game.config.width / 2, this.game.config.height - 96);
-
+        
+        // Player lives text and sprites
+        this.livesText = this.add.text(16, this.game.config.height - 48, '3', fontStyle);
+        this.livesSprites = this.add.group({
+            key: 'lives',
+            repeat: this.objs.player.lives - 2
+        });
+        
         this.physics.world.setBounds(0, 0, this.game.config.width, this.game.config.height);
-
 
         this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies,
             this.player_bullet_hit_enemy);
@@ -67,13 +72,27 @@ export class Game extends Scene {
         console.log(this);
         console.log(this.objs.enemies)
     }
-
+    
+    /**
+     * @description Updates the lives sprites to reflect the current number of lives
+     * @param {number} lives The number of lives the player has
+    */
+    updateLivesSprites(lives) {
+        this.livesSprites.clear(true, true); // Clear sprites
+        for (let i = 0; i < lives; i++) {
+            // coordinates for the lives sprites
+            let lifeConsts = { x: 84 + i * 48, y: this.game.config.height - 32 };
+            this.livesSprites.create(   lifeConsts.x, lifeConsts.y, 'lives', 0)
+        }
+    }
 
     update(time, delta) {
         this.objs.player.update(time, delta, this.keys)
         this.objs.cleanup_enemies();
 
-        this.livesText.setText('Lives: ' + this.objs.player.lives); // update lives text
+        // Update lives text and sprites
+        this.livesText.setText(this.objs.player.lives);
+        this.updateLivesSprites(this.objs.player.lives); 
 
         let is_gameover = this.ai_grid_enemies(time);
         if (is_gameover)
