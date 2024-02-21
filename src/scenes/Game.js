@@ -26,7 +26,7 @@ export class Game extends Scene {
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
         this.sounds = this.scene.get('Preloader').sound_bank;
-        this.livesText = this.add.text(16, 16, 'Lives: 3', fontStyle);
+        this.livesText = this.add.text(16, this.game.config.height - 48, 'Lives: 3', fontStyle);
 
         this.keys = InitKeyDefs(this);
 
@@ -48,7 +48,7 @@ export class Game extends Scene {
             }
         }
 
-        this.objs.player = this.add.player(this, this.game.config.width / 2, this.game.config.height - 64);
+        this.objs.player = this.add.player(this, this.game.config.width / 2, this.game.config.height - 96);
 
         this.physics.world.setBounds(0, 0, this.game.config.width, this.game.config.height);
 

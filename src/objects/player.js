@@ -106,7 +106,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @description Resets the player's position to the center bottom of the screen
      */
     resetPlayerPosition() {
-        this.setPosition(this.scene.game.config.width / 2, this.scene.game.config.height - 64);
+        this.setPosition(this.scene.game.config.width / 2, this.scene.game.config.height - 96);
     }
 
     /**
