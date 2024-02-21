@@ -83,7 +83,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     die() {
         if (this.lives > 0) {
             this.lives -= 1;
-            this.resetPlayerPosition();
             if (this.lives === 0) {
                 this.is_dead = true;
                 // allow player to fly off screen
@@ -93,14 +92,40 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 // if player dies on right half of screen, they should fly top left
                 this.dead_vel.x =
                     (this.x < this.scene.game.config.width / 2) ? 4 : -4;
+                
+                return; // return so we don't reset player position, flash
             }
+            this.resetPlayerPosition(); 
+            this.flashPlayer();
         }
     }
 
+
+    /**
+     * @description Resets the player's position to the center bottom of the screen
+     */
     resetPlayerPosition() {
         this.setPosition(this.scene.game.config.width / 2, this.scene.game.config.height - 64);
     }
 
+    /**
+     * @description Flashes the player to indicate that they've been hit
+     */
+    flashPlayer() {
+        this.scene.tweens.add({
+            targets: this,
+            alpha: { from: 0.5, to: 1 }, // toggle between semi-transparent and visible
+            ease: 'Linear',
+            duration: 100,
+            repeat: 9,
+            yoyo: true,
+            onComplete: () => {
+                this.setAlpha(1); // make sure the player is fully visible after flashing
+            }
+        });
+    }
+    
+    
 
     /**
      * @description Handles Player movement
