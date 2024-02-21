@@ -23,9 +23,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @param {*} x x-coord of player spawn pos
      * @param {*} y y-coord of player spawn pos
      */
+    static MAX_LIVES = 5; // maximum number of lives the player can have
+
     constructor(scene, x, y) {
         super(scene, x, y, "Player");
         this.lives = 3; // player starts with 3 lives
+        this.maxLives = Player.MAX_LIVES;
+
         this.isInvincible = false; 
         
         this.const_defs = PlayerConstDefs;
@@ -129,6 +133,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
     
     
+    /**
+     * @description Adds a life to the player's life count
+    */
+    addLife() {
+        if (this.lives < this.maxLives) {
+            this.lives++;
+        }
+    }
 
     /**
      * @description Handles Player movement
