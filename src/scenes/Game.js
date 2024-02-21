@@ -173,6 +173,7 @@ export class Game extends Scene {
     }
 
     check_gameover() {
+        console.log(this.objs.enemies.children.entries.length);
         if (this.objs.enemies.children.entries.length === 0)
             this.goto_win_scene();
         if (!this.objs.player.is_inbounds())

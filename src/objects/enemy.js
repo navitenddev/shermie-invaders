@@ -89,11 +89,7 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
 
 
     die() {
-        this.setActive(false);
-        this.setVisible(false);
-        // Note: when we kill an enemy we still want to keep its x position inbounds
-        this.setPosition(this.scene.game.config.width / 2, -1024);
-        this.is_dead = true;
+        this.destroy();
     }
     // return true if this enemy is overlapping an x boundary
     is_x_inbounds() {
