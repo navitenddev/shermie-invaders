@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../keyboard_input';
+import { fontStyle } from '../utils/fontStyle.js';
 
 
 // The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
@@ -25,6 +26,7 @@ export class Game extends Scene {
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
         this.sounds = this.scene.get('Preloader').sound_bank;
+        this.livesText = this.add.text(16, 16, 'Lives: 3', fontStyle);
 
         this.keys = InitKeyDefs(this);
 
@@ -70,6 +72,9 @@ export class Game extends Scene {
     update(time, delta) {
         this.objs.player.update(time, delta, this.keys)
         this.objs.cleanup_enemies();
+
+        this.livesText.setText('Lives: ' + this.objs.player.lives); // update lives text
+
         let is_gameover = this.ai_grid_enemies(time);
         if (is_gameover)
             this.goto_gameover_screen();
@@ -176,8 +181,9 @@ export class Game extends Scene {
         console.log(this.objs.enemies.children.entries.length);
         if (this.objs.enemies.children.entries.length === 0)
             this.goto_win_scene();
-        if (!this.objs.player.is_inbounds())
+        if (this.objs.player.lives <= 0 && !this.objs.player.is_inbounds()) {
             this.goto_lose_scene();
+        }
     }
 
     goto_win_scene() {

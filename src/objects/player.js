@@ -25,6 +25,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      */
     constructor(scene, x, y) {
         super(scene, x, y, "Player");
+        this.lives = 3; // player starts with 3 lives
 
         this.const_defs = PlayerConstDefs;
         scene.physics.add.existing(this);
@@ -80,16 +81,26 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * Marks the player as dead so that phaser knows to do start the death animation.
      */
     die() {
-        this.is_dead = true;
-        // allow player to fly off screen
-        this.setCollideWorldBounds(false);
+        if (this.lives > 0) {
+            this.lives -= 1;
+            this.resetPlayerPosition();
+            if (this.lives === 0) {
+                this.is_dead = true;
+                // allow player to fly off screen
+                this.setCollideWorldBounds(false);
 
-        // if player dies on left half of screen, they should fly top right
-        // if player dies on right half of screen, they should fly top left
-        this.dead_vel.x =
-            (this.x < this.scene.game.config.width / 2) ? 4 : -4;
-
+                // if player dies on left half of screen, they should fly top right
+                // if player dies on right half of screen, they should fly top left
+                this.dead_vel.x =
+                    (this.x < this.scene.game.config.width / 2) ? 4 : -4;
+            }
+        }
     }
+
+    resetPlayerPosition() {
+        this.setPosition(this.scene.game.config.width / 2, this.scene.game.config.height - 64);
+    }
+
 
     /**
      * @description Handles Player movement
