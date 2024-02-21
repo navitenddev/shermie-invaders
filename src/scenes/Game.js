@@ -39,7 +39,7 @@ export class Game extends Scene {
                     max: 500,
                 },
                 last_moved: 0,
-                move_cd: 200,
+                move_cd: 1000, // first level enemy move cooldown
             },
             player: {
                 last_fired: 0,
