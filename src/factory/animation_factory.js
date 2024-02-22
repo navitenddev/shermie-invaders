@@ -53,6 +53,16 @@ class AnimationFactory {
         });
 
         this.scene.anims.create({
+            key: "usb",
+            frames: this.scene.anims.generateFrameNumbers("usb", {
+                start: 0,
+                end: 5,
+            }),
+            frameRate: 8,
+            repeat: -1,
+        });
+
+        this.scene.anims.create({
             key: "enemy_l1_top_idle",
             frames: this.scene.anims.generateFrameNumbers("enemy_l1_top", {
                 start: 0,
@@ -89,6 +99,15 @@ class AnimationFactory {
             }),
             frameRate: 8,
         });
+
+        this.scene.anims.create({
+            key: "usb_explode",
+            frames: this.scene.anims.generateFrameNumbers("usb_explode", {
+                start: 5, end: 12,
+            }),
+            frameRate: 8,
+        });
+
         /* Note: We are not using necromancer spritesheets, these are just examples on how to implement new sprites. */
         /*
         this.scene.anims.create({

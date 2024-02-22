@@ -30,7 +30,9 @@ export class Preloader extends Scene {
 
         this.load.image("logo", "logo.png");
 
-        this.load.image("background", "bg.png");
+        this.load.image("background", "leveloneBG.png");
+
+        this.load.image("losescreen", "losescreen.png");
 
         this.load.image("cottonball", "cottonball.png");
 
@@ -54,6 +56,16 @@ export class Preloader extends Scene {
         this.load.spritesheet("bullet", "bullet-shoot.png", {
             frameWidth: 32,
             frameHeight: 16,
+        });
+
+        this.load.spritesheet("usb", "USB.png", {
+            frameWidth: 32,
+            frameHeight: 32,
+        });
+
+        this.load.spritesheet("usb_explode", "USB.png", {
+            frameWidth: 32,
+            frameHeight: 32,
         });
 
         this.load.spritesheet("enemy_l1_top", "enemy_l1_lock.png", {

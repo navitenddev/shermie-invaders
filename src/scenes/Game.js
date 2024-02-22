@@ -19,8 +19,15 @@ export class Game extends Scene {
         super('Game');
     }
     create() {
-        this.cameras.main.setBackgroundColor(0x2e2e2e);
-        this.add.image(512, 384, 'background').setAlpha(0.5);
+        //this.cameras.main.setBackgroundColor(0x2e2e2e);
+        //this.add.image(512, 384, 'background').setAlpha(0.5);
+
+        // create/scale BG image 
+        let bg = this.add.image(0, 0, 'background').setAlpha(0.85);
+        bg.setOrigin(0, 0);
+        bg.displayWidth = this.sys.game.config.width;
+        bg.scaleY = bg.scaleX;
+        bg.y = -250;
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
