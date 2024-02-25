@@ -3,11 +3,11 @@ import { EnemyBulletConstDefs as bull_defs } from "./bullet"
 // Grid gap and spawn_start are not scaled factors
 const EnemyConstDefs = {
     dims: { w: 80, h: 80 },
-    scale: { w: .6, h: .6 },
-    spawn_start: { x: 80, y: 130 },
+    scale: { w: .75, h: .75 },
+    spawn_start: { x: 80, y: 100 },
     grid_gap: { x: 10, y: 12 },
     grid_count: { row: 5, col: 11 },
-    move_gap: { x: 16, y: 20 },
+    move_gap: { x: 8, y: 10 },
 };
 
 /**

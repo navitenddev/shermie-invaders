@@ -23,9 +23,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @param {*} x x-coord of player spawn pos
      * @param {*} y y-coord of player spawn pos
      */
+    static MAX_LIVES = 5; // maximum number of lives the player can have
+
     constructor(scene, x, y) {
         super(scene, x, y, "Player");
+        this.lives = 3; // player starts with 3 lives
+        this.maxLives = Player.MAX_LIVES;
 
+        this.isInvincible = false; 
+        
         this.const_defs = PlayerConstDefs;
         scene.physics.add.existing(this);
         scene.add.existing(this);
@@ -80,15 +86,60 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * Marks the player as dead so that phaser knows to do start the death animation.
      */
     die() {
-        this.is_dead = true;
-        // allow player to fly off screen
-        this.setCollideWorldBounds(false);
+        if (this.lives > 0 && !this.isInvincible) {
+            this.lives -= 1;
+            if (this.lives === 0) {
+                this.is_dead = true;
+                // allow player to fly off screen
+                this.setCollideWorldBounds(false);
 
-        // if player dies on left half of screen, they should fly top right
-        // if player dies on right half of screen, they should fly top left
-        this.dead_vel.x =
-            (this.x < this.scene.game.config.width / 2) ? 4 : -4;
+                // if player dies on left half of screen, they should fly top right
+                // if player dies on right half of screen, they should fly top left
+                this.dead_vel.x =
+                    (this.x < this.scene.game.config.width / 2) ? 4 : -4;
+                
+                return; // return so we don't reset player position, flash
+            }
+            this.resetPlayerPosition(); 
+            this.flashPlayer();
+        }
+    }
 
+
+    /**
+     * @description Resets the player's position to the center bottom of the screen
+     */
+    resetPlayerPosition() {
+        this.setPosition(this.scene.game.config.width / 2, this.scene.game.config.height - 96);
+    }
+
+    /**
+     * @description Flashes the player to indicate that they've been hit
+     */
+    flashPlayer() {
+        this.isInvincible = true;
+        this.scene.tweens.add({
+            targets: this,
+            alpha: { from: 0.5, to: 1 }, // toggle between semi-transparent and visible
+            ease: 'Linear',
+            duration: 100,
+            repeat: 9,
+            yoyo: true,
+            onComplete: () => {
+                this.setAlpha(1); // make sure the player is fully visible after flashing
+                this.isInvincible = false; // player is no longer invincible
+            }
+        });
+    }
+    
+    
+    /**
+     * @description Adds a life to the player's life count
+    */
+    addLife() {
+        if (this.lives < this.maxLives) {
+            this.lives++;
+        }
     }
 
     /**

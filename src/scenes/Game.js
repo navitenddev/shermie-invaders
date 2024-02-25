@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../keyboard_input';
+import { fontStyle } from '../utils/fontStyle.js';
 
 
 // The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
@@ -45,7 +46,7 @@ export class Game extends Scene {
                     max: 500,
                 },
                 last_moved: 0,
-                move_cd: 200,
+                move_cd: 1000, // first level enemy move cooldown
             },
             player: {
                 last_fired: 0,
@@ -53,10 +54,16 @@ export class Game extends Scene {
             }
         }
 
-        this.objs.player = this.add.player(this, this.game.config.width / 2, this.game.config.height - 64);
-
+        this.objs.player = this.add.player(this, this.game.config.width / 2, this.game.config.height - 96);
+        
+        // Player lives text and sprites
+        this.livesText = this.add.text(16, this.game.config.height - 48, '3', fontStyle);
+        this.livesSprites = this.add.group({
+            key: 'lives',
+            repeat: this.objs.player.lives - 2
+        });
+        
         this.physics.world.setBounds(0, 0, this.game.config.width, this.game.config.height);
-
 
         this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies,
             this.player_bullet_hit_enemy);
@@ -72,11 +79,28 @@ export class Game extends Scene {
         console.log(this);
         console.log(this.objs.enemies)
     }
-
+    
+    /**
+     * @description Updates the lives sprites to reflect the current number of lives
+     * @param {number} lives The number of lives the player has
+    */
+    updateLivesSprites(lives) {
+        this.livesSprites.clear(true, true); // Clear sprites
+        for (let i = 0; i < lives; i++) {
+            // coordinates for the lives sprites
+            let lifeConsts = { x: 84 + i * 48, y: this.game.config.height - 32 };
+            this.livesSprites.create(   lifeConsts.x, lifeConsts.y, 'lives', 0)
+        }
+    }
 
     update(time, delta) {
         this.objs.player.update(time, delta, this.keys)
         this.objs.cleanup_enemies();
+
+        // Update lives text and sprites
+        this.livesText.setText(this.objs.player.lives);
+        this.updateLivesSprites(this.objs.player.lives); 
+
         let is_gameover = this.ai_grid_enemies(time);
         if (is_gameover)
             this.goto_gameover_screen();
@@ -183,8 +207,9 @@ export class Game extends Scene {
         console.log(this.objs.enemies.children.entries.length);
         if (this.objs.enemies.children.entries.length === 0)
             this.goto_win_scene();
-        if (!this.objs.player.is_inbounds())
+        if (this.objs.player.lives <= 0 && !this.objs.player.is_inbounds()) {
             this.goto_lose_scene();
+        }
     }
 
     goto_win_scene() {

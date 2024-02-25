@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs } from '../keyboard_input';
+import { fontStyle } from '../utils/fontStyle.js'; // Adjust the path based on your project structure
 
 export class MainMenu extends Scene {
     constructor() {
@@ -13,32 +14,19 @@ export class MainMenu extends Scene {
 
         this.add.image(512, 300, 'titlelogo');
         this.keys = InitKeyDefs(this);
-        let gamefont = '"Press Start 2P", system-ui'
 
         // Start Button
-        this.startButton = this.add.text(512, 460, 'Start!', {
-            fontFamily: gamefont, fontSize: 30, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        })
-        .setOrigin(0.5)
-        .setInteractive();
+        this.startButton = this.add.text(512, 460, 'PLAY', fontStyle)
+            .setOrigin(0.5)
+            .setInteractive();
 
-        this.LevelSelectButton = this.add.text(512, 510, 'Level Select', {
-            fontFamily: gamefont, fontSize: 30, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        })
-        .setOrigin(0.5)
-        .setInteractive();
+        this.LevelSelectButton = this.add.text(512, 510, 'LEVELS', fontStyle)
+            .setOrigin(0.5)
+            .setInteractive();
 
-        this.HowToPlayButton = this.add.text(512, 560, 'How to play', {
-            fontFamily: gamefont, fontSize: 30, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 8,
-            align: 'center'
-        })
-        .setOrigin(0.5)
-        .setInteractive();
+        this.HowToPlayButton = this.add.text(512, 560, 'CONTROLS', fontStyle)
+            .setOrigin(0.5)
+            .setInteractive();
 
         this.startButton.on('pointerdown', () => {
             this.scene.start('Game'); 
