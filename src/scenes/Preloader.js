@@ -44,6 +44,14 @@ export class Preloader extends Scene {
 
         this.load.audio('explosion', ['SFX/explosion.wav']);
 
+        this.load.audio('explosion2', ['SFX/explode2.wav']);
+
+        this.load.audio('explosion3', ['SFX/explode3.wav']);
+
+        this.load.audio('reload', ['SFX/reload.wav']);
+
+        this.load.audio('hurt', ['SFX/hurt.wav']);
+
         this.load.audio('shoot', ['SFX/shoot.wav']);
 
         this.load.audio('win', ['SFX/win.wav']);

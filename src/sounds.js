@@ -42,6 +42,10 @@ class SoundBank {
             sfx: {
                 shoot: this.scene.game.sound.add('shoot', { volume: 0.1, loop: false }),
                 explosion: this.scene.game.sound.add('explosion', { volume: 0.1, loop: false }),
+                explosion2: this.scene.game.sound.add('explosion2', { volume: 0.1, loop: false }),
+                explosion3: this.scene.game.sound.add('explosion3', { volume: 0.1, loop: false }),
+                reload: this.scene.game.sound.add('reload', { volume: 0.1, loop: false }),
+                hurt: this.scene.game.sound.add('hurt', { volume: 0.3, loop: false }),
                 win: this.scene.game.sound.add('win', { volume: 0.1, loop: false }),
                 lose: this.scene.game.sound.add('lose', { volume: 0.1, loop: false }),
             },
