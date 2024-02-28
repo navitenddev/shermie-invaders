@@ -3,7 +3,7 @@ import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../keyboard_input';
 import { fontStyle } from '../utils/fontStyle.js';
 import { Barrier } from '../objects/barrier.js';
-
+import ScoreManager from '../utils/ScoreManager.js';
 
 // The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
 import { SoundBank } from '../sounds';
@@ -21,8 +21,8 @@ export class Game extends Scene {
         super('Game');
     }
     create() {
-        //this.cameras.main.setBackgroundColor(0x2e2e2e);
-        //this.add.image(512, 384, 'background').setAlpha(0.5);
+        // fade in from black
+        this.cameras.main.fadeIn(500, 0, 0, 0);
 
         // create/scale BG image 
         let bg = this.add.image(0, 0, 'background').setAlpha(0.85);
@@ -37,6 +37,8 @@ export class Game extends Scene {
 
         this.keys = InitKeyDefs(this);
 
+        // Score and high score
+        this.scoreManager = new ScoreManager(this);
 
         // The timers will be useful for tweaking the difficulty
         this.timers = {
@@ -71,6 +73,7 @@ export class Game extends Scene {
                 player_bullet.deactivate();
                 // kill enemy
                 enemy.die();
+                this.scoreManager.addScore(enemy.scoreValue);
             }
         );
 
@@ -212,25 +215,68 @@ export class Game extends Scene {
                     enemy.shoot(time);
             }
         }
-
-
+    }
+    /** 
+     * @private
+     * @description callback function for when player bullet collides with an enemy
+     * @param {*} player_bullet 
+     * @param {*} enemy 
+     */
+    player_bullet_hit_enemy = (player_bullet, enemy) => {
+        // console.log("PLAYER BULLET HIT ENEMY")
+        // spawn explosion
+        this.explode_at(enemy.x, enemy.y);
+        player_bullet.deactivate();
+        // kill enemy
+        enemy.die();
+        switch (Math.floor(Math.random() * 3)) {
+            case 0:
+                this.sounds.bank.sfx.explosion.play();
+                break;
+            case 1:
+                this.sounds.bank.sfx.explosion2.play();
+                break;
+            default:
+                this.sounds.bank.sfx.explosion3.play();
+        };
     }
 
-    check_gameover() {
-        if (this.objs.enemies.children.entries.length === 0)
-            this.goto_win_scene();
-        if (this.objs.player.lives <= 0 && !this.objs.player.is_inbounds()) {
-            this.goto_lose_scene();
+    /** 
+     * @private
+     * @description callback function for when player collides with an enemy bullet
+     * @param {*} player
+     * @param {*} enemy_bullet
+     */
+    player_hit_enemy_bullet = (player, enemy_bullet) => {
+        if (!player.is_dead) {
+            // console.log("ENEMY BULLET HIT PLAYER")
+            // spawn explosion
+            this.explode_at(player.x, player.y);
+            // deactivate bullet
+            enemy_bullet.deactivate();
+            // kill player 
+            player.die();
+            this.sounds.bank.sfx.hurt.play();
         }
     }
 
-    goto_win_scene() {
-        this.sounds.bank.music.bg.stop();
-        this.scene.start("Player Win");
+    check_gameover() {
+        console.log(this.objs.enemies.children.entries.length);
+        if (this.objs.enemies.children.entries.length == 0) {
+            this.goto_scene("Player Win");
+        } else if (this.objs.player.lives <= 0 && !this.objs.player.is_inbounds()) {
+            this.goto_scene("Player Lose");
+        }
     }
 
-    goto_lose_scene() {
-        this.sounds.bank.music.bg.stop();
-        this.scene.start("Player Lose");
+    goto_scene(targetScene) {
+        this.scoreManager.updateHighScore();
+
+        this.cameras.main.fade(500, 0, 0, 0);
+
+        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+            this.sounds.bank.music.bg.stop();
+            this.scene.start(targetScene);
+        });
     }
 }
