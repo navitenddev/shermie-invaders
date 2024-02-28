@@ -36,6 +36,9 @@ export class Game extends Scene {
 
         this.keys = InitKeyDefs(this);
 
+        // initialize score
+        this.score = 0;
+        this.scoreText = this.add.text(16, 16, 'Score: 0', fontStyle);
 
         // The timers will be useful for tweaking the difficulty
         this.timers = {
@@ -174,14 +177,19 @@ export class Game extends Scene {
      * @param {*} player_bullet 
      * @param {*} enemy 
      */
-    player_bullet_hit_enemy = (player_bullet, enemy) => {
-        // console.log("PLAYER BULLET HIT ENEMY")
+    player_bullet_hit_enemy = (player_bullet, enemy) => {   
         // spawn explosion
         this.explode_at(enemy.x, enemy.y);
         player_bullet.deactivate();
+
         // kill enemy
         enemy.die();
         this.sounds.bank.sfx.explosion.play();
+
+        // update score
+        this.score += enemy.scoreValue;
+        this.updateScoreDisplay();
+
     }
 
     /** 
@@ -221,4 +229,8 @@ export class Game extends Scene {
         this.sounds.bank.music.bg.stop();
         this.scene.start("Player Lose");
     }
+
+    updateScoreDisplay() {
+        this.scoreText.setText(`Score: ${this.score}`); // Update score display
+    }    
 }
