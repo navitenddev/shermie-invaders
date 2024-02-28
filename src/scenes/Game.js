@@ -87,7 +87,7 @@ export class Game extends Scene {
                     // kill player 
                     player.die();
                     this.sounds.bank.sfx.hurt.play();
-                }
+                } // NOTE: This is set in ai_grid_enemy()
             }
         );
 
@@ -121,9 +121,6 @@ export class Game extends Scene {
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
-
-        console.log(this);
-        console.log(this.objs.enemies)
     }
 
     /**
@@ -220,7 +217,6 @@ export class Game extends Scene {
     }
 
     check_gameover() {
-        console.log(this.objs.enemies.children.entries.length);
         if (this.objs.enemies.children.entries.length === 0)
             this.goto_win_scene();
         if (this.objs.player.lives <= 0 && !this.objs.player.is_inbounds()) {
