@@ -74,7 +74,6 @@ export class Game extends Scene {
                 player_bullet.deactivate();
                 // kill enemy
                 enemy.die();
-                this.sounds.bank.sfx.explosion[Phaser.Math.Between(0, 2)].play();
             }
         );
 
@@ -95,11 +94,11 @@ export class Game extends Scene {
             }
         );
 
+        // enemy bullet collides with player bullet
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.bullets.player,
             (enemy_bullet, player_bullet) => {
                 if (player_bullet.active && enemy_bullet.active) {
                     this.explode_at(player_bullet.x, player_bullet.y);
-                    this.sounds.bank.sfx.explosion[Phaser.Math.Between(0, 2)].play();
                     player_bullet.deactivate();
                     enemy_bullet.deactivate();
                 }
@@ -171,6 +170,7 @@ export class Game extends Scene {
             explosion.on('animationcomplete', () => {
                 explosion.deactivate();
             })
+            this.sounds.bank.sfx.explosion[Phaser.Math.Between(0, 2)].play();
         }
     }
 
