@@ -147,10 +147,7 @@ export class Game extends Scene {
         this.livesText.setText(this.objs.player.lives);
         this.updateLivesSprites(this.objs.player.lives);
 
-        let is_gameover = this.ai_grid_enemies(time);
-        if (is_gameover)
-            this.goto_gameover_screen();
-
+        this.ai_grid_enemies(time);
         this.check_gameover();
     }
 
@@ -188,7 +185,7 @@ export class Game extends Scene {
                 break;
             }
             if (!enemy.is_y_inbounds())
-                this.goto_lose_scene();
+                this.goto_scene('Player Lose');
         }
 
         // Move left or right if it's time to do so
@@ -214,49 +211,6 @@ export class Game extends Scene {
                 if (x_dist < enemy.x_shoot_bound)
                     enemy.shoot(time);
             }
-        }
-    }
-    /** 
-     * @private
-     * @description callback function for when player bullet collides with an enemy
-     * @param {*} player_bullet 
-     * @param {*} enemy 
-     */
-    player_bullet_hit_enemy = (player_bullet, enemy) => {
-        // console.log("PLAYER BULLET HIT ENEMY")
-        // spawn explosion
-        this.explode_at(enemy.x, enemy.y);
-        player_bullet.deactivate();
-        // kill enemy
-        enemy.die();
-        switch (Math.floor(Math.random() * 3)) {
-            case 0:
-                this.sounds.bank.sfx.explosion.play();
-                break;
-            case 1:
-                this.sounds.bank.sfx.explosion2.play();
-                break;
-            default:
-                this.sounds.bank.sfx.explosion3.play();
-        };
-    }
-
-    /** 
-     * @private
-     * @description callback function for when player collides with an enemy bullet
-     * @param {*} player
-     * @param {*} enemy_bullet
-     */
-    player_hit_enemy_bullet = (player, enemy_bullet) => {
-        if (!player.is_dead) {
-            // console.log("ENEMY BULLET HIT PLAYER")
-            // spawn explosion
-            this.explode_at(player.x, player.y);
-            // deactivate bullet
-            enemy_bullet.deactivate();
-            // kill player 
-            player.die();
-            this.sounds.bank.sfx.hurt.play();
         }
     }
 

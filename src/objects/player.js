@@ -103,7 +103,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
                 return; // return so we don't reset player position, flash
             }
-            // this.resetPlayerPosition();testing
+            this.resetPlayerPosition();
             this.flashPlayer();
 
         }
