@@ -181,7 +181,16 @@ export class Game extends Scene {
         player_bullet.deactivate();
         // kill enemy
         enemy.die();
-        this.sounds.bank.sfx.explosion.play();
+        switch(Math.floor(Math.random() * 3)) {
+            case 0:
+                this.sounds.bank.sfx.explosion.play();
+                break;
+            case 1:
+                this.sounds.bank.sfx.explosion2.play();
+                break;
+            default:
+                this.sounds.bank.sfx.explosion3.play();
+          };
     }
 
     /** 
@@ -199,7 +208,7 @@ export class Game extends Scene {
             enemy_bullet.deactivate();
             // kill player 
             player.die();
-            this.sounds.bank.sfx.explosion.play();
+            this.sounds.bank.sfx.hurt.play();
         }
     }
 

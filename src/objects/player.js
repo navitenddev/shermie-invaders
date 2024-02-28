@@ -88,6 +88,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     die() {
         if (this.lives > 0 && !this.isInvincible) {
             this.lives -= 1;
+            this.sounds.bank.sfx.hurt.play();
             if (this.lives === 0) {
                 this.is_dead = true;
                 // allow player to fly off screen
@@ -102,6 +103,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             }
             this.resetPlayerPosition(); 
             this.flashPlayer();
+            
         }
     }
 
@@ -175,6 +177,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.anims.play("shermie_shoot");
                 this.anims.nextAnim = "shermie_idle";
                 this.sounds.bank.sfx.shoot.play();
+            }
+            else{
+                this.sounds.bank.sfx.reload.play();
             }
         }
     }
