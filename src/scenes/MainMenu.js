@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs } from '../keyboard_input';
-import { fontStyle } from '../utils/fontStyle.js'; // Adjust the path based on your project structure
+import { fontStyle } from '../utils/fontStyle.js';
 
 export class MainMenu extends Scene {
     constructor() {
@@ -29,7 +29,10 @@ export class MainMenu extends Scene {
             .setInteractive();
 
         this.startButton.on('pointerdown', () => {
-            this.scene.start('Game'); 
+            this.cameras.main.fadeOut(200, 0, 0, 0);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                this.scene.start('Game');
+            });
         });
 
         this.LevelSelectButton.on('pointerdown', () => {

@@ -64,9 +64,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             return;
         }
 
-        if (keys.d.isDown) {
+        if (keys.d.isDown || keys.right.isDown) {
             this.move(true);
-        } else if (keys.a.isDown) {
+        } else if (keys.a.isDown || keys.left.isDown) {
             this.move(false);
         }
         else if (
@@ -101,7 +101,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 
                 return; // return so we don't reset player position, flash
             }
-            this.resetPlayerPosition(); 
+            // this.resetPlayerPosition(); testing
             this.flashPlayer();
             
         }
