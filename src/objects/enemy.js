@@ -8,11 +8,6 @@ const EnemyConstDefs = {
     grid_gap: { x: 10, y: 12 },
     grid_count: { row: 5, col: 11 },
     move_gap: { x: 8, y: 10 },
-    scoreValue: {
-        enemy1: 30,
-        enemy2: 20,
-        enemy3: 10,
-    },
 };
 
 /**
@@ -109,21 +104,18 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
 class Enemy1 extends BaseGridEnemy {
     constructor(scene, x, y) {
         super(scene, x, y, "enemy_l1_top_idle", EnemyConstDefs);
-        this.scoreValue = EnemyConstDefs.scoreValue.enemy1;
     }
 }
 
 class Enemy2 extends BaseGridEnemy {
     constructor(scene, x, y) {
         super(scene, x, y, "enemy_l1_middle_idle", EnemyConstDefs);
-        this.scoreValue = EnemyConstDefs.scoreValue.enemy2;
     }
 }
 
 class Enemy3 extends BaseGridEnemy {
     constructor(scene, x, y) {
         super(scene, x, y, "enemy_l1_bottom_idle", EnemyConstDefs);
-        this.scoreValue = EnemyConstDefs.scoreValue.enemy3;
     }
 }
 
