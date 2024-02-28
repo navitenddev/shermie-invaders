@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../keyboard_input';
 import { fontStyle } from '../utils/fontStyle.js';
+import { Barrier } from '../objects/barrier.js';
 
 
 // The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
@@ -46,7 +47,7 @@ export class Game extends Scene {
                     max: 500,
                 },
                 last_moved: 0,
-                move_cd: 1000, // first level enemy move cooldown
+                move_cd: 500, // first level enemy move cooldown
             },
             player: {
                 last_fired: 0,
@@ -55,21 +56,70 @@ export class Game extends Scene {
         }
 
         this.objs.player = this.add.player(this, this.game.config.width / 2, this.game.config.height - 96);
-        
+
         // Player lives text and sprites
         this.livesText = this.add.text(16, this.game.config.height - 48, '3', fontStyle);
         this.livesSprites = this.add.group({
             key: 'lives',
             repeat: this.objs.player.lives - 2
         });
-        
+
         this.physics.world.setBounds(0, 0, this.game.config.width, this.game.config.height);
 
+        // player bullet hits enemy
         this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies,
-            this.player_bullet_hit_enemy);
+            (player_bullet, enemy) => {
+                // spawn explosion
+                this.explode_at(enemy.x, enemy.y);
+                player_bullet.deactivate();
+                // kill enemy
+                enemy.die();
+                this.sounds.bank.sfx.explosion[Phaser.Math.Between(0, 2)].play();
+            }
+        );
 
+
+        // enemy bullet hits player
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player,
-            this.player_hit_enemy_bullet);
+            (player, enemy_bullet) => {
+                if (!player.is_dead) {
+                    // console.log("ENEMY BULLET HIT PLAYER")
+                    // spawn explosion
+                    this.explode_at(player.x, player.y);
+                    // deactivate bullet
+                    enemy_bullet.deactivate();
+                    // kill player 
+                    player.die();
+                    this.sounds.bank.sfx.hurt.play();
+                }
+            }
+        );
+
+        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.bullets.player,
+            (enemy_bullet, player_bullet) => {
+                if (player_bullet.active && enemy_bullet.active) {
+                    this.explode_at(player_bullet.x, player_bullet.y);
+                    this.sounds.bank.sfx.explosion[Phaser.Math.Between(0, 2)].play();
+                    player_bullet.deactivate();
+                    enemy_bullet.deactivate();
+                }
+            }
+        );
+
+
+        // player bullet collides with barrier
+        this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {
+            this.explode_at(bullet.x, bullet.y);
+            bullet.deactivate();
+            barr_chunk.destroy();
+        });
+
+        // enemy bullet collides with barrier
+        this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
+            this.explode_at(bullet.x, bullet.y);
+            bullet.deactivate();
+            barr_chunk.destroy();
+        });
 
         this.sounds.bank.music.bg.play();
 
@@ -79,7 +129,7 @@ export class Game extends Scene {
         console.log(this);
         console.log(this.objs.enemies)
     }
-    
+
     /**
      * @description Updates the lives sprites to reflect the current number of lives
      * @param {number} lives The number of lives the player has
@@ -89,7 +139,7 @@ export class Game extends Scene {
         for (let i = 0; i < lives; i++) {
             // coordinates for the lives sprites
             let lifeConsts = { x: 84 + i * 48, y: this.game.config.height - 32 };
-            this.livesSprites.create(   lifeConsts.x, lifeConsts.y, 'lives', 0)
+            this.livesSprites.create(lifeConsts.x, lifeConsts.y, 'lives', 0)
         }
     }
 
@@ -99,7 +149,7 @@ export class Game extends Scene {
 
         // Update lives text and sprites
         this.livesText.setText(this.objs.player.lives);
-        this.updateLivesSprites(this.objs.player.lives); 
+        this.updateLivesSprites(this.objs.player.lives);
 
         let is_gameover = this.ai_grid_enemies(time);
         if (is_gameover)
@@ -155,8 +205,10 @@ export class Game extends Scene {
         if (time > timers.grid_enemy.last_fired) {
             let enemies = this.objs.enemies.children.entries;
             if (enemies && enemies.length) {
-                let rand_cd = Math.round(Math.random() * (timers.grid_enemy.shoot_cd.max - timers.grid_enemy.shoot_cd.min) + timers.grid_enemy.shoot_cd.min);
-                timers.grid_enemy.last_fired = time + rand_cd;
+                const JOSHY_WASHY = 100;
+                // let rand_cd = Phaser.Math.Between(timers.grid_enemy.shoot_cd.min, timers.grid_enemy.shoot_cd.max);
+
+                timers.grid_enemy.last_fired = time + JOSHY_WASHY;
                 // choose a random enemy
                 let rand_index = Math.round(Math.random() * (enemies.length - 1));
                 let player = this.objs.player;
@@ -166,49 +218,6 @@ export class Game extends Scene {
                 if (x_dist < enemy.x_shoot_bound)
                     enemy.shoot(time);
             }
-        }
-    }
-    /** 
-     * @private
-     * @description callback function for when player bullet collides with an enemy
-     * @param {*} player_bullet 
-     * @param {*} enemy 
-     */
-    player_bullet_hit_enemy = (player_bullet, enemy) => {
-        // console.log("PLAYER BULLET HIT ENEMY")
-        // spawn explosion
-        this.explode_at(enemy.x, enemy.y);
-        player_bullet.deactivate();
-        // kill enemy
-        enemy.die();
-        switch(Math.floor(Math.random() * 3)) {
-            case 0:
-                this.sounds.bank.sfx.explosion.play();
-                break;
-            case 1:
-                this.sounds.bank.sfx.explosion2.play();
-                break;
-            default:
-                this.sounds.bank.sfx.explosion3.play();
-          };
-    }
-
-    /** 
-     * @private
-     * @description callback function for when player collides with an enemy bullet
-     * @param {*} player
-     * @param {*} enemy_bullet
-     */
-    player_hit_enemy_bullet = (player, enemy_bullet) => {
-        if (!player.is_dead) {
-            // console.log("ENEMY BULLET HIT PLAYER")
-            // spawn explosion
-            this.explode_at(player.x, player.y);
-            // deactivate bullet
-            enemy_bullet.deactivate();
-            // kill player 
-            player.die();
-            this.sounds.bank.sfx.hurt.play();
         }
     }
 

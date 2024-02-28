@@ -35,6 +35,7 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         super(scene, -1024, -1024, "player_bullet");
         scene.physics.add.existing(this);
         scene.add.existing(this);
+        this.setScale(.25);
         this.setTexture("cottonball");
         this.setVisible(false);
         this.setActive(false);

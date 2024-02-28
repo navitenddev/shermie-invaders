@@ -30,8 +30,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.lives = 3; // player starts with 3 lives
         this.maxLives = Player.MAX_LIVES;
 
-        this.isInvincible = false; 
-        
+        this.isInvincible = false;
+
         this.const_defs = PlayerConstDefs;
         scene.physics.add.existing(this);
         scene.add.existing(this);
@@ -81,6 +81,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     /**
+     * @public
      * @description When the player should die, this is called. 
      * 
      * Marks the player as dead so that phaser knows to do start the death animation.
@@ -94,16 +95,17 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 // allow player to fly off screen
                 this.setCollideWorldBounds(false);
 
+                let ang = Phaser.Math.Between(3, 10);
                 // if player dies on left half of screen, they should fly top right
                 // if player dies on right half of screen, they should fly top left
                 this.dead_vel.x =
-                    (this.x < this.scene.game.config.width / 2) ? 4 : -4;
-                
+                    (this.x < this.scene.game.config.width / 2) ? ang : -ang;
+
                 return; // return so we don't reset player position, flash
             }
-            this.resetPlayerPosition(); 
+            this.resetPlayerPosition();
             this.flashPlayer();
-            
+
         }
     }
 
@@ -133,8 +135,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             }
         });
     }
-    
-    
+
+
     /**
      * @description Adds a life to the player's life count
     */
@@ -146,7 +148,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     /**
      * @description Handles Player movement
-     * @param {H} moving_right True if moving right, false if left
+     * @param {boolean} moving_right True if moving right, false if left
      */
     move(moving_right) {
         if (this.anims.isPlaying && this.anims.currentAnim.key === "shermie_idle")
@@ -178,7 +180,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.anims.nextAnim = "shermie_idle";
                 this.sounds.bank.sfx.shoot.play();
             }
-            else{
+            else {
                 this.sounds.bank.sfx.reload.play();
             }
         }
