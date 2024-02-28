@@ -105,6 +105,12 @@ export class Game extends Scene {
             }
         );
 
+        // when enemy hits barrier, it eats it
+        this.physics.add.overlap(this.objs.enemies, this.objs.barrier_chunks,
+            (enemy, barr_chunk) => {
+                barr_chunk.destroy(); // OM NOM NOM
+            }
+        )
 
         // player bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {
