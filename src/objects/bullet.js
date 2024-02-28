@@ -1,5 +1,5 @@
 const PlayerBulletConstDefs = {
-    max_bullets: 2, // max bullets that the player can have on the screen at once
+    max_bullets: 5, // max bullets that the player can have on the screen at once
     dims: { w: 16, h: 16 },
     speed: { x: 0, y: -3.5 },
     offset: { x: 0, y: 0 },
@@ -35,6 +35,7 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         super(scene, -1024, -1024, "player_bullet");
         scene.physics.add.existing(this);
         scene.add.existing(this);
+        this.setScale(.25);
         this.setTexture("cottonball");
         this.setVisible(false);
         this.setActive(false);

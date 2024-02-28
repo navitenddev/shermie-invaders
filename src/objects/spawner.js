@@ -2,9 +2,11 @@ import { Enemy, EnemyConstDefs as enemy_defs } from "./enemy";
 import { PlayerBullet, PlayerBulletConstDefs as player_bull_defs, EnemyBullet, EnemyBulletConstDefs as enemy_bull_defs } from "./bullet";
 import { Explosion, ExplosionConstDefs as expl_defs } from "./explosions";
 import { Player } from "./player";
+import { Barrier } from "./barrier";
 import "../factory/object_factory";
 /**
  * @classdesc An object that encapsulates all Phaser Groups. It initializes and spawns them to the game world when it is constructed.
+ * @property {Phaser.Physics.Arcade.Group} barrier_chunks - Phaser group of barrier chunk objects
  * @property {Phaser.Physics.Arcade.Group} enemies - Phaser Group of all enemies
  * @property {Phaser.Physics.Arcade.Group} bullets.player - Phaser Group player's bullets
  * @property {Phaser.Physics.Arcade.Group} bullets.enemy - Phaser Group of enemy bullets
@@ -29,6 +31,12 @@ class ObjectSpawner {
         this.explosions = this.scene.physics.add.group({
             runChildUpdate: true,
         });
+
+        this.barrier_chunks = this.scene.physics.add.staticGroup({
+            runChildUpdate: true,
+        });
+
+        this.init_barriers();
         this.init_enemy_grid();
         this.init_player_bullets();
         this.init_enemy_bullets();
@@ -46,6 +54,21 @@ class ObjectSpawner {
             // if enemy dead, remove it
             if (entry && entry.dead) entries.splice(i, 1);
         }
+    }
+
+    /**
+     * @private
+     * @description initializes all barriers and their chunks into the game scene. Should only be called at the start of the level.
+     */
+
+    init_barriers() {
+        let left = new Barrier(this.scene, 100, 500, 5, 5, 40, 20, 0x2e2e2e);
+        let mid = new Barrier(this.scene, 410, 500, 5, 5, 40, 20, 0x2e2e2e);
+        let right = new Barrier(this.scene, 720, 500, 5, 5, 40, 20, 0x2e2e2e);
+
+        this.barrier_chunks.addMultiple(left.chunks)
+        this.barrier_chunks.addMultiple(mid.chunks)
+        this.barrier_chunks.addMultiple(right.chunks)
     }
 
     /**

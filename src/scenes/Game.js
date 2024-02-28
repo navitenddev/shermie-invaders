@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../keyboard_input';
 import { fontStyle } from '../utils/fontStyle.js';
+import { Barrier } from '../objects/barrier.js';
 import ScoreManager from '../utils/ScoreManager.js';
 
 // The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
@@ -22,7 +23,7 @@ export class Game extends Scene {
     create() {
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
-        
+
         // create/scale BG image 
         let bg = this.add.image(0, 0, 'background').setAlpha(0.85);
         bg.setOrigin(0, 0);
@@ -43,12 +44,9 @@ export class Game extends Scene {
         this.timers = {
             grid_enemy: {
                 last_fired: 0,
-                shoot_cd: { // the cooldown range interval that the enemies will shoot at
-                    min: 50,
-                    max: 500,
-                },
+                shoot_cd: 100,
                 last_moved: 0,
-                move_cd: 1000, // first level enemy move cooldown
+                move_cd: 0, // NOTE: This is set in ai_grid_enemy()
             },
             player: {
                 last_fired: 0,
@@ -57,31 +55,83 @@ export class Game extends Scene {
         }
 
         this.objs.player = this.add.player(this, this.game.config.width / 2, this.game.config.height - 96);
-        
+
         // Player lives text and sprites
         this.livesText = this.add.text(16, this.game.config.height - 48, '3', fontStyle);
         this.livesSprites = this.add.group({
             key: 'lives',
             repeat: this.objs.player.lives - 2
         });
-        
+
         this.physics.world.setBounds(0, 0, this.game.config.width, this.game.config.height);
 
+        // player bullet hits enemy
         this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies,
-            this.player_bullet_hit_enemy);
+            (player_bullet, enemy) => {
+                // spawn explosion
+                this.explode_at(enemy.x, enemy.y);
+                player_bullet.deactivate();
+                // kill enemy
+                enemy.die();
+                this.scoreManager.addScore(enemy.scoreValue);
+            }
+        );
 
+
+        // enemy bullet hits player
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player,
-            this.player_hit_enemy_bullet);
+            (player, enemy_bullet) => {
+                if (!player.is_dead) {
+                    // console.log("ENEMY BULLET HIT PLAYER")
+                    // spawn explosion
+                    this.explode_at(player.x, player.y);
+                    // deactivate bullet
+                    enemy_bullet.deactivate();
+                    // kill player 
+                    player.die();
+                    this.sounds.bank.sfx.hurt.play();
+                } // NOTE: This is set in ai_grid_enemy()
+            }
+        );
+
+        // enemy bullet collides with player bullet
+        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.bullets.player,
+            (enemy_bullet, player_bullet) => {
+                if (player_bullet.active && enemy_bullet.active) {
+                    this.explode_at(player_bullet.x, player_bullet.y);
+                    player_bullet.deactivate();
+                    enemy_bullet.deactivate();
+                }
+            }
+        );
+
+        // when enemy hits barrier, it eats it
+        this.physics.add.overlap(this.objs.enemies, this.objs.barrier_chunks,
+            (enemy, barr_chunk) => {
+                barr_chunk.destroy(); // OM NOM NOM
+            }
+        )
+
+        // player bullet collides with barrier
+        this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {
+            this.explode_at(bullet.x, bullet.y);
+            bullet.deactivate();
+            barr_chunk.destroy();
+        });
+
+        // enemy bullet collides with barrier
+        this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
+            this.explode_at(bullet.x, bullet.y);
+            bullet.deactivate();
+            barr_chunk.destroy();
+        });
 
         this.sounds.bank.music.bg.play();
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
-
-        console.log(this);
-        console.log(this.objs.enemies)
     }
-    
+
     /**
      * @description Updates the lives sprites to reflect the current number of lives
      * @param {number} lives The number of lives the player has
@@ -91,7 +141,7 @@ export class Game extends Scene {
         for (let i = 0; i < lives; i++) {
             // coordinates for the lives sprites
             let lifeConsts = { x: 84 + i * 48, y: this.game.config.height - 32 };
-            this.livesSprites.create(   lifeConsts.x, lifeConsts.y, 'lives', 0)
+            this.livesSprites.create(lifeConsts.x, lifeConsts.y, 'lives', 0)
         }
     }
 
@@ -101,12 +151,9 @@ export class Game extends Scene {
 
         // Update lives text and sprites
         this.livesText.setText(this.objs.player.lives);
-        this.updateLivesSprites(this.objs.player.lives); 
+        this.updateLivesSprites(this.objs.player.lives);
 
-        let is_gameover = this.ai_grid_enemies(time);
-        if (is_gameover)
-            this.goto_gameover_screen();
-
+        this.ai_grid_enemies(time);
         this.check_gameover();
     }
 
@@ -123,6 +170,7 @@ export class Game extends Scene {
             explosion.on('animationcomplete', () => {
                 explosion.deactivate();
             })
+            this.sounds.bank.sfx.explosion[Phaser.Math.Between(0, 2)].play();
         }
     }
 
@@ -131,34 +179,35 @@ export class Game extends Scene {
      * Handles all logic for grid-based enemies
      */
     ai_grid_enemies(time) {
-        let entries = this.objs.enemies.children.entries;
+        let enemies = this.objs.enemies.children.entries;
+
+        this.timers.grid_enemy.move_cd = enemies.length * 10;
         // Move all enemies down if we hit the x boundaries
-        for (let enemy of entries) {
+        for (let enemy of enemies) {
             if (!enemy.is_x_inbounds()) {
                 console.log("Enemy1 is changing rows!")
-                for (let enemy of entries)
+                for (let enemy of enemies)
                     enemy.move_down()
                 break;
             }
             if (!enemy.is_y_inbounds())
-                this.goto_lose_scene();
+                this.goto_scene('Player Lose');
         }
 
         // Move left or right if it's time to do so
         if (time > this.timers.grid_enemy.last_moved) {
             this.timers.grid_enemy.last_moved = time + this.timers.grid_enemy.move_cd;
-            for (let enemy of entries) {
+            for (let enemy of enemies) {
                 enemy.move_x();
             }
         }
 
         // handle enemy shooting ai
         let timers = this.timers;
+
         if (time > timers.grid_enemy.last_fired) {
-            let enemies = this.objs.enemies.children.entries;
             if (enemies && enemies.length) {
-                let rand_cd = Math.round(Math.random() * (timers.grid_enemy.shoot_cd.max - timers.grid_enemy.shoot_cd.min) + timers.grid_enemy.shoot_cd.min);
-                timers.grid_enemy.last_fired = time + rand_cd;
+                timers.grid_enemy.last_fired = time + this.timers.grid_enemy.shoot_cd;
                 // choose a random enemy
                 let rand_index = Math.round(Math.random() * (enemies.length - 1));
                 let player = this.objs.player;
@@ -168,50 +217,6 @@ export class Game extends Scene {
                 if (x_dist < enemy.x_shoot_bound)
                     enemy.shoot(time);
             }
-        }
-    }
-    /** 
-     * @private
-     * @description callback function for when player bullet collides with an enemy
-     * @param {*} player_bullet 
-     * @param {*} enemy 
-     */
-    player_bullet_hit_enemy = (player_bullet, enemy) => {   
-        // spawn explosion
-        this.explode_at(enemy.x, enemy.y);
-        player_bullet.deactivate();
-
-        // kill enemy
-        enemy.die();
-        switch(Math.floor(Math.random() * 3)) {
-            case 0:
-                this.sounds.bank.sfx.explosion.play();
-                break;
-            case 1:
-                this.sounds.bank.sfx.explosion2.play();
-                break;
-            default:
-                this.sounds.bank.sfx.explosion3.play();
-          };
-          this.scoreManager.addScore(enemy.scoreValue);
-    }
-
-    /** 
-     * @private
-     * @description callback function for when player collides with an enemy bullet
-     * @param {*} player
-     * @param {*} enemy_bullet
-     */
-    player_hit_enemy_bullet = (player, enemy_bullet) => {
-        if (!player.is_dead) {
-            // console.log("ENEMY BULLET HIT PLAYER")
-            // spawn explosion
-            this.explode_at(player.x, player.y);
-            // deactivate bullet
-            enemy_bullet.deactivate();
-            // kill player 
-            player.die();
-            this.sounds.bank.sfx.hurt.play();
         }
     }
 
