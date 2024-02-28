@@ -29,7 +29,10 @@ export class MainMenu extends Scene {
             .setInteractive();
 
         this.startButton.on('pointerdown', () => {
-            this.scene.start('Game'); 
+            this.cameras.main.fadeOut(200, 0, 0, 0);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                this.scene.start('Game');
+            });
         });
 
         this.LevelSelectButton.on('pointerdown', () => {

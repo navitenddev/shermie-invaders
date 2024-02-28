@@ -20,9 +20,9 @@ export class Game extends Scene {
         super('Game');
     }
     create() {
-        //this.cameras.main.setBackgroundColor(0x2e2e2e);
-        //this.add.image(512, 384, 'background').setAlpha(0.5);
-
+        // fade in from black
+        this.cameras.main.fadeIn(500, 0, 0, 0);
+        
         // create/scale BG image 
         let bg = this.add.image(0, 0, 'background').setAlpha(0.85);
         bg.setOrigin(0, 0);
@@ -210,22 +210,21 @@ export class Game extends Scene {
 
     check_gameover() {
         console.log(this.objs.enemies.children.entries.length);
-        if (this.objs.enemies.children.entries.length === 0)
-            this.goto_win_scene();
-        if (this.objs.player.lives <= 0 && !this.objs.player.is_inbounds()) {
-            this.goto_lose_scene();
+        if (this.objs.enemies.children.entries.length == 0) {
+            this.goto_scene("Player Win");
+        } else if (this.objs.player.lives <= 0 && !this.objs.player.is_inbounds()) {
+            this.goto_scene("Player Lose");
         }
     }
 
-    goto_win_scene() {
+    goto_scene(targetScene) {
         this.scoreManager.updateHighScore();
-        this.sounds.bank.music.bg.stop();
-        this.scene.start("Player Win");
-    }
 
-    goto_lose_scene() {
-        this.scoreManager.updateHighScore();
-        this.sounds.bank.music.bg.stop();
-        this.scene.start("Player Lose");
+        this.cameras.main.fade(500, 0, 0, 0);
+
+        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+            this.sounds.bank.music.bg.stop();
+            this.scene.start(targetScene);
+        });
     }
 }
