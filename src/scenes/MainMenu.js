@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs } from '../keyboard_input';
-import { fontStyle } from '../utils/fontStyle.js'; // Adjust the path based on your project structure
+import { fontStyle } from '../utils/fontStyle.js';
 
 export class MainMenu extends Scene {
     constructor() {
