@@ -50,6 +50,8 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
         this.y_bound = scene.game.config.height - this.const_defs.dims.h;
 
         this.x_shoot_bound = 200; // distance from the player.x where the enemy will shoot
+
+        this.move_gap_scalar = 1; // changes depending on enemies remaining
     }
 
     update(time, delta) {
@@ -73,8 +75,9 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
      * @description Handles left/right enemy movement
      * @param {*} time Time variable passed in from update()
      */
+
     move_x(time) {
-        this.x += (this.const_defs.move_gap.x * this.move_direction);
+        this.x += (this.const_defs.move_gap.x * this.move_gap_scalar * this.move_direction);
     }
 
     /**

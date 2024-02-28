@@ -1,5 +1,5 @@
 const PlayerBulletConstDefs = {
-    max_bullets: 2, // max bullets that the player can have on the screen at once
+    max_bullets: 5, // max bullets that the player can have on the screen at once
     dims: { w: 16, h: 16 },
     speed: { x: 0, y: -3.5 },
     offset: { x: 0, y: 0 },

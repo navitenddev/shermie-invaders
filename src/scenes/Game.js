@@ -42,12 +42,9 @@ export class Game extends Scene {
         this.timers = {
             grid_enemy: {
                 last_fired: 0,
-                shoot_cd: { // the cooldown range interval that the enemies will shoot at
-                    min: 50,
-                    max: 500,
-                },
+                shoot_cd: 100,
                 last_moved: 0,
-                move_cd: 500, // first level enemy move cooldown
+                move_cd: 0, // NOTE: This is set in ai_grid_enemy()
             },
             player: {
                 last_fired: 0,
@@ -179,12 +176,14 @@ export class Game extends Scene {
      * Handles all logic for grid-based enemies
      */
     ai_grid_enemies(time) {
-        let entries = this.objs.enemies.children.entries;
+        let enemies = this.objs.enemies.children.entries;
+
+        this.timers.grid_enemy.move_cd = enemies.length * 10;
         // Move all enemies down if we hit the x boundaries
-        for (let enemy of entries) {
+        for (let enemy of enemies) {
             if (!enemy.is_x_inbounds()) {
                 console.log("Enemy1 is changing rows!")
-                for (let enemy of entries)
+                for (let enemy of enemies)
                     enemy.move_down()
                 break;
             }
@@ -195,20 +194,17 @@ export class Game extends Scene {
         // Move left or right if it's time to do so
         if (time > this.timers.grid_enemy.last_moved) {
             this.timers.grid_enemy.last_moved = time + this.timers.grid_enemy.move_cd;
-            for (let enemy of entries) {
+            for (let enemy of enemies) {
                 enemy.move_x();
             }
         }
 
         // handle enemy shooting ai
         let timers = this.timers;
-        if (time > timers.grid_enemy.last_fired) {
-            let enemies = this.objs.enemies.children.entries;
-            if (enemies && enemies.length) {
-                const JOSHY_WASHY = 100;
-                // let rand_cd = Phaser.Math.Between(timers.grid_enemy.shoot_cd.min, timers.grid_enemy.shoot_cd.max);
 
-                timers.grid_enemy.last_fired = time + JOSHY_WASHY;
+        if (time > timers.grid_enemy.last_fired) {
+            if (enemies && enemies.length) {
+                timers.grid_enemy.last_fired = time + this.timers.grid_enemy.shoot_cd;
                 // choose a random enemy
                 let rand_index = Math.round(Math.random() * (enemies.length - 1));
                 let player = this.objs.player;
@@ -219,6 +215,8 @@ export class Game extends Scene {
                     enemy.shoot(time);
             }
         }
+
+
     }
 
     check_gameover() {
