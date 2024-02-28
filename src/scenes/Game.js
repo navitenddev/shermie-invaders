@@ -2,7 +2,7 @@ import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../keyboard_input';
 import { fontStyle } from '../utils/fontStyle.js';
-
+import ScoreManager from '../utils/ScoreManager.js';
 
 // The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
 import { SoundBank } from '../sounds';
@@ -36,6 +36,8 @@ export class Game extends Scene {
 
         this.keys = InitKeyDefs(this);
 
+        // Score and high score
+        this.scoreManager = new ScoreManager(this);
 
         // The timers will be useful for tweaking the difficulty
         this.timers = {
@@ -174,14 +176,17 @@ export class Game extends Scene {
      * @param {*} player_bullet 
      * @param {*} enemy 
      */
-    player_bullet_hit_enemy = (player_bullet, enemy) => {
-        // console.log("PLAYER BULLET HIT ENEMY")
+    player_bullet_hit_enemy = (player_bullet, enemy) => {   
         // spawn explosion
         this.explode_at(enemy.x, enemy.y);
         player_bullet.deactivate();
+
         // kill enemy
         enemy.die();
         this.sounds.bank.sfx.explosion.play();
+
+        // update score
+        this.scoreManager.addScore(enemy.scoreValue);
     }
 
     /** 
@@ -213,11 +218,13 @@ export class Game extends Scene {
     }
 
     goto_win_scene() {
+        this.scoreManager.updateHighScore();
         this.sounds.bank.music.bg.stop();
         this.scene.start("Player Win");
     }
 
     goto_lose_scene() {
+        this.scoreManager.updateHighScore();
         this.sounds.bank.music.bg.stop();
         this.scene.start("Player Lose");
     }
