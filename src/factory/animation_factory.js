@@ -101,6 +101,15 @@ class AnimationFactory {
         });
 
         this.scene.anims.create({
+            key: "cottonBullet",
+            frames: this.scene.anims.generateFrameNumbers("cottonBullet", {
+                start: 0, end: 6,
+            }),
+            frameRate: 8,
+            repeat: -1,
+        });
+
+        this.scene.anims.create({
             key: "usb_explode",
             frames: this.scene.anims.generateFrameNumbers("usb_explode", {
                 start: 5, end: 12,

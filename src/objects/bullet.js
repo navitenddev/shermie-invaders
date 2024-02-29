@@ -35,8 +35,9 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         super(scene, -1024, -1024, "player_bullet");
         scene.physics.add.existing(this);
         scene.add.existing(this);
-        this.setScale(.25);
-        this.setTexture("cottonball");
+        //this.setScale(.25); 
+        this.play('cottonBullet');
+        this.setSize(14, 32);
         this.setVisible(false);
         this.setActive(false);
         this.body.onOverlap = true;
@@ -55,7 +56,7 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         */
         if (this.active) {
             this.move();
-            this.rotate();
+            //this.rotate(); not necessary with new cottonBullet Anim
             this.check_bounds();
             this.debugBodyColor = this.body?.touching.none ? 0x0099ff : 0xff9900;
         }

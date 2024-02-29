@@ -68,6 +68,11 @@ export class Preloader extends Scene {
             frameHeight: 16,
         });
 
+        this.load.spritesheet("cottonBullet", "cottonBullet.png", {
+            frameWidth: 14,
+            frameHeight: 32,
+        });
+
         this.load.spritesheet("usb", "USB.png", {
             frameWidth: 32,
             frameHeight: 32,
