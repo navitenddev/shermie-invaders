@@ -1,4 +1,4 @@
-import { fontStyle } from './fontStyle.js';
+import { fonts } from './fontStyle.js';
 
 export default class ScoreManager {
     constructor(scene) {
@@ -12,11 +12,11 @@ export default class ScoreManager {
     }
 
     initScoreText() {
-        this.scoreText = this.scene.add.text(16, 16, `SCORE:${this.score}`, fontStyle);
+        this.scoreText = this.scene.add.text(16, 16, `SCORE:${this.score}`, fonts.medium);
     }
 
     initHighScoreText() {
-        this.highScoreText = this.scene.add.text(620, 16, `HI-SCORE:${this.highScore}`, fontStyle);
+        this.highScoreText = this.scene.add.text(620, 16, `HI-SCORE:${this.highScore}`, fonts.medium);
     }
 
     addScore(points) {

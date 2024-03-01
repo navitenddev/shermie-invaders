@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../keyboard_input';
-import { fontStyle } from '../utils/fontStyle.js';
+import { fonts } from '../utils/fontStyle.js';
 import { Barrier } from '../objects/barrier.js';
 import ScoreManager from '../utils/ScoreManager.js';
 
@@ -41,15 +41,16 @@ export class Game extends Scene {
         // Score and high score
         this.scoreManager = new ScoreManager(this);
 
+        // Note: this.level is pass by value!
         this.level = this.global_vars.level;
         this.level_transition_flag = false;
-        this.level_text = this.add.text(this.sys.game.config.width / 3, 16, `LEVEL:${this.level}`, fontStyle);
+        this.level_text = this.add.text(this.sys.game.config.width / 3, 16, `LEVEL:${this.level}`, fonts.medium);
 
         // The timers will be useful for tweaking the difficulty
         this.timers = {
             grid_enemy: {
                 last_fired: 0,
-                shoot_cd: 100,
+                shoot_cd: 1000 - (this.level * 10),
                 last_moved: 0,
                 move_cd: 0, // NOTE: This is set in ai_grid_enemy()
             },
@@ -62,7 +63,7 @@ export class Game extends Scene {
         this.objs.player = this.add.player(this, this.sys.game.config.width / 2, this.game.config.height - 96);
 
         // Player lives text and sprites
-        this.livesText = this.add.text(16, this.sys.game.config.height - 48, '3', fontStyle);
+        this.livesText = this.add.text(16, this.sys.game.config.height - 48, '3', fonts.medium);
         this.livesSprites = this.add.group({
             key: 'lives',
             repeat: this.global_vars.player_lives - 2
@@ -87,7 +88,6 @@ export class Game extends Scene {
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player,
             (player, enemy_bullet) => {
                 if (!player.is_dead) {
-                    // console.log("ENEMY BULLET HIT PLAYER")
                     // spawn explosion
                     this.explode_at(player.x, player.y);
                     // deactivate bullet
@@ -185,7 +185,7 @@ export class Game extends Scene {
     ai_grid_enemies(time) {
         let enemies = this.objs.enemies.children.entries;
 
-        this.timers.grid_enemy.move_cd = enemies.length * 10;
+        this.timers.grid_enemy.move_cd = (enemies.length * 10) - (this.level * 5);
         // Move all enemies down if we hit the x boundaries
         for (let enemy of enemies) {
             if (!enemy.is_x_inbounds()) {
@@ -211,21 +211,21 @@ export class Game extends Scene {
 
         if (time > timers.grid_enemy.last_fired) {
             if (enemies && enemies.length) {
-                timers.grid_enemy.last_fired = time + this.timers.grid_enemy.shoot_cd;
+                timers.grid_enemy.last_fired = time + timers.grid_enemy.shoot_cd;
+                console.log(timers)
                 // choose a random enemy
-                let rand_index = Math.round(Math.random() * (enemies.length - 1));
-                let player = this.objs.player;
+                let rand_index = Phaser.Math.Between(0, enemies.length - 1);
+                // let player = this.objs.player;
                 let enemy = enemies[rand_index];
-                // shoot only if player.x is close to enemy.x
-                let x_dist = Math.abs(player.x + (player.w / 2) - enemy.x + (enemy.w / 2));
-                if (x_dist < enemy.x_shoot_bound)
-                    enemy.shoot(time);
+                // // shoot only if player.x is close to enemy.x
+                // let x_dist = Math.abs(player.x + (player.w / 2) - enemy.x + (enemy.w / 2));
+                // if (x_dist < enemy.x_shoot_bound)
+                enemy.shoot(time);
             }
         }
     }
 
     check_gameover() {
-        console.log(this.objs.enemies.children.entries.length);
         if (this.objs.enemies.children.entries.length == 0 && !this.level_transition_flag) {
             // WIN CONDITIONS GO HERE
             this.goto_scene("Player Win");
