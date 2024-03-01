@@ -6,6 +6,7 @@ const EnemyConstDefs = {
     scale: { w: .75, h: .75 },
     spawn_start: { x: 80, y: 100 },
     grid_gap: { x: 10, y: 12 },
+    // grid_count: { row: 1, col: 1 }, // TESTING
     grid_count: { row: 5, col: 11 },
     move_gap: { x: 8, y: 10 },
     scoreValue: {
@@ -43,7 +44,6 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
 
         this.scene = scene;
 
-        this.is_dead = false;
         this.move_direction = 1;
         // when enemy1 reaches x_bound, it changes row and direction
 

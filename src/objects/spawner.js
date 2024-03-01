@@ -13,7 +13,6 @@ import "../factory/object_factory";
  * @property {Phaser.Physics.Arcade.Group} explosions - Phaser group of explosion objects
  */
 
-/* TODO: I don't know how to get VSCode to find the Phaser defintions for the jsdoc descriptors. Would be nice to figure that out later. */
 class ObjectSpawner {
     constructor(scene) {
         this.scene = scene;
@@ -36,24 +35,22 @@ class ObjectSpawner {
             runChildUpdate: true,
         });
 
+        this.level = this.scene.scene.get('Preloader').level;
+
+        this.init_all();
+    }
+
+    /**
+     * @private
+     * @description initializes all level objects
+     */
+
+    init_all() {
         this.init_barriers();
-        this.init_enemy_grid();
         this.init_player_bullets();
         this.init_enemy_bullets();
         this.init_explosions();
-    }
-    /**
-     * @public
-     * @description Deletes all enemies that have been marked as dead from this.enemies
-     */
-    cleanup_enemies() {
-        let entries = this.enemies.children.entries;
-        // check each enemy
-        for (let i = entries.length - 1; i >= 0; --i) {
-            let entry = entries[i];
-            // if enemy dead, remove it
-            if (entry && entry.dead) entries.splice(i, 1);
-        }
+        this.init_enemy_grid();
     }
 
     /**
@@ -97,19 +94,22 @@ class ObjectSpawner {
                     enemy = this.scene.add.enemy_l1_top(
                         this.scene,
                         spawn_pos.x,
-                        spawn_pos.y
+                        spawn_pos.y,
+                        this.level
                     );
                 } else if (y == 1 || y == 2) {
                     enemy = this.scene.add.enemy_l1_middle(
                         this.scene,
                         spawn_pos.x,
-                        spawn_pos.y
+                        spawn_pos.y,
+                        this.level
                     );
                 } else {
                     enemy = this.scene.add.enemy_l1_bottom(
                         this.scene,
                         spawn_pos.x,
-                        spawn_pos.y
+                        spawn_pos.y,
+                        this.level
                     );
                 }
                 this.enemies.add(enemy);

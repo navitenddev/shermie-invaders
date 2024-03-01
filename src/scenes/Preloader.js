@@ -109,15 +109,26 @@ export class Preloader extends Scene {
         });
     }
     create() {
-        //  When all the assets have loaded, it's often worth creating global objects here that the rest of the game can use.
-        //  For example, you can define global animations here, so we can use them in other scenes.
+        //  When all the assets have loaded, it's often worth creating global
+        //  objects here that the rest of the game can use.  For example, you
+        //  can define global animations here, so we can use them in other
+        //  scenes.
         this.anim_factory = new AnimationFactory(this);
 
         this.sound_bank = new SoundBank(this);
         // we can access sound_bank from another scene with:
         // sound_bank = this.scene.get('Preloader').sound_bank;
 
-        //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
+        /* Variables that must persist throughout all scenes go here, they can be
+         * referenced the same way sound_bank is referenced. 
+         * Maybe we should encapsulate all globals into an assoc array?
+         */
+        this.level = 1;
+        this.player_lives = 3;
+        this.score = 0;
+
+        //  Move to the MainMenu. You could also swap this for a Scene
+        //  Transition, such as a camera fade.
         this.scene.start('MainMenu');
     }
 }
