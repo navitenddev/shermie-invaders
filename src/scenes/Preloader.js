@@ -121,6 +121,7 @@ export class Preloader extends Scene {
 
         /* Variables that must persist throughout all scenes go here, they can be
          * referenced the same way sound_bank is referenced. 
+         * Maybe we should encapsulate all globals into an assoc array?
          */
         this.level = 1;
         this.player_lives = 3;
