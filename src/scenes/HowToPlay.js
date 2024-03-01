@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { fontStyle } from '../utils/fontStyle.js';
+import { fonts } from '../utils/fontStyle.js';
 
 export class HowToPlay extends Scene {
     constructor() {
@@ -12,23 +12,26 @@ export class HowToPlay extends Scene {
 
         this.add.image(512, 300, 'howToPlayLogo');
 
-        this.add.text(512, 460, 'Use WASD to move Shermie and space bar to shoot! Have fun!', {
-            ...fontStyle,
-            align: 'center',
-            wordWrap: {
-                width: 600 
-            }
-        })
-        .setOrigin(0.5);
+        let width = this.game.config.width
+        this.add.text(width / 3, 400,
+            'Movement: AD/←→ \n\
+Shoot: W/Space Bar \n\
+Pause: P/ESC \n\n\
+Good luck, have fun! \n\
+',
+            {
+                ...fonts.small,
+                align: 'left',
+            })
 
-        this.backButton = this.add.text(512, 600, 'Back', fontStyle)
+        this.backButton = this.add.text(512, 600, 'Back', fonts.medium)
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
-                this.scene.start('MainMenu');  
+                this.scene.start('MainMenu');
             });
     }
-    update(){
+    update() {
         if (this.animatedBg) {
             this.animatedBg.tilePositionY += 1;
             this.animatedBg.tilePositionX += 1;
