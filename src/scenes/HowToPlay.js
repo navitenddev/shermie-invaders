@@ -16,7 +16,7 @@ export class HowToPlay extends Scene {
         this.add.text(width / 3, 400,
             'Movement: AD/←→ \n\
 Shoot: W/Space Bar \n\
-Pause: P/ESC \n\
+Pause: P/ESC \n\n\
 Good luck, have fun! \n\
 ',
             {

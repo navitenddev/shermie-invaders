@@ -154,9 +154,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         if (moving_right) {
             if (this.flipX) this.flipX = false;
             this.x += this.const_defs.speed.x;
+            this.x = Math.min(this.x, this.scene.game.config.width - 64); // keep player in bounds
         } else {
             if (!this.flipX) this.flipX = true;
             this.x -= this.const_defs.speed.x;
+            this.x = Math.max(this.x, 64); // keep player in bounds
         }
     }
 

@@ -206,23 +206,54 @@ export class Game extends Scene {
             }
         }
 
+        /* Right now, there are two grid enemy shooting types:
+         * 1) Closest enemy shoots at the player (Euclidean distance)
+         * 2) Random enemy shoots
+         */
+
         // handle enemy shooting ai
         let timers = this.timers;
+        let player = this.objs.player;
 
         if (time > timers.grid_enemy.last_fired) {
+            // Roll the dice
+            let shoot_mode = Phaser.Math.Between(0, 1);
+
             if (enemies && enemies.length) {
                 timers.grid_enemy.last_fired = time + timers.grid_enemy.shoot_cd;
-                console.log(timers)
-                // choose a random enemy
-                let rand_index = Phaser.Math.Between(0, enemies.length - 1);
-                // let player = this.objs.player;
-                let enemy = enemies[rand_index];
-                // // shoot only if player.x is close to enemy.x
-                // let x_dist = Math.abs(player.x + (player.w / 2) - enemy.x + (enemy.w / 2));
-                // if (x_dist < enemy.x_shoot_bound)
-                enemy.shoot(time);
+                switch (shoot_mode) {
+                    case 0: // closest enemy shoots at player (Euclidean distance)
+                        {
+                            let closest = {
+                                enemy: null,
+                                dist: Number.MAX_SAFE_INTEGER
+                            };
+
+                            // Find the enemy closest to the player
+                            for (let enemy of enemies) {
+                                let dist = Phaser.Math.Distance.Between(player.x, player.y, enemy.x, enemy.y);
+                                if (dist < closest.dist)
+                                    closest = { enemy: enemy, dist: dist };
+                            }
+                            closest.enemy.shoot();
+                            break;
+                        }
+                    case 1: // Completely random enemy shoots
+                        {
+                            // choose a random enemy
+                            let rand_index = Phaser.Math.Between(0, enemies.length - 1);
+                            let enemy = enemies[rand_index];
+                            enemy.shoot(time);
+                            break;
+                        }
+                    default:
+                        console.error(`Error: Invalid grid enemy shoot mode!`);
+                        break;
+                }
             }
+
         }
+
     }
 
     check_gameover() {
