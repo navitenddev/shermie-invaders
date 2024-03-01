@@ -33,12 +33,17 @@ export class Game extends Scene {
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
-        this.sounds = this.scene.get('Preloader').sound_bank;
+        this.global_vars = this.scene.get('Preloader');
+        this.sounds = this.global_vars.sound_bank;
 
         this.keys = InitKeyDefs(this);
 
         // Score and high score
         this.scoreManager = new ScoreManager(this);
+
+        this.level = this.global_vars.level;
+        this.level_transition_flag = false;
+        this.level_text = this.add.text(this.sys.game.config.width / 3, 16, `LEVEL:${this.level}`, fontStyle);
 
         // The timers will be useful for tweaking the difficulty
         this.timers = {
@@ -54,16 +59,16 @@ export class Game extends Scene {
             }
         }
 
-        this.objs.player = this.add.player(this, this.game.config.width / 2, this.game.config.height - 96);
+        this.objs.player = this.add.player(this, this.sys.game.config.width / 2, this.game.config.height - 96);
 
         // Player lives text and sprites
-        this.livesText = this.add.text(16, this.game.config.height - 48, '3', fontStyle);
+        this.livesText = this.add.text(16, this.sys.game.config.height - 48, '3', fontStyle);
         this.livesSprites = this.add.group({
             key: 'lives',
-            repeat: this.objs.player.lives - 2
+            repeat: this.global_vars.player_lives - 2
         });
 
-        this.physics.world.setBounds(0, 0, this.game.config.width, this.game.config.height);
+        this.physics.world.setBounds(0, 0, this.sys.game.config.width, this.sys.game.config.height);
 
         // player bullet hits enemy
         this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies,
@@ -136,22 +141,21 @@ export class Game extends Scene {
      * @description Updates the lives sprites to reflect the current number of lives
      * @param {number} lives The number of lives the player has
     */
-    updateLivesSprites(lives) {
+    updateLivesSprites() {
         this.livesSprites.clear(true, true); // Clear sprites
-        for (let i = 0; i < lives; i++) {
+        for (let i = 0; i < this.global_vars.player_lives; i++) {
             // coordinates for the lives sprites
-            let lifeConsts = { x: 84 + i * 48, y: this.game.config.height - 32 };
+            let lifeConsts = { x: 84 + i * 48, y: this.sys.game.config.height - 32 };
             this.livesSprites.create(lifeConsts.x, lifeConsts.y, 'lives', 0)
         }
     }
 
     update(time, delta) {
         this.objs.player.update(time, delta, this.keys)
-        this.objs.cleanup_enemies();
 
         // Update lives text and sprites
-        this.livesText.setText(this.objs.player.lives);
-        this.updateLivesSprites(this.objs.player.lives);
+        this.livesText.setText(this.global_vars.player_lives);
+        this.updateLivesSprites();
 
         this.ai_grid_enemies(time);
         this.check_gameover();
@@ -222,9 +226,12 @@ export class Game extends Scene {
 
     check_gameover() {
         console.log(this.objs.enemies.children.entries.length);
-        if (this.objs.enemies.children.entries.length == 0) {
+        if (this.objs.enemies.children.entries.length == 0 && !this.level_transition_flag) {
+            // WIN CONDITIONS GO HERE
             this.goto_scene("Player Win");
-        } else if (this.objs.player.lives <= 0 && !this.objs.player.is_inbounds()) {
+            this.global_vars.level += 1;
+            this.level_transition_flag = true;
+        } else if (this.global_vars.player_lives <= 0 && !this.objs.player.is_inbounds()) {
             this.goto_scene("Player Lose");
         }
     }
@@ -239,4 +246,5 @@ export class Game extends Scene {
             this.scene.start(targetScene);
         });
     }
+
 }

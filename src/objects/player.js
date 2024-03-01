@@ -27,10 +27,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     constructor(scene, x, y) {
         super(scene, x, y, "Player");
-        this.lives = 3; // player starts with 3 lives
-        this.maxLives = Player.MAX_LIVES;
 
         this.isInvincible = false;
+        this.global_vars = this.scene.scene.get('Preloader');
 
         this.const_defs = PlayerConstDefs;
         scene.physics.add.existing(this);
@@ -87,10 +86,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * Marks the player as dead so that phaser knows to do start the death animation.
      */
     die() {
-        if (this.lives > 0 && !this.isInvincible) {
-            this.lives -= 1;
+        if (this.global_vars.player_lives > 0 && !this.isInvincible) {
+            this.global_vars.player_lives -= 1;
             this.sounds.bank.sfx.hurt.play();
-            if (this.lives === 0) {
+            if (this.global_vars.player_lives === 0) {
                 this.is_dead = true;
                 // allow player to fly off screen
                 this.setCollideWorldBounds(false);
@@ -141,9 +140,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @description Adds a life to the player's life count
     */
     addLife() {
-        if (this.lives < this.maxLives) {
-            this.lives++;
-        }
+        this.global_vars.player_lives++;
     }
 
     /**
