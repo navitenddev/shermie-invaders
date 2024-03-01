@@ -12,14 +12,17 @@ export class HowToPlay extends Scene {
 
         this.add.image(512, 300, 'howToPlayLogo');
 
-        this.add.text(512, 460, 'Use WASD to move Shermie and space bar to shoot! Have fun!', {
-            ...fonts.medium,
-            align: 'center',
-            wordWrap: {
-                width: 600
-            }
-        })
-            .setOrigin(0.5);
+        let width = this.game.config.width
+        this.add.text(width / 3, 400,
+            'Movement: AD/←→ \n\
+Shoot: W/Space Bar \n\
+Pause: P/ESC \n\
+Good luck, have fun! \n\
+',
+            {
+                ...fonts.small,
+                align: 'left',
+            })
 
         this.backButton = this.add.text(512, 600, 'Back', fonts.medium)
             .setOrigin(0.5)

@@ -185,7 +185,7 @@ export class Game extends Scene {
     ai_grid_enemies(time) {
         let enemies = this.objs.enemies.children.entries;
 
-        this.timers.grid_enemy.move_cd = (enemies.length * 10) - (this.level * 5);
+        this.timers.grid_enemy.move_cd = (enemies.length * 10) - (this.level * 2);
         // Move all enemies down if we hit the x boundaries
         for (let enemy of enemies) {
             if (!enemy.is_x_inbounds()) {
