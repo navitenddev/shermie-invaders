@@ -1,5 +1,5 @@
 import { Player } from "../objects/player";
-import { Enemy1, Enemy2, Enemy3 } from "../objects/enemy";
+import { Enemy1, Enemy2, Enemy3, EnemyUSB } from "../objects/enemy";
 import { PlayerBullet, EnemyBullet, PlayerBulletConstDefs, EnemyBulletConstDefs } from "../objects/bullet";
 import { Explosion } from "../objects/explosions"
 import { BarrierChunk } from "../objects/barrier";
@@ -43,8 +43,8 @@ Phaser.GameObjects.GameObjectFactory.register(
 
 Phaser.GameObjects.GameObjectFactory.register(
     "enemy_usb",
-    function (scene, x, y) {
-        return new EnemyUSB(scene, x, y);
+    function (scene, spawn_right) {
+        return new EnemyUSB(scene, spawn_right);
     }
 );
 

@@ -73,6 +73,7 @@ export class Game extends Scene {
 
         this.init_collision_events();
 
+
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
     }
@@ -106,7 +107,7 @@ export class Game extends Scene {
      * Handles all logic for grid-based enemies
      */
     ai_grid_enemies(time) {
-        let enemies = this.objs.enemies.children.entries;
+        let enemies = this.objs.enemies.grid.children.entries;
 
         this.timers.grid_enemy.move_cd = (enemies.length * 10) - (this.level * 2);
         // Move all enemies down if we hit the x boundaries
@@ -195,7 +196,7 @@ export class Game extends Scene {
     }
 
     check_gameover() {
-        if (this.objs.enemies.children.entries.length == 0 &&
+        if (this.objs.enemies.grid.children.entries.length == 0 &&
             !this.level_transition_flag) {
 
             this.goto_scene("Player Win");
@@ -226,49 +227,49 @@ export class Game extends Scene {
     init_collision_events() {
         this.physics.world.setBounds(0, 0, this.sys.game.config.width, this.sys.game.config.height);
 
-        // player bullet hits enemy
-        this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies,
-            (player_bullet, enemy) => {
-                // spawn explosion
-                this.objs.explode_at(enemy.x, enemy.y);
-                player_bullet.deactivate();
-                // kill enemy
-                enemy.die();
-                this.scoreManager.addScore(enemy.scoreValue);
-            }
-        );
+        // player bullet hits grid enemy
+        this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies.grid, (player_bullet, enemy) => {
+            this.objs.explode_at(enemy.x, enemy.y);
+            player_bullet.deactivate();
+            enemy.die();
+            this.scoreManager.addScore(enemy.scoreValue);
+        });
+
+        // player bullet hits special enemy
+        this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies.special, (player_bullet, enemy) => {
+            this.objs.explode_at(enemy.x, enemy.y);
+            player_bullet.deactivate();
+            enemy.die();
+            this.scoreManager.addScore(enemy.scoreValue);
+        });
 
         // enemy bullet hits player
-        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player,
-            (player, enemy_bullet) => {
-                if (!player.is_dead) {
-                    // spawn explosion
-                    this.objs.explode_at(player.x, player.y);
-                    // deactivate bullet
-                    enemy_bullet.deactivate();
-                    // kill player 
-                    player.die();
-                } // NOTE: This is set in ai_grid_enemy()
+        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player, (player, enemy_bullet) => {
+            if (!player.is_dead) {
+                this.objs.explode_at(player.x, player.y);
+                enemy_bullet.deactivate();
+                player.die();
             }
-        );
+        });
 
         // enemy bullet collides with player bullet
-        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.bullets.player,
-            (enemy_bullet, player_bullet) => {
-                if (player_bullet.active && enemy_bullet.active) {
-                    this.objs.explode_at(player_bullet.x, player_bullet.y);
-                    player_bullet.deactivate();
-                    enemy_bullet.deactivate();
-                }
+        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.bullets.player, (enemy_bullet, player_bullet) => {
+            if (player_bullet.active && enemy_bullet.active) {
+                this.objs.explode_at(player_bullet.x, player_bullet.y);
+                player_bullet.deactivate();
+                enemy_bullet.deactivate();
             }
-        );
+        });
 
-        // when enemy hits barrier, it eats it
-        this.physics.add.overlap(this.objs.enemies, this.objs.barrier_chunks,
-            (enemy, barr_chunk) => {
-                barr_chunk.destroy(); // OM NOM NOM
-            }
-        )
+        // when grid enemy hits barrier, it eats it
+        this.physics.add.overlap(this.objs.enemies.grid, this.objs.barrier_chunks, (enemy, barr_chunk) => {
+            barr_chunk.destroy(); // OM NOM NOM
+        });
+
+        // when special enemy hits barrier, it eats it
+        this.physics.add.overlap(this.objs.enemies.special, this.objs.barrier_chunks, (enemy, barr_chunk) => {
+            barr_chunk.destroy(); // OM NOM NOM
+        });
 
         // player bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {

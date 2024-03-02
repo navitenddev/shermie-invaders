@@ -1,4 +1,4 @@
-import { Enemy, EnemyConstDefs as enemy_defs } from "./enemy";
+import { Enemy, EnemyUSB, EnemyConstDefs as enemy_defs } from "./enemy";
 import { PlayerBullet, PlayerBulletConstDefs as player_bull_defs, EnemyBullet, EnemyBulletConstDefs as enemy_bull_defs } from "./bullet";
 import { Explosion, ExplosionConstDefs as expl_defs } from "./explosions";
 import { Player } from "./player";
@@ -21,9 +21,15 @@ const BARRIER_COLOR = {
 class ObjectSpawner {
     constructor(scene) {
         this.scene = scene;
-        this.enemies = this.scene.physics.add.group({
-            runChildUpdate: true,
-        });
+        this.enemies = {
+            grid: this.scene.physics.add.group({
+                runChildUpdate: true,
+            }),
+            special: this.scene.physics.add.group({
+                runChildUpdate: true,
+            }),
+        }
+
         this.bullets = {
             player: this.scene.physics.add.group({
                 runChildUpdate: true
@@ -43,6 +49,12 @@ class ObjectSpawner {
         this.level = this.scene.scene.get('Preloader').level;
 
         this.init_all();
+
+        // spawn enemy usb in 30-60 seconds
+        let secs = Phaser.Math.Between(0, 5);
+        console.log(`Spawning enemy USB in ${secs}s`)
+        // spawn usb in secs seconds
+        this.scene.time.delayedCall(secs * 1000, this.spawn_usb_enemy, [], this.scene.scene)
     }
 
     /**
@@ -146,7 +158,7 @@ class ObjectSpawner {
                         this.level
                     );
                 }
-                this.enemies.add(enemy);
+                this.enemies.grid.add(enemy);
             }
         }
     }
@@ -193,8 +205,8 @@ class ObjectSpawner {
     /**
      * @public
      * @description Activate explosion animation at (x,y)
-     * @param {*} x The x-coord to explode at 
-     * @param {*} y The y-coord to explode at
+     * @param {number} x The x-coord to explode at 
+     * @param {number} y The y-coord to explode at
      */
     explode_at(x, y) {
         // console.log(`Exploding at (${x},${y})`)
@@ -206,6 +218,18 @@ class ObjectSpawner {
             })
             this.scene.sounds.bank.sfx.explosion[Phaser.Math.Between(0, 2)].play();
         }
+    }
+
+    /**
+     * @description Randomly spawns the USB enemy either on the left or right side
+     */
+    spawn_usb_enemy() {
+        console.log("Spawning enemy USB");
+        let rng = Phaser.Math.Between(0, 1);
+        if (rng)
+            this.scene.add.enemy_usb(this.scene, true);
+        else
+            this.scene.add.enemy_usb(this.scene, false);
     }
 }
 

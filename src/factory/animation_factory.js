@@ -114,7 +114,7 @@ class AnimationFactory {
             frames: this.scene.anims.generateFrameNumbers("usb_explode", {
                 start: 5, end: 11,
             }),
-            frameRate: 8,
+            frameRate: 16,
         });
     }
 }
