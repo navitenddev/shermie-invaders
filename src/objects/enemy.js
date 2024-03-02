@@ -130,4 +130,26 @@ class Enemy3 extends BaseGridEnemy {
     }
 }
 
-export { Enemy1, Enemy2, Enemy3, EnemyConstDefs };
+class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
+    /**
+     * 
+     * @param {*} scene The scene to spawn the enemy in
+     * @param {*} x x-coord of spawn pos
+     * @param {*} y y-coord of spawn pos
+     * @param {*} anim_key The animation key to play for this enemy
+     * @param {*} const_defs A collection of constant vars
+     */
+    constructor(scene, x, y) {
+        super(scene, x, y);
+        this.anim_key = "usb";
+        scene.physics.add.existing(this);
+        scene.add.existing(this);
+        this.setPosition(x, y);
+        // this.setSize(this.const_defs.dims.w, this.const_defs.dims.h);
+        // this.setScale(this.const_defs.scale.w, this.const_defs.scale.h);
+        this.setOffset(0, 0);
+        this.play(this.anim_key);
+    }
+}
+
+export { Enemy1, Enemy2, Enemy3, EnemyUSB, EnemyConstDefs };

@@ -42,6 +42,13 @@ Phaser.GameObjects.GameObjectFactory.register(
 );
 
 Phaser.GameObjects.GameObjectFactory.register(
+    "enemy_usb",
+    function (scene, x, y) {
+        return new EnemyUSB(scene, x, y);
+    }
+);
+
+Phaser.GameObjects.GameObjectFactory.register(
     "enemy_bullet",
     function (scene, x, y) {
         return new EnemyBullet(scene, x, y);

@@ -13,6 +13,11 @@ import "../factory/object_factory";
  * @property {Phaser.Physics.Arcade.Group} explosions - Phaser group of explosion objects
  */
 
+const BARRIER_COLOR = {
+    fill: 0xda4723,
+    border: 0xffffff,
+}
+
 class ObjectSpawner {
     constructor(scene) {
         this.scene = scene;
@@ -59,9 +64,22 @@ class ObjectSpawner {
      */
 
     init_barriers() {
-        let left = new Barrier(this.scene, 100, 500, 5, 5, 40, 20, 0x2e2e2e);
-        let mid = new Barrier(this.scene, 410, 500, 5, 5, 40, 20, 0x2e2e2e);
-        let right = new Barrier(this.scene, 720, 500, 5, 5, 40, 20, 0x2e2e2e);
+        const n = { rows: 15, cols: 30 },
+            c = { w: 5, h: 5 }; // chunk dims
+
+        const screen_w = this.scene.game.config.width;
+
+        const y = 500;
+
+        let x_start = screen_w / 8,
+            x_gap = 150,
+            w = n.cols * c.w,
+            h = n.rows * c.h;
+
+
+        let left = new Barrier(this.scene, x_start, y, c.w, c.h, n.cols, n.rows, BARRIER_COLOR.fill);
+        let mid = new Barrier(this.scene, x_start + (w + x_gap), y, c.w, c.h, n.cols, n.rows, BARRIER_COLOR.fill);
+        let right = new Barrier(this.scene, x_start + 2 * (w + x_gap), y, c.w, c.h, n.cols, n.rows, BARRIER_COLOR.fill);
 
         this.barrier_chunks.addMultiple(left.chunks)
         this.barrier_chunks.addMultiple(mid.chunks)
@@ -70,8 +88,7 @@ class ObjectSpawner {
 
     /**
      * @private
-     * @description initializes the grid of the enemies. Should only be called at the start of the level.
-     */
+     * @description initializes the grid of the enemies. Should only be called at the start of the level.  */
     init_enemy_grid() {
         let gc = enemy_defs.grid_count;
         console.log(enemy_defs);
