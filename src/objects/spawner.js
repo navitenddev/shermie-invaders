@@ -64,10 +64,16 @@ class ObjectSpawner {
 
     init_all() {
         this.init_barriers();
+        this.init_player();
         this.init_player_bullets();
         this.init_enemy_bullets();
         this.init_explosions();
         this.init_enemy_grid();
+    }
+
+    init_player() {
+        this.player = this.scene.add.player(this.scene, this.scene.game.config.width / 2, this.scene.game.config.height - 96);
+        return this.player;
     }
 
     /**
@@ -177,7 +183,7 @@ class ObjectSpawner {
      */
     init_player_bullets() {
         console.log("Initializing player bullets");
-        for (let i = 0; i < player_bull_defs.max_bullets; ++i) {
+        for (let i = 0; i < this.player.stats.max_bullets; ++i) {
             console.log(`Adding bullet #${i + 1}`);
             let bullet = this.scene.add.player_bullet(this.scene);
             this.bullets.player.add(bullet);

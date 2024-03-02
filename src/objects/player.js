@@ -1,8 +1,9 @@
 import { Game } from "../scenes/Game";
+import { PlayerBulletConstDefs as player_bull_defs } from "./bullet";
 
 const PlayerConstDefs = {
     dims: { w: 64, h: 48 },
-    speed: { x: 3, y: 0 },
+    speed: { x: 2, y: 0 }, // base movespeed
     offset: {
         body: { x: 16, y: 36 },
     },
@@ -25,11 +26,17 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      */
     static MAX_LIVES = 5; // maximum number of lives the player can have
 
+    static base_stats = {
+        move_speed: 3,
+        bullet_speed: 3,
+    }
+
     constructor(scene, x, y) {
         super(scene, x, y, "Player");
 
         this.isInvincible = false;
         this.global_vars = this.scene.scene.get('Preloader');
+        this.stats = this.global_vars.player.stats;
 
         this.const_defs = PlayerConstDefs;
         scene.physics.add.existing(this);
@@ -64,7 +71,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.y += this.dead_vel.y;
             this.setRotation(this.rotation + this.dead_vel.rot);
 
-            if (this.global_vars.player_lives > 0 && !this.is_inbounds()) {
+            if (this.global_vars.player.lives > 0 && !this.is_inbounds()) {
                 this.is_dead = false;
                 this.resetPlayer();
                 this.flashPlayer();
@@ -95,10 +102,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * Marks the player as dead so that phaser knows to do start the death animation.
      */
     die() {
-        if (this.global_vars.player_lives > 0 && !this.isInvincible) {
-            this.global_vars.player_lives -= 1;
+        if (this.global_vars.player.lives > 0 && !this.isInvincible) {
+            this.global_vars.player.lives -= 1;
             this.sounds.bank.sfx.hurt.play();
-            // if (this.global_vars.player_lives === 0) {
             this.is_dead = true;
             // allow player to fly off screen
             this.setCollideWorldBounds(false);
@@ -114,6 +120,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @description Resets the player's position to the center bottom of the screen
      */
     resetPlayer() {
+        this.setCollideWorldBounds(true);
         this.setRotation(0);
         this.setPosition(this.scene.game.config.width / 2.5, this.scene.game.config.height - 96);
     }
@@ -142,7 +149,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @description Adds a life to the player's life count
     */
     addLife() {
-        this.global_vars.player_lives++;
+        this.global_vars.player.lives++;
     }
 
     /**
@@ -155,12 +162,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         if (moving_right) {
             if (this.flipX) this.flipX = false;
-            this.x += this.const_defs.speed.x;
-            this.x = Math.min(this.x, this.scene.game.config.width - 64); // keep player in bounds
+            this.x += this.const_defs.speed.x + (this.stats.move_speed - 1) / 2;
         } else {
             if (!this.flipX) this.flipX = true;
-            this.x -= this.const_defs.speed.x;
-            this.x = Math.max(this.x, 64); // keep player in bounds
+            this.x -= this.const_defs.speed.x + (this.stats.move_speed - 1) / 2;
         }
     }
 
@@ -175,7 +180,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             let bullet = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
             if (bullet !== null) {
                 timer.last_fired = time + timer.shoot_cd;
-                bullet.activate(this.x, this.y);
+                let bullet_speed = player_bull_defs.speed.y + (this.stats.bullet_speed - 1);
+                console.log(`bullet speed: ${bullet_speed}`)
+                bullet.activate(this.x, this.y, bullet_speed);
                 // set the bullet to its spawn position
                 this.anims.play("shermie_shoot");
                 this.anims.nextAnim = "shermie_idle";

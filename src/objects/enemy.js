@@ -82,7 +82,6 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
         let bullet = this.scene.objs.bullets.enemy.getFirstDead(false, 0, 0, "enemy_bullet");
         if (bullet !== null) {
             bullet.activate(true);
-            // set the bullet to its spawn position
             bullet.setPosition(this.x, this.y);
         }
     }
@@ -183,8 +182,6 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
             min: -32,
             max: scene.game.config.width + 32
         };
-
-        console.log(this.x_bound)
     }
 
     update(time, delta) {

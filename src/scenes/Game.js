@@ -46,6 +46,7 @@ export class Game extends Scene {
         this.level_transition_flag = false;
         this.level_text = this.add.text(this.sys.game.config.width / 3, 16, `LEVEL:${this.level}`, fonts.medium);
 
+        let player_stats = this.global_vars.player.stats;
         // The timers will be useful for tweaking the difficulty
         this.timers = {
             grid_enemy: {
@@ -56,23 +57,22 @@ export class Game extends Scene {
             },
             player: {
                 last_fired: 0,
-                shoot_cd: 400,
+                shoot_cd: 400 - (this.objs.player.stats.fire_rate - 1) * 35,
             }
         }
 
-        this.objs.player = this.add.player(this, this.sys.game.config.width / 2, this.game.config.height - 96);
+        // this.objs.player = this.add.player(this, this.sys.game.config.width / 2, this.game.config.height - 96);
 
         // Player lives text and sprites
         this.livesText = this.add.text(16, this.sys.game.config.height - 48, '3', fonts.medium);
         this.livesSprites = this.add.group({
             key: 'lives',
-            repeat: this.global_vars.player_lives - 2
+            repeat: this.global_vars.player.lives - 2
         });
 
         this.sounds.bank.music.bg.play();
 
         this.init_collision_events();
-
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
@@ -84,7 +84,7 @@ export class Game extends Scene {
     */
     updateLivesSprites() {
         this.livesSprites.clear(true, true); // Clear sprites
-        for (let i = 0; i < this.global_vars.player_lives; i++) {
+        for (let i = 0; i < this.global_vars.player.lives; i++) {
             // coordinates for the lives sprites
             let lifeConsts = { x: 84 + i * 48, y: this.sys.game.config.height - 32 };
             this.livesSprites.create(lifeConsts.x, lifeConsts.y, 'lives', 0)
@@ -95,7 +95,7 @@ export class Game extends Scene {
         this.objs.player.update(time, delta, this.keys)
 
         // Update lives text and sprites
-        this.livesText.setText(this.global_vars.player_lives);
+        this.livesText.setText(this.global_vars.player.lives);
         this.updateLivesSprites();
 
         this.ai_grid_enemies(time);
@@ -202,7 +202,7 @@ export class Game extends Scene {
             this.goto_scene("Player Win");
             this.global_vars.level++;
             this.level_transition_flag = true;
-        } else if (this.global_vars.player_lives <= 0 &&
+        } else if (this.global_vars.player.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
 
             this.goto_scene("Player Lose");
