@@ -22,7 +22,7 @@ const EnemyConstDefs = {
  *         /          \
  *   BaseGridEnemy   BaseSpecialEnemy
  *     / | \            / | \
- *    e  t  c          e  t c
+ *    e  t  c          e  t  c
  * 
  *  We don't really have to though, just might get messy later.
  */

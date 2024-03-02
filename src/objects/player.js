@@ -41,6 +41,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.const_defs.offset.body.y
         );
         this.play("shermie_idle");
+        this.resetPlayer();
 
         this.sounds = scene.scene.get('Preloader').sound_bank;
         this.is_dead = false;
@@ -114,7 +115,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      */
     resetPlayer() {
         this.setRotation(0);
-        this.setPosition(this.scene.game.config.width / 2, this.scene.game.config.height - 96);
+        this.setPosition(this.scene.game.config.width / 2.5, this.scene.game.config.height - 96);
     }
 
     /**

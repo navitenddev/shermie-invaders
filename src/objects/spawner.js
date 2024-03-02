@@ -50,8 +50,8 @@ class ObjectSpawner {
 
         this.init_all();
 
-        // spawn enemy usb in 30-60 seconds
-        let secs = Phaser.Math.Between(0, 5);
+        // spawn enemy usb in 15-60 seconds
+        let secs = Phaser.Math.Between(15, 60);
         console.log(`Spawning enemy USB in ${secs}s`)
         // spawn usb in secs seconds
         this.scene.time.delayedCall(secs * 1000, this.spawn_usb_enemy, [], this.scene.scene)
@@ -76,7 +76,7 @@ class ObjectSpawner {
      */
 
     init_barriers() {
-        const n = { rows: 15, cols: 30 },
+        const n = { rows: 15, cols: 22 },
             c = { w: 5, h: 5 }; // chunk dims
 
         const screen_w = this.scene.game.config.width;
@@ -85,7 +85,7 @@ class ObjectSpawner {
 
         const w = n.cols * c.w,
             h = n.rows * c.h,
-            x_start = 140,
+            x_start = 125,
             x_gap = w;
 
 
@@ -96,22 +96,30 @@ class ObjectSpawner {
             BARRIER_COLOR.fill
         );
 
-        let mid = new Barrier(this.scene,
+        let mid_left = new Barrier(this.scene,
             x_start + (w + x_gap), y,
             c.w, c.h,
             n.cols, n.rows,
             BARRIER_COLOR.fill
         );
 
-        let right = new Barrier(this.scene,
+        let mid_right = new Barrier(this.scene,
             x_start + 2 * (w + x_gap), y,
             c.w, c.h,
             n.cols, n.rows,
             BARRIER_COLOR.fill
         );
 
+        let right = new Barrier(this.scene,
+            x_start + 3 * (w + x_gap), y,
+            c.w, c.h,
+            n.cols, n.rows,
+            BARRIER_COLOR.fill
+        );
+
         this.barrier_chunks.addMultiple(left.chunks)
-        this.barrier_chunks.addMultiple(mid.chunks)
+        this.barrier_chunks.addMultiple(mid_left.chunks)
+        this.barrier_chunks.addMultiple(mid_right.chunks)
         this.barrier_chunks.addMultiple(right.chunks)
     }
 
