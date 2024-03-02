@@ -195,12 +195,15 @@ export class Game extends Scene {
     }
 
     check_gameover() {
-        if (this.objs.enemies.children.entries.length == 0 && !this.level_transition_flag) {
-            // WIN CONDITIONS GO HERE
+        if (this.objs.enemies.children.entries.length == 0 &&
+            !this.level_transition_flag) {
+
             this.goto_scene("Player Win");
             this.global_vars.level++;
             this.level_transition_flag = true;
-        } else if (this.global_vars.player_lives <= 0 && !this.objs.player.is_inbounds()) {
+        } else if (this.global_vars.player_lives <= 0 &&
+            !this.objs.player.is_inbounds()) {
+
             this.goto_scene("Player Lose");
         }
     }

@@ -56,10 +56,18 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(time, delta, keys) {
+        // respawn the player
+
         if (this.is_dead) {
             this.x += this.dead_vel.x;
             this.y += this.dead_vel.y;
             this.setRotation(this.rotation + this.dead_vel.rot);
+
+            if (this.global_vars.player_lives > 0 && !this.is_inbounds()) {
+                this.is_dead = false;
+                this.resetPlayer();
+                this.flashPlayer();
+            }
             return;
         }
 
@@ -89,22 +97,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.global_vars.player_lives > 0 && !this.isInvincible) {
             this.global_vars.player_lives -= 1;
             this.sounds.bank.sfx.hurt.play();
-            if (this.global_vars.player_lives === 0) {
-                this.is_dead = true;
-                // allow player to fly off screen
-                this.setCollideWorldBounds(false);
+            // if (this.global_vars.player_lives === 0) {
+            this.is_dead = true;
+            // allow player to fly off screen
+            this.setCollideWorldBounds(false);
 
-                let ang = Phaser.Math.Between(3, 10);
-                // if player dies on left half of screen, they should fly top right
-                // if player dies on right half of screen, they should fly top left
-                this.dead_vel.x =
-                    (this.x < this.scene.game.config.width / 2) ? ang : -ang;
-
-                return; // return so we don't reset player position, flash
-            }
-            this.scene.sounds.bank.sfx.hurt.play();
-            this.resetPlayerPosition();
-            this.flashPlayer();
+            let ang = Phaser.Math.Between(3, 10);
+            this.dead_vel.x =
+                (this.x < this.scene.game.config.width / 2) ? ang : -ang;
         }
     }
 
@@ -112,7 +112,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     /**
      * @description Resets the player's position to the center bottom of the screen
      */
-    resetPlayerPosition() {
+    resetPlayer() {
+        this.setRotation(0);
         this.setPosition(this.scene.game.config.width / 2, this.scene.game.config.height - 96);
     }
 
@@ -164,7 +165,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     /**
      * @description Spawns a player bullet at the player's position if a bullet is available
-     * @param {*} time The time parameter from `update()`
+     * @param {number} time The time parameter from `update()`
      */
     shoot(time) {
         let timer = this.scene.timers.player;

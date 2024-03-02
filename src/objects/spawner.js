@@ -71,15 +71,32 @@ class ObjectSpawner {
 
         const y = 500;
 
-        let x_start = screen_w / 8,
-            x_gap = 150,
-            w = n.cols * c.w,
-            h = n.rows * c.h;
+        const w = n.cols * c.w,
+            h = n.rows * c.h,
+            x_start = 140,
+            x_gap = w;
 
 
-        let left = new Barrier(this.scene, x_start, y, c.w, c.h, n.cols, n.rows, BARRIER_COLOR.fill);
-        let mid = new Barrier(this.scene, x_start + (w + x_gap), y, c.w, c.h, n.cols, n.rows, BARRIER_COLOR.fill);
-        let right = new Barrier(this.scene, x_start + 2 * (w + x_gap), y, c.w, c.h, n.cols, n.rows, BARRIER_COLOR.fill);
+        let left = new Barrier(this.scene,
+            x_start, y,
+            c.w, c.h,
+            n.cols, n.rows,
+            BARRIER_COLOR.fill
+        );
+
+        let mid = new Barrier(this.scene,
+            x_start + (w + x_gap), y,
+            c.w, c.h,
+            n.cols, n.rows,
+            BARRIER_COLOR.fill
+        );
+
+        let right = new Barrier(this.scene,
+            x_start + 2 * (w + x_gap), y,
+            c.w, c.h,
+            n.cols, n.rows,
+            BARRIER_COLOR.fill
+        );
 
         this.barrier_chunks.addMultiple(left.chunks)
         this.barrier_chunks.addMultiple(mid.chunks)
