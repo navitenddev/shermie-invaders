@@ -1,5 +1,5 @@
 const PlayerBulletConstDefs = {
-    dims: { w: 16, h: 16 },
+    dims: { w: 14, h: 32 },
     speed: { x: 0, y: 3.5 }, // base speed (before upgrade calculations)
     offset: { x: 0, y: 0 },
     rotation_speed: 0.1,
@@ -36,7 +36,7 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         //this.setScale(.25); 
         this.play('cottonBullet');
-        this.setSize(14, 32);
+        this.setSize(PlayerBulletConstDefs.dims.w, PlayerBulletConstDefs.dims.h);
         this.setScale(0.75);
         this.setVisible(false);
         this.setActive(false);
