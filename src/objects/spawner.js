@@ -155,6 +155,24 @@ class ObjectSpawner {
             this.explosions.add(explosion);
         }
     }
+
+    /**
+     * @public
+     * @description Activate explosion animation at (x,y)
+     * @param {*} x The x-coord to explode at 
+     * @param {*} y The y-coord to explode at
+     */
+    explode_at(x, y) {
+        // console.log(`Exploding at (${x},${y})`)
+        let explosion = this.explosions.getFirstDead(false, 0, 0, "explosion");
+        if (explosion !== null) {
+            explosion.activate(x, y);
+            explosion.on('animationcomplete', () => {
+                explosion.deactivate();
+            })
+            this.scene.sounds.bank.sfx.explosion[Phaser.Math.Between(0, 2)].play();
+        }
+    }
 }
 
 export { ObjectSpawner };

@@ -102,9 +102,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
                 return; // return so we don't reset player position, flash
             }
+            this.scene.sounds.bank.sfx.hurt.play();
             this.resetPlayerPosition();
             this.flashPlayer();
-
         }
     }
 

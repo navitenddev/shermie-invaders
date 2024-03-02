@@ -3,11 +3,11 @@ import { EnemyBulletConstDefs as bull_defs } from "./bullet"
 // Grid gap and spawn_start are not scaled factors
 const EnemyConstDefs = {
     dims: { w: 80, h: 80 },
-    scale: { w: .75, h: .75 },
+    scale: { w: .5, h: .5 },
     spawn_start: { x: 80, y: 100 },
-    grid_gap: { x: 10, y: 12 },
+    grid_gap: { x: 24, y: 12 },
     // grid_count: { row: 1, col: 1 }, // TESTING
-    grid_count: { row: 5, col: 11 },
+    grid_count: { row: 5, col: 14 },
     move_gap: { x: 8, y: 10 },
     scoreValue: {
         enemy1: 30,
@@ -48,8 +48,8 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
         // when enemy1 reaches x_bound, it changes row and direction
 
         this.x_bound = {
-            min: this.const_defs.dims.w,
-            max: scene.game.config.width
+            min: this.const_defs.dims.w / 2,
+            max: scene.game.config.width - this.const_defs.dims.w / 2
         };
         // when enemy reaches y_bound, it's gameover
         this.y_bound = scene.game.config.height - this.const_defs.dims.h;
@@ -101,7 +101,7 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
     }
     // return true if this enemy is overlapping an x boundary
     is_x_inbounds() {
-        return (this.x >= this.x_bound.min && this.x <= this.x_bound.max - this.const_defs.dims.w);
+        return (this.x >= this.x_bound.min && this.x <= this.x_bound.max);
     }
 
     is_y_inbounds() {
