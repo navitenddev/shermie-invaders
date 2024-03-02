@@ -16,6 +16,17 @@ const EnemyConstDefs = {
         enemyUSB: 100,
     },
 };
+/* TODO: We might wanna fix the hierarchy of enemy classes. Something like:
+ *
+ *           BaseEnemy
+ *         /          \
+ *   BaseGridEnemy   BaseSpecialEnemy
+ *     / | \            / | \
+ *    e  t  c          e  t c
+ * 
+ *  We don't really have to though, just might get messy later.
+ */
+
 
 /**
  * @classdesc The base class for the main enemies that form the grid.
@@ -183,7 +194,7 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
         }
 
         if (!this.is_x_inbounds())
-            this.die();
+            this.destroy();
     }
 
     is_x_inbounds() {
