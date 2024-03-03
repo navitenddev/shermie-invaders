@@ -1,4 +1,4 @@
-import { Enemy, EnemyConstDefs as enemy_defs } from "./enemy";
+import { Enemy, EnemyUSB, EnemyConstDefs as enemy_defs } from "./enemy";
 import { PlayerBullet, PlayerBulletConstDefs as player_bull_defs, EnemyBullet, EnemyBulletConstDefs as enemy_bull_defs } from "./bullet";
 import { Explosion, ExplosionConstDefs as expl_defs } from "./explosions";
 import { Player } from "./player";
@@ -13,12 +13,23 @@ import "../factory/object_factory";
  * @property {Phaser.Physics.Arcade.Group} explosions - Phaser group of explosion objects
  */
 
+const BARRIER_COLOR = {
+    fill: 0xda4723,
+    border: 0xffffff,
+}
+
 class ObjectSpawner {
     constructor(scene) {
         this.scene = scene;
-        this.enemies = this.scene.physics.add.group({
-            runChildUpdate: true,
-        });
+        this.enemies = {
+            grid: this.scene.physics.add.group({
+                runChildUpdate: true,
+            }),
+            special: this.scene.physics.add.group({
+                runChildUpdate: true,
+            }),
+        }
+
         this.bullets = {
             player: this.scene.physics.add.group({
                 runChildUpdate: true
@@ -38,6 +49,12 @@ class ObjectSpawner {
         this.level = this.scene.scene.get('Preloader').level;
 
         this.init_all();
+
+        // spawn enemy usb in 15-60 seconds
+        let secs = Phaser.Math.Between(15, 60);
+        console.log(`Spawning enemy USB in ${secs}s`)
+        // spawn usb in secs seconds
+        this.scene.time.delayedCall(secs * 1000, this.spawn_usb_enemy, [], this.scene.scene)
     }
 
     /**
@@ -47,10 +64,16 @@ class ObjectSpawner {
 
     init_all() {
         this.init_barriers();
+        this.init_player();
         this.init_player_bullets();
         this.init_enemy_bullets();
         this.init_explosions();
         this.init_enemy_grid();
+    }
+
+    init_player() {
+        this.player = this.scene.add.player(this.scene, this.scene.game.config.width / 2, this.scene.game.config.height - 96);
+        return this.player;
     }
 
     /**
@@ -59,19 +82,56 @@ class ObjectSpawner {
      */
 
     init_barriers() {
-        let left = new Barrier(this.scene, 100, 500, 5, 5, 40, 20, 0x2e2e2e);
-        let mid = new Barrier(this.scene, 410, 500, 5, 5, 40, 20, 0x2e2e2e);
-        let right = new Barrier(this.scene, 720, 500, 5, 5, 40, 20, 0x2e2e2e);
+        const n = { rows: 15, cols: 22 },
+            c = { w: 5, h: 5 }; // chunk dims
+
+        const screen_w = this.scene.game.config.width;
+
+        const y = 500;
+
+        const w = n.cols * c.w,
+            h = n.rows * c.h,
+            x_start = 125,
+            x_gap = w;
+
+
+        let left = new Barrier(this.scene,
+            x_start, y,
+            c.w, c.h,
+            n.cols, n.rows,
+            BARRIER_COLOR.fill
+        );
+
+        let mid_left = new Barrier(this.scene,
+            x_start + (w + x_gap), y,
+            c.w, c.h,
+            n.cols, n.rows,
+            BARRIER_COLOR.fill
+        );
+
+        let mid_right = new Barrier(this.scene,
+            x_start + 2 * (w + x_gap), y,
+            c.w, c.h,
+            n.cols, n.rows,
+            BARRIER_COLOR.fill
+        );
+
+        let right = new Barrier(this.scene,
+            x_start + 3 * (w + x_gap), y,
+            c.w, c.h,
+            n.cols, n.rows,
+            BARRIER_COLOR.fill
+        );
 
         this.barrier_chunks.addMultiple(left.chunks)
-        this.barrier_chunks.addMultiple(mid.chunks)
+        this.barrier_chunks.addMultiple(mid_left.chunks)
+        this.barrier_chunks.addMultiple(mid_right.chunks)
         this.barrier_chunks.addMultiple(right.chunks)
     }
 
     /**
      * @private
-     * @description initializes the grid of the enemies. Should only be called at the start of the level.
-     */
+     * @description initializes the grid of the enemies. Should only be called at the start of the level.  */
     init_enemy_grid() {
         let gc = enemy_defs.grid_count;
         console.log(enemy_defs);
@@ -112,7 +172,7 @@ class ObjectSpawner {
                         this.level
                     );
                 }
-                this.enemies.add(enemy);
+                this.enemies.grid.add(enemy);
             }
         }
     }
@@ -123,7 +183,7 @@ class ObjectSpawner {
      */
     init_player_bullets() {
         console.log("Initializing player bullets");
-        for (let i = 0; i < player_bull_defs.max_bullets; ++i) {
+        for (let i = 0; i < this.player.stats.max_bullets; ++i) {
             console.log(`Adding bullet #${i + 1}`);
             let bullet = this.scene.add.player_bullet(this.scene);
             this.bullets.player.add(bullet);
@@ -154,6 +214,36 @@ class ObjectSpawner {
             let explosion = this.scene.add.explosion(this.scene);
             this.explosions.add(explosion);
         }
+    }
+
+    /**
+     * @public
+     * @description Activate explosion animation at (x,y)
+     * @param {number} x The x-coord to explode at 
+     * @param {number} y The y-coord to explode at
+     */
+    explode_at(x, y) {
+        // console.log(`Exploding at (${x},${y})`)
+        let explosion = this.explosions.getFirstDead(false, 0, 0, "explosion");
+        if (explosion !== null) {
+            explosion.activate(x, y);
+            explosion.on('animationcomplete', () => {
+                explosion.deactivate();
+            })
+            this.scene.sounds.bank.sfx.explosion[Phaser.Math.Between(0, 2)].play();
+        }
+    }
+
+    /**
+     * @description Randomly spawns the USB enemy either on the left or right side
+     */
+    spawn_usb_enemy() {
+        console.log("Spawning enemy USB");
+        let rng = Phaser.Math.Between(0, 1);
+        if (rng)
+            this.scene.add.enemy_usb(this.scene, true);
+        else
+            this.scene.add.enemy_usb(this.scene, false);
     }
 }
 

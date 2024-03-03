@@ -3,18 +3,30 @@ import { EnemyBulletConstDefs as bull_defs } from "./bullet"
 // Grid gap and spawn_start are not scaled factors
 const EnemyConstDefs = {
     dims: { w: 80, h: 80 },
-    scale: { w: .75, h: .75 },
-    spawn_start: { x: 80, y: 100 },
-    grid_gap: { x: 10, y: 12 },
+    scale: { w: .5, h: .5 },
+    spawn_start: { x: 80, y: 140 },
+    grid_gap: { x: 28, y: 12 },
     // grid_count: { row: 1, col: 1 }, // TESTING
-    grid_count: { row: 5, col: 11 },
+    grid_count: { row: 5, col: 13 },
     move_gap: { x: 8, y: 10 },
     scoreValue: {
         enemy1: 30,
         enemy2: 20,
         enemy3: 10,
+        enemyUSB: 100,
     },
 };
+/* TODO: We might wanna fix the hierarchy of enemy classes. Something like:
+ *
+ *           BaseEnemy
+ *         /          \
+ *   BaseGridEnemy   BaseSpecialEnemy
+ *     / | \            / | \
+ *    e  t  c          e  t  c
+ * 
+ *  We don't really have to though, just might get messy later.
+ */
+
 
 /**
  * @classdesc The base class for the main enemies that form the grid.
@@ -23,10 +35,10 @@ const EnemyConstDefs = {
 class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
     /**
      * 
-     * @param {*} scene The scene to spawn the enemy in
-     * @param {*} x x-coord of spawn pos
-     * @param {*} y y-coord of spawn pos
-     * @param {*} anim_key The animation key to play for this enemy
+     * @param {Phaser.Scene} scene The scene to spawn the enemy in
+     * @param {number} x x-coord of spawn pos
+     * @param {number} y y-coord of spawn pos
+     * @param {string} anim_key The animation key to play for this enemy
      * @param {*} const_defs A collection of constant vars
      */
     constructor(scene, x, y, anim_key, const_defs) {
@@ -48,8 +60,8 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
         // when enemy1 reaches x_bound, it changes row and direction
 
         this.x_bound = {
-            min: this.const_defs.dims.w,
-            max: scene.game.config.width
+            min: this.const_defs.dims.w / 2,
+            max: scene.game.config.width - this.const_defs.dims.w / 2
         };
         // when enemy reaches y_bound, it's gameover
         this.y_bound = scene.game.config.height - this.const_defs.dims.h;
@@ -70,7 +82,6 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
         let bullet = this.scene.objs.bullets.enemy.getFirstDead(false, 0, 0, "enemy_bullet");
         if (bullet !== null) {
             bullet.activate(true);
-            // set the bullet to its spawn position
             bullet.setPosition(this.x, this.y);
         }
     }
@@ -101,7 +112,7 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
     }
     // return true if this enemy is overlapping an x boundary
     is_x_inbounds() {
-        return (this.x >= this.x_bound.min && this.x <= this.x_bound.max - this.const_defs.dims.w);
+        return (this.x >= this.x_bound.min && this.x <= this.x_bound.max);
     }
 
     is_y_inbounds() {
@@ -130,4 +141,71 @@ class Enemy3 extends BaseGridEnemy {
     }
 }
 
-export { Enemy1, Enemy2, Enemy3, EnemyConstDefs };
+/**
+ * @classdesc USB enemy implementation
+ */
+
+class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
+    /**
+     * @param {Phaser.Scene} scene The scene to spawn the enemy in
+     * @param {boolean} spawn_right If true, USB spawns on right side. Else, left side
+     */
+    constructor(scene, spawn_right) {
+        super(scene, 0, 0);
+        this.scene = scene;
+        this.anim_key = "usb";
+        this.scoreValue = EnemyConstDefs.scoreValue.enemyUSB;
+
+        scene.physics.add.existing(this);
+        scene.add.existing(this);
+        scene.objs.enemies.special.add(this);
+
+        let y = 80;
+        this.move = { timer: 0, cd: 150, gap: 8 };
+
+        if (spawn_right) {
+            this.setAngle(90);
+            this.setPosition(this.scene.game.config.width, y);
+            this.move.dir = -1;
+        } else {
+            this.setAngle(-90);
+            this.setPosition(0, y);
+            this.move.dir = 1;
+        }
+
+        this.setScale(1.5)
+        // this.setSize(this.const_defs.dims.w, this.const_defs.dims.h);
+        this.setOffset(0, 0);
+        this.play(this.anim_key);
+
+        this.x_bound = {
+            min: -32,
+            max: scene.game.config.width + 32
+        };
+    }
+
+    update(time, delta) {
+        if (time > this.move.timer + this.move.cd) {
+            this.move.timer = time;
+            this.x += this.move.gap * this.move.dir;
+        }
+
+        if (!this.is_x_inbounds())
+            this.destroy();
+    }
+
+    is_x_inbounds() {
+        return (this.x >= this.x_bound.min && this.x <= this.x_bound.max);
+    }
+
+    die() {
+        this.play("usb_explode");
+        this.on('animationcomplete', this.destroy)
+    }
+
+    drop_loot() {
+        /* To be implemented */
+    }
+}
+
+export { Enemy1, Enemy2, Enemy3, EnemyUSB, EnemyConstDefs };

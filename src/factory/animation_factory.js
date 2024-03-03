@@ -53,16 +53,6 @@ class AnimationFactory {
         });
 
         this.scene.anims.create({
-            key: "usb",
-            frames: this.scene.anims.generateFrameNumbers("usb", {
-                start: 0,
-                end: 5,
-            }),
-            frameRate: 8,
-            repeat: -1,
-        });
-
-        this.scene.anims.create({
             key: "enemy_l1_top_idle",
             frames: this.scene.anims.generateFrameNumbers("enemy_l1_top", {
                 start: 0,
@@ -110,47 +100,23 @@ class AnimationFactory {
         });
 
         this.scene.anims.create({
+            key: "usb",
+            frames: this.scene.anims.generateFrameNumbers("usb", {
+                start: 0,
+                end: 5,
+            }),
+            frameRate: 8,
+            repeat: -1,
+        });
+
+        this.scene.anims.create({
             key: "usb_explode",
             frames: this.scene.anims.generateFrameNumbers("usb_explode", {
                 start: 5, end: 11,
             }),
-            frameRate: 8,
-        });
-
-        /* Note: We are not using necromancer spritesheets, these are just examples on how to implement new sprites. */
-        /*
-        this.scene.anims.create({
-            key: "necromancer_idle",
-            frames: this.scene.anims.generateFrameNumbers("necromancer", {
-                start: 0,
-                end: 7,
-            }),
             frameRate: 16,
-            repeat: -1,
         });
-
-        this.scene.anims.create({
-            key: "necromancer_walk",
-            frames: this.scene.anims.generateFrameNumbers("necromancer", {
-                start: 17,
-                end: 24,
-            }),
-            frameRate: 16,
-            repeat: -1,
-        });
-
-        this.scene.anims.create({
-            key: "necromancer_shoot",
-            frames: this.scene.anims.generateFrameNumbers("necromancer", {
-                start: 51,
-                end: 63,
-            }),
-            frameRate: 32,
-        });
-        */
     }
-
-    /* TODO: Add impact explosion animation, alternatively we could try and use some particle effects */
 }
 
 export { AnimationFactory };

@@ -1,5 +1,5 @@
 import { Player } from "../objects/player";
-import { Enemy1, Enemy2, Enemy3 } from "../objects/enemy";
+import { Enemy1, Enemy2, Enemy3, EnemyUSB } from "../objects/enemy";
 import { PlayerBullet, EnemyBullet, PlayerBulletConstDefs, EnemyBulletConstDefs } from "../objects/bullet";
 import { Explosion } from "../objects/explosions"
 import { BarrierChunk } from "../objects/barrier";
@@ -23,55 +23,55 @@ Phaser.GameObjects.GameObjectFactory.register(
 Phaser.GameObjects.GameObjectFactory.register(
     "enemy_l1_top",
     function (scene, x, y) {
-        let enemy = new Enemy1(scene, x, y);
-        return enemy;
+        return new Enemy1(scene, x, y);
     }
 );
 
 Phaser.GameObjects.GameObjectFactory.register(
     "enemy_l1_middle",
     function (scene, x, y) {
-        let enemy = new Enemy2(scene, x, y);
-        return enemy;
+        return new Enemy2(scene, x, y);
     }
 );
 
 Phaser.GameObjects.GameObjectFactory.register(
     "enemy_l1_bottom",
     function (scene, x, y) {
-        let enemy = new Enemy3(scene, x, y);
-        return enemy;
+        return new Enemy3(scene, x, y);
+    }
+);
+
+Phaser.GameObjects.GameObjectFactory.register(
+    "enemy_usb",
+    function (scene, spawn_right) {
+        return new EnemyUSB(scene, spawn_right);
     }
 );
 
 Phaser.GameObjects.GameObjectFactory.register(
     "enemy_bullet",
     function (scene, x, y) {
-        let enemy_bullet = new EnemyBullet(scene, x, y);
-        return enemy_bullet;
+        return new EnemyBullet(scene, x, y);
     }
 );
 
 Phaser.GameObjects.GameObjectFactory.register(
     "explosion",
     function (scene) {
-        let explosion = new Explosion(scene);
-        return explosion;
+        return new Explosion(scene);
     }
 );
 
 Phaser.GameObjects.GameObjectFactory.register(
     "player",
     function (scene, x, y) {
-        let player = new Player(scene, x, y);
-        return player;
+        return new Player(scene, x, y);
     }
 );
 
 Phaser.GameObjects.GameObjectFactory.register(
     "player_bullet",
     function (scene) {
-        let player_bullet = new PlayerBullet(scene);
-        return player_bullet;
+        return new PlayerBullet(scene);
     }
 );

@@ -4,14 +4,15 @@ import { fonts } from '../utils/fontStyle.js';
 /**
  * @classdesc A button that, when clicked, brings the player to that level.
  * This feature will probably be limited to testing only. There is no purpose in letting a player choose a different level in a game that has infinite levels.
+ * Or, maybe we can leave it in and let the player pick higher levels incase the earlier ones are boring.
  */
 class LevelButton {
     /**
      * 
-     * @param {*} scene The scene to put the button in
-     * @param {*} x x-coordinate of topleft position of the button
-     * @param {*} y y-coordinate of topleft position of the button
-     * @param {*} level The level that the button will bring the player to
+     * @param {Phaser.Scene} scene The scene to put the button in
+     * @param {number} x x-coordinate of topleft position of the button
+     * @param {number} y y-coordinate of topleft position of the button
+     * @param {number} level The level that the button will bring the player to
      */
     constructor(scene, x, y, level) {
         this.scene = scene;
@@ -39,10 +40,10 @@ export class LevelSelect extends Scene {
         this.add.image(this.game.config.width / 2, 35, 'levelSelectlogo');
 
         const scale = { x: 50, y: 50 };
-        const offset = { x: this.game.config.width / 4.5, y: 75 };
+        const offset = { x: this.game.config.width / 10, y: 75 };
         let level = 1;
         for (let y = 1; y <= 10; y++)
-            for (let x = 1; x <= 10; x++)
+            for (let x = 1; x <= 15; x++)
                 new LevelButton(this, offset.x + x * scale.x, offset.y + y * scale.y, level++);
 
         this.backButton = this.add.text(this.game.config.width / 2, this.game.config.height - 100, 'Back', fonts.medium)

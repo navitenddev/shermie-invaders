@@ -46,6 +46,7 @@ export class Game extends Scene {
         this.level_transition_flag = false;
         this.level_text = this.add.text(this.sys.game.config.width / 3, 16, `LEVEL:${this.level}`, fonts.medium);
 
+        let player_stats = this.global_vars.player.stats;
         // The timers will be useful for tweaking the difficulty
         this.timers = {
             grid_enemy: {
@@ -56,82 +57,22 @@ export class Game extends Scene {
             },
             player: {
                 last_fired: 0,
-                shoot_cd: 150,
+                shoot_cd: 400 - (this.objs.player.stats.fire_rate - 1) * 35,
             }
         }
 
-        this.objs.player = this.add.player(this, this.sys.game.config.width / 2, this.game.config.height - 96);
+        // this.objs.player = this.add.player(this, this.sys.game.config.width / 2, this.game.config.height - 96);
 
         // Player lives text and sprites
         this.livesText = this.add.text(16, this.sys.game.config.height - 48, '3', fonts.medium);
         this.livesSprites = this.add.group({
             key: 'lives',
-            repeat: this.global_vars.player_lives - 2
-        });
-
-        this.physics.world.setBounds(0, 0, this.sys.game.config.width, this.sys.game.config.height);
-
-        // player bullet hits enemy
-        this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies,
-            (player_bullet, enemy) => {
-                // spawn explosion
-                this.explode_at(enemy.x, enemy.y);
-                player_bullet.deactivate();
-                // kill enemy
-                enemy.die();
-                this.scoreManager.addScore(enemy.scoreValue);
-            }
-        );
-
-
-        // enemy bullet hits player
-        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player,
-            (player, enemy_bullet) => {
-                if (!player.is_dead) {
-                    // spawn explosion
-                    this.explode_at(player.x, player.y);
-                    // deactivate bullet
-                    enemy_bullet.deactivate();
-                    // kill player 
-                    player.die();
-                    this.sounds.bank.sfx.hurt.play();
-                } // NOTE: This is set in ai_grid_enemy()
-            }
-        );
-
-        // enemy bullet collides with player bullet
-        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.bullets.player,
-            (enemy_bullet, player_bullet) => {
-                if (player_bullet.active && enemy_bullet.active) {
-                    this.explode_at(player_bullet.x, player_bullet.y);
-                    player_bullet.deactivate();
-                    enemy_bullet.deactivate();
-                }
-            }
-        );
-
-        // when enemy hits barrier, it eats it
-        this.physics.add.overlap(this.objs.enemies, this.objs.barrier_chunks,
-            (enemy, barr_chunk) => {
-                barr_chunk.destroy(); // OM NOM NOM
-            }
-        )
-
-        // player bullet collides with barrier
-        this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            this.explode_at(bullet.x, bullet.y);
-            bullet.deactivate();
-            barr_chunk.destroy();
-        });
-
-        // enemy bullet collides with barrier
-        this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            this.explode_at(bullet.x, bullet.y);
-            bullet.deactivate();
-            barr_chunk.destroy();
+            repeat: this.global_vars.player.lives - 2
         });
 
         this.sounds.bank.music.bg.play();
+
+        this.init_collision_events();
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
@@ -143,7 +84,7 @@ export class Game extends Scene {
     */
     updateLivesSprites() {
         this.livesSprites.clear(true, true); // Clear sprites
-        for (let i = 0; i < this.global_vars.player_lives; i++) {
+        for (let i = 0; i < this.global_vars.player.lives; i++) {
             // coordinates for the lives sprites
             let lifeConsts = { x: 84 + i * 48, y: this.sys.game.config.height - 32 };
             this.livesSprites.create(lifeConsts.x, lifeConsts.y, 'lives', 0)
@@ -154,7 +95,7 @@ export class Game extends Scene {
         this.objs.player.update(time, delta, this.keys)
 
         // Update lives text and sprites
-        this.livesText.setText(this.global_vars.player_lives);
+        this.livesText.setText(this.global_vars.player.lives);
         this.updateLivesSprites();
 
         this.ai_grid_enemies(time);
@@ -162,28 +103,11 @@ export class Game extends Scene {
     }
 
     /**
-     * @description Activate explosion animation at (x,y)
-     * @param {*} x The x-coord to explode at 
-     * @param {*} y The y-coord to explode at
-     */
-    explode_at(x, y) {
-        // console.log(`Exploding at (${x},${y})`)
-        let explosion = this.objs.explosions.getFirstDead(false, 0, 0, "explosion");
-        if (explosion !== null) {
-            explosion.activate(x, y);
-            explosion.on('animationcomplete', () => {
-                explosion.deactivate();
-            })
-            this.sounds.bank.sfx.explosion[Phaser.Math.Between(0, 2)].play();
-        }
-    }
-
-    /**
      * @private
      * Handles all logic for grid-based enemies
      */
     ai_grid_enemies(time) {
-        let enemies = this.objs.enemies.children.entries;
+        let enemies = this.objs.enemies.grid.children.entries;
 
         this.timers.grid_enemy.move_cd = (enemies.length * 10) - (this.level * 2);
         // Move all enemies down if we hit the x boundaries
@@ -242,10 +166,25 @@ export class Game extends Scene {
                         {
                             // choose a random enemy
                             let rand_index = Phaser.Math.Between(0, enemies.length - 1);
-                            let enemy = enemies[rand_index];
-                            enemy.shoot(time);
+                            let enemy = enemies[rand_index].shoot(time);
                             break;
                         }
+                    case 2: // Enemy closest to player's x position shoots
+                        if (enemies.length) {
+                            let closest = enemies[0];
+                            for (let enemy of enemies) {
+                                let x_dist = Math.abs(player.x - enemy.x);
+                                if (Math.abs(player.x - closest.x) == x_dist)
+                                    closest.push(enemy)
+                                else if (Math.abs(player.x - closest.x) < x_dist)
+                                    closest = [enemy];
+                            }
+
+                            // choose random from closest x
+                            let rand_index = Phaser.Math.Between(0, closest.length - 1);
+                            enemies[rand_index].shoot(time);
+                        }
+                        break;
                     default:
                         console.error(`Error: Invalid grid enemy shoot mode!`);
                         break;
@@ -257,12 +196,15 @@ export class Game extends Scene {
     }
 
     check_gameover() {
-        if (this.objs.enemies.children.entries.length == 0 && !this.level_transition_flag) {
-            // WIN CONDITIONS GO HERE
+        if (this.objs.enemies.grid.children.entries.length == 0 &&
+            !this.level_transition_flag) {
+
             this.goto_scene("Player Win");
-            this.global_vars.level += 1;
+            this.global_vars.level++;
             this.level_transition_flag = true;
-        } else if (this.global_vars.player_lives <= 0 && !this.objs.player.is_inbounds()) {
+        } else if (this.global_vars.player.lives <= 0 &&
+            !this.objs.player.is_inbounds()) {
+
             this.goto_scene("Player Lose");
         }
     }
@@ -275,6 +217,72 @@ export class Game extends Scene {
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
             this.sounds.bank.music.bg.stop();
             this.scene.start(targetScene);
+        });
+    }
+
+    /**
+     * @description Initializes all collision and overlap events. This function
+     * should be called after objects are initialized.
+     */
+    init_collision_events() {
+        this.physics.world.setBounds(0, 0, this.sys.game.config.width, this.sys.game.config.height);
+
+        // player bullet hits grid enemy
+        this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies.grid, (player_bullet, enemy) => {
+            this.objs.explode_at(enemy.x, enemy.y);
+            player_bullet.deactivate();
+            enemy.die();
+            this.scoreManager.addScore(enemy.scoreValue);
+        });
+
+        // player bullet hits special enemy
+        this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies.special, (player_bullet, enemy) => {
+            this.objs.explode_at(enemy.x, enemy.y);
+            player_bullet.deactivate();
+            enemy.die();
+            this.scoreManager.addScore(enemy.scoreValue);
+        });
+
+        // enemy bullet hits player
+        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player, (player, enemy_bullet) => {
+            if (!player.is_dead) {
+                this.objs.explode_at(player.x, player.y);
+                enemy_bullet.deactivate();
+                player.die();
+            }
+        });
+
+        // enemy bullet collides with player bullet
+        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.bullets.player, (enemy_bullet, player_bullet) => {
+            if (player_bullet.active && enemy_bullet.active) {
+                this.objs.explode_at(player_bullet.x, player_bullet.y);
+                player_bullet.deactivate();
+                enemy_bullet.deactivate();
+            }
+        });
+
+        // when grid enemy hits barrier, it eats it
+        this.physics.add.overlap(this.objs.enemies.grid, this.objs.barrier_chunks, (enemy, barr_chunk) => {
+            barr_chunk.destroy(); // OM NOM NOM
+        });
+
+        // when special enemy hits barrier, it eats it
+        this.physics.add.overlap(this.objs.enemies.special, this.objs.barrier_chunks, (enemy, barr_chunk) => {
+            barr_chunk.destroy(); // OM NOM NOM
+        });
+
+        // player bullet collides with barrier
+        this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {
+            this.objs.explode_at(bullet.x, bullet.y);
+            bullet.deactivate();
+            barr_chunk.destroy();
+        });
+
+        // enemy bullet collides with barrier
+        this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
+            this.objs.explode_at(bullet.x, bullet.y);
+            bullet.deactivate();
+            barr_chunk.destroy();
         });
     }
 

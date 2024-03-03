@@ -13,7 +13,11 @@ export class PlayerLose extends Scene {
         // reset global vars 
         this.global_vars = this.scene.get('Preloader');
         this.global_vars.level = 1;
-        this.global_vars.player_lives = 3;
+        this.global_vars.player.lives = 3;
+        // reset player stats to defaults
+        for (let [key, value] in Object.entries(this.global_vars.player.stats))
+            this.global_vars.player.stats[key] = 1;
+
         this.global_vars.score = 0;
 
         //commented out after adding NavitendBG to Game

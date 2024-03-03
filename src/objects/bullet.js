@@ -1,7 +1,6 @@
 const PlayerBulletConstDefs = {
-    max_bullets: 5, // max bullets that the player can have on the screen at once
-    dims: { w: 16, h: 16 },
-    speed: { x: 0, y: -3.5 },
+    dims: { w: 14, h: 32 },
+    speed: { x: 0, y: 3.5 }, // base speed (before upgrade calculations)
     offset: { x: 0, y: 0 },
     rotation_speed: 0.1,
 };
@@ -37,10 +36,12 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         //this.setScale(.25); 
         this.play('cottonBullet');
-        this.setSize(14, 32);
+        this.setSize(PlayerBulletConstDefs.dims.w, PlayerBulletConstDefs.dims.h);
+        this.setScale(0.75);
         this.setVisible(false);
         this.setActive(false);
         this.body.onOverlap = true;
+        this.speed = PlayerBulletConstDefs.speed.y;
     }
 
     /* It's important to add this to every subclass that extends a phaser object.
@@ -66,7 +67,7 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
      * @description The bullet movement per `update()`
      */
     move() {
-        this.y += PlayerBulletConstDefs.speed.y;
+        this.y -= this.speed;
     }
 
     /**
@@ -87,11 +88,13 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
 
     /**
      * @public
-     * @description Activate the bullet at (x,y)
-     * @param {*} x The x-coord in which the bullet should appear at
-     * @param {*} y The y-coord in which the bullet should appear at
+     * @description Activate the bullet at (x,y) at a given speed
+     * @param {number} x The x-coord in which the bullet should appear at
+     * @param {number} y The y-coord in which the bullet should appear at
+     * @param {number} speed The movement speed of the bullet
      */
-    activate(x, y) {
+    activate(x, y, speed) {
+        this.speed = speed;
         this.setPosition(x, y);
         this.setVisible(true);
         this.setActive(true);
@@ -168,8 +171,8 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
     /**
      * @public
      * @description Activate the bullet at (x,y)
-     * @param {*} x The x-coord in which the bullet should appear at
-     * @param {*} y The y-coord in which the bullet should appear at
+     * @param {number} x The x-coord in which the bullet should appear at
+     * @param {number} y The y-coord in which the bullet should appear at
      */
     activate(x, y) {
         this.setPosition(x, y);

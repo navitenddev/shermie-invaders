@@ -123,9 +123,30 @@ export class Preloader extends Scene {
          * referenced the same way sound_bank is referenced. 
          * Maybe we should encapsulate all globals into an assoc array?
          */
+
         this.level = 1;
-        this.player_lives = 3;
         this.score = 0;
+
+        /**
+         * Player stats/upgrades: These will need a maximum (maybe like 10 or so)
+         * so that the player can't get infinite upgrades
+         * 
+         * TODO: For testing, we want a menu that can provide the user with
+         * sliders that select shermie's stats before playing.
+         * 
+         * This won't just be used for testing. Later it can be implemented as a
+         * shop for the player to purchase upgrades.
+         */
+        this.player = {
+            lives: 3,
+            stats: {
+                bullet_speed: 1,
+                max_bullets: 1,
+                fire_rate: 1,
+                move_speed: 1,
+                // ...more to be added
+            }
+        }
 
         //  Move to the MainMenu. You could also swap this for a Scene
         //  Transition, such as a camera fade.
