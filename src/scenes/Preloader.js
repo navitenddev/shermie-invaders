@@ -147,6 +147,7 @@ export class Preloader extends Scene {
                 // ...more to be added
             }
         }
+        this.registry.set('player', this.player);
 
         //  Move to the MainMenu. You could also swap this for a Scene
         //  Transition, such as a camera fade.

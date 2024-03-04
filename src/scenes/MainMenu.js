@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs } from '../keyboard_input';
 import { fonts } from '../utils/fontStyle.js';
+import { SoundBank } from '../sounds.js';
 
 export class MainMenu extends Scene {
     constructor() {
@@ -8,6 +9,10 @@ export class MainMenu extends Scene {
     }
 
     create() {
+        // Mute on main menu
+        let sounds = this.scene.get('Preloader').sound_bank;
+        sounds.toggle_mute();
+
         // this.add.image(512, 384, 'animatedbg');
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg');
         this.animatedBg.setOrigin(0.5, 0.5);

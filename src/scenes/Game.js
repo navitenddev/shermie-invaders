@@ -21,6 +21,15 @@ export class Game extends Scene {
         super('Game');
     }
     create() {
+        this.input.keyboard.on('keydown-P', function (event) {
+            this.scene.pause('Game');
+            this.scene.launch('PauseMenu');
+        }, this);
+
+        // Unmute in game
+        let sounds = this.scene.get('Preloader').sound_bank;
+        sounds.toggle_mute();
+
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
 
