@@ -3,9 +3,7 @@ import { fonts } from './fontStyle.js';
 export default class ScoreManager {
     constructor(scene) {
         this.scene = scene;
-        this.global_vars = this.scene.scene.get('Preloader');
-        // Note: This does not create a reference to score!
-        this.score = this.global_vars.score;
+        this.score = this.scene.registry.get('score');
         this.highScore = this.loadHighScore();
         this.initScoreText();
         this.initHighScoreText();
@@ -20,8 +18,7 @@ export default class ScoreManager {
     }
 
     addScore(points) {
-        this.global_vars.score += points;
-        this.score = this.global_vars.score;
+        this.score += points;
         this.updateScoreDisplay();
     }
 

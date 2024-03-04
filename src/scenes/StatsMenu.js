@@ -87,10 +87,4 @@ export class StatsMenu extends Scene {
                 text, this.player_vars.stats, key);
         }
     }
-    modifyStat(statName, amount) {
-        // Add or subtract from the specified stat
-        this.player_vars.stats[statName] += amount;
-        // Ensure the stats don't go below a certain value (e.g., 1)
-        this.player_vars.stats[statName] = Math.max(this.player_vars.stats[statName], 1);
-    }
 }
