@@ -5,12 +5,20 @@ let chunk_size = { w: 5, h: 5 };
  */
 
 class BarrierChunk extends Phaser.GameObjects.Rectangle {
-    constructor(scene, x, y, width, height, color) {
+    constructor(scene, x, y, width, height, color, health = 10) {
         super(scene, x, y, width, height);
         scene.physics.add.existing(this, true);
         scene.add.existing(this);
         this.setFillStyle(color);
         this.body.debugShowBody = false;
+        this.health = health;
+    }
+
+    applyDamage(damage) {
+        this.health -= damage;
+        if (this.health <= 0) {
+            this.destroy();
+        }
     }
 }
 /**
