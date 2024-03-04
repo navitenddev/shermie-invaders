@@ -115,7 +115,6 @@ export class Preloader extends Scene {
         //  scenes.
         this.anim_factory = new AnimationFactory(this);
 
-        this.sound_bank = new SoundBank(this);
         // we can access sound_bank from another scene with:
         // sound_bank = this.scene.get('Preloader').sound_bank;
 
@@ -123,10 +122,6 @@ export class Preloader extends Scene {
          * referenced the same way sound_bank is referenced. 
          * Maybe we should encapsulate all globals into an assoc array?
          */
-
-        this.level = 1;
-        this.score = 0;
-
         /**
          * Player stats/upgrades: These will need a maximum (maybe like 10 or so)
          * so that the player can't get infinite upgrades
@@ -137,7 +132,11 @@ export class Preloader extends Scene {
          * This won't just be used for testing. Later it can be implemented as a
          * shop for the player to purchase upgrades.
          */
-        this.player = {
+
+        this.registry.set('level', 1);
+        this.registry.set('score', 0);
+        this.registry.set('sound_bank', this.sound_bank = new SoundBank(this));
+        this.registry.set('player_vars', {
             lives: 3,
             stats: {
                 bullet_speed: 1,
@@ -146,8 +145,7 @@ export class Preloader extends Scene {
                 move_speed: 1,
                 // ...more to be added
             }
-        }
-        this.registry.set('player', this.player);
+        });
 
         //  Move to the MainMenu. You could also swap this for a Scene
         //  Transition, such as a camera fade.

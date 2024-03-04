@@ -16,13 +16,12 @@ class LevelButton {
      */
     constructor(scene, x, y, level) {
         this.scene = scene;
-        this.level = level;
-        this.global_vars = this.scene.scene.get('Preloader');
-        this.scene.add.text(x, y, this.level, fonts.small)
+        console.log(level)
+        this.scene.add.text(x, y, level, fonts.small)
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
-                this.global_vars.level = this.level;
+                this.scene.registry.set({ level: level });
                 this.scene.scene.start('Game');
             });
     }

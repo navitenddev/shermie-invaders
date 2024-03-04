@@ -2,125 +2,95 @@ import { Scene } from 'phaser';
 import { InitKeyDefs } from '../keyboard_input';
 import { fonts } from '../utils/fontStyle.js';
 
+/**
+ * A UI component which has a - + around some text to change a numerical value
+ */
+class MenuSpinner {
+    /**
+     * @param {Phaser.Scene} scene Scene to add spinner to
+     * @param {number} x top-left x coordinate of spinner component
+     * @param {number} y top-left y coordinate of spinner component
+     * @param {number} w width of spinner component
+     * @param {number} h height of spinner component
+     * @param {string} text Text of the spinner
+     * @param {Object<string, number>} obj object containing the value being modified
+     * @param {string} key They key of the object to modify
+     */
+    constructor(scene, x, y, w, h, text, obj, key) {
+        // - button
+        this.minus = scene.add.text(x, y, '-', fonts.small)
+            .setInteractive()
+            .on('pointerdown', function () {
+                obj[key]--;
+                this.setStyle({ color: '#ff0000' });
+            })
+            .on('pointerup', function () {
+                this.setStyle(fonts.small);
+                console.log(`Modified ${text} to ${obj[key]}`);
+            });
+        // + button
+        scene.add.text(x + w, y, '+', fonts.small)
+            .setInteractive()
+            .on('pointerdown', function () {
+                obj[key]++;
+                this.setStyle({ color: '#ff0000' });
+            })
+            .on('pointerup', function () {
+                this.setStyle(fonts.small);
+                console.log(`Modified ${text} to ${obj[key]}`);
+            });
+
+        scene.add.text(x + 50, y, text, fonts.small);
+    }
+}
+
 export class StatsMenu extends Scene {
     constructor() {
         super('StatsMenu');
     }
 
     create() {
-        this.player = this.registry.get('player');
-        if (this.player) {
-            console.log('Player stats:', this.player.stats);
-        }
+        this.player_vars = this.registry.get('player_vars');
         const boxWidth = 610;
         const boxHeight = 320;
         const boxX = (this.game.config.width - boxWidth) / 2;
         const boxY = (this.game.config.height - boxHeight) / 2;
 
         const graphics = this.add.graphics();
-        graphics.fillStyle(0x000000, 0.9); 
+        graphics.fillStyle(0x000000, 0.9);
         graphics.fillRoundedRect(boxX, boxY, boxWidth, boxHeight, 10);
 
-        this.addMoveSpeed = this.add.text(boxX + 20, boxY + 20, '+', fonts.medium)
-            .setInteractive();
-        this.subtractMoveSpeed = this.add.text(boxX + 550, boxY + 20, '-', fonts.medium)
-            .setInteractive();
-
-        this.addBulletSpeed = this.add.text(boxX + 20, boxY + 70, '+', fonts.medium)
-            .setInteractive();
-        this.subtractBulletSpeed = this.add.text(boxX + 550, boxY + 70, '-', fonts.medium)
-            .setInteractive();
-
-        this.addFireRate = this.add.text(boxX + 20, boxY + 120, '+', fonts.medium)
-            .setInteractive();
-        this.subtractFireRate = this.add.text(boxX + 550, boxY + 120, '-', fonts.medium)
-            .setInteractive();
-            
-        this.addMaxBullets = this.add.text(boxX + 20, boxY + 170, '+', fonts.medium)
-            .setInteractive();
-        this.subtractMaxBullets = this.add.text(boxX + 550, boxY + 170, '-', fonts.medium)
-            .setInteractive();
-
-        this.backButton = this.add.text(boxX + 70, boxY + 250, 'Back', fonts.medium)
-            .setInteractive();
-
-        this.backButton.on('pointerdown', () => {
+        this.backButton = this.add.text(boxX + 70, boxY + 250, 'Back', fonts.small)
+            .setInteractive()
+            .on('pointerdown', () => {
                 this.scene.stop('StatsMenu');
                 this.scene.start('PauseMenu');
-        });
+            });
 
-        this.addMoveSpeed.on('pointerdown', () => {
-            this.modifyStat('move_speed', 1);
-            this.addMoveSpeed.setStyle({ color: '#ff0000' });
-        });
-        this.addMoveSpeed.on('pointerup', () => {
-            this.addMoveSpeed.setStyle(fonts.medium);
-        });
-        this.subtractMoveSpeed.on('pointerdown', () => {
-            this.modifyStat('move_speed', -1);
-            this.subtractMoveSpeed.setStyle({ color: '#ff0000' });
-        });
-        this.subtractMoveSpeed.on('pointerup', () => {
-            this.subtractMoveSpeed.setStyle(fonts.medium);
-        });
+        let x = boxX + 20,
+            y = boxY + 50,
+            w = 300, h = 50,
+            y_gap = 50;
 
-        this.addBulletSpeed.on('pointerdown', () => {
-            this.modifyStat('bullet_speed', 1);
-            this.addBulletSpeed.setStyle({ color: '#ff0000' });
-        });
-        this.addBulletSpeed.on('pointerup', () => {
-            this.addBulletSpeed.setStyle(fonts.medium);
-        });
-        this.subtractBulletSpeed.on('pointerdown', () => {
-            this.modifyStat('bullet_speed', -1);
-            this.subtractBulletSpeed.setStyle({ color: '#ff0000' });
-        });
-        this.subtractBulletSpeed.on('pointerup', () => {
-            this.subtractBulletSpeed.setStyle(fonts.medium);
-        });
+        const spinner_defs = [
+            // [key, name_to_display]
+            ['move_speed', 'Move Speed'],
+            ['bullet_speed', 'Bullet Speed'],
+            ['fire_rate', 'Fire Rate'],
+            ['max_bullets', 'Maximum Bullets'],
+        ]
 
-        this.addFireRate.on('pointerdown', () => {
-            this.modifyStat('fire_rate', 1);
-            this.addFireRate.setStyle({ color: '#ff0000' });
-        });
-        this.addFireRate.on('pointerup', () => {
-            this.addFireRate.setStyle(fonts.medium);
-        });
-        this.subtractFireRate.on('pointerdown', () => {
-            this.modifyStat('fire_rate', -1);
-            this.subtractFireRate.setStyle({ color: '#ff0000' });
-        });
-        this.subtractFireRate.on('pointerup', () => {
-            this.subtractFireRate.setStyle(fonts.medium);
-        });
-
-        this.addMaxBullets.on('pointerdown', () => {
-            this.modifyStat('max_bullets', 1);
-            this.addMaxBullets.setStyle({ color: '#ff0000' });
-        });
-        this.addMaxBullets.on('pointerup', () => {
-            this.addMaxBullets.setStyle(fonts.medium);
-        });
-        this.subtractMaxBullets.on('pointerdown', () => {
-            this.modifyStat('max_bullets', -1);
-            this.subtractMaxBullets.setStyle({ color: '#ff0000' });
-        });
-        this.subtractMaxBullets.on('pointerup', () => {
-            this.subtractMaxBullets.setStyle(fonts.medium);
-        });
-        
-        this.moveSpeed = this.add.text(boxX + 70, boxY + 20, 'Move Speed', fonts.medium)
-        this.BulletSpeed = this.add.text(boxX + 70, boxY + 70, 'Bullet Speed', fonts.medium)
-        this.FireRate = this.add.text(boxX + 70, boxY + 120, 'Fire Rate', fonts.medium)
-        this.MaxBullets = this.add.text(boxX + 70, boxY + 170, 'Maximum Bullets', fonts.medium)
-
+        let i = 0;
+        for (let sd of spinner_defs) {
+            let key = sd[0], text = sd[1];
+            new MenuSpinner(this, x, y + (y_gap * i++), w, h,
+                text, this.player_vars.stats, key);
+        }
     }
     modifyStat(statName, amount) {
         // Add or subtract from the specified stat
-        this.player.stats[statName] += amount;
-
+        this.player_vars.stats[statName] += amount;
         // Ensure the stats don't go below a certain value (e.g., 1)
-        this.player.stats[statName] = Math.max(this.player.stats[statName], 1);
-        console.log(`Modified ${this.player.stats[statName]} to ${this.player.stats[statName]}`);
+        this.player_vars.stats[statName] = Math.max(this.player_vars.stats[statName], 1);
     }
 }
