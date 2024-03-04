@@ -47,7 +47,9 @@ class MenuSpinner {
     }
 }
 
-// A test callback function to demonstrate how IconButton is used.
+/** 
+ * @description A test callback function to demonstrate how IconButton is used.
+ */
 function test_cb(arg1, arg2) {
     console.log(`test_cb operational, my args are "${arg1}" and "${arg2}"!`);
 }
@@ -89,7 +91,7 @@ export class StatsMenu extends Scene {
     create() {
         this.player_vars = this.registry.get('player_vars');
         const boxWidth = 610;
-        const boxHeight = 320;
+        const boxHeight = 340;
         const boxX = (this.game.config.width - boxWidth) / 2;
         const boxY = (this.game.config.height - boxHeight) / 2;
 
@@ -97,20 +99,17 @@ export class StatsMenu extends Scene {
         graphics.fillStyle(0x000000, 0.9);
         graphics.fillRoundedRect(boxX, boxY, boxWidth, boxHeight, 10);
 
-        this.backButton = this.add.text(boxX + 260, boxY + 250, 'Back', fonts.small)
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.scene.stop('StatsMenu');
-                this.scene.start('PauseMenu');
-            });
-
         let x = boxX + 145,
             y = boxY + 50,
             w = 300,
             y_gap = 50;
 
+        // the player lives are not in stats, so we need to make this menu
+        // spinner manually.
+        new MenuSpinner(this, x, y, w, 'Lives', this.player_vars, 'lives');
         // if/when we add new stats, create a new spinner for it by defining it
-        // here
+        // here. Note, this will only work in the for loop if the variable we
+        // are working with is in this.player_vars.stats
         const spinner_defs = [
             // [key, name_to_display]
             ['move_speed', 'Move Speed'],
@@ -119,10 +118,17 @@ export class StatsMenu extends Scene {
             ['max_bullets', 'Maximum Bullets'],
         ]
 
-        let i = 0;
+        let i = 1;
         for (let sd of spinner_defs)
             new MenuSpinner(this, x, y + (y_gap * i++), w,
                 sd[1], this.player_vars.stats, sd[0]);
+
+        this.backButton = this.add.text(boxX + 260, y + (y_gap * i), 'Back', fonts.small)
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.stop('StatsMenu');
+                this.scene.start('PauseMenu');
+            });
 
 
         // Note: This is a quick example on how the IconButton should be used. Feel free to uncomment it and play around with it first if you need to add a new powerup to the game.
