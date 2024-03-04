@@ -9,11 +9,6 @@ export class MainMenu extends Scene {
     }
 
     create() {
-        // Mute on main menu
-        let sounds = this.registry.get('sound_bank');
-        sounds.toggle_mute();
-
-        // this.add.image(512, 384, 'animatedbg');
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg')
             .setOrigin(0.5, 0.5);
 

@@ -53,11 +53,8 @@ function test_cb(arg1, arg2) {
 }
 
 /**
- * @classdesc Eventually, we will be adding temporary powerups to the player (or
- * maybe permament? but we'll see). Instead of stats being upgraded, it will be
- * other things like a Nuke, Spreadshot, Pentrating shot, etc. These won't be
- * associated with a numberical value for Shermie, so I'm creating another
- * button component that will address this in the future.
+ * @classdesc A button with an icon as its surface that calls cb with args when
+ * clicked.
  */
 class IconButton {
     /**

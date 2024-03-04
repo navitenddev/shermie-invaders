@@ -22,10 +22,6 @@ export class Game extends Scene {
     }
     create() {
 
-        // Unmute in game
-        let sounds = this.registry.get('sound_bank');
-        sounds.toggle_mute();
-
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
 
