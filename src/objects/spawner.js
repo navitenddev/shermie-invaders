@@ -1,9 +1,15 @@
-import { Enemy, EnemyUSB, EnemyConstDefs as enemy_defs } from "./enemy";
-import { PlayerBullet, PlayerBulletConstDefs as player_bull_defs, EnemyBullet, EnemyBulletConstDefs as enemy_bull_defs } from "./bullet";
+import { EnemyConstDefs as enemy_defs } from "./enemy";
+import { PlayerBullet, EnemyBulletConstDefs as enemy_bull_defs } from "./bullet";
 import { Explosion, ExplosionConstDefs as expl_defs } from "./explosions";
 import { Player } from "./player";
 import { Barrier } from "./barrier";
 import "../factory/object_factory";
+
+const BARRIER_COLOR = {
+    fill: 0xda4723,
+    border: 0xffffff,
+}
+
 /**
  * @classdesc An object that encapsulates all Phaser Groups. It initializes and spawns them to the game world when it is constructed.
  * @property {Phaser.Physics.Arcade.Group} barrier_chunks - Phaser group of barrier chunk objects
@@ -13,12 +19,9 @@ import "../factory/object_factory";
  * @property {Phaser.Physics.Arcade.Group} explosions - Phaser group of explosion objects
  */
 
-const BARRIER_COLOR = {
-    fill: 0xda4723,
-    border: 0xffffff,
-}
-
 class ObjectSpawner {
+    static GRID_COUNT = { row: 5, col: 13 }; // The # rows/cols of enemies
+
     constructor(scene) {
         this.scene = scene;
         this.enemies = {
@@ -106,7 +109,8 @@ class ObjectSpawner {
      * @private
      * @description initializes the grid of the enemies. Should only be called at the start of the level.  */
     init_enemy_grid() {
-        let gc = enemy_defs.grid_count;
+        let gc = ObjectSpawner.GRID_COUNT;
+        console.log(gc);
         console.log(enemy_defs);
         for (let y = 0; y < gc.row; ++y) {
             for (let x = 0; x < gc.col; ++x) {

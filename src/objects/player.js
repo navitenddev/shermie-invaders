@@ -1,13 +1,6 @@
 import { Game } from "../scenes/Game";
 import { PlayerBulletConstDefs as player_bull_defs } from "./bullet";
 
-const PlayerConstDefs = {
-    dims: { w: 64, h: 48 },
-    offset: {
-        body: { x: 16, y: 36 },
-    },
-};
-
 /**
  * @classdesc
  * @property {Object} An object that contains all constant vars for the player
@@ -23,6 +16,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @param {number} x x-coord of player spawn pos
      * @param {number} y y-coord of player spawn pos
      */
+    static dims = { w: 64, h: 48 };
+    static body_offset = { x: 16, y: 36 };
     static base_stats = {
         move_speed: 3,
         bullet_speed: 3,
@@ -34,18 +29,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.isInvincible = false;
         this.player_vars = scene.registry.get('player_vars');
         this.stats = this.player_vars.stats;
-        console.log(this.stats);
 
-        this.const_defs = PlayerConstDefs;
         scene.physics.add.existing(this);
         scene.add.existing(this);
-        this.setCollideWorldBounds(true);
-        this.setSize(this.const_defs.dims.w - 16, this.const_defs.dims.h - 8);
-        this.setOffset(
-            this.const_defs.offset.body.x,
-            this.const_defs.offset.body.y
-        );
-        this.play("shermie_idle");
+
+        this.setCollideWorldBounds(true)
+            .setSize(Player.dims.w - 16, Player.dims.h - 8)
+            .setOffset(Player.body_offset.x, Player.body_offset.y)
+            .play("shermie_idle");
+
         this.resetPlayer();
 
         this.sounds = scene.registry.get('sound_bank');
@@ -96,7 +88,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     /**
      * @public
      * @description When the player should die, this is called. 
-     * 
      * Marks the player as dead so that phaser knows to do start the death animation.
      */
     die() {
@@ -182,7 +173,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                     (this.stats.fire_rate * 25);
                 this.player_vars.active_bullets++;
                 let bullet_speed = player_bull_defs.speed.y + (this.stats.bullet_speed - 1);
-                console.log(`bullet speed: ${bullet_speed}`)
                 bullet.activate(this.x, this.y, bullet_speed);
                 // set the bullet to its spawn position
                 this.anims.play("shermie_shoot");
@@ -201,11 +191,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @returns {boolean} True if the player is still on the screen.
      */
     is_inbounds() {
-        return (this.y > -this.const_defs.dims.h &&
-            this.y < this.scene.game.config.height + this.const_defs.dims.h &&
-            this.x > -this.const_defs.dims.w &&
-            this.x < this.scene.game.config.width + this.const_defs.dims.w);
+        return (this.y > -Player.dims.h &&
+            this.y < this.scene.game.config.height + Player.dims.h &&
+            this.x > -Player.dims.w &&
+            this.x < this.scene.game.config.width + Player.dims.w);
     }
 }
 
-export { Player, PlayerConstDefs }
+export { Player }
