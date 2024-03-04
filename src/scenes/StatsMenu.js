@@ -2,26 +2,29 @@ import { Scene } from 'phaser';
 import { InitKeyDefs } from '../keyboard_input';
 import { fonts } from '../utils/fontStyle.js';
 
+const STAT_MIN = 1, STAT_MAX = 10;
 /**
- * A UI component which has a - + around some text to change a numerical value
+ * @description A UI component which has a - + around some text to change a numerical value
+ * Note: If we end up creating components that we wish to reuse, we should
+ * create a ui_components.js file in utils.  
  */
 class MenuSpinner {
     /**
+     * @constructor
      * @param {Phaser.Scene} scene Scene to add spinner to
      * @param {number} x top-left x coordinate of spinner component
      * @param {number} y top-left y coordinate of spinner component
      * @param {number} w width of spinner component
-     * @param {number} h height of spinner component
      * @param {string} text Text of the spinner
      * @param {Object<string, number>} obj object containing the value being modified
      * @param {string} key They key of the object to modify
      */
-    constructor(scene, x, y, w, h, text, obj, key) {
+    constructor(scene, x, y, w, text, obj, key) {
         // - button
         this.minus = scene.add.text(x, y, '-', fonts.small)
             .setInteractive()
             .on('pointerdown', function () {
-                obj[key]--;
+                obj[key] = Math.max(obj[key] - 1, STAT_MIN);
                 this.setStyle({ color: '#ff0000' });
             })
             .on('pointerup', function () {
@@ -32,7 +35,7 @@ class MenuSpinner {
         scene.add.text(x + w, y, '+', fonts.small)
             .setInteractive()
             .on('pointerdown', function () {
-                obj[key]++;
+                obj[key] = Math.min(obj[key] + 1, STAT_MAX);
                 this.setStyle({ color: '#ff0000' });
             })
             .on('pointerup', function () {
@@ -60,18 +63,20 @@ export class StatsMenu extends Scene {
         graphics.fillStyle(0x000000, 0.9);
         graphics.fillRoundedRect(boxX, boxY, boxWidth, boxHeight, 10);
 
-        this.backButton = this.add.text(boxX + 70, boxY + 250, 'Back', fonts.small)
+        this.backButton = this.add.text(boxX + 260, boxY + 250, 'Back', fonts.small)
             .setInteractive()
             .on('pointerdown', () => {
                 this.scene.stop('StatsMenu');
                 this.scene.start('PauseMenu');
             });
 
-        let x = boxX + 20,
+        let x = boxX + 145,
             y = boxY + 50,
-            w = 300, h = 50,
+            w = 300,
             y_gap = 50;
 
+        // if/when we add new stats, create a new spinner for it by defining it
+        // here
         const spinner_defs = [
             // [key, name_to_display]
             ['move_speed', 'Move Speed'],
@@ -81,10 +86,8 @@ export class StatsMenu extends Scene {
         ]
 
         let i = 0;
-        for (let sd of spinner_defs) {
-            let key = sd[0], text = sd[1];
-            new MenuSpinner(this, x, y + (y_gap * i++), w, h,
-                text, this.player_vars.stats, key);
-        }
+        for (let sd of spinner_defs)
+            new MenuSpinner(this, x, y + (y_gap * i++), w,
+                sd[1], this.player_vars.stats, sd[0]);
     }
 }

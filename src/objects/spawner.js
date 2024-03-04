@@ -83,50 +83,23 @@ class ObjectSpawner {
 
     init_barriers() {
         const n = { rows: 15, cols: 22 },
-            c = { w: 5, h: 5 }; // chunk dims
-
-        const screen_w = this.scene.game.config.width;
-
-        const y = 500;
+            c = { w: 5, h: 5 },  // individual chunk dims
+            y = 500;
 
         const w = n.cols * c.w,
-            h = n.rows * c.h,
             x_start = 125,
             x_gap = w;
 
-
-        let left = new Barrier(this.scene,
-            x_start, y,
-            c.w, c.h,
-            n.cols, n.rows,
-            BARRIER_COLOR.fill
-        );
-
-        let mid_left = new Barrier(this.scene,
-            x_start + (w + x_gap), y,
-            c.w, c.h,
-            n.cols, n.rows,
-            BARRIER_COLOR.fill
-        );
-
-        let mid_right = new Barrier(this.scene,
-            x_start + 2 * (w + x_gap), y,
-            c.w, c.h,
-            n.cols, n.rows,
-            BARRIER_COLOR.fill
-        );
-
-        let right = new Barrier(this.scene,
-            x_start + 3 * (w + x_gap), y,
-            c.w, c.h,
-            n.cols, n.rows,
-            BARRIER_COLOR.fill
-        );
-
-        this.barrier_chunks.addMultiple(left.chunks)
-        this.barrier_chunks.addMultiple(mid_left.chunks)
-        this.barrier_chunks.addMultiple(mid_right.chunks)
-        this.barrier_chunks.addMultiple(right.chunks)
+        for (let i = 0; i < 4; i++) {
+            this.barrier_chunks.addMultiple(
+                new Barrier(this.scene,
+                    x_start + i * (w + x_gap), y,
+                    c.w, c.h,
+                    n.cols, n.rows,
+                    BARRIER_COLOR.fill)
+                    .chunks
+            );
+        }
     }
 
     /**
@@ -183,7 +156,7 @@ class ObjectSpawner {
      */
     init_player_bullets() {
         console.log("Initializing player bullets");
-        for (let i = 0; i < this.player.stats.max_bullets; ++i) {
+        for (let i = 0; i < PlayerBullet.bullet_capacity; ++i) {
             console.log(`Adding bullet #${i + 1}`);
             let bullet = this.scene.add.player_bullet(this.scene);
             this.bullets.player.add(bullet);

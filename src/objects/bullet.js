@@ -24,6 +24,9 @@ const EnemyBulletConstDefs = {
  * This way we don't have to waste resources on constantly creating and destroying objects.
  */
 class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
+    // the absolute max bullets a player can ever shoot at once
+    static bullet_capacity = 10;
+
     /**
      * @constructor
      * @param {Phaser.Scene} scene - The scene in which the bullet exists.
@@ -35,11 +38,13 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         scene.add.existing(this);
         //this.setScale(.25); 
-        this.play('cottonBullet');
-        this.setSize(PlayerBulletConstDefs.dims.w, PlayerBulletConstDefs.dims.h);
-        this.setScale(0.75);
-        this.setVisible(false);
-        this.setActive(false);
+        this.play('cottonBullet')
+            .setSize(PlayerBulletConstDefs.dims.w, PlayerBulletConstDefs.dims.h)
+            .setScale(0.75)
+            .setVisible(false)
+            .setActive(false);
+
+        this.player_vars = scene.registry.get('player_vars');
         this.body.onOverlap = true;
         this.speed = PlayerBulletConstDefs.speed.y;
     }
@@ -57,7 +62,6 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         */
         if (this.active) {
             this.move();
-            //this.rotate(); not necessary with new cottonBullet Anim
             this.check_bounds();
             this.debugBodyColor = this.body?.touching.none ? 0x0099ff : 0xff9900;
         }
@@ -68,14 +72,6 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
      */
     move() {
         this.y -= this.speed;
-    }
-
-    /**
-     * @private
-     * @description The bullet rotation per `update()`
-     */
-    rotate() {
-        this.setRotation(this.rotation + PlayerBulletConstDefs.rotation_speed);
     }
 
     /**
@@ -105,6 +101,7 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
      * @description Deactivate the bullet and move it offscreen
      */
     deactivate() {
+        this.player_vars.active_bullets--;
         this.setPosition(-1024, -1024);
         this.setVisible(false);
         this.setActive(false);
@@ -134,11 +131,11 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
         super(scene, -1024, -1024, "enemy_bullet");
         this.scene.physics.add.existing(this);
         this.scene.add.existing(this);
-        this.play("bullet");
-        this.setSize(EnemyBulletConstDefs.dims.w, EnemyBulletConstDefs.dims.h);
-        this.setVisible(false);
-        this.setActive(false);
-        this.setAngle(90);
+        this.play("bullet")
+            .setSize(EnemyBulletConstDefs.dims.w, EnemyBulletConstDefs.dims.h)
+            .setVisible(false)
+            .setActive(false)
+            .setAngle(90);
     }
 
     preUpdate(time, delta) {

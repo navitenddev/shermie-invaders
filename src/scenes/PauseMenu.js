@@ -14,36 +14,35 @@ export class PauseMenu extends Scene {
         const boxY = (this.game.config.height - boxHeight) / 2;
 
         const graphics = this.add.graphics();
-        graphics.fillStyle(0x000000, 0.9); 
+        graphics.fillStyle(0x000000, 0.9);
         graphics.fillRoundedRect(boxX, boxY, boxWidth, boxHeight, 10);
-        
+
         this.resumeButton = this.add.text(boxX + 20, boxY + 20, 'Resume', fonts.medium)
-            .setInteractive();
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.stop('PauseMenu');
+                this.scene.resume('Game');
+            });
 
         this.cheatsButton = this.add.text(boxX + 20, boxY + 70, 'Cheats!', fonts.medium)
-            .setInteractive();
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.stop('PauseMenu');
+                this.scene.start('StatsMenu')
+            })
 
         this.quitButton = this.add.text(boxX + 20, boxY + 120, 'Quit', fonts.medium)
-            .setInteractive();
-
-        this.resumeButton.on('pointerdown', () => {
-            this.scene.stop('PauseMenu');
-            this.scene.resume('Game');
-        });
-
-        this.cheatsButton.on('pointerdown', () => {
-            this.scene.stop('PauseMenu');
-            this.scene.start('StatsMenu')
-        })
-
-        this.quitButton.on('pointerdown', () => {
-            this.cameras.main.fadeOut(200, 0, 0, 0);
-            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-                this.scene.stop('PauseMenu');
-                this.scene.stop('Game');
-                this.scene.start('MainMenu');
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.cameras.main.fadeOut(200, 0, 0, 0);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                    this.scene.stop('PauseMenu');
+                    this.scene.stop('Game');
+                    this.scene.update_player_bullets();
+                    this.scene.start('MainMenu');
+                });
             });
-        });
+
 
     }
 

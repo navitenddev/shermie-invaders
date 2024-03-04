@@ -48,7 +48,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.play("shermie_idle");
         this.resetPlayer();
 
-        this.sounds = scene.scene.get('Preloader').sound_bank;
+        this.sounds = scene.registry.get('sound_bank');
         this.is_dead = false;
         this.dead_vel = {
             x: 0,
@@ -173,10 +173,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      */
     shoot(time) {
         let timer = this.scene.timers.player;
-        if (time > timer.last_fired) {
+        if (this.player_vars.active_bullets < this.stats.max_bullets &&
+            time > timer.last_fired) {
             // get the next available bullet, if one is available.
             let bullet = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
-            if (bullet !== null) {
+            if (bullet) {
+                this.player_vars.active_bullets++;
                 timer.last_fired = time + timer.shoot_cd;
                 let bullet_speed = player_bull_defs.speed.y + (this.stats.bullet_speed - 1);
                 console.log(`bullet speed: ${bullet_speed}`)

@@ -23,7 +23,7 @@ export class Game extends Scene {
     create() {
 
         // Unmute in game
-        let sounds = this.scene.get('Preloader').sound_bank;
+        let sounds = this.registry.get('sound_bank');
         sounds.toggle_mute();
 
         // fade in from black
