@@ -6,9 +6,6 @@ const EnemyConstDefs = {
     scale: { w: .5, h: .5 },
     spawn_start: { x: 80, y: 140 },
     grid_gap: { x: 28, y: 12 },
-    // grid_count: { row: 1, col: 1 }, // TESTING
-    grid_count: { row: 5, col: 13 },
-    move_gap: { x: 8, y: 10 },
     scoreValue: {
         enemy1: 30,
         enemy2: 20,
@@ -27,14 +24,19 @@ const EnemyConstDefs = {
  *  We don't really have to though, just might get messy later.
  */
 
-
 /**
  * @classdesc The base class for the main enemies that form the grid.
  * @property TODO: Add details about the properties for this object
  */
 class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
+    static move_gap = { x: 8, y: 10 };
+    static timers = {
+        last_fired: 0,
+        shoot_cd: 1000,
+        last_moved: 0,
+        move_cd: 0,
+    }
     /**
-     * 
      * @param {Phaser.Scene} scene The scene to spawn the enemy in
      * @param {number} x x-coord of spawn pos
      * @param {number} y y-coord of spawn pos
@@ -93,7 +95,7 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
      */
 
     move_x(time) {
-        this.x += (this.const_defs.move_gap.x * this.move_gap_scalar * this.move_direction);
+        this.x += (BaseGridEnemy.move_gap.x * this.move_gap_scalar * this.move_direction);
     }
 
     /**
@@ -102,8 +104,8 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
      */
     move_down() {
         this.move_direction *= -1; // flip move direction
-        this.y += this.const_defs.move_gap.y;
-        this.x += (this.const_defs.move_gap.x * this.move_direction); // move back in bounds
+        this.y += BaseGridEnemy.move_gap.y;
+        this.x += (BaseGridEnemy.move_gap.x * this.move_direction); // move back in bounds
     }
 
 
@@ -143,6 +145,9 @@ class Enemy3 extends BaseGridEnemy {
 
 /**
  * @classdesc USB enemy implementation
+ * TODO: Since we're gonna have more "special" a.k.a non-grid enemies later, we
+ * should make a special enemy base class once we have a better idea of what
+ * they will all share.
  */
 
 class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
@@ -164,19 +169,18 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
         this.move = { timer: 0, cd: 150, gap: 8 };
 
         if (spawn_right) {
-            this.setAngle(90);
-            this.setPosition(this.scene.game.config.width, y);
+            this.setAngle(90)
+                .setPosition(this.scene.game.config.width, y);
             this.move.dir = -1;
         } else {
-            this.setAngle(-90);
-            this.setPosition(0, y);
+            this.setAngle(-90)
+                .setPosition(0, y);
             this.move.dir = 1;
         }
 
         this.setScale(1.5)
-        // this.setSize(this.const_defs.dims.w, this.const_defs.dims.h);
-        this.setOffset(0, 0);
-        this.play(this.anim_key);
+            .setOffset(0, 0)
+            .play(this.anim_key);
 
         this.x_bound = {
             min: -32,
@@ -199,8 +203,8 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
     }
 
     die() {
-        this.play("usb_explode");
-        this.on('animationcomplete', this.destroy)
+        this.play("usb_explode")
+            .on('animationcomplete', this.destroy)
     }
 
     drop_loot() {
@@ -208,4 +212,4 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
     }
 }
 
-export { Enemy1, Enemy2, Enemy3, EnemyUSB, EnemyConstDefs };
+export { BaseGridEnemy, Enemy1, Enemy2, Enemy3, EnemyUSB, EnemyConstDefs };

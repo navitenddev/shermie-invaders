@@ -38,6 +38,8 @@ export class Preloader extends Scene {
 
         this.load.image("lives", "lives.png");
 
+        this.load.image("placeholder", "placeholder.png");
+
         //this.load.audio(['bgmusic','shoot','explosion'], ['SFX/spacebg.wav','SFX/shoot.wav', 'SFX/explosion.wav']);
 
         this.load.audio('bgmusic', 'SFX/bgmusic.mp3');
@@ -115,39 +117,24 @@ export class Preloader extends Scene {
         //  scenes.
         this.anim_factory = new AnimationFactory(this);
 
-        this.sound_bank = new SoundBank(this);
-        // we can access sound_bank from another scene with:
-        // sound_bank = this.scene.get('Preloader').sound_bank;
+        this.registry.set('level', 1);
+        this.registry.set('score', 0);
+        this.registry.set('sound_bank', new SoundBank(this));
 
-        /* Variables that must persist throughout all scenes go here, they can be
-         * referenced the same way sound_bank is referenced. 
-         * Maybe we should encapsulate all globals into an assoc array?
-         */
-
-        this.level = 1;
-        this.score = 0;
-
-        /**
-         * Player stats/upgrades: These will need a maximum (maybe like 10 or so)
-         * so that the player can't get infinite upgrades
-         * 
-         * TODO: For testing, we want a menu that can provide the user with
-         * sliders that select shermie's stats before playing.
-         * 
-         * This won't just be used for testing. Later it can be implemented as a
-         * shop for the player to purchase upgrades.
-         */
-        this.player = {
+        this.registry.set('player_vars', {
             lives: 3,
+            /* Player stats/upgrades: These will need a maximum (maybe like 10 or so)
+             * so that the player can't get infinite upgrades.
+             */
             stats: {
                 bullet_speed: 1,
                 max_bullets: 1,
                 fire_rate: 1,
                 move_speed: 1,
                 // ...more to be added
-            }
-        }
-        this.registry.set('player', this.player);
+            },
+            active_bullets: 0, // the number of bullets that the player currently has on screen
+        });
 
         //  Move to the MainMenu. You could also swap this for a Scene
         //  Transition, such as a camera fade.

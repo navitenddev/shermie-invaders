@@ -10,8 +10,9 @@ export class PlayerWin extends Scene {
         this.cameras.main.fadeIn(1000, 0, 0, 0);
 
         this.add.image(512, 384, 'background').setAlpha(0.5);
+        this.sounds = this.registry.get('sound_bank');
 
-        this.scene.get('Preloader').sound_bank.bank.sfx.win.play();
+        this.sounds.bank.sfx.win.play();
 
         this.add.text(512, 384, 'You win, click anywhere on the screen to continue to the next level.', {
             fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',

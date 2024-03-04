@@ -1,9 +1,15 @@
-import { Enemy, EnemyUSB, EnemyConstDefs as enemy_defs } from "./enemy";
-import { PlayerBullet, PlayerBulletConstDefs as player_bull_defs, EnemyBullet, EnemyBulletConstDefs as enemy_bull_defs } from "./bullet";
+import { EnemyConstDefs as enemy_defs } from "./enemy";
+import { PlayerBullet, EnemyBulletConstDefs as enemy_bull_defs } from "./bullet";
 import { Explosion, ExplosionConstDefs as expl_defs } from "./explosions";
 import { Player } from "./player";
 import { Barrier } from "./barrier";
 import "../factory/object_factory";
+
+const BARRIER_COLOR = {
+    fill: 0xda4723,
+    border: 0xffffff,
+}
+
 /**
  * @classdesc An object that encapsulates all Phaser Groups. It initializes and spawns them to the game world when it is constructed.
  * @property {Phaser.Physics.Arcade.Group} barrier_chunks - Phaser group of barrier chunk objects
@@ -13,12 +19,9 @@ import "../factory/object_factory";
  * @property {Phaser.Physics.Arcade.Group} explosions - Phaser group of explosion objects
  */
 
-const BARRIER_COLOR = {
-    fill: 0xda4723,
-    border: 0xffffff,
-}
-
 class ObjectSpawner {
+    static GRID_COUNT = { row: 5, col: 13 }; // The # rows/cols of enemies
+
     constructor(scene) {
         this.scene = scene;
         this.enemies = {
@@ -83,57 +86,31 @@ class ObjectSpawner {
 
     init_barriers() {
         const n = { rows: 15, cols: 22 },
-            c = { w: 5, h: 5 }; // chunk dims
-
-        const screen_w = this.scene.game.config.width;
-
-        const y = 500;
+            c = { w: 5, h: 5 },  // individual chunk dims
+            y = 500;
 
         const w = n.cols * c.w,
-            h = n.rows * c.h,
             x_start = 125,
             x_gap = w;
 
-
-        let left = new Barrier(this.scene,
-            x_start, y,
-            c.w, c.h,
-            n.cols, n.rows,
-            BARRIER_COLOR.fill
-        );
-
-        let mid_left = new Barrier(this.scene,
-            x_start + (w + x_gap), y,
-            c.w, c.h,
-            n.cols, n.rows,
-            BARRIER_COLOR.fill
-        );
-
-        let mid_right = new Barrier(this.scene,
-            x_start + 2 * (w + x_gap), y,
-            c.w, c.h,
-            n.cols, n.rows,
-            BARRIER_COLOR.fill
-        );
-
-        let right = new Barrier(this.scene,
-            x_start + 3 * (w + x_gap), y,
-            c.w, c.h,
-            n.cols, n.rows,
-            BARRIER_COLOR.fill
-        );
-
-        this.barrier_chunks.addMultiple(left.chunks)
-        this.barrier_chunks.addMultiple(mid_left.chunks)
-        this.barrier_chunks.addMultiple(mid_right.chunks)
-        this.barrier_chunks.addMultiple(right.chunks)
+        for (let i = 0; i < 4; i++) {
+            this.barrier_chunks.addMultiple(
+                new Barrier(this.scene,
+                    x_start + i * (w + x_gap), y,
+                    c.w, c.h,
+                    n.cols, n.rows,
+                    BARRIER_COLOR.fill)
+                    .chunks
+            );
+        }
     }
 
     /**
      * @private
      * @description initializes the grid of the enemies. Should only be called at the start of the level.  */
     init_enemy_grid() {
-        let gc = enemy_defs.grid_count;
+        let gc = ObjectSpawner.GRID_COUNT;
+        console.log(gc);
         console.log(enemy_defs);
         for (let y = 0; y < gc.row; ++y) {
             for (let x = 0; x < gc.col; ++x) {
@@ -183,7 +160,7 @@ class ObjectSpawner {
      */
     init_player_bullets() {
         console.log("Initializing player bullets");
-        for (let i = 0; i < this.player.stats.max_bullets; ++i) {
+        for (let i = 0; i < PlayerBullet.bullet_capacity; ++i) {
             console.log(`Adding bullet #${i + 1}`);
             let bullet = this.scene.add.player_bullet(this.scene);
             this.bullets.player.add(bullet);

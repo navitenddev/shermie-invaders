@@ -1,14 +1,6 @@
 import { Game } from "../scenes/Game";
 import { PlayerBulletConstDefs as player_bull_defs } from "./bullet";
 
-const PlayerConstDefs = {
-    dims: { w: 64, h: 48 },
-    speed: { x: 2, y: 0 }, // base movespeed
-    offset: {
-        body: { x: 16, y: 36 },
-    },
-};
-
 /**
  * @classdesc
  * @property {Object} An object that contains all constant vars for the player
@@ -20,37 +12,40 @@ const PlayerConstDefs = {
 class Player extends Phaser.Physics.Arcade.Sprite {
     /**
      * 
-     * @param {*} scene The scene to add the player to
-     * @param {*} x x-coord of player spawn pos
-     * @param {*} y y-coord of player spawn pos
+     * @param {Phaser.Scene} scene The scene to add the player to
+     * @param {number} x x-coord of player spawn pos
+     * @param {number} y y-coord of player spawn pos
      */
-    static MAX_LIVES = 5; // maximum number of lives the player can have
-
+    static dims = { w: 64, h: 48 };
+    static body_offset = { x: 16, y: 36 };
     static base_stats = {
         move_speed: 3,
         bullet_speed: 3,
+    }
+
+    static timers = {
+        base_shoot_cd: 400,
+        last_fired: 0,
     }
 
     constructor(scene, x, y) {
         super(scene, x, y, "Player");
 
         this.isInvincible = false;
-        this.global_vars = this.scene.scene.get('Preloader');
-        this.stats = this.global_vars.player.stats;
+        this.player_vars = scene.registry.get('player_vars');
+        this.stats = this.player_vars.stats;
 
-        this.const_defs = PlayerConstDefs;
         scene.physics.add.existing(this);
         scene.add.existing(this);
-        this.setCollideWorldBounds(true);
-        this.setSize(this.const_defs.dims.w - 16, this.const_defs.dims.h - 8);
-        this.setOffset(
-            this.const_defs.offset.body.x,
-            this.const_defs.offset.body.y
-        );
-        this.play("shermie_idle");
+
+        this.setCollideWorldBounds(true)
+            .setSize(Player.dims.w - 16, Player.dims.h - 8)
+            .setOffset(Player.body_offset.x, Player.body_offset.y)
+            .play("shermie_idle");
+
         this.resetPlayer();
 
-        this.sounds = scene.scene.get('Preloader').sound_bank;
+        this.sounds = scene.registry.get('sound_bank');
         this.is_dead = false;
         this.dead_vel = {
             x: 0,
@@ -71,7 +66,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.y += this.dead_vel.y;
             this.setRotation(this.rotation + this.dead_vel.rot);
 
-            if (this.global_vars.player.lives > 0 && !this.is_inbounds()) {
+            if (this.player_vars.lives > 0 && !this.is_inbounds()) {
                 this.is_dead = false;
                 this.resetPlayer();
                 this.flashPlayer();
@@ -98,12 +93,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     /**
      * @public
      * @description When the player should die, this is called. 
-     * 
      * Marks the player as dead so that phaser knows to do start the death animation.
      */
     die() {
-        if (this.global_vars.player.lives > 0 && !this.isInvincible) {
-            this.global_vars.player.lives -= 1;
+        if (this.player_vars.lives > 0 && !this.isInvincible) {
+            this.player_vars.lives -= 1;
             this.sounds.bank.sfx.hurt.play();
             this.is_dead = true;
             // allow player to fly off screen
@@ -149,7 +143,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @description Adds a life to the player's life count
     */
     addLife() {
-        this.global_vars.player.lives++;
+        this.player_vars.lives++;
     }
 
     /**
@@ -162,10 +156,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         if (moving_right) {
             if (this.flipX) this.flipX = false;
-            this.x += this.const_defs.speed.x + (this.stats.move_speed - 1) / 2;
+            this.x += Player.base_stats.move_speed + (this.stats.move_speed - 1) / 2;
         } else {
             if (!this.flipX) this.flipX = true;
-            this.x -= this.const_defs.speed.x + (this.stats.move_speed - 1) / 2;
+            this.x -= Player.base_stats.move_speed + (this.stats.move_speed - 1) / 2;
         }
     }
 
@@ -174,16 +168,17 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @param {number} time The time parameter from `update()`
      */
     shoot(time) {
-        let timer = this.scene.timers.player;
-        if (time > timer.last_fired) {
+        let timer = Player.timers;
+        if (this.player_vars.active_bullets < this.stats.max_bullets &&
+            time > timer.last_fired) {
             // get the next available bullet, if one is available.
             let bullet = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
             if (bullet !== null) {
-                timer.last_fired = time + timer.shoot_cd;
+                timer.last_fired = time + timer.base_shoot_cd - (this.stats.fire_rate * 25);
+                this.player_vars.active_bullets++;
                 let bullet_speed = player_bull_defs.speed.y + (this.stats.bullet_speed - 1);
-                console.log(`bullet speed: ${bullet_speed}`)
+
                 bullet.activate(this.x, this.y, bullet_speed);
-                // set the bullet to its spawn position
                 this.anims.play("shermie_shoot");
                 this.anims.nextAnim = "shermie_idle";
                 this.sounds.bank.sfx.shoot.play();
@@ -200,11 +195,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @returns {boolean} True if the player is still on the screen.
      */
     is_inbounds() {
-        return (this.y > -this.const_defs.dims.h &&
-            this.y < this.scene.game.config.height + this.const_defs.dims.h &&
-            this.x > -this.const_defs.dims.w &&
-            this.x < this.scene.game.config.width + this.const_defs.dims.w);
+        return (this.y > -Player.dims.h &&
+            this.y < this.scene.game.config.height + Player.dims.h &&
+            this.x > -Player.dims.w &&
+            this.x < this.scene.game.config.width + Player.dims.w);
     }
 }
 
-export { Player, PlayerConstDefs }
+export { Player }

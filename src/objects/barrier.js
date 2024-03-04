@@ -21,14 +21,14 @@ class BarrierChunk extends Phaser.GameObjects.Rectangle {
 class Barrier {
     /**
      * 
-     * @param {*} scene The scene to initialize the barrier in
-     * @param {*} x Top-left x coordinate of barrier 
-     * @param {*} y Top-left y coordinate of barrier 
-     * @param {*} cw individuial chunk width
-     * @param {*} ch individual chunk height
-     * @param {*} n_cols number of columns of chunks
-     * @param {*} n_rows number of rows of chunks
-     * @param {*} color color of each chunk
+     * @param {Phaser.Scene} scene The scene to initialize the barrier in
+     * @param {number} x Top-left x coordinate of barrier 
+     * @param {number} y Top-left y coordinate of barrier 
+     * @param {number} cw individuial chunk width
+     * @param {number} ch individual chunk height
+     * @param {number} n_cols number of columns of chunks
+     * @param {number} n_rows number of rows of chunks
+     * @param {number} color color of each chunk
      */
     constructor(scene,
         x, y,             // barrier top-left corner coordinate
@@ -64,10 +64,8 @@ class Barrier {
                     c.color
                 );
                 this.chunks.push(chunk);
-                // this.barrier_chunks.add(chunk);
             }
         }
-        // this.scene.objs.barriers.push(this);
     }
 }
 

@@ -4,6 +4,7 @@ import { InitKeyDefs } from '../keyboard_input';
 import { fonts } from '../utils/fontStyle.js';
 import { Barrier } from '../objects/barrier.js';
 import ScoreManager from '../utils/ScoreManager.js';
+import { BaseGridEnemy } from '../objects/enemy.js';
 
 // The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
 import { SoundBank } from '../sounds';
@@ -21,14 +22,6 @@ export class Game extends Scene {
         super('Game');
     }
     create() {
-        this.input.keyboard.on('keydown-P', function (event) {
-            this.scene.pause('Game');
-            this.scene.launch('PauseMenu');
-        }, this);
-
-        // Unmute in game
-        let sounds = this.scene.get('Preloader').sound_bank;
-        sounds.toggle_mute();
 
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
@@ -42,8 +35,7 @@ export class Game extends Scene {
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
-        this.global_vars = this.scene.get('Preloader');
-        this.sounds = this.global_vars.sound_bank;
+        this.sounds = this.registry.get('sound_bank');
 
         this.keys = InitKeyDefs(this);
 
@@ -51,24 +43,20 @@ export class Game extends Scene {
         this.scoreManager = new ScoreManager(this);
 
         // Note: this.level is pass by value!
-        this.level = this.global_vars.level;
+        this.level = this.registry.get('level');
         this.level_transition_flag = false;
         this.level_text = this.add.text(this.sys.game.config.width / 3, 16, `LEVEL:${this.level}`, fonts.medium);
 
-        let player_stats = this.global_vars.player.stats;
+        this.player_vars = this.registry.get('player_vars');
+        this.player_stats = this.player_vars.stats;
+
         // The timers will be useful for tweaking the difficulty
-        this.timers = {
-            grid_enemy: {
-                last_fired: 0,
-                shoot_cd: 1000 - (this.level * 10),
-                last_moved: 0,
-                move_cd: 0, // NOTE: This is set in ai_grid_enemy()
-            },
-            player: {
-                last_fired: 0,
-                shoot_cd: 400 - (this.objs.player.stats.fire_rate - 1) * 35,
-            }
-        }
+        BaseGridEnemy.timers = {
+            last_fired: 0,
+            shoot_cd: 1000 - (this.level * 10),
+            last_moved: 0,
+            move_cd: 0, // NOTE: This is set in ai_grid_enemies()
+        };
 
         // this.objs.player = this.add.player(this, this.sys.game.config.width / 2, this.game.config.height - 96);
 
@@ -76,7 +64,7 @@ export class Game extends Scene {
         this.livesText = this.add.text(16, this.sys.game.config.height - 48, '3', fonts.medium);
         this.livesSprites = this.add.group({
             key: 'lives',
-            repeat: this.global_vars.player.lives - 2
+            repeat: this.player_vars.lives - 2
         });
 
         this.sounds.bank.music.bg.play();
@@ -85,6 +73,13 @@ export class Game extends Scene {
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
+        this.keys.p.on('down', () => this.pause());
+        this.keys.esc.on('down', () => this.pause());
+    }
+
+    pause() {
+        this.scene.pause('Game');
+        this.scene.launch('PauseMenu');
     }
 
     /**
@@ -93,7 +88,7 @@ export class Game extends Scene {
     */
     updateLivesSprites() {
         this.livesSprites.clear(true, true); // Clear sprites
-        for (let i = 0; i < this.global_vars.player.lives; i++) {
+        for (let i = 0; i < this.player_vars.lives; i++) {
             // coordinates for the lives sprites
             let lifeConsts = { x: 84 + i * 48, y: this.sys.game.config.height - 32 };
             this.livesSprites.create(lifeConsts.x, lifeConsts.y, 'lives', 0)
@@ -104,7 +99,7 @@ export class Game extends Scene {
         this.objs.player.update(time, delta, this.keys)
 
         // Update lives text and sprites
-        this.livesText.setText(this.global_vars.player.lives);
+        this.livesText.setText(this.player_vars.lives);
         this.updateLivesSprites();
 
         this.ai_grid_enemies(time);
@@ -118,7 +113,7 @@ export class Game extends Scene {
     ai_grid_enemies(time) {
         let enemies = this.objs.enemies.grid.children.entries;
 
-        this.timers.grid_enemy.move_cd = (enemies.length * 10) - (this.level * 2);
+        BaseGridEnemy.timers.move_cd = (enemies.length * 10) - (this.level * 2);
         // Move all enemies down if we hit the x boundaries
         for (let enemy of enemies) {
             if (!enemy.is_x_inbounds()) {
@@ -132,11 +127,10 @@ export class Game extends Scene {
         }
 
         // Move left or right if it's time to do so
-        if (time > this.timers.grid_enemy.last_moved) {
-            this.timers.grid_enemy.last_moved = time + this.timers.grid_enemy.move_cd;
-            for (let enemy of enemies) {
+        if (time > BaseGridEnemy.timers.last_moved) {
+            BaseGridEnemy.timers.last_moved = time + BaseGridEnemy.timers.move_cd;
+            for (let enemy of enemies)
                 enemy.move_x();
-            }
         }
 
         /* Right now, there are two grid enemy shooting types:
@@ -145,15 +139,14 @@ export class Game extends Scene {
          */
 
         // handle enemy shooting ai
-        let timers = this.timers;
         let player = this.objs.player;
 
-        if (time > timers.grid_enemy.last_fired) {
+        if (time > BaseGridEnemy.timers.last_fired) {
             // Roll the dice
             let shoot_mode = Phaser.Math.Between(0, 1);
 
             if (enemies && enemies.length) {
-                timers.grid_enemy.last_fired = time + timers.grid_enemy.shoot_cd;
+                BaseGridEnemy.timers.last_fired = time + BaseGridEnemy.timers.shoot_cd;
                 switch (shoot_mode) {
                     case 0: // closest enemy shoots at player (Euclidean distance)
                         {
@@ -168,7 +161,7 @@ export class Game extends Scene {
                                 if (dist < closest.dist)
                                     closest = { enemy: enemy, dist: dist };
                             }
-                            closest.enemy.shoot();
+                            if (closest.enemy) closest.enemy.shoot();
                             break;
                         }
                     case 1: // Completely random enemy shoots
@@ -207,11 +200,11 @@ export class Game extends Scene {
     check_gameover() {
         if (this.objs.enemies.grid.children.entries.length == 0 &&
             !this.level_transition_flag) {
-
-            this.goto_scene("Player Win");
-            this.global_vars.level++;
+            this.player_vars.active_bullets = 0;
+            this.registry.set({ 'level': this.level + 1 });
             this.level_transition_flag = true;
-        } else if (this.global_vars.player.lives <= 0 &&
+            this.goto_scene("Player Win");
+        } else if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
 
             this.goto_scene("Player Lose");
@@ -294,5 +287,4 @@ export class Game extends Scene {
             barr_chunk.destroy();
         });
     }
-
 }
