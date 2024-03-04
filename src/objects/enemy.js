@@ -30,6 +30,12 @@ const EnemyConstDefs = {
  */
 class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
     static move_gap = { x: 8, y: 10 };
+    static timers = {
+        last_fired: 0,
+        shoot_cd: 1000,
+        last_moved: 0,
+        move_cd: 0,
+    }
     /**
      * @param {Phaser.Scene} scene The scene to spawn the enemy in
      * @param {number} x x-coord of spawn pos
@@ -206,4 +212,4 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
     }
 }
 
-export { Enemy1, Enemy2, Enemy3, EnemyUSB, EnemyConstDefs };
+export { BaseGridEnemy, Enemy1, Enemy2, Enemy3, EnemyUSB, EnemyConstDefs };

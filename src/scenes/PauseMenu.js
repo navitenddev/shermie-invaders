@@ -38,7 +38,6 @@ export class PauseMenu extends Scene {
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                     this.scene.stop('PauseMenu');
                     this.scene.stop('Game');
-                    this.scene.update_player_bullets();
                     this.scene.start('MainMenu');
                 });
             });

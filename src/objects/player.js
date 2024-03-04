@@ -23,6 +23,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         bullet_speed: 3,
     }
 
+    static timers = {
+        base_shoot_cd: 400,
+        last_fired: 0,
+    }
+
     constructor(scene, x, y) {
         super(scene, x, y, "Player");
 
@@ -163,13 +168,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @param {number} time The time parameter from `update()`
      */
     shoot(time) {
-        let timer = this.scene.timers.player;
+        let timer = Player.timers;
         if (this.player_vars.active_bullets < this.stats.max_bullets &&
             time > timer.last_fired) {
             // get the next available bullet, if one is available.
             let bullet = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
-            if (bullet) {
-                timer.last_fired = time + timer.shoot_cd - (this.stats.fire_rate * 25);
+            if (bullet !== null) {
+                timer.last_fired = time + timer.base_shoot_cd - (this.stats.fire_rate * 25);
                 this.player_vars.active_bullets++;
                 let bullet_speed = player_bull_defs.speed.y + (this.stats.bullet_speed - 1);
                 bullet.activate(this.x, this.y, bullet_speed);
