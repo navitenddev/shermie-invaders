@@ -169,8 +169,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             // get the next available bullet, if one is available.
             let bullet = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
             if (bullet) {
-                timer.last_fired = time + timer.shoot_cd -
-                    (this.stats.fire_rate * 25);
+                timer.last_fired = time + timer.shoot_cd - (this.stats.fire_rate * 25);
                 this.player_vars.active_bullets++;
                 let bullet_speed = player_bull_defs.speed.y + (this.stats.bullet_speed - 1);
                 bullet.activate(this.x, this.y, bullet_speed);

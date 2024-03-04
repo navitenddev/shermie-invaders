@@ -34,7 +34,6 @@ export class Game extends Scene {
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
-        this.global_vars = this.scene.get('Preloader');
         this.sounds = this.registry.get('sound_bank');
 
         this.keys = InitKeyDefs(this);
@@ -83,6 +82,8 @@ export class Game extends Scene {
             this.scene.pause('Game');
             this.scene.launch('PauseMenu');
         });
+
+        console.log(this.player_stats)
     }
 
     /**
@@ -204,10 +205,10 @@ export class Game extends Scene {
     check_gameover() {
         if (this.objs.enemies.grid.children.entries.length == 0 &&
             !this.level_transition_flag) {
-
-            this.goto_scene("Player Win");
-            this.global_vars.level++;
+            this.player_vars.active_bullets = 0;
+            this.registry.set({ 'level': this.level + 1 });
             this.level_transition_flag = true;
+            this.goto_scene("Player Win");
         } else if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
 
