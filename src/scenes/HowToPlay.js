@@ -14,9 +14,10 @@ export class HowToPlay extends Scene {
 
         let width = this.game.config.width
         this.add.text(width / 3, 400,
-            'Movement: AD/←→ \n\
-Shoot: W/Space Bar \n\
-Pause: P/ESC \n\n\
+            'Movement:    A D or ← → \n\
+Shoot:       W or Space \n\
+Pause:       P or ESC \n\
+Mute Sounds: M \n\n\
 Good luck, have fun! \n\
 ',
             {
