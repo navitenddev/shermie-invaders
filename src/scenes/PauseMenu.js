@@ -17,12 +17,13 @@ export class PauseMenu extends Scene {
         graphics.fillStyle(0x000000, 0.9);
         graphics.fillRoundedRect(boxX, boxY, boxWidth, boxHeight, 10);
 
+        this.sounds = this.registry.get('sound_bank');
+
+        this.keys = InitKeyDefs(this);
+
         this.resumeButton = this.add.text(boxX + 20, boxY + 20, 'Resume', fonts.medium)
             .setInteractive()
-            .on('pointerdown', () => {
-                this.scene.stop('PauseMenu');
-                this.scene.resume('Game');
-            });
+            .on('pointerdown', () => this.unpause());
 
         this.cheatsButton = this.add.text(boxX + 20, boxY + 70, 'Cheats!', fonts.medium)
             .setInteractive()
@@ -42,7 +43,13 @@ export class PauseMenu extends Scene {
                 });
             });
 
+        this.keys.p.on('down', () => this.unpause());
+        this.keys.esc.on('down', () => this.unpause());
 
+        this.keys.m.on('down', () => this.sounds.toggle_mute());
     }
-
+    unpause() {
+        this.scene.stop('PauseMenu');
+        this.scene.resume('Game');
+    }
 }

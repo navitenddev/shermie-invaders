@@ -13,6 +13,7 @@ export class MainMenu extends Scene {
             .setOrigin(0.5, 0.5);
 
         this.add.image(512, 300, 'titlelogo');
+        this.sounds = this.registry.get('sound_bank');
         this.keys = InitKeyDefs(this);
 
         // Start Button
@@ -40,7 +41,7 @@ export class MainMenu extends Scene {
                 this.scene.start('HowToPlay');
             });
 
-
+        this.keys.m.on('down', this.sounds.toggle_mute)
     }
     update() {
         if (this.animatedBg) {

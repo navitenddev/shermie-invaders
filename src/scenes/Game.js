@@ -73,12 +73,13 @@ export class Game extends Scene {
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
-        this.keys.p.on('down', () => {
-            this.scene.pause('Game');
-            this.scene.launch('PauseMenu');
-        });
+        this.keys.p.on('down', () => this.pause());
+        this.keys.esc.on('down', () => this.pause());
+    }
 
-        console.log(this.player_stats)
+    pause() {
+        this.scene.pause('Game');
+        this.scene.launch('PauseMenu');
     }
 
     /**
@@ -138,7 +139,6 @@ export class Game extends Scene {
          */
 
         // handle enemy shooting ai
-        let timers = this.timers;
         let player = this.objs.player;
 
         if (time > BaseGridEnemy.timers.last_fired) {
@@ -287,5 +287,4 @@ export class Game extends Scene {
             barr_chunk.destroy();
         });
     }
-
 }
