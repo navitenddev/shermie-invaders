@@ -101,7 +101,7 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
      * @description Deactivate the bullet and move it offscreen
      */
     deactivate() {
-        this.player_vars.active_bullets--;
+        if (this.active) this.player_vars.active_bullets--;
         this.setPosition(-1024, -1024);
         this.setVisible(false);
         this.setActive(false);
