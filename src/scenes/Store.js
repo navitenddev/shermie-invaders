@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import { fonts } from '../utils/fontStyle.js';
-
+// *FIX THIS* CURRENT BUG, ALL BULLETS ON SCREEN WHEN STORE SCENE IS CALLED ARE SAVED ONTO PLAYER BULLET COUNT
+// ALLOW ALL BULLETS TO BE DESTROYED WHEN STORE.JS IS CALLED OR RESET BULLET COUNT
 const STAT_MIN = 1, STAT_MAX = 10;
 
 class MenuSpinner {
@@ -11,7 +12,7 @@ class MenuSpinner {
         this.stats = stats;
         this.onUpgrade = onUpgrade;
 
-        const centerX = scene.cameras.main.width / 2;
+        const centerX = scene.cameras.main.width / 2.25;
         const boxHeight = 30;
         const boxWidth = 30;
         const boxSpacing = 2; // The spacing between boxes
@@ -23,7 +24,8 @@ class MenuSpinner {
         const plusButtonX = centerX + totalBoxesWidth / 2; // 10 is an arbitrary offset for the button
 
         // Stat Name Text positioned above the boxes
-        this.statText = scene.add.text(firstBoxX, y, `${displayName}:`, fonts.small).setOrigin(0, 0);
+        this.statText = scene.add.text(firstBoxX, y - 5, `${displayName}:`, fonts.small).setOrigin(0, 0);
+        this.statText.setScale(1.2);
 
         // Display the current upgrade cost
         this.upgradeCostText = scene.add.text(plusButtonX + 100, y + 15, '', fonts.medium).setOrigin(0.5, 0);
@@ -81,6 +83,7 @@ class MenuSpinner {
             this.stats[this.statKey] = newStatValue;
             this.scene.refundUpgrade(this.statKey, this.stats[this.statKey]);
         }
+        console.log(`Modified ${this.displayName} to ${this.stats[this.statKey]}`);
 
         this.updateStatDisplay();
         this.scene.updateAllSpinners(); // Ensure other spinners are also updated if necessary
@@ -92,56 +95,54 @@ class MenuSpinner {
             return;
         }
 
-        // Define the gold color for maxed-out stats
+        // Assuming `permanentStats` has been updated to reflect committed upgrades.
         const permanentStats = this.scene.registry.get('playerPermanentStats') || {};
-        const goldColor = '#FFD700';
-        const greenColor = '#00FF00';
-        const redColor = '#FF0000';
+        const isMaxedOut = this.stats[this.statKey] === STAT_MAX;
+        const canAfford = this.scene.canAffordUpgrade(this.statKey, this.stats[this.statKey]);
+        const nextLevelCost = isMaxedOut ? 'Max' : this.scene.getUpgradeCost(this.statKey, this.stats[this.statKey]);
+        // Determine if downgrading is possible based on whether the current stat level is greater than the permanent stat level.
+        const canDowngrade = this.stats[this.statKey] > (permanentStats[this.statKey] || STAT_MIN);
 
         this.statBoxes.forEach((box, index) => {
             const isPermanent = index < permanentStats[this.statKey];
             box.setFillStyle(isPermanent ? 0xFFD700 : (index < this.stats[this.statKey] ? 0x00ff00 : 0xffffff));
         });
 
-        this.minusButton.setStyle({ color: this.stats[this.statKey] > STAT_MIN ? '#FF0000' : '#ffffff' });
-        this.plusButton.setStyle({ color: this.stats[this.statKey] < STAT_MAX ? '#00ff00' : '#ffffff' });
-
-        if (this.stats[this.statKey] === STAT_MAX) {
-            this.statText.setText(`${this.displayName}: Max`);
-            this.upgradeCostText.setText('Max').setFill(goldColor);
-        } else {
-            this.statText.setText(`${this.displayName}: ${this.stats[this.statKey]}`);
-            const nextLevelCost = this.scene.getUpgradeCost(this.statKey, this.stats[this.statKey]);
-            this.upgradeCostText.setText(`${nextLevelCost}`);
-
-            // Determine if the upgrade is affordable and set the color accordingly
-            const canAfford = this.scene.canAffordUpgrade(this.statKey, this.stats[this.statKey]);
-            this.plusButton.setFill(canAfford ? greenColor : redColor); // Update plusButton for consistency
-            this.upgradeCostText.setFill(canAfford ? greenColor : redColor);
-        }
-
-        // If the stat is maxed out, we already set the text to 'Max' and color to gold above
+        // Update styles based on conditions
+        this.minusButton.setStyle({
+            color: canDowngrade ? '#FF0000' : '#ffffff'
+        });
+        this.plusButton.setFill(canAfford && !isMaxedOut ? '#00ff00' : '#ffffff');
+        this.upgradeCostText.setText(nextLevelCost).setFill(isMaxedOut ? '#FFD700' : (canAfford ? '#00ff00' : '#FF0000'));
+        this.statText.setText(`${this.displayName}: ${isMaxedOut ? 'Max' : this.stats[this.statKey]}`);
     }
+
 }
 export class Store extends Scene {
     constructor() {
         super('Store');
         this.menuSpinners = [];
-        this.money = 6969;
+        this.money = 9000;
         this.initialStats = {};
     }
 
     create() {
-
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'upgradeTilemap')
             .setOrigin(0.5, 0.5);
 
         const startY = 250; // Starting y position for the first spinner
         const spinnerGap = 70; // Gap between each spinner to account for text and boxes
 
-        this.initialStats = Object.assign({}, this.stats);
+        let borderGraphics = this.add.graphics();
+        borderGraphics.lineStyle(2, 0xffffff, 1);
+        const borderX = this.cameras.main.width / 5;
+        const borderY = startY - 120;
+        const borderWidth = 620;
+        const borderHeight = 450;
+        borderGraphics.fillStyle(0x808080, .9);
+        borderGraphics.fillRoundedRect(borderX, borderY, borderWidth, borderHeight, 20);
 
-        const playerPermanentStats = this.registry.get('playerPermanentStats') || {};
+        this.initialStats = Object.assign({}, this.stats);
         const playerVars = this.registry.get('player_vars');
         this.stats = playerVars && playerVars.stats ? playerVars.stats : {
             bullet_speed: 1,
@@ -150,8 +151,8 @@ export class Store extends Scene {
             move_speed: 1
         };
 
-        // Display shop name at the top
         this.add.text(this.cameras.main.width / 2, 40, "Shermie Store", fonts.large).setOrigin(0.5, 0);
+        this.add.text(715, 190, "Cost", fonts.medium).setOrigin(0.5, 0.5);
 
         const statDefinitions = [
             { key: 'move_speed', displayName: 'Movement Speed' },
@@ -161,7 +162,7 @@ export class Store extends Scene {
         ];
 
         this.menuSpinners.forEach(spinner => {
-            spinner.updateStatDisplay(); // This will now also check for permanent upgrades.
+            spinner.updateStatDisplay();
         });
 
         statDefinitions.forEach((statDef, index) => {
@@ -173,61 +174,54 @@ export class Store extends Scene {
                 this.onUpgrade.bind(this),
                 statDef.displayName
             );
-            this.menuSpinners.push(spinner); // Store the reference
-
+            this.menuSpinners.push(spinner);
             if (playerVars && playerVars[statDef.key] === this.stats[statDef.key]) {
                 spinner.makePermanent();
             }
-
-            this.menuSpinners.push(spinner);
         });
 
+        const moneyIconX = 270;
+        const moneyIconY = 190;
+        const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_coin').setOrigin(0.5, 0.5).setScale(0.12);
+        const moneyTextX = moneyIconX + moneyIcon.displayWidth / 2 + 5;
+        const moneyTextY = moneyIconY;
+        this.moneyText = this.add.text(moneyTextX, moneyTextY, `${this.money}`, fonts.medium).setOrigin(0, 0.5);
 
-
-        let borderGraphics = this.add.graphics();
-
-        // Set the line style to 2 pixels thick, white color
-        borderGraphics.lineStyle(2, 0xffffff, 1);
-
-        // Starting position and dimensions for the border
-        const borderX = this.cameras.main.width / 4; // Adjust as needed
-        const borderY = startY -120; // Adjust based on your startY position for MenuSpinners
-        const borderWidth = 600; // Should be enough to cover the stat area width
-        const borderHeight = 450; // Adjust based on the number and spacing of MenuSpinners
-
-        // Draw a rectangle border
-        borderGraphics.strokeRoundedRect(borderX, borderY, borderWidth, borderHeight, 20);
-
-        const moneyIconX = 320; // X position for the money icon
-        const moneyIconY = 190; // Y position for the money icon
-        const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_coin').setOrigin(0.5, 0.5);
-        moneyIcon.setScale(0.12); // Adjust scale according to your need
-
-        // Create the money text next to the money icon
-        const moneyTextX = moneyIconX + moneyIcon.displayWidth / 2 + 5; // X position for the money text, adjusted to be next to the icon
-        const moneyTextY = moneyIconY; // Y position for the money text
-        this.moneyText = this.add.text(moneyTextX, moneyTextY, `${this.money}`, {
-            font: fonts.medium, // You can use your fonts.small if it's already defined with an appropriate size
-            fill: '#FFC000'
-        }).setOrigin(0, 0.5);
-
-        // START NEXT LEVEL? UPDATE STATS ON CLICK
-        this.add.text(this.cameras.main.width / 2, this.cameras.main.height - 50, 'Next Level?', fonts.small)
-            .setOrigin(0.5, 0)
+        // Enhance 'Next Level?' button
+        let nextLevelButton = this.add.text(this.cameras.main.width / 2, this.cameras.main.height - 100, 'Next Level?', {
+            ...fonts.small, 
+            padding: { left: 15, right: 15, top: 10, bottom: 10 },
+            backgroundColor: '#FFD700', 
+            borderRadius: 10,
+        })
             .setInteractive()
+            .setFontSize(24) // Make text slightly larger
+            .setOrigin(0.5, 0);
+
+        let nextLevelButtonBorder = this.add.graphics();
+        nextLevelButtonBorder.lineStyle(2, 0xFFFF00, 1);
+        let buttonRect = nextLevelButton.getBounds();
+
+        nextLevelButtonBorder.strokeRoundedRect(buttonRect.x - 5, buttonRect.y - 5, buttonRect.width + 10, buttonRect.height + 10, 10);
+
+        nextLevelButton.on('pointerover', () => {
+            nextLevelButton.setStyle({ fill: '#FFEA00' }); // Change text color on hover
+            nextLevelButtonBorder.clear().lineStyle(3, 0xFFEA00, 1); // Brighter border on hover
+            nextLevelButtonBorder.strokeRoundedRect(buttonRect.x - 5, buttonRect.y - 5, buttonRect.width + 10, buttonRect.height + 10, 10);
+        })
+            .on('pointerout', () => {
+                nextLevelButton.setStyle({ fill: '#FFFFFF' }); // Text color back to normal
+                nextLevelButtonBorder.clear().lineStyle(2, 0xFFFF00, 1); // Normal border
+                nextLevelButtonBorder.strokeRoundedRect(buttonRect.x - 5, buttonRect.y - 5, buttonRect.width + 10, buttonRect.height + 10, 10);
+            })
             .on('pointerdown', () => {
-                //Save current stat progression for future shops
                 this.initialStats = Object.assign({}, this.stats);
                 this.registry.set('playerPermanentStats', Object.assign({}, this.stats));
-                // Retrieve the current player_vars, update its stats, and then save it back
                 let playerVars = this.registry.get('player_vars');
-                playerVars.stats = this.stats; // Update stats part of player_vars
-
-                this.registry.set('player_vars', playerVars); // Save the updated player_vars back to the registry
-
-                this.scene.start('Game', { playerStats: this.stats }); // Navigate to the Game scene or wherever appropriate
+                playerVars.stats = this.stats;
+                this.registry.set('player_vars', playerVars);
+                this.scene.start('Game', { playerStats: this.stats });
             });
-
     }
 
     updateAllSpinners() {
