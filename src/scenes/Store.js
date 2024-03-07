@@ -20,7 +20,7 @@ class MenuSpinner {
 
         // Position the buttons relative to the center
         const minusButtonX = centerX - totalBoxesWidth / 2 - 30; // 30 is an arbitrary offset for the button
-        const plusButtonX = centerX + totalBoxesWidth / 2 ; // 10 is an arbitrary offset for the button
+        const plusButtonX = centerX + totalBoxesWidth / 2; // 10 is an arbitrary offset for the button
 
         // Stat Name Text positioned above the boxes
         this.statText = scene.add.text(firstBoxX, y, `${displayName}:`, fonts.small).setOrigin(0, 0);
@@ -70,51 +70,65 @@ class MenuSpinner {
 
     updateStat(change) {
         const newStatValue = Phaser.Math.Clamp(this.stats[this.statKey] + change, STAT_MIN, STAT_MAX);
-        if (newStatValue > this.stats[this.statKey] && this.scene.canAffordUpgrade(this.statKey, this.stats[this.statKey])) {
+        const initialStatValue = this.scene.initialStats[this.statKey] || STAT_MIN;
+        // Handle increase
+        if (change > 0 && newStatValue > this.stats[this.statKey] && this.scene.canAffordUpgrade(this.statKey, this.stats[this.statKey])) {
             this.stats[this.statKey] = newStatValue;
             this.scene.purchaseUpgrade(this.statKey, this.stats[this.statKey]);
-            this.updateStatDisplay();
         }
-        this.scene.updateAllSpinners();
+        // Handle decrease (Sell back) only if above initial or minimum value
+        else if (change < 0 && this.stats[this.statKey] > initialStatValue) {
+            this.stats[this.statKey] = newStatValue;
+            this.scene.refundUpgrade(this.statKey, this.stats[this.statKey]);
+        }
+
+        this.updateStatDisplay();
+        this.scene.updateAllSpinners(); // Ensure other spinners are also updated if necessary
     }
 
     updateStatDisplay() {
-        // Use this.displayName to access the displayName within the class
+        if (!this.scene || !this.upgradeCostText || this.upgradeCostText.scene !== this.scene) {
+            console.warn("Attempting to update stats outside of active scene");
+            return;
+        }
+
+        // Define the gold color for maxed-out stats
+        const permanentStats = this.scene.registry.get('playerPermanentStats') || {};
+        const goldColor = '#FFD700';
+        const greenColor = '#00FF00';
+        const redColor = '#FF0000';
+
         this.statBoxes.forEach((box, index) => {
-            box.setFillStyle(index < this.stats[this.statKey] ? 0x00ff00 : 0xffffff);
+            const isPermanent = index < permanentStats[this.statKey];
+            box.setFillStyle(isPermanent ? 0xFFD700 : (index < this.stats[this.statKey] ? 0x00ff00 : 0xffffff));
         });
 
-        // Update buttons based on current stat value
         this.minusButton.setStyle({ color: this.stats[this.statKey] > STAT_MIN ? '#FF0000' : '#ffffff' });
         this.plusButton.setStyle({ color: this.stats[this.statKey] < STAT_MAX ? '#00ff00' : '#ffffff' });
 
-        // If the stat is maxed out, show 'Max'
         if (this.stats[this.statKey] === STAT_MAX) {
             this.statText.setText(`${this.displayName}: Max`);
+            this.upgradeCostText.setText('Max').setFill(goldColor);
         } else {
             this.statText.setText(`${this.displayName}: ${this.stats[this.statKey]}`);
-        }
-
-        const canAfford = this.scene.canAffordUpgrade(this.statKey, this.stats[this.statKey]);
-        this.plusButton.setFill(canAfford ? '#00ff00' : '#ffffff'); // Green if can afford, white if not
-        this.plusButton.setInteractive(canAfford);
-
-        // Display the upgrade cost
-        if (this.stats[this.statKey] < STAT_MAX) {
             const nextLevelCost = this.scene.getUpgradeCost(this.statKey, this.stats[this.statKey]);
-            this.upgradeCostText.setText(nextLevelCost);
-        } else {
-            this.upgradeCostText.setText('Max');
+            this.upgradeCostText.setText(`${nextLevelCost}`);
+
+            // Determine if the upgrade is affordable and set the color accordingly
+            const canAfford = this.scene.canAffordUpgrade(this.statKey, this.stats[this.statKey]);
+            this.plusButton.setFill(canAfford ? greenColor : redColor); // Update plusButton for consistency
+            this.upgradeCostText.setFill(canAfford ? greenColor : redColor);
         }
 
+        // If the stat is maxed out, we already set the text to 'Max' and color to gold above
     }
 }
-
 export class Store extends Scene {
     constructor() {
         super('Store');
         this.menuSpinners = [];
         this.money = 6969;
+        this.initialStats = {};
     }
 
     create() {
@@ -125,18 +139,15 @@ export class Store extends Scene {
         const startY = 250; // Starting y position for the first spinner
         const spinnerGap = 70; // Gap between each spinner to account for text and boxes
 
-        const savedStats = this.registry.get('playerStats') || {
-            move_speed: 1, // default values if stats have not been saved yet
-            bullet_speed: 1,
-            fire_rate: 1,
-            max_bullets: 1
-        };
+        this.initialStats = Object.assign({}, this.stats);
 
-        this.stats = {
-            move_speed: 1,
+        const playerPermanentStats = this.registry.get('playerPermanentStats') || {};
+        const playerVars = this.registry.get('player_vars');
+        this.stats = playerVars && playerVars.stats ? playerVars.stats : {
             bullet_speed: 1,
+            max_bullets: 1,
             fire_rate: 1,
-            max_bullets: 1
+            move_speed: 1
         };
 
         // Display shop name at the top
@@ -149,6 +160,10 @@ export class Store extends Scene {
             { key: 'max_bullets', displayName: 'Max Bullets' }
         ];
 
+        this.menuSpinners.forEach(spinner => {
+            spinner.updateStatDisplay(); // This will now also check for permanent upgrades.
+        });
+
         statDefinitions.forEach((statDef, index) => {
             const spinner = new MenuSpinner(
                 this,
@@ -159,7 +174,15 @@ export class Store extends Scene {
                 statDef.displayName
             );
             this.menuSpinners.push(spinner); // Store the reference
+
+            if (playerVars && playerVars[statDef.key] === this.stats[statDef.key]) {
+                spinner.makePermanent();
+            }
+
+            this.menuSpinners.push(spinner);
         });
+
+
 
         let borderGraphics = this.add.graphics();
 
@@ -193,12 +216,16 @@ export class Store extends Scene {
             .setOrigin(0.5, 0)
             .setInteractive()
             .on('pointerdown', () => {
-                // Save the updated stats to the registry before changing the scene
-                this.registry.set('player_vars', {
-                    ...this.registry.get('player_vars'), // Spread existing player_vars to maintain other properties
-                    stats: this.stats // Update stats with the new values
-                });
-                this.scene.start('Game');
+                //Save current stat progression for future shops
+                this.initialStats = Object.assign({}, this.stats);
+                this.registry.set('playerPermanentStats', Object.assign({}, this.stats));
+                // Retrieve the current player_vars, update its stats, and then save it back
+                let playerVars = this.registry.get('player_vars');
+                playerVars.stats = this.stats; // Update stats part of player_vars
+
+                this.registry.set('player_vars', playerVars); // Save the updated player_vars back to the registry
+
+                this.scene.start('Game', { playerStats: this.stats }); // Navigate to the Game scene or wherever appropriate
             });
 
     }
@@ -238,6 +265,17 @@ export class Store extends Scene {
         const cost = this.getUpgradeCost(statKey, currentLevel - 1);
         this.money -= cost;
         this.moneyText.setText(`${this.money}`);
+    }
+
+    refundUpgrade(statKey, currentLevel) {
+        const refundAmount = this.getRefundAmount(statKey, currentLevel + 1); // +1 because we need the cost of the level we're refunding
+        this.money += refundAmount;
+        this.moneyText.setText(`${this.money}`);
+    }
+
+    getRefundAmount(statKey, level) {
+        // Assuming refund is full price of last upgrade (you can adjust the formula)
+        return this.getUpgradeCost(statKey, level - 1);
     }
 
     update() {
