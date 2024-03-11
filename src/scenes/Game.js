@@ -309,6 +309,11 @@ export class Game extends Scene {
                 damage *= randomDamageFactor;
     
                 chunk.applyDamage(damage);
+
+                // destruction particles
+                if (chunk.health <= 0) {
+                    barr_chunk.parent.destructionEmitter.explode(1, chunk.x, chunk.y);
+                }
             }
         });
     

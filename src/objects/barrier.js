@@ -61,6 +61,7 @@ class Barrier {
         // this.tree = new Phaser.Structs.RTree();
         this.init_particles();
         this.init_chunks();
+        this.chunk_particle_emitter();
     }
 
     init_chunks() {
@@ -91,7 +92,7 @@ class Barrier {
             blendMode: 'ADD',
             emitZone: {
                 type: 'random',
-                source: new Phaser.Geom.Rectangle(-55, 0, this.rect.width-10, 10),
+                source: new Phaser.Geom.Rectangle(-55, 0, this.rect.width, 10),
                 quantity: 50,
             }
         });
@@ -135,7 +136,20 @@ class Barrier {
             }
         }    
     }
-    
+
+    chunk_particle_emitter() {
+        this.destructionEmitter = this.scene.add.particles(0, 0, 'flares', {
+          frame: ['white'],
+          color: [0xffffff, 0xf89800, 0xf83600, 0x9f0404],
+          scale: { start: 0.2, end: 0, ease: 'exp.out' },
+          alpha: { start: 1, end: 0, ease: 'exp.out' },
+          lifespan: 500,
+          speed: { min: 150, max: 350 },
+          gravityY: 1000,
+          blendMode: 'ADD',
+          emitting: false
+        });
+      }
 }
 
 export { BarrierChunk, Barrier };
