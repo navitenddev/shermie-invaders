@@ -59,6 +59,7 @@ class Barrier {
 
         // this.result;
         // this.tree = new Phaser.Structs.RTree();
+        this.init_particles();
         this.init_chunks();
     }
 
@@ -71,10 +72,48 @@ class Barrier {
                     c.dims.w, c.dims.h,
                     c.color
                 );
+                chunk.parent = this; // reference to the parent barrier because we need to update the flame size based on chunks remaining
                 this.chunks.push(chunk);
             }
         }
     }
+
+    init_particles() {
+        const flames = this.scene.add.particles(150, 550, 'flares',
+        {
+            frame: 'white',
+            color: [ 0xfacc22, 0xf89800, 0xf83600, 0x9f0404 ],
+            colorEase: 'quad.out',
+            lifespan: 1200,
+            angle: { min: -90, max: -90 },
+            scale: { start: 0.50, end: 0, ease: 'sine.in' },
+            speed: 100,
+            blendMode: 'ADD',
+            emitZone: {
+                type: 'random',
+                source: new Phaser.Geom.Rectangle(-55, 0, this.rect.width-10, 10),
+                quantity: 50,
+            }
+        });
+
+        this.flames = flames; // reference to the flames particle emitter so we can update the size based on chunks remaining
+   
+        flames.setPosition(this.rect.x + this.rect.width / 2, this.rect.centerY);
+    }
+
+    update_flame_size() {
+        const remainingChunks = this.chunks.filter(chunk => chunk.active).length; // count the number of active chunks
+        const totalChunks = this.chunk_defs.n.rows * this.chunk_defs.n.cols; 
+        const percentRemaining = remainingChunks / totalChunks; 
+    
+        // if less than 50% of the barrier is remaining, destroy the flames
+        if (percentRemaining <= 0.5) { 
+            this.flames.destroy();
+        } else {
+            this.flames.setScale(percentRemaining);
+        }
+    }
+    
 }
 
 export { BarrierChunk, Barrier };

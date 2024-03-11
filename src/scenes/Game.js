@@ -21,6 +21,11 @@ export class Game extends Scene {
     constructor() {
         super('Game');
     }
+
+    preload() {
+        this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');
+    }
+    
     create() {
 
         // fade in from black
@@ -307,6 +312,9 @@ export class Game extends Scene {
             }
         });
     
+        // update the flame size based on remaining barrier chunks
+        barr_chunk.parent.update_flame_size();
+    
         bullet.deactivate();
-    }
+    }    
 }
