@@ -21,10 +21,6 @@ export class Game extends Scene {
     constructor() {
         super('Game');
     }
-
-    preload() {
-        this.load.atlas('flares', 'assets/particles/flares.png', 'assets/particles/flares.json');
-    }
     
     create() {
 
