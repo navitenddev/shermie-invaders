@@ -106,12 +106,34 @@ class Barrier {
         const totalChunks = this.chunk_defs.n.rows * this.chunk_defs.n.cols; 
         const percentRemaining = remainingChunks / totalChunks; 
     
-        // if less than 50% of the barrier is remaining, destroy the flames
-        if (percentRemaining <= 0.5) { 
-            this.flames.destroy();
+        // if less than 50% of the barrier is remaining, scale/fade away the flames
+        if (percentRemaining <= 0.5) {
+            if (this.flames && this.flames.active) {
+                this.scene.tweens.add({
+                    targets: this.flames,
+                    scale: 0,
+                    alpha: 0,
+                    duration: 2000,
+                    ease: 'Quintic.Out',
+                    onComplete: () => {
+                        if (this.flames && this.flames.active) {
+                            this.flames.destroy();
+                        }
+                        this.flames = null;
+                    }
+                });
+            }
         } else {
-            this.flames.setScale(percentRemaining);
-        }
+            if (this.flames && this.flames.active) {
+                this.scene.tweens.add({
+                    targets: this.flames,
+                    scale: percentRemaining,
+                    alpha: percentRemaining,
+                    duration: 1500,
+                    ease: 'Quintic.Out',
+                });
+            }
+        }    
     }
     
 }
