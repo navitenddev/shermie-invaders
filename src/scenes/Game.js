@@ -5,6 +5,7 @@ import { fonts } from '../utils/fontStyle.js';
 import { Barrier } from '../objects/barrier.js';
 import ScoreManager from '../utils/ScoreManager.js';
 import { BaseGridEnemy } from '../objects/enemy.js';
+import { EventDispatcher } from '../utils/event_dispatcher.js';
 
 // The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
 import { SoundBank } from '../sounds';
@@ -18,6 +19,7 @@ import { SoundBank } from '../sounds';
  */
 
 export class Game extends Scene {
+    emitter = EventDispatcher.getInstance();
     constructor() {
         super('Game');
     }
