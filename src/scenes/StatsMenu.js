@@ -99,6 +99,13 @@ export class StatsMenu extends Scene {
         graphics.fillStyle(0x000000, 0.9);
         graphics.fillRoundedRect(boxX, boxY, boxWidth, boxHeight, 10);
 
+        this.sounds = this.registry.get('sound_bank');
+        this.keys = InitKeyDefs(this);
+
+        this.keys.p.on('down', () => this.go_back());
+        this.keys.esc.on('down', () => this.go_back());
+        this.keys.m.on('down', () => this.sounds.toggle_mute())
+
         let x = boxX + 145,
             y = boxY + 50,
             w = 300,
@@ -125,13 +132,15 @@ export class StatsMenu extends Scene {
 
         this.backButton = this.add.text(boxX + 260, y + (y_gap * i), 'Back', fonts.small)
             .setInteractive()
-            .on('pointerdown', () => {
-                this.scene.stop('StatsMenu');
-                this.scene.start('PauseMenu');
-            });
+            .on('pointerdown', () => this.go_back());
 
 
         // Note: This is a quick example on how the IconButton should be used. Feel free to uncomment it and play around with it first if you need to add a new powerup to the game.
         // new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
+    }
+
+    go_back() {
+        this.scene.stop('StatsMenu');
+        this.scene.start('PauseMenu');
     }
 }
