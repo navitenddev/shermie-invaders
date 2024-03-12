@@ -26,12 +26,12 @@ class DialogueManager extends Phaser.GameObjects.Container {
     char_index;
 
     delay_timer = 0;
-    constructor(scene, data = dialogue_data, x = 512, y = 490) {
+    constructor(scene, data = dialogue_data, x = 700, y = 490) {
         super(scene, x, y);
         scene.add.existing(this);
         this.border_w = 25;
 
-        let w = (scene.game.config.width / 2);
+        let w = 325;
         let h = (scene.game.config.height / 5);
 
         this.text_data = data;
@@ -44,7 +44,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.start = { x: x, y: y, w: this.w, h: this.h };
 
         this.font = {
-            fontFamily: 'Arial Black', fontSize: 20, color: '#ffffff',
+            fontFamily: 'Arial Black', fontSize: 16, color: '#ffffff',
             stroke: '#000000', strokeThickness: 4,
             align: 'left',
             wordWrap: { width: this.w - this.border_w * 2, useAdvancedWrap: true }
