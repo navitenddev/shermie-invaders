@@ -32,7 +32,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.border_w = 25;
 
         let w = (scene.game.config.width / 2);
-        let h = (scene.game.config.height / 3);
+        let h = (scene.game.config.height / 5);
 
         this.text_data = data;
         this.bg = scene.add.graphics()
