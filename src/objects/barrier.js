@@ -21,6 +21,7 @@ class BarrierChunk extends Phaser.GameObjects.Rectangle {
         }
     }
 }
+
 /**
  * @description A Barrier object which contains a group of barrier chunks
  * @property 
@@ -53,7 +54,8 @@ class Barrier {
         this.chunk_defs = {
             dims: { w: cw, h: ch },
             n: { rows: n_rows, cols: n_cols },
-            color: color
+            color: color,
+            health: 10
         };
         this.chunks = [];
 
@@ -77,6 +79,13 @@ class Barrier {
                 this.chunks.push(chunk);
             }
         }
+    }
+
+    setChunkHealth(health) {
+        this.chunk_defs.health = health;
+        this.chunks.forEach(chunk => {
+            chunk.health = health;
+        });
     }
 
     init_particles() {
