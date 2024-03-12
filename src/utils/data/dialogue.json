@@ -30,15 +30,22 @@
     "lines": ["Yo what's goodie", "Okay cool beans", "buh bye dood"]
   },
   {
-    "key": "shermie_hurt",
-    "lines": ["ouch! that hurt!"]
-  },
-  {
     "key": "win1",
     "lines": ["AYOOOOOO", "SHERMIE IN DA HOUSE"]
   },
   {
     "key": "lose1",
     "lines": ["We may have lost the battle...", "but not the war..."]
+  },
+  {
+    "key": "shermie_hurt",
+    "lines": ["ouch! that hurt!"]
+  },
+  {
+    "key": "shermie_start",
+    "lines": [
+      "Player, we're being invaded by malware!",
+      "Help me take them out so we don't lose our jobs!"
+    ]
   }
 ]
