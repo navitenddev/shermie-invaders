@@ -23,7 +23,7 @@ export class Game extends Scene {
     constructor() {
         super('Game');
     }
-    
+
     create() {
 
         // fade in from black
@@ -52,6 +52,13 @@ export class Game extends Scene {
 
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
+
+        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
+            () => {
+                if (this.level === 1)
+                    this.start_dialogue('shermie_start', true)
+            }
+        );
 
         // The timers will be useful for tweaking the difficulty
         BaseGridEnemy.timers = {
@@ -206,10 +213,12 @@ export class Game extends Scene {
             this.player_vars.active_bullets = 0;
             this.registry.set({ 'level': this.level + 1 });
             this.level_transition_flag = true;
+            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.goto_scene("Player Win");
         } else if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
 
+            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.goto_scene("Player Lose");
         }
     }
@@ -254,6 +263,10 @@ export class Game extends Scene {
                 this.objs.explode_at(player.x, player.y);
                 enemy_bullet.deactivate();
                 player.die();
+                if (this.player_vars.lives === 0)
+                    this.start_dialogue('shermie_dead', false);
+                else
+                    this.start_dialogue('shermie_hurt', false);
             }
         });
 
@@ -291,11 +304,11 @@ export class Game extends Scene {
     explode_at_bullet_hit(bullet, barr_chunk) {
         const baseExplosionRadius = 18;
         const maxDamage = 100;
-    
+
         // randomn explosion radius
         const randomRadiusFactor = Phaser.Math.FloatBetween(1.0, 1.6);
         const explosionRadius = baseExplosionRadius * randomRadiusFactor;
-    
+
         // loop through all barrier chunks to apply damage
         this.objs.barrier_chunks.children.each(chunk => {
             const distance = Phaser.Math.Distance.Between(bullet.x, bullet.y, chunk.x, chunk.y);
@@ -305,7 +318,7 @@ export class Game extends Scene {
                 let damage = maxDamage * (1 - distance / explosionRadius);
                 let randomDamageFactor = Phaser.Math.FloatBetween(0.1, 1.2);
                 damage *= randomDamageFactor;
-    
+
                 chunk.applyDamage(damage);
 
                 // destruction particles
@@ -314,10 +327,21 @@ export class Game extends Scene {
                 }
             }
         });
-    
+
         // update the flame size based on remaining barrier chunks
         barr_chunk.parent.update_flame_size();
-    
+
         bullet.deactivate();
-    }    
+    }
+
+    /**
+     * @param {*} key Start the dialogue sequence with this key
+     * @param {*} blocking If true, will stop all actions in the current scene. Until dialogue complete
+     */
+    start_dialogue(key, blocking = true) {
+        this.emitter.emit('force_dialogue_stop'); // never have more than one dialogue manager at once
+        this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Game' });
+        if (blocking)
+            this.scene.pause();
+    }
 }

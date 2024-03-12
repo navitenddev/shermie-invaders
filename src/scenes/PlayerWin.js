@@ -1,6 +1,8 @@
 import { Scene } from 'phaser';
+import { EventDispatcher } from '../utils/event_dispatcher';
 
 export class PlayerWin extends Scene {
+    emitter = EventDispatcher.getInstance();
     constructor() {
         super('Player Win');
     }
@@ -12,6 +14,8 @@ export class PlayerWin extends Scene {
             // do dis when fade done
             this.start_dialogue('win1')
         });
+
+        this.emitter.removeAllListeners(); // clean up event listeners
 
         this.add.image(512, 384, 'background').setAlpha(0.5);
         this.sounds = this.registry.get('sound_bank');
