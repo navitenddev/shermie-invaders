@@ -1,7 +1,9 @@
 import { Scene } from 'phaser';
 import { SoundBank } from '../sounds';
+import { EventDispatcher } from '../utils/event_dispatcher';
 
 export class PlayerLose extends Scene {
+    emitter = EventDispatcher.getInstance();
     constructor() {
         super('Player Lose');
     }
@@ -14,6 +16,7 @@ export class PlayerLose extends Scene {
             // do dis when fade done
             this.start_dialogue('lose1')
         });
+        this.emitter.removeAllListeners();
 
         this.sounds = this.registry.get('sound_bank');
         // reset global vars 

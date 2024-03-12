@@ -52,11 +52,11 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
         this.text = scene.add.text(25, 25, "", this.font);
         this.add([this.bg, this.text]);
-        this.emitter.on('dialogue_start', (key) => {
+        this.emitter.once('dialogue_start', (key) => {
             this.#activate(key)
         })
 
-        this.emitter.on('force_dialogue_stop', () => {
+        this.emitter.once('force_dialogue_stop', () => {
             this.#deactivate();
         })
 
