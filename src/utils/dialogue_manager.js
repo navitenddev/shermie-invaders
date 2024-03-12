@@ -26,22 +26,25 @@ class DialogueManager extends Phaser.GameObjects.Container {
     char_index;
 
     delay_timer = 0;
-    constructor(scene, data = dialogue_data, x = 0, y = 490) {
+    constructor(scene, data = dialogue_data, x = 512, y = 490) {
         super(scene, x, y);
         scene.add.existing(this);
         this.border_w = 25;
 
+        let w = (scene.game.config.width / 2);
+        let h = (scene.game.config.height / 3);
+
         this.text_data = data;
         this.bg = scene.add.graphics()
-            .fillStyle(0xb2b2b2, 1)
-            .fillRoundedRect(10, 10, scene.game.config.width - this.border_w, scene.game.config.height / 3, 10);
+            .fillStyle(0xb2b2b2, 0.75)
+            .fillRoundedRect(10, 10, w - this.border_w, h, 10);
 
-        this.w = scene.game.config.width - this.border_w;
-        this.h = scene.game.config.height / 3;
+        this.w = w - this.border_w;
+        this.h = h;
         this.start = { x: x, y: y, w: this.w, h: this.h };
 
         this.font = {
-            fontFamily: 'Arial Black', fontSize: 60, color: '#ffffff',
+            fontFamily: 'Arial Black', fontSize: 20, color: '#ffffff',
             stroke: '#000000', strokeThickness: 4,
             align: 'left',
             wordWrap: { width: this.w - this.border_w * 2, useAdvancedWrap: true }
@@ -51,6 +54,10 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.add([this.bg, this.text]);
         this.emitter.on('dialogue_start', (key) => {
             this.#activate(key)
+        })
+
+        this.emitter.on('force_dialogue_stop', () => {
+            this.#deactivate();
         })
 
         this.setPosition(42069, 42069);

@@ -213,10 +213,12 @@ export class Game extends Scene {
             this.player_vars.active_bullets = 0;
             this.registry.set({ 'level': this.level + 1 });
             this.level_transition_flag = true;
+            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.goto_scene("Player Win");
         } else if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
 
+            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.goto_scene("Player Lose");
         }
     }
@@ -261,6 +263,10 @@ export class Game extends Scene {
                 this.objs.explode_at(player.x, player.y);
                 enemy_bullet.deactivate();
                 player.die();
+                if (this.player_vars.lives === 0)
+                    this.start_dialogue('shermie_dead', false);
+                else
+                    this.start_dialogue('shermie_hurt', false);
             }
         });
 
@@ -333,6 +339,7 @@ export class Game extends Scene {
      * @param {*} blocking If true, will stop all actions in the current scene. Until dialogue complete
      */
     start_dialogue(key, blocking = true) {
+        this.emitter.emit('force_dialogue_stop'); // never have more than one dialogue manager at once
         this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Game' });
         if (blocking)
             this.scene.pause();

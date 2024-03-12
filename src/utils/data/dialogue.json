@@ -47,5 +47,9 @@
       "Player, we're being invaded by malware!",
       "Help me take them out so we don't lose our jobs!"
     ]
+  },
+  {
+    "key": "shermie_dead",
+    "lines": ["NoooooOOOOoOOOoOOOO!!!"]
   }
 ]
