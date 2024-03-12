@@ -23,6 +23,7 @@ export class Game extends Scene {
     constructor() {
         super('Game');
     }
+    
     create() {
 
         // fade in from black
@@ -277,16 +278,46 @@ export class Game extends Scene {
 
         // player bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            this.objs.explode_at(bullet.x, bullet.y);
-            bullet.deactivate();
-            barr_chunk.destroy();
+            this.explode_at_bullet_hit(bullet, barr_chunk);
+
         });
 
         // enemy bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            this.objs.explode_at(bullet.x, bullet.y);
-            bullet.deactivate();
-            barr_chunk.destroy();
+            this.explode_at_bullet_hit(bullet, barr_chunk);
         });
     }
+
+    explode_at_bullet_hit(bullet, barr_chunk) {
+        const baseExplosionRadius = 18;
+        const maxDamage = 100;
+    
+        // randomn explosion radius
+        const randomRadiusFactor = Phaser.Math.FloatBetween(1.0, 1.6);
+        const explosionRadius = baseExplosionRadius * randomRadiusFactor;
+    
+        // loop through all barrier chunks to apply damage
+        this.objs.barrier_chunks.children.each(chunk => {
+            const distance = Phaser.Math.Distance.Between(bullet.x, bullet.y, chunk.x, chunk.y);
+
+            if (chunk.active && distance < explosionRadius) {
+                // calculate damage based on distance
+                let damage = maxDamage * (1 - distance / explosionRadius);
+                let randomDamageFactor = Phaser.Math.FloatBetween(0.1, 1.2);
+                damage *= randomDamageFactor;
+    
+                chunk.applyDamage(damage);
+
+                // destruction particles
+                if (chunk.health <= 0) {
+                    barr_chunk.parent.destructionEmitter.explode(1, chunk.x, chunk.y);
+                }
+            }
+        });
+    
+        // update the flame size based on remaining barrier chunks
+        barr_chunk.parent.update_flame_size();
+    
+        bullet.deactivate();
+    }    
 }

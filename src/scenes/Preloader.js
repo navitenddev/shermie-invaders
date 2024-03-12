@@ -109,6 +109,9 @@ export class Preloader extends Scene {
             frameWidth: 32,
             frameHeight: 32,
         });
+
+        this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');
+
     }
     create() {
         //  When all the assets have loaded, it's often worth creating global
