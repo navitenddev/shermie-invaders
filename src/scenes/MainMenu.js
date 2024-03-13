@@ -14,6 +14,9 @@ export class MainMenu extends Scene {
 
         this.add.image(512, 300, 'titlelogo');
         this.sounds = this.registry.get('sound_bank');
+        this.player_vars = this.registry.get('player_vars');
+        this.player_vars.wallet = 0;
+
         this.keys = InitKeyDefs(this);
 
         // Start Button

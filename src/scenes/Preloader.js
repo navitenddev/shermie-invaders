@@ -136,6 +136,7 @@ export class Preloader extends Scene {
                 move_speed: 1,
                 // ...more to be added
             },
+            wallet: 0, // holds shermie bux
             active_bullets: 0, // the number of bullets that the player currently has on screen
         });
 

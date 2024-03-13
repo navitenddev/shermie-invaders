@@ -23,6 +23,7 @@ export class PlayerLose extends Scene {
         this.player_vars = this.registry.get('player_vars');
         this.registry.set({ 'score': 0 });
         this.player_vars.lives = 3;
+        this.player_vars.wallet = 0; // bye bye shermie bux
         // reset player stats to defaults
         for (let [key, value] of Object.entries(this.player_vars.stats))
             this.player_vars.stats[key] = 1;
