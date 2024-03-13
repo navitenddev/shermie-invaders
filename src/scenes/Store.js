@@ -119,11 +119,13 @@ export class Store extends Scene {
     constructor() {
         super('Store');
         this.menuSpinners = [];
+        //****SET MONEY AMOUNT HERE***
         this.money = 9000;
         this.initialStats = {};
     }
 
     create() {
+        //Background
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'upgradeTilemap')
             .setOrigin(0.5, 0.5);
 
@@ -139,6 +141,7 @@ export class Store extends Scene {
         borderGraphics.fillStyle(0x808080, .9);
         borderGraphics.fillRoundedRect(borderX, borderY, borderWidth, borderHeight, 20);
 
+        //Sets initial Character stats or replaces them with current player stats. 
         this.initialStats = Object.assign({}, this.stats);
         const playerVars = this.registry.get('player_vars');
         this.stats = playerVars && playerVars.stats ? playerVars.stats : {
@@ -151,6 +154,7 @@ export class Store extends Scene {
         this.add.text(this.cameras.main.width / 2, 40, "Shermie Store", fonts.large).setOrigin(0.5, 0);
         this.add.text(715, 190, "Cost", fonts.medium).setOrigin(0.5, 0.5);
 
+        //Link Player stat key to display name
         const statDefinitions = [
             { key: 'move_speed', displayName: 'Movement Speed' },
             { key: 'bullet_speed', displayName: 'Bullet Speed' },
@@ -158,6 +162,7 @@ export class Store extends Scene {
             { key: 'max_bullets', displayName: 'Max Bullets' }
         ];
 
+        //Update and initialize new spinners 
         this.menuSpinners.forEach(spinner => {
             spinner.updateStatDisplay();
         });
@@ -177,6 +182,7 @@ export class Store extends Scene {
             }
         });
 
+        //Show Shermie Bux here
         const moneyIconX = 270;
         const moneyIconY = 190;
         const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_coin').setOrigin(0.5, 0.5).setScale(0.12);
