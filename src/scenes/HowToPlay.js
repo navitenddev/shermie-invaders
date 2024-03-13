@@ -9,7 +9,7 @@ export class HowToPlay extends Scene {
     create() {
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg');
         this.animatedBg.setOrigin(0.5, 0.5);
-
+        this.sounds = this.registry.get('sound_bank');
         this.add.image(512, 300, 'howToPlayLogo');
 
         let width = this.game.config.width
@@ -29,6 +29,7 @@ Good luck, have fun! \n\
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
+                this.sounds.bank.sfx.click.play();
                 this.scene.start('MainMenu');
             });
     }

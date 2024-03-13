@@ -132,7 +132,7 @@ export class StatsMenu extends Scene {
 
         this.backButton = this.add.text(boxX + 260, y + (y_gap * i), 'Back', fonts.small)
             .setInteractive()
-            .on('pointerdown', () => this.go_back());
+            .on('pointerdown', () => {this.sounds.bank.sfx.click.play();this.go_back();});
 
 
         // Note: This is a quick example on how the IconButton should be used. Feel free to uncomment it and play around with it first if you need to add a new powerup to the game.
