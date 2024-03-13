@@ -1,9 +1,7 @@
 import { Scene } from 'phaser';
 import { fonts } from '../utils/fontStyle.js';
-// *FIX THIS* CURRENT BUG, ALL BULLETS ON SCREEN WHEN STORE SCENE IS CALLED ARE SAVED ONTO PLAYER BULLET COUNT
-// ALLOW ALL BULLETS TO BE DESTROYED WHEN STORE.JS IS CALLED OR RESET BULLET COUNT
-const STAT_MIN = 1, STAT_MAX = 10;
 
+const STAT_MIN = 1, STAT_MAX = 10;
 class MenuSpinner {
     constructor(scene, y, statKey, stats, onUpgrade, displayName) {
         this.displayName = displayName;
@@ -15,7 +13,7 @@ class MenuSpinner {
         const centerX = scene.cameras.main.width / 2.25;
         const boxHeight = 30;
         const boxWidth = 30;
-        const boxSpacing = 2; // The spacing between boxes
+        const boxSpacing = 2; 
         const totalBoxesWidth = STAT_MAX * (boxWidth + boxSpacing);
         const firstBoxX = centerX - totalBoxesWidth / 2 - 15;
 
@@ -38,32 +36,32 @@ class MenuSpinner {
         this.plusButton = scene.add.text(plusButtonX, y + 25, '+', fonts.small).setOrigin(0.5, 0).setInteractive();
         this.plusButton.setScale(1.5);
 
-        // Stat Boxes positioned below the stat text
+        // Stat Boxes below the stat text
         this.statBoxes = [];
         const boxesStartX = centerX - totalBoxesWidth / 2;
         for (let i = 0; i < STAT_MAX; i++) {
             this.statBoxes.push(scene.add.rectangle(boxesStartX + i * (boxWidth + boxSpacing), y + 40, boxWidth, boxHeight, 0xffffff).setStrokeStyle(2, 0x000000));
         }
 
+        //Interactive minus and plus buttons
         this.minusButton
             .setInteractive()
             .on('pointerdown', () => {
                 this.updateStat(-1);
-                this.minusButton.setScale(1.2); // Makes the button look pressed
+                this.minusButton.setScale(1.2); 
             })
             .on('pointerup', () => {
-                this.minusButton.setScale(1.5); // Reverts the button to original scale
+                this.minusButton.setScale(1.5); 
             });
 
-        // Interactive styling for the plus button
         this.plusButton
             .setInteractive()
             .on('pointerdown', () => {
                 this.updateStat(1);
-                this.plusButton.setScale(1.2); // Makes the button look pressed
+                this.plusButton.setScale(1.2); 
             })
             .on('pointerup', () => {
-                this.plusButton.setScale(1.5); // Reverts the button to original scale
+                this.plusButton.setScale(1.5); 
             });
 
         // Initial display update
@@ -91,11 +89,10 @@ class MenuSpinner {
 
     updateStatDisplay() {
         if (!this.scene || !this.upgradeCostText || this.upgradeCostText.scene !== this.scene) {
-            console.warn("Attempting to update stats outside of active scene");
+            console.warn("Catching warning on Update stat Display");
             return;
         }
 
-        // Assuming `permanentStats` has been updated to reflect committed upgrades.
         const permanentStats = this.scene.registry.get('playerPermanentStats') || {};
         const isMaxedOut = this.stats[this.statKey] === STAT_MAX;
         const canAfford = this.scene.canAffordUpgrade(this.statKey, this.stats[this.statKey]);
@@ -130,8 +127,8 @@ export class Store extends Scene {
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'upgradeTilemap')
             .setOrigin(0.5, 0.5);
 
-        const startY = 250; // Starting y position for the first spinner
-        const spinnerGap = 70; // Gap between each spinner to account for text and boxes
+        const startY = 250; 
+        const spinnerGap = 70; 
 
         let borderGraphics = this.add.graphics();
         borderGraphics.lineStyle(2, 0xffffff, 1);
@@ -187,7 +184,7 @@ export class Store extends Scene {
         const moneyTextY = moneyIconY;
         this.moneyText = this.add.text(moneyTextX, moneyTextY, `${this.money}`, fonts.medium).setOrigin(0, 0.5);
 
-        // Enhance 'Next Level?' button
+        //Next level button
         let nextLevelButton = this.add.text(this.cameras.main.width / 2, this.cameras.main.height - 100, 'Next Level?', {
             ...fonts.small, 
             padding: { left: 15, right: 15, top: 10, bottom: 10 },
@@ -195,7 +192,7 @@ export class Store extends Scene {
             borderRadius: 10,
         })
             .setInteractive()
-            .setFontSize(24) // Make text slightly larger
+            .setFontSize(24) 
             .setOrigin(0.5, 0);
 
         let nextLevelButtonBorder = this.add.graphics();
@@ -205,13 +202,13 @@ export class Store extends Scene {
         nextLevelButtonBorder.strokeRoundedRect(buttonRect.x - 5, buttonRect.y - 5, buttonRect.width + 10, buttonRect.height + 10, 10);
 
         nextLevelButton.on('pointerover', () => {
-            nextLevelButton.setStyle({ fill: '#FFEA00' }); // Change text color on hover
-            nextLevelButtonBorder.clear().lineStyle(3, 0xFFEA00, 1); // Brighter border on hover
+            nextLevelButton.setStyle({ fill: '#FFEA00' }); 
+            nextLevelButtonBorder.clear().lineStyle(3, 0xFFEA00, 1); 
             nextLevelButtonBorder.strokeRoundedRect(buttonRect.x - 5, buttonRect.y - 5, buttonRect.width + 10, buttonRect.height + 10, 10);
         })
             .on('pointerout', () => {
-                nextLevelButton.setStyle({ fill: '#FFFFFF' }); // Text color back to normal
-                nextLevelButtonBorder.clear().lineStyle(2, 0xFFFF00, 1); // Normal border
+                nextLevelButton.setStyle({ fill: '#FFFFFF' }); 
+                nextLevelButtonBorder.clear().lineStyle(2, 0xFFFF00, 1); 
                 nextLevelButtonBorder.strokeRoundedRect(buttonRect.x - 5, buttonRect.y - 5, buttonRect.width + 10, buttonRect.height + 10, 10);
             })
             .on('pointerdown', () => {
@@ -229,7 +226,7 @@ export class Store extends Scene {
     }
 
     getUpgradeCost(statKey, currentLevel) {
-        // Define base costs for each stat. You can make this more complex if needed.
+        // Define base costs for each stat
         const baseCosts = {
             move_speed: 75,
             bullet_speed: 105,
@@ -237,17 +234,16 @@ export class Store extends Scene {
             max_bullets: 420
         };
 
-        // For this example, the cost increases linearly. You could use other formulas.
+        // cost increases linearly. 
         return baseCosts[statKey] * (currentLevel + 1);
     }
 
     onUpgrade(statKey, newStatValue) {
-        // Logic to handle the upgrade
         if (this.canAffordUpgrade(statKey, newStatValue - 1)) {
             this.purchaseUpgrade(statKey, newStatValue - 1);
             return true; // Return true to indicate the upgrade was successful
         }
-        return false; // Return false if the player cannot afford the upgrade
+        return false; 
     }
 
     canAffordUpgrade(statKey, currentLevel) {
@@ -262,7 +258,7 @@ export class Store extends Scene {
     }
 
     refundUpgrade(statKey, currentLevel) {
-        const refundAmount = this.getRefundAmount(statKey, currentLevel + 1); // +1 because we need the cost of the level we're refunding
+        const refundAmount = this.getRefundAmount(statKey, currentLevel + 1); 
         this.money += refundAmount;
         this.moneyText.setText(`${this.money}`);
     }
