@@ -116,6 +116,12 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.text.text += this.line[this.char_index++];
         if (this.char_index === this.line.length) {
             console.log("Line is done, waiting on player to click again")
+
+            const cont_dialogue_in = 1.5; // # continue dialogue in # of seconds
+            this.scene.time.delayedCall(cont_dialogue_in * 1000, () => {
+                this.scene.input.emit('pointerdown');
+            }, this.scene.scene)
+
             this.scene.input.once('pointerdown', () => {
                 this.text.setText(""); // 4 hours to fix this FML
                 this.#load_next_line();
