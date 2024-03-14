@@ -113,8 +113,64 @@ class MenuSpinner {
         this.upgradeCostText.setText(nextLevelCost).setFill(isMaxedOut ? '#FFD700' : (canAfford ? '#00ff00' : '#FF0000'));
         this.statText.setText(`${this.displayName}: ${isMaxedOut ? 'Max' : this.stats[this.statKey]}`);
     }
-
 }
+
+class MenuButton extends Phaser.GameObjects.Container {
+    constructor(scene, x, y, text, cb, args) {
+        super(scene, x, y);
+        scene.add.existing(this);
+
+        this.setInteractive()
+
+
+        this.border_w = 4;
+        this.btn = scene.add.text(this.border_w, this.border_w, text, {
+            ...fonts.small,
+            padding: { left: 15, right: 15, top: 10, bottom: 10 },
+            backgroundColor: '#FFD700',
+            borderRadius: 10,
+        })
+            .setInteractive()
+            .setFontSize(24)
+            .setOrigin(0, 0);
+
+        this.btn_rect = this.btn.getBounds();
+        this.btn_border = scene.add.graphics();
+
+        this.btn_border.lineStyle(2, 0xFFFF00, 1)
+            .strokeRoundedRect(0, 0,
+                this.btn_rect.width + this.border_w * 2, this.btn_rect.height + this.border_w * 2,
+                10
+            );
+
+        this.btn.on('pointerover', () => {
+            this.btn.setStyle({ fill: '#FFEA00' });
+            this.btn_border
+                .clear()
+                .lineStyle(3, 0xFFEA00, 1)
+                .strokeRoundedRect(0, 0,
+                    this.btn_rect.width + this.border_w * 2, this.btn_rect.height + this.border_w * 2,
+                    10
+                );
+        })
+            .on('pointerout', () => {
+                this.btn.setStyle({ fill: '#FFFFFF' });
+                this.btn_border
+                    .clear()
+                    .lineStyle(2, 0xFFFF00, 1)
+                    .strokeRoundedRect(0, 0,
+                        this.btn_rect.width + this.border_w * 2, this.btn_rect.height + this.border_w * 2,
+                        10
+                    );
+            })
+            .on('pointerdown', () => {
+                (args) ? cb(...args) : cb(args);
+            });
+
+        this.add([this.btn, this.btn_border])
+    }
+}
+
 export class Store extends Scene {
     constructor() {
         super('Store');
@@ -190,41 +246,18 @@ export class Store extends Scene {
         const moneyTextY = moneyIconY;
         this.moneyText = this.add.text(moneyTextX, moneyTextY, `${this.player_vars.wallet}`, fonts.medium).setOrigin(0, 0.5);
 
-        //Next level button
-        let nextLevelButton = this.add.text(this.cameras.main.width / 2, this.cameras.main.height - 100, 'Next Level?', {
-            ...fonts.small,
-            padding: { left: 15, right: 15, top: 10, bottom: 10 },
-            backgroundColor: '#FFD700',
-            borderRadius: 10,
-        })
-            .setInteractive()
-            .setFontSize(24)
-            .setOrigin(0.5, 0);
-
-        let nextLevelButtonBorder = this.add.graphics();
-        nextLevelButtonBorder.lineStyle(2, 0xFFFF00, 1);
-        let buttonRect = nextLevelButton.getBounds();
-
-        nextLevelButtonBorder.strokeRoundedRect(buttonRect.x - 5, buttonRect.y - 5, buttonRect.width + 10, buttonRect.height + 10, 10);
-
-        nextLevelButton.on('pointerover', () => {
-            nextLevelButton.setStyle({ fill: '#FFEA00' });
-            nextLevelButtonBorder.clear().lineStyle(3, 0xFFEA00, 1);
-            nextLevelButtonBorder.strokeRoundedRect(buttonRect.x - 5, buttonRect.y - 5, buttonRect.width + 10, buttonRect.height + 10, 10);
-        })
-            .on('pointerout', () => {
-                nextLevelButton.setStyle({ fill: '#FFFFFF' });
-                nextLevelButtonBorder.clear().lineStyle(2, 0xFFFF00, 1);
-                nextLevelButtonBorder.strokeRoundedRect(buttonRect.x - 5, buttonRect.y - 5, buttonRect.width + 10, buttonRect.height + 10, 10);
-            })
-            .on('pointerdown', () => {
+        let next_level_btn = new MenuButton(this,
+            this.game.config.width / 2.8, this.game.config.height - 100,
+            'Next Level?',
+            () => {
                 this.initialStats = Object.assign({}, this.stats);
                 this.registry.set('playerPermanentStats', Object.assign({}, this.stats));
                 let playerVars = this.registry.get('player_vars');
                 playerVars.stats = this.stats;
                 this.registry.set('player_vars', playerVars);
                 this.scene.start('Game', { playerStats: this.stats });
-            });
+            }
+        );
     }
 
     updateAllSpinners() {
