@@ -9,7 +9,7 @@ export class PauseMenu extends Scene {
 
     create() {
         const boxWidth = 300;
-        const boxHeight = 200;
+        const boxHeight = 240;
         const boxX = (this.game.config.width - boxWidth) / 2;
         const boxY = (this.game.config.height - boxHeight) / 2;
 
@@ -33,7 +33,15 @@ export class PauseMenu extends Scene {
                 this.scene.start('StatsMenu')
             })
 
-        this.quitButton = this.add.text(boxX + 20, boxY + 120, 'Quit', fonts.medium)
+        this.storeButton = this.add.text(boxX + 20, boxY + 120, 'Store', fonts.medium)
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.scene.stop('PauseMenu');
+                this.scene.stop('Game');
+                this.scene.start('Store')
+            })
+
+        this.quitButton = this.add.text(boxX + 20, boxY + 170, 'Quit', fonts.medium)
             .setInteractive()
             .on('pointerdown', () => {
                 this.cameras.main.fadeOut(200, 0, 0, 0);
