@@ -13,7 +13,7 @@ class MenuSpinner {
         const centerX = scene.cameras.main.width / 2.25;
         const boxHeight = 30;
         const boxWidth = 30;
-        const boxSpacing = 2; 
+        const boxSpacing = 2;
         const totalBoxesWidth = STAT_MAX * (boxWidth + boxSpacing);
         const firstBoxX = centerX - totalBoxesWidth / 2 - 15;
 
@@ -48,20 +48,20 @@ class MenuSpinner {
             .setInteractive()
             .on('pointerdown', () => {
                 this.updateStat(-1);
-                this.minusButton.setScale(1.2); 
+                this.minusButton.setScale(1.2);
             })
             .on('pointerup', () => {
-                this.minusButton.setScale(1.5); 
+                this.minusButton.setScale(1.5);
             });
 
         this.plusButton
             .setInteractive()
             .on('pointerdown', () => {
                 this.updateStat(1);
-                this.plusButton.setScale(1.2); 
+                this.plusButton.setScale(1.2);
             })
             .on('pointerup', () => {
-                this.plusButton.setScale(1.5); 
+                this.plusButton.setScale(1.5);
             });
 
         // Initial display update
@@ -120,17 +120,17 @@ export class Store extends Scene {
         super('Store');
         this.menuSpinners = [];
         //****SET MONEY AMOUNT HERE***
-        this.money = 9000;
         this.initialStats = {};
     }
 
     create() {
+        this.player_vars = this.registry.get('player_vars')
         //Background
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'upgradeTilemap')
             .setOrigin(0.5, 0.5);
 
-        const startY = 250; 
-        const spinnerGap = 70; 
+        const startY = 250;
+        const spinnerGap = 70;
 
         let borderGraphics = this.add.graphics();
         borderGraphics.lineStyle(2, 0xffffff, 1);
@@ -188,17 +188,17 @@ export class Store extends Scene {
         const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_coin').setOrigin(0.5, 0.5).setScale(0.12);
         const moneyTextX = moneyIconX + moneyIcon.displayWidth / 2 + 5;
         const moneyTextY = moneyIconY;
-        this.moneyText = this.add.text(moneyTextX, moneyTextY, `${this.money}`, fonts.medium).setOrigin(0, 0.5);
+        this.moneyText = this.add.text(moneyTextX, moneyTextY, `${this.player_vars.wallet}`, fonts.medium).setOrigin(0, 0.5);
 
         //Next level button
         let nextLevelButton = this.add.text(this.cameras.main.width / 2, this.cameras.main.height - 100, 'Next Level?', {
-            ...fonts.small, 
+            ...fonts.small,
             padding: { left: 15, right: 15, top: 10, bottom: 10 },
-            backgroundColor: '#FFD700', 
+            backgroundColor: '#FFD700',
             borderRadius: 10,
         })
             .setInteractive()
-            .setFontSize(24) 
+            .setFontSize(24)
             .setOrigin(0.5, 0);
 
         let nextLevelButtonBorder = this.add.graphics();
@@ -208,13 +208,13 @@ export class Store extends Scene {
         nextLevelButtonBorder.strokeRoundedRect(buttonRect.x - 5, buttonRect.y - 5, buttonRect.width + 10, buttonRect.height + 10, 10);
 
         nextLevelButton.on('pointerover', () => {
-            nextLevelButton.setStyle({ fill: '#FFEA00' }); 
-            nextLevelButtonBorder.clear().lineStyle(3, 0xFFEA00, 1); 
+            nextLevelButton.setStyle({ fill: '#FFEA00' });
+            nextLevelButtonBorder.clear().lineStyle(3, 0xFFEA00, 1);
             nextLevelButtonBorder.strokeRoundedRect(buttonRect.x - 5, buttonRect.y - 5, buttonRect.width + 10, buttonRect.height + 10, 10);
         })
             .on('pointerout', () => {
-                nextLevelButton.setStyle({ fill: '#FFFFFF' }); 
-                nextLevelButtonBorder.clear().lineStyle(2, 0xFFFF00, 1); 
+                nextLevelButton.setStyle({ fill: '#FFFFFF' });
+                nextLevelButtonBorder.clear().lineStyle(2, 0xFFFF00, 1);
                 nextLevelButtonBorder.strokeRoundedRect(buttonRect.x - 5, buttonRect.y - 5, buttonRect.width + 10, buttonRect.height + 10, 10);
             })
             .on('pointerdown', () => {
@@ -249,24 +249,24 @@ export class Store extends Scene {
             this.purchaseUpgrade(statKey, newStatValue - 1);
             return true; // Return true to indicate the upgrade was successful
         }
-        return false; 
+        return false;
     }
 
     canAffordUpgrade(statKey, currentLevel) {
         const cost = this.getUpgradeCost(statKey, currentLevel);
-        return this.money >= cost;
+        return this.player_vars.wallet >= cost;
     }
 
     purchaseUpgrade(statKey, currentLevel) {
         const cost = this.getUpgradeCost(statKey, currentLevel - 1);
-        this.money -= cost;
-        this.moneyText.setText(`${this.money}`);
+        this.player_vars.wallet -= cost;
+        this.moneyText.setText(`${this.player_vars.wallet}`);
     }
 
     refundUpgrade(statKey, currentLevel) {
-        const refundAmount = this.getRefundAmount(statKey, currentLevel + 1); 
-        this.money += refundAmount;
-        this.moneyText.setText(`${this.money}`);
+        const refundAmount = this.getRefundAmount(statKey, currentLevel + 1);
+        this.player_vars.wallet += refundAmount;
+        this.moneyText.setText(`${this.player_vars.wallet}`);
     }
 
     getRefundAmount(statKey, level) {
