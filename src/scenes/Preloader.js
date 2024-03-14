@@ -32,9 +32,13 @@ export class Preloader extends Scene {
 
         this.load.image("background", "leveloneBG.png");
 
+        this.load.image("upgradeTilemap", "leveloneTilemap.png");
+
         this.load.image("losescreen", "losescreen.png");
 
         this.load.image("cottonball", "cottonball.png");
+
+        this.load.image("shermie_coin", "Shermie-coin.png");
 
         this.load.image("lives", "lives.png");
 
