@@ -120,6 +120,11 @@ export class Preloader extends Scene {
             frameHeight: 32,
         });
 
+        this.load.spritesheet("enemy_reaper", "Nexus.png", {
+            frameWidth: 128,
+            frameHeight: 128,
+        });
+
         this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');
 
     }

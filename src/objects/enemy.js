@@ -1,4 +1,5 @@
 import { EnemyBulletConstDefs as bull_defs } from "./bullet"
+import { EventDispatcher } from "../utils/event_dispatcher";
 
 // Grid gap and spawn_start are not scaled factors
 const EnemyConstDefs = {
@@ -221,5 +222,81 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
         /* To be implemented */
     }
 }
+class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
+    emitter = EventDispatcher.getInstance();
+    ai_state = "CHASING";
+    path;
+    bullets_shot = 0;
+    constructor(scene, x, y) {
+        super(scene, x, y);
+        this.scene = scene;
+        this.anim_key = "reaper_idle";
+        this.play(this.anim_key);
 
-export { BaseGridEnemy, Enemy1, Enemy2, Enemy3, EnemyUSB, EnemyConstDefs };
+
+
+        scene.physics.add.existing(this);
+        scene.add.existing(this);
+        scene.objs.enemies.special.add(this);
+        this.emitter.on('reaper_chasing', () => {
+            this.ai_state = "CHASING";
+        });
+        this.emitter.on('reaper_runaway', () => {
+            this.ai_state = "RUNAWAY";
+        });
+        this.emitter.on('reaper_idle', () => {
+            this.ai_state = "IDLE";
+        });
+        this.emitter.emit('reaper_chasing', []);
+
+        this.graphics = this.scene.add.graphics();
+        this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
+        this.path = new Phaser.Curves.Path();
+    }
+
+    update(time, delta) {
+        this.graphics.clear();
+        let player = this.scene.objs.player;
+
+        this.graphics.clear();
+        this.graphics.lineStyle(2, 0xffffff, 1);
+        this.path.draw(this.graphics);
+        this.path.getPoint(this.follower.t, this.follower.vec);
+
+        switch (this.ai_state) {
+            case "CHASING":
+                // this.scene.physics.moveTo(this, player.x, 200, 120);
+                let delta_x = Math.abs(this.x - player.x);
+                console.log(delta_x)
+                // https://github.com/phaserjs/examples/blob/master/public/src/paths/circle%20path.js
+                if (delta_x <= 50) {
+                    console.log("SHOOT")
+                    this.path.add(new Phaser.Curves.Ellipse(this.x, this.y, 100));
+                    this.scene.tweens.add({
+                        targets: this.follower,
+                        t: 1,
+                        ease: 'Sine.easeInOut',
+                        duration: 4000,
+                        yoyo: true,
+                        repeat: -1
+                    })
+
+                    this.ai_state = "SHOOT";
+                }
+                break;
+            case "SHOOT":
+                this.setPosition(this.follower.vec.x, this.follower.vec.y)
+                break;
+            case "RUNAWAY":
+                break;
+            case "IDLE":
+                break;
+        }
+    }
+
+    die() {
+        this.destroy();
+    }
+}
+
+export { BaseGridEnemy, Enemy1, Enemy2, Enemy3, EnemyUSB, EnemyReaper, EnemyConstDefs };

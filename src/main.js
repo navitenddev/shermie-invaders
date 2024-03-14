@@ -10,6 +10,7 @@ import { PauseMenu } from './scenes/PauseMenu';
 import { StatsMenu } from './scenes/StatsMenu';
 import { Store } from './scenes/Store';
 import { Dialogue } from './scenes/Dialogue';
+import { Testing } from './scenes/Testing';
 
 
 //  Find out more information about the Game Config at:
@@ -44,6 +45,7 @@ const config = {
         StatsMenu,
         Store,
         Dialogue,
+        Testing,
     ]
 };
 export default new Phaser.Game(config);
