@@ -1,7 +1,9 @@
 import { Scene } from 'phaser';
 import { SoundBank } from '../sounds';
+import { EventDispatcher } from '../utils/event_dispatcher';
 
 export class PlayerLose extends Scene {
+    emitter = EventDispatcher.getInstance();
     constructor() {
         super('Player Lose');
     }
@@ -9,6 +11,12 @@ export class PlayerLose extends Scene {
     create() {
         this.cameras.main.setBackgroundColor(0x000000);
         this.cameras.main.fadeIn(1000, 0, 0, 0);
+
+        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE, () => {
+            // do dis when fade done
+            this.start_dialogue('lose1')
+        });
+        this.emitter.removeAllListeners();
 
         this.sounds = this.registry.get('sound_bank');
         // reset global vars 
@@ -31,5 +39,17 @@ export class PlayerLose extends Scene {
         this.input.once('pointerdown', () => {
             this.scene.start('MainMenu');
         });
+
+    }
+
+
+    /**
+     * @param {*} key Start the dialogue sequence with this key
+     * @param {*} blocking If true, will stop all actions in the current scene. Until dialogue complete
+     */
+    start_dialogue(key, blocking = true) {
+        this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Player Lose' });
+        if (blocking)
+            this.scene.pause();
     }
 }

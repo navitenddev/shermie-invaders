@@ -5,6 +5,7 @@ import { fonts } from '../utils/fontStyle.js';
 import { Barrier } from '../objects/barrier.js';
 import ScoreManager from '../utils/ScoreManager.js';
 import { BaseGridEnemy } from '../objects/enemy.js';
+import { EventDispatcher } from '../utils/event_dispatcher.js';
 
 // The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
 import { SoundBank } from '../sounds';
@@ -18,9 +19,11 @@ import { SoundBank } from '../sounds';
  */
 
 export class Game extends Scene {
+    emitter = EventDispatcher.getInstance();
     constructor() {
         super('Game');
     }
+
     create() {
 
         // fade in from black
@@ -49,6 +52,13 @@ export class Game extends Scene {
 
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
+
+        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
+            () => {
+                if (this.level === 1)
+                    this.start_dialogue('shermie_start', true)
+            }
+        );
 
         // The timers will be useful for tweaking the difficulty
         BaseGridEnemy.timers = {
@@ -203,10 +213,12 @@ export class Game extends Scene {
             this.player_vars.active_bullets = 0;
             this.registry.set({ 'level': this.level + 1 });
             this.level_transition_flag = true;
+            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.goto_scene("Player Win");
         } else if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
 
+            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.goto_scene("Player Lose");
         }
     }
@@ -251,6 +263,10 @@ export class Game extends Scene {
                 this.objs.explode_at(player.x, player.y);
                 enemy_bullet.deactivate();
                 player.die();
+                if (this.player_vars.lives === 0)
+                    this.start_dialogue('shermie_dead', false);
+                else
+                    this.start_dialogue('shermie_hurt', false);
             }
         });
 
@@ -275,16 +291,57 @@ export class Game extends Scene {
 
         // player bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            this.objs.explode_at(bullet.x, bullet.y);
-            bullet.deactivate();
-            barr_chunk.destroy();
+            this.explode_at_bullet_hit(bullet, barr_chunk);
+
         });
 
         // enemy bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            this.objs.explode_at(bullet.x, bullet.y);
-            bullet.deactivate();
-            barr_chunk.destroy();
+            this.explode_at_bullet_hit(bullet, barr_chunk);
         });
+    }
+
+    explode_at_bullet_hit(bullet, barr_chunk) {
+        const baseExplosionRadius = 18;
+        const maxDamage = 100;
+
+        // randomn explosion radius
+        const randomRadiusFactor = Phaser.Math.FloatBetween(1.0, 1.6);
+        const explosionRadius = baseExplosionRadius * randomRadiusFactor;
+
+        // loop through all barrier chunks to apply damage
+        this.objs.barrier_chunks.children.each(chunk => {
+            const distance = Phaser.Math.Distance.Between(bullet.x, bullet.y, chunk.x, chunk.y);
+
+            if (chunk.active && distance < explosionRadius) {
+                // calculate damage based on distance
+                let damage = maxDamage * (1 - distance / explosionRadius);
+                let randomDamageFactor = Phaser.Math.FloatBetween(0.1, 1.2);
+                damage *= randomDamageFactor;
+
+                chunk.applyDamage(damage);
+
+                // destruction particles
+                if (chunk.health <= 0) {
+                    barr_chunk.parent.destructionEmitter.explode(1, chunk.x, chunk.y);
+                }
+            }
+        });
+
+        // update the flame size based on remaining barrier chunks
+        barr_chunk.parent.update_flame_size();
+
+        bullet.deactivate();
+    }
+
+    /**
+     * @param {*} key Start the dialogue sequence with this key
+     * @param {*} blocking If true, will stop all actions in the current scene. Until dialogue complete
+     */
+    start_dialogue(key, blocking = true) {
+        this.emitter.emit('force_dialogue_stop'); // never have more than one dialogue manager at once
+        this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Game' });
+        if (blocking)
+            this.scene.pause();
     }
 }
