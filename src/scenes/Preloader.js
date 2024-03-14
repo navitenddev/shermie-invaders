@@ -64,6 +64,10 @@ export class Preloader extends Scene {
 
         this.load.audio('lose', ['SFX/defeat.wav']);
 
+        this.load.audio('start', ['SFX/start_screen.mp3']);
+
+        this.load.audio('click', ['SFX/click.wav']);
+
         this.load.spritesheet("necromancer", "necromancer.png", {
             frameWidth: 160,
             frameHeight: 128,
@@ -127,7 +131,7 @@ export class Preloader extends Scene {
         this.registry.set('level', 1);
         this.registry.set('score', 0);
         this.registry.set('sound_bank', new SoundBank(this));
-
+        this.sounds = this.registry.get('sound_bank');
         this.registry.set('player_vars', {
             lives: 3,
             /* Player stats/upgrades: These will need a maximum (maybe like 10 or so)
@@ -142,7 +146,7 @@ export class Preloader extends Scene {
             },
             active_bullets: 0, // the number of bullets that the player currently has on screen
         });
-
+        this.sounds.bank.music.start.play();
         //  Move to the MainMenu. You could also swap this for a Scene
         //  Transition, such as a camera fade.
         this.scene.start('MainMenu');

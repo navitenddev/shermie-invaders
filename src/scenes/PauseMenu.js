@@ -23,11 +23,12 @@ export class PauseMenu extends Scene {
 
         this.resumeButton = this.add.text(boxX + 20, boxY + 20, 'Resume', fonts.medium)
             .setInteractive()
-            .on('pointerdown', () => this.unpause());
+            .on('pointerdown', () => {this.sounds.bank.sfx.click.play();this.unpause();});
 
         this.cheatsButton = this.add.text(boxX + 20, boxY + 70, 'Cheats!', fonts.medium)
             .setInteractive()
             .on('pointerdown', () => {
+                this.sounds.bank.sfx.click.play();
                 this.scene.stop('PauseMenu');
                 this.scene.start('StatsMenu')
             })
@@ -44,6 +45,9 @@ export class PauseMenu extends Scene {
             .setInteractive()
             .on('pointerdown', () => {
                 this.cameras.main.fadeOut(200, 0, 0, 0);
+                this.sounds.bank.music.bg.stop();
+                this.sounds.bank.sfx.click.play();
+                this.sounds.bank.music.start.play();
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                     this.scene.stop('PauseMenu');
                     this.scene.stop('Game');

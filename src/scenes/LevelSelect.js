@@ -16,7 +16,7 @@ class LevelButton {
      */
     constructor(scene, x, y, level) {
         this.scene = scene;
-        console.log(level)
+        console.log(level);
         this.scene.add.text(x, y, level, fonts.small)
             .setOrigin(0.5)
             .setInteractive()
@@ -35,7 +35,7 @@ export class LevelSelect extends Scene {
     create() {
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg');
         this.animatedBg.setOrigin(0.5, 0.5);
-
+        this.sounds = this.registry.get('sound_bank');
         this.add.image(this.game.config.width / 2, 35, 'levelSelectlogo');
 
         const scale = { x: 50, y: 50 };
@@ -49,6 +49,7 @@ export class LevelSelect extends Scene {
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
+                this.sounds.bank.sfx.click.play();
                 this.scene.start('MainMenu');
             });
     }
