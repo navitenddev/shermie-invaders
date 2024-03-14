@@ -45,6 +45,14 @@ export class MainMenu extends Scene {
                 this.scene.start('HowToPlay');
             });
 
+        this.testingButton = this.add.text(512, 610, 'TESTING', fonts.medium)
+            .setOrigin(0.5)
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.sounds.bank.sfx.click.play();
+                this.scene.start('Testing');
+            });
+
         this.keys.m.on('down', this.sounds.toggle_mute)
     }
     update() {

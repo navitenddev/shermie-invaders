@@ -51,8 +51,6 @@ class ObjectSpawner {
 
         this.level = this.scene.scene.get('Preloader').level;
 
-        this.init_all();
-
         // spawn enemy usb in 15-60 seconds
         let secs = Phaser.Math.Between(15, 60);
         console.log(`Spawning enemy USB in ${secs}s`)
@@ -72,6 +70,14 @@ class ObjectSpawner {
         this.init_enemy_bullets();
         this.init_explosions();
         this.init_enemy_grid();
+    }
+
+    init_all_without_grid() {
+        this.init_barriers();
+        this.init_player();
+        this.init_player_bullets();
+        this.init_enemy_bullets();
+        this.init_explosions();
     }
 
     init_player() {

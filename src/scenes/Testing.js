@@ -18,10 +18,10 @@ import { SoundBank } from '../sounds';
  * @property {Object} timers An object that encapsulates all timing-related values for anything in the game.
  */
 
-export class Game extends Scene {
+export class Testing extends Scene {
     emitter = EventDispatcher.getInstance();
     constructor() {
-        super('Game');
+        super('Testing');
     }
 
     create() {
@@ -38,7 +38,7 @@ export class Game extends Scene {
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
-        this.objs.init_all();
+        this.objs.init_all_without_grid();
         this.sounds = this.registry.get('sound_bank');
 
         this.keys = InitKeyDefs(this);
@@ -53,13 +53,6 @@ export class Game extends Scene {
 
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
-
-        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
-            () => {
-                if (this.level === 1)
-                    this.start_dialogue('shermie_start', true)
-            }
-        );
 
         // The timers will be useful for tweaking the difficulty
         BaseGridEnemy.timers = {
@@ -86,6 +79,8 @@ export class Game extends Scene {
         this.keys.m.on('down', this.sounds.toggle_mute);
         this.keys.p.on('down', () => this.pause());
         this.keys.esc.on('down', () => this.pause());
+
+        this.reaper = this.add.enemy_reaper(this, 400, 200)
     }
 
     pause() {
@@ -107,9 +102,8 @@ export class Game extends Scene {
     }
 
     update(time, delta) {
-        if (this.objs.player)
+        if (this.objs.player.update)
             this.objs.player.update(time, delta, this.keys)
-
         // Update lives text and sprites
         this.livesText.setText(this.player_vars.lives);
         this.updateLivesSprites();
@@ -342,7 +336,7 @@ export class Game extends Scene {
      */
     start_dialogue(key, blocking = true) {
         this.emitter.emit('force_dialogue_stop'); // never have more than one dialogue manager at once
-        this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Game' });
+        this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Testing' });
         if (blocking)
             this.scene.pause();
     }
