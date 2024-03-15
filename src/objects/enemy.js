@@ -223,17 +223,19 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
     }
 }
 class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
+    static CLONE_DELAY = { min: 10, max: 25 }; // time in seconds before Reaper clones itself
     ai_state = "CHASING";
     path;
     shots_fired = 0;
-    shoot_cd = 300;
+    shoot_cd;
     last_fired = 0;
     tween;
     state_list = ["CHASING", "SHOOT1", "SHOOT2", "SHOOT3"];
-    hp = 50;
-    constructor(scene, x, y) {
+    hp;
+    constructor(scene, x, y, hp = 40, shoot_cd = 300, should_clone = true) {
         super(scene, x, y);
-        this.scene = scene;
+        this.hp = hp;
+        this.shoot_cd = shoot_cd;
         this.anim_key = "reaper_idle";
         this.play(this.anim_key);
 
@@ -241,12 +243,17 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.objs.enemies.special.add(this);
 
+
         this.graphics = this.scene.add.graphics();
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
         this.path = new Phaser.Curves.Path();
 
-        let player = this.scene.objs.player;
-        scene.physics.moveTo(this, player.x, 200, 400);
+        if (should_clone) {
+            let clone_delay = Phaser.Math.Between(EnemyReaper.CLONE_DELAY.min, EnemyReaper.CLONE_DELAY.max);
+            this.scene.time.delayedCall(clone_delay * 1000, this.#clone_self, [], this);
+        }
+        this.scene = scene;
+        console.log(`Spawned Reaper with ${this.hp} HP, Cloning: ${should_clone}`)
     }
 
     #clear_path() {
@@ -310,8 +317,22 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
                 })
                 break;
             case "SHOOT3":
+                // TODO: lemniscate shooting pattern?
                 this.#change_state("SHOOT2");
                 break;
+        }
+    }
+
+    #clone_self() { // clones thyself
+        console.log("OMG, REAPER CLONED ITSELF");
+        if (this.scene) {
+            let clone_delay = Phaser.Math.Between(EnemyReaper.CLONE_DELAY.min, EnemyReaper.CLONE_DELAY.max);
+            this.scene.add.enemy_reaper(this.scene, this.x, this.y,
+                1,    // clones have 1 hp
+                1000, // clone should have a slow fire rate
+                false // clones should not clone themselves
+            );
+            this.scene.time.delayedCall(clone_delay * 1000, this.#clone_self, [], this);
         }
     }
 
@@ -345,7 +366,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
 
                 if (time > this.last_fired) {
                     this.last_fired = time + this.shoot_cd;
-                    this.shoot();
+                    this.#shoot();
                     this.shots_fired++;
                 }
                 break;
@@ -356,11 +377,15 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     }
 
     die() {
-        if (this.hp <= 0) this.destroy();
+        if (this.hp <= 1) {
+            this.graphics.clear();
+            this.#clear_path();
+            this.destroy();
+        }
         this.hp--;
     }
 
-    shoot() {
+    #shoot() {
         // if condition
         let bullet = this.scene.objs.bullets.enemy.getFirstDead(false, 0, 0, "enemy_bullet");
         if (bullet !== null) {

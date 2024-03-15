@@ -83,7 +83,7 @@ export class Testing extends Scene {
         this.keys.esc.on('down', () => this.pause());
 
         this.mouse_pos_text = this.add.text(25, 50, `(0,0)`, fonts.small);
-        this.reaper = this.add.enemy_reaper(this, 0, 200)
+        this.reaper = this.add.enemy_reaper(this, 400, 200, 40);
     }
 
     pause() {
