@@ -361,7 +361,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
                 1,    // clones will have 1 hp
                 1000, // clones should have a slow fire rate
                 false,// clones should not clone themselves
-                100,  // clones should only yield a few points
+                50,  // clones should only yield a few points
                 5,    // clones should only yield a little bit of money
             );
             this.scene.time.delayedCall(clone_delay * 1000, this.#clone_self, [], this);
