@@ -230,6 +230,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     last_fired = 0;
     tween;
     state_list = ["CHASING", "SHOOT1", "SHOOT2"];
+    hp = 50;
     constructor(scene, x, y) {
         super(scene, x, y);
         this.scene = scene;
@@ -342,7 +343,8 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     }
 
     die() {
-        this.destroy();
+        if (this.hp <= 0) this.destroy();
+        this.hp--;
     }
 
     shoot() {
