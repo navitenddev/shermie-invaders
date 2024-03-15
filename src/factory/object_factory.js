@@ -50,8 +50,8 @@ Phaser.GameObjects.GameObjectFactory.register(
 
 Phaser.GameObjects.GameObjectFactory.register(
     "enemy_reaper",
-    function (scene, x, y) {
-        return new EnemyReaper(scene, x, y);
+    function (scene, x, y, hp, shoot_cd, should_clone) {
+        return new EnemyReaper(scene, x, y, hp, shoot_cd, should_clone);
     }
 );
 
