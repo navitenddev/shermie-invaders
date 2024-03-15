@@ -11,6 +11,44 @@ import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { SoundBank } from '../sounds';
 
 /**
+ * @classdesc A button with an icon as its surface that calls cb with args when
+ * clicked.
+ */
+class IconButton extends Phaser.GameObjects.Container {
+    /**
+     * @param {Phaser.scene} scene The scene to add the button into
+     * @param {string} icon The asset key of the image defined in Preloader.js
+     * @param {number} x top-left x-coordinate of the button
+     * @param {number} y top-right y-coordinate of the button
+     * @callback cb Callback function that is used when button is clicked
+     * @param {Array<any>} args A variadic number of arguments to pass into cb when it's called
+     * @example new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
+     */
+    constructor(scene, icon, x, y, cb, args = []) {
+        console.log(icon)
+        super(scene, x, y);
+        scene.add.existing(this);
+
+        this.icon = icon;
+        this.image = scene.add.image(0, 0, icon)
+            .setInteractive()
+            .on('pointerdown', () => {
+                // do visual indicator that button was clicked
+            })
+            .on('pointerup', () => {
+                // call the callback with the given arguments
+                cb(...args);
+            });
+        this.width = this.image.width;
+        this.height = this.image.height;
+
+        this.rect = scene.add.rectangle(0, 0, this.width, this.height, 0xfefefe);
+
+        this.add([this.rect, this.image]);
+    }
+};
+
+/**
  * @description The scene in which gameplay will occur.
  * @property {ObjectSpawner} objs The object spawner for this scene.
  * @property {SoundBank} sounds Plays sounds
@@ -82,8 +120,25 @@ export class Testing extends Scene {
         this.keys.p.on('down', () => this.pause());
         this.keys.esc.on('down', () => this.pause());
 
-        this.mouse_pos_text = this.add.text(25, 50, `(0,0)`, fonts.small);
-        this.reaper = this.add.enemy_reaper(this, 0, 0, 40);
+        this.mouse_pos_text = this.add.text(800, 50, `(0,0)`, fonts.small);
+        this.legend_text = this.add.text(this.game.config.width - 64, 300, "Click to Spawn", fonts.small);
+        this.legend_text.setAngle(-90);
+
+        // this.reaper = this.add.enemy_reaper(this, 0, 0, 40);
+        this.reaper_btn = new IconButton(this, "reaper_icon",
+            this.game.config.width - 20, 100,
+            this.add.enemy_reaper,
+            [this, 0, 0, 40]
+        );
+
+        this.usb_btn = new IconButton(this, "usb_icon",
+            this.game.config.width - 20, 136,
+            () => {
+                (Phaser.Math.Between(0, 1) === 0) ?
+                    this.add.enemy_usb(this, true) :
+                    this.add.enemy_usb(this, false);
+            }
+        )
     }
 
     pause() {
@@ -251,7 +306,8 @@ export class Testing extends Scene {
 
     /**
      * @param {*} key Start the dialogue sequence with this key
-     * @param {*} blocking If true, will stop all actions in the current scene. Until dialogue complete
+     * @param {*} blocking If true, will stop all actions in the current scene
+     * until dialogue completes
      */
     start_dialogue(key, blocking = true) {
         this.emitter.emit('force_dialogue_stop'); // never have more than one dialogue manager at once

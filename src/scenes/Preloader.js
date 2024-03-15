@@ -46,6 +46,10 @@ export class Preloader extends Scene {
 
         this.load.image("shermie_bux", "Shermie-coin.png")
 
+        this.load.image("reaper_icon", "Nexus-icon.png");
+
+        this.load.image("usb_icon", "USB-icon.png");
+
         //this.load.audio(['bgmusic','shoot','explosion'], ['SFX/spacebg.wav','SFX/shoot.wav', 'SFX/explosion.wav']);
 
         this.load.audio('bgmusic', 'SFX/bgmusic.mp3');
@@ -126,6 +130,7 @@ export class Preloader extends Scene {
             frameWidth: 128,
             frameHeight: 128,
         });
+
 
         this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');
 
