@@ -223,6 +223,7 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
     }
 }
 class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
+    static Y_NORMAL = 300;
     static CLONE_DELAY = { min: 10, max: 25 }; // time in seconds before Reaper clones itself
     ai_state = "CHASING";
     path;
@@ -230,7 +231,9 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     shoot_cd;
     last_fired = 0;
     tween;
+    // TODO: For now, ROAMING state is unused. If we want to make the boss easier, add it back into the state_list.
     state_list = ["CHASING", "SHOOT1", "SHOOT2", "SHOOT3"];
+    // state_list = ["CHASING", "SHOOT1", "SHOOT2", "SHOOT3", "ROAMING"];
     hp;
     /**
      * 
@@ -294,62 +297,83 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
         switch (new_state) {
             case "CHASING":
                 break;
-            case "SHOOT1":
-                this.path.add(
-                    new Phaser.Curves.Ellipse(this.x, this.y, 200, 120)
-                );
-                this.tween = this.scene.tweens.add({
-                    targets: this.follower,
-                    t: 1,
-                    // ease: 'Linear',
-                    ease: 'Sine.easeInOut',
-                    duration: 2000,
-                    yoyo: true,
-                    repeat: -1
-                })
-                break;
-            case "SHOOT2": // shoot in a bezier curve
-                const LEFT = new Phaser.Math.Vector2(50, 300),
-                    RIGHT = new Phaser.Math.Vector2(900, 300);
-
-                const MULT = (Phaser.Math.Between(0, 1) === 0) ? 1 : -1;
-                // move to either left or right side of screen
-                let rng = Phaser.Math.Between(0, 1);
-                if (rng === 0) {
-                    this.path.moveTo(LEFT.x, LEFT.y);
-                    this.path.quadraticBezierTo(RIGHT.x, RIGHT.y, this.scene.game.config.width / 2, MULT * 400);
-                } else {
-                    this.path.moveTo(RIGHT.x, RIGHT.y);
-                    this.path.quadraticBezierTo(LEFT.x, LEFT.y, this.scene.game.config.width / 2, MULT * 400);
+            case "ROAMING":
+                {
+                    this.path.moveTo(new Phaser.Math.Vector2(Phaser.Math.Between(0, 100), EnemyReaper.Y_NORMAL));
+                    this.path.moveTo(new Phaser.Math.Vector2(Phaser.Math.Between(800, 900), EnemyReaper.Y_NORMAL));
+                    this.tween = this.scene.tweens.add({
+                        targets: this.follower,
+                        t: 1,
+                        // ease: 'Linear',
+                        ease: 'Sine.easeInOut',
+                        duration: 2000,
+                        yoyo: true,
+                        repeat: -1
+                    })
+                    this.scene.time.delayedCall(Phaser.Math.Between(2, 5) * 1000,
+                        this.#change_state, [], this)
                 }
+            case "SHOOT1": // elliptic shooting pattern
+                {
+                    this.path.add(
+                        new Phaser.Curves.Ellipse(this.x, this.y, 200, 120)
+                    );
+                    this.tween = this.scene.tweens.add({
+                        targets: this.follower,
+                        t: 1,
+                        // ease: 'Linear',
+                        ease: 'Sine.easeInOut',
+                        duration: 2000,
+                        yoyo: true,
+                        repeat: -1
+                    })
+                    break;
+                }
+            case "SHOOT2": // quadratic bezier curve shooting pattern
+                {
+                    const LEFT = new Phaser.Math.Vector2(50, EnemyReaper.Y_NORMAL),
+                        RIGHT = new Phaser.Math.Vector2(900, EnemyReaper.Y_NORMAL);
 
-                this.tween = this.scene.tweens.add({
-                    targets: this.follower,
-                    t: 1,
-                    ease: 'Sine.easeInOut',
-                    duration: 2000,
-                    yoyo: true,
-                    repeat: -1
-                })
-                break;
-            case "SHOOT3":
-                // TODO: lemniscate shooting pattern?
-                const MID = new Phaser.Math.Vector2(this.scene.game.config.width / 2, 300);
-                const OFFSET = Phaser.Math.Between(-100, 100);
-                this.path = new Phaser.Curves.Path(400, 300);
-                console.log(`MOVING TO ${MID.x + OFFSET}, ${MID.y}`)
-                this.path.moveTo(MID.x + OFFSET, MID.y);
-                this.path.circleTo(100, false, 360);
-                this.path.circleTo(100, true, 180);
-                this.tween = this.scene.tweens.add({
-                    targets: this.follower,
-                    t: 1,
-                    ease: 'Linear',
-                    duration: 2000,
-                    repeat: -1,
-                    yoyo: true,
-                })
-                break;
+                    const MULT = (Phaser.Math.Between(0, 1) === 0) ? 1 : -1;
+                    // move to either left or right side of screen
+                    let rng = Phaser.Math.Between(0, 1);
+                    if (rng === 0) {
+                        this.path.moveTo(LEFT.x, LEFT.y);
+                        this.path.quadraticBezierTo(RIGHT.x, RIGHT.y, this.scene.game.config.width / 2, MULT * 400);
+                    } else {
+                        this.path.moveTo(RIGHT.x, RIGHT.y);
+                        this.path.quadraticBezierTo(LEFT.x, LEFT.y, this.scene.game.config.width / 2, MULT * 400);
+                    }
+
+                    this.tween = this.scene.tweens.add({
+                        targets: this.follower,
+                        t: 1,
+                        ease: 'Sine.easeInOut',
+                        duration: 2000,
+                        yoyo: true,
+                        repeat: -1
+                    })
+                    break;
+                }
+            case "SHOOT3": // lemniscate shooting pattern
+                {
+                    const MID = new Phaser.Math.Vector2(this.scene.game.config.width / 2, EnemyReaper.Y_NORMAL);
+                    const OFFSET = Phaser.Math.Between(-100, 100);
+                    this.path = new Phaser.Curves.Path(400, 300);
+                    console.log(`MOVING TO ${MID.x + OFFSET}, ${MID.y}`)
+                    this.path.moveTo(MID.x + OFFSET, MID.y);
+                    this.path.circleTo(100, false, 360);
+                    this.path.circleTo(100, true, 180);
+                    this.tween = this.scene.tweens.add({
+                        targets: this.follower,
+                        t: 1,
+                        ease: 'Linear',
+                        duration: 2000,
+                        repeat: -1,
+                        yoyo: true,
+                    })
+                    break;
+                }
         }
     }
 
@@ -390,6 +414,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
                 }
                 break;
             case "ROAMING":
+                this.scene.physics.moveTo(this, this.follower.vec.x, this.follower.vec.y, 300);
                 break;
             case "SHOOT1":
             case "SHOOT2": // fall through
