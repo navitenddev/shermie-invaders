@@ -25,6 +25,8 @@ class DialogueManager extends Phaser.GameObjects.Container {
     line_index;
     char_index;
 
+    auto_emit_flag = false;
+
     delay_timer = 0;
     constructor(scene, data = dialogue_data, x = 700, y = 490) {
         super(scene, x, y);
@@ -116,14 +118,17 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.text.text += this.line[this.char_index++];
         if (this.char_index === this.line.length) {
             console.log("Line is done, waiting on player to click again")
+            this.auto_emit_flag = true;
 
             const cont_dialogue_in = 1.5; // # continue dialogue in # of seconds
             this.scene.time.delayedCall(cont_dialogue_in * 1000, () => {
-                this.scene.input.emit('pointerdown');
+                if (this.auto_emit_flag)
+                    this.scene.input.emit('pointerdown');
             }, this.scene.scene)
 
             this.scene.input.once('pointerdown', () => {
                 this.text.setText(""); // 4 hours to fix this FML
+                this.auto_emit_flag = false;
                 this.#load_next_line();
             });
         }
