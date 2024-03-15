@@ -360,7 +360,6 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
                     const MID = new Phaser.Math.Vector2(this.scene.game.config.width / 2, EnemyReaper.Y_NORMAL);
                     const OFFSET = Phaser.Math.Between(-100, 100);
                     this.path = new Phaser.Curves.Path(400, 300);
-                    console.log(`MOVING TO ${MID.x + OFFSET}, ${MID.y}`)
                     this.path.moveTo(MID.x + OFFSET, MID.y);
                     this.path.circleTo(100, false, 360);
                     this.path.circleTo(100, true, 180);
