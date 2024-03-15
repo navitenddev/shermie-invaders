@@ -7,7 +7,8 @@ export class PauseMenu extends Scene {
         super('PauseMenu');
     }
 
-    create() {
+    create(data) {
+        this.prev_scene = data.prev_scene;
         const boxWidth = 300;
         const boxHeight = 240;
         const boxX = (this.game.config.width - boxWidth) / 2;
@@ -23,7 +24,7 @@ export class PauseMenu extends Scene {
 
         this.resumeButton = this.add.text(boxX + 20, boxY + 20, 'Resume', fonts.medium)
             .setInteractive()
-            .on('pointerdown', () => {this.sounds.bank.sfx.click.play();this.unpause();});
+            .on('pointerdown', () => { this.sounds.bank.sfx.click.play(); this.unpause(); });
 
         this.cheatsButton = this.add.text(boxX + 20, boxY + 70, 'Cheats!', fonts.medium)
             .setInteractive()
@@ -37,7 +38,7 @@ export class PauseMenu extends Scene {
             .setInteractive()
             .on('pointerdown', () => {
                 this.scene.stop('PauseMenu');
-                this.scene.stop('Game');
+                this.scene.stop(this.prev_scene);
                 this.scene.start('Store')
             })
 
@@ -50,7 +51,7 @@ export class PauseMenu extends Scene {
                 this.sounds.bank.music.start.play();
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                     this.scene.stop('PauseMenu');
-                    this.scene.stop('Game');
+                    this.scene.stop(this.prev_scene);
                     this.scene.start('MainMenu');
                 });
             });
@@ -62,6 +63,6 @@ export class PauseMenu extends Scene {
     }
     unpause() {
         this.scene.stop('PauseMenu');
-        this.scene.resume('Game');
+        this.scene.resume(this.prev_scene);
     }
 }
