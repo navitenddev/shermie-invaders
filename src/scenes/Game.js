@@ -78,6 +78,8 @@ export class Game extends Scene {
             repeat: this.player_vars.lives - 2
         });
 
+        let secs = Phaser.Math.Between(15, 60);
+        console.log(`Spawning enemy USB in ${secs}s`)
         this.time.delayedCall(secs * 1000, this.objs.spawn_usb_enemy, [], this.scene);
 
         this.sounds.bank.music.bg.play();

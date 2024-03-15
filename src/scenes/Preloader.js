@@ -145,6 +145,7 @@ export class Preloader extends Scene {
         this.registry.set('level', 1);
         this.registry.set('score', 0);
         this.registry.set('sound_bank', new SoundBank(this));
+        this.registry.set('debug_mode', false);
         this.sounds = this.registry.get('sound_bank');
         this.registry.set('player_vars', {
             lives: 3,
