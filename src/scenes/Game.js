@@ -38,6 +38,7 @@ export class Game extends Scene {
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
+        this.objs.init_all();
         this.sounds = this.registry.get('sound_bank');
 
         this.keys = InitKeyDefs(this);
@@ -63,7 +64,8 @@ export class Game extends Scene {
         // The timers will be useful for tweaking the difficulty
         BaseGridEnemy.timers = {
             last_fired: 0,
-            shoot_cd: 1000 - (this.level * 10),
+            // shoot_cd will not go below 100 frames per shot
+            shoot_cd: Math.max(100, 1000 - (this.level * 10)),
             last_moved: 0,
             move_cd: 0, // NOTE: This is set in ai_grid_enemies()
         };
@@ -77,6 +79,10 @@ export class Game extends Scene {
             repeat: this.player_vars.lives - 2
         });
 
+        let secs = Phaser.Math.Between(15, 60);
+        console.log(`Spawning enemy USB in ${secs}s`)
+        this.time.delayedCall(secs * 1000, this.objs.spawn_usb_enemy, [], this.scene);
+
         this.sounds.bank.music.bg.play();
 
         this.init_collision_events();
@@ -89,7 +95,7 @@ export class Game extends Scene {
 
     pause() {
         this.scene.pause('Game');
-        this.scene.launch('PauseMenu');
+        this.scene.launch('PauseMenu', { prev_scene: 'Game' });
     }
 
     /**
@@ -106,7 +112,8 @@ export class Game extends Scene {
     }
 
     update(time, delta) {
-        this.objs.player.update(time, delta, this.keys)
+        if (this.objs.player)
+            this.objs.player.update(time, delta, this.keys)
 
         // Update lives text and sprites
         this.livesText.setText(this.player_vars.lives);

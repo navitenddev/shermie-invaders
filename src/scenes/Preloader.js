@@ -46,6 +46,10 @@ export class Preloader extends Scene {
 
         this.load.image("shermie_bux", "Shermie-coin.png")
 
+        this.load.image("reaper_icon", "Nexus-icon.png");
+
+        this.load.image("usb_icon", "USB-icon.png");
+
         //this.load.audio(['bgmusic','shoot','explosion'], ['SFX/spacebg.wav','SFX/shoot.wav', 'SFX/explosion.wav']);
 
         this.load.audio('bgmusic', 'SFX/bgmusic.mp3');
@@ -67,6 +71,8 @@ export class Preloader extends Scene {
         this.load.audio('lose', ['SFX/defeat.wav']);
 
         this.load.audio('start', ['SFX/start_screen.mp3']);
+
+        this.load.audio('ff7_fighting', 'SFX/ff7_fighting.mp3');
 
         this.load.audio('click', ['SFX/click.wav']);
 
@@ -120,6 +126,12 @@ export class Preloader extends Scene {
             frameHeight: 32,
         });
 
+        this.load.spritesheet("enemy_reaper", "Nexus.png", {
+            frameWidth: 128,
+            frameHeight: 128,
+        });
+
+
         this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');
 
     }
@@ -133,6 +145,7 @@ export class Preloader extends Scene {
         this.registry.set('level', 1);
         this.registry.set('score', 0);
         this.registry.set('sound_bank', new SoundBank(this));
+        this.registry.set('debug_mode', false);
         this.sounds = this.registry.get('sound_bank');
         this.registry.set('player_vars', {
             lives: 3,

@@ -50,14 +50,6 @@ class ObjectSpawner {
         });
 
         this.level = this.scene.scene.get('Preloader').level;
-
-        this.init_all();
-
-        // spawn enemy usb in 15-60 seconds
-        let secs = Phaser.Math.Between(15, 60);
-        console.log(`Spawning enemy USB in ${secs}s`)
-        // spawn usb in secs seconds
-        this.scene.time.delayedCall(secs * 1000, this.spawn_usb_enemy, [], this.scene.scene)
     }
 
     /**
@@ -72,6 +64,14 @@ class ObjectSpawner {
         this.init_enemy_bullets();
         this.init_explosions();
         this.init_enemy_grid();
+    }
+
+    init_all_without_grid() {
+        this.init_barriers();
+        this.init_player();
+        this.init_player_bullets();
+        this.init_enemy_bullets();
+        this.init_explosions();
     }
 
     init_player() {
@@ -161,7 +161,7 @@ class ObjectSpawner {
     init_player_bullets() {
         console.log("Initializing player bullets");
         for (let i = 0; i < PlayerBullet.bullet_capacity; ++i) {
-            console.log(`Adding bullet #${i + 1}`);
+            // console.log(`Adding bullet #${i + 1}`);
             let bullet = this.scene.add.player_bullet(this.scene);
             this.bullets.player.add(bullet);
         }
@@ -174,7 +174,7 @@ class ObjectSpawner {
     init_enemy_bullets() {
         console.log("Initializing enemy bullets");
         for (let i = 0; i < enemy_bull_defs.max_bullets; ++i) {
-            console.log(`Adding bullet #${i + 1}`);
+            // console.log(`Adding bullet #${i + 1}`);
             let bullet = this.scene.add.enemy_bullet(this.scene);
             this.bullets.enemy.add(bullet);
         }
@@ -187,7 +187,7 @@ class ObjectSpawner {
     init_explosions() {
         console.log("Initializing explosions");
         for (let i = 0; i < expl_defs.max_explosions; ++i) {
-            console.log(`Added explosion #${i + 1}`)
+            // console.log(`Added explosion #${i + 1}`)
             let explosion = this.scene.add.explosion(this.scene);
             this.explosions.add(explosion);
         }

@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { InitKeyDefs } from '../keyboard_input';
+import { InitKeyDefs, CHEAT_CODE_SEQUENCE as CheatCode } from '../keyboard_input';
 import { fonts } from '../utils/fontStyle.js';
 import { SoundBank } from '../sounds.js';
 
@@ -14,7 +14,7 @@ export class MainMenu extends Scene {
 
         this.add.image(512, 300, 'titlelogo');
         this.sounds = this.registry.get('sound_bank');
-        
+
         // reset global vars 
         this.player_vars = this.registry.get('player_vars');
         this.registry.set({ 'score': 0 });
@@ -28,8 +28,10 @@ export class MainMenu extends Scene {
 
         this.keys = InitKeyDefs(this);
 
+        this.cc_idx = 0; // cheatcode index
+
         // Start Button
-        this.startButton = this.add.text(512, 460, 'PLAY', fonts.medium)
+        this.start_btn = this.add.text(512, 460, 'PLAY', fonts.medium)
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
@@ -41,15 +43,7 @@ export class MainMenu extends Scene {
                 });
             });
 
-        this.LevelSelectButton = this.add.text(512, 510, 'LEVELS', fonts.medium)
-            .setOrigin(0.5)
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.sounds.bank.sfx.click.play();
-                this.scene.start('LevelSelect');
-            });
-
-        this.HowToPlayButton = this.add.text(512, 560, 'CONTROLS', fonts.medium)
+        this.controls_btn = this.add.text(512, 510, 'CONTROLS', fonts.medium)
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
@@ -57,12 +51,46 @@ export class MainMenu extends Scene {
                 this.scene.start('HowToPlay');
             });
 
+        if (this.registry.get('debug_mode') === true) {
+            this.level_select_btn = this.add.text(512, 560, 'LEVELS', fonts.medium)
+                .setOrigin(0.5)
+                .setInteractive()
+                .on('pointerdown', () => {
+                    this.sounds.bank.sfx.click.play();
+                    this.scene.start('LevelSelect');
+                });
+
+            this.sandbox_btn = this.add.text(512, 610, 'SANDBOX', fonts.medium)
+                .setOrigin(0.5)
+                .setInteractive()
+                .on('pointerdown', () => {
+                    this.sound.get('start').stop();
+                    this.sounds.bank.sfx.win.play();
+                    this.cameras.main.fadeOut(200, 0, 0, 0);
+                    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                        this.scene.start('Testing');
+                    });
+                });
+        }
+
         this.keys.m.on('down', this.sounds.toggle_mute)
+        this.input.keyboard.createCombo(CheatCode, { resetOnWrongKey: true });
+        this.input.keyboard.on('keycombomatch', () => {
+            this.#activate_cheats();
+        });
     }
+
     update() {
         if (this.animatedBg) {
             this.animatedBg.tilePositionY += 1;
             this.animatedBg.tilePositionX += 1;
         }
+    }
+
+    #activate_cheats() {
+        console.log(`Cheat codes activated!`);
+        this.registry.set('debug_mode', true);
+        this.sounds.bank.sfx.click.play();
+        this.scene.start('MainMenu');
     }
 }
