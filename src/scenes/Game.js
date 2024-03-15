@@ -90,7 +90,7 @@ export class Game extends Scene {
 
     pause() {
         this.scene.pause('Game');
-        this.scene.launch('PauseMenu');
+        this.scene.launch('PauseMenu', { prev_scene: 'Game' });
     }
 
     /**

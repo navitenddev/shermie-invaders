@@ -20,6 +20,8 @@ import { SoundBank } from '../sounds';
 
 export class Testing extends Scene {
     emitter = EventDispatcher.getInstance();
+    win_flag = false;
+    lose_flag = false;
     constructor() {
         super('Testing');
     }
@@ -80,12 +82,13 @@ export class Testing extends Scene {
         this.keys.p.on('down', () => this.pause());
         this.keys.esc.on('down', () => this.pause());
 
-        this.reaper = this.add.enemy_reaper(this, 400, 200)
+        this.mouse_pos_text = this.add.text(25, 50, `(0,0)`, fonts.small);
+        this.reaper = this.add.enemy_reaper(this, 0, 200)
     }
 
     pause() {
-        this.scene.pause('Game');
-        this.scene.launch('PauseMenu');
+        this.scene.pause('Testing');
+        this.scene.launch('PauseMenu', { prev_scene: 'Testing' });
     }
 
     /**
@@ -107,104 +110,13 @@ export class Testing extends Scene {
         // Update lives text and sprites
         this.livesText.setText(this.player_vars.lives);
         this.updateLivesSprites();
-
-        this.ai_grid_enemies(time);
+        this.update_mouse_pos_text();
         this.check_gameover();
     }
 
-    /**
-     * @private
-     * Handles all logic for grid-based enemies
-     */
-    ai_grid_enemies(time) {
-        let enemies = this.objs.enemies.grid.children.entries;
-
-        BaseGridEnemy.timers.move_cd = (enemies.length * 10) - (this.level * 2);
-        // Move all enemies down if we hit the x boundaries
-        for (let enemy of enemies) {
-            if (!enemy.is_x_inbounds()) {
-                console.log("Enemy1 is changing rows!")
-                for (let enemy of enemies)
-                    enemy.move_down()
-                break;
-            }
-            if (!enemy.is_y_inbounds())
-                this.goto_scene('Player Lose');
-        }
-
-        // Move left or right if it's time to do so
-        if (time > BaseGridEnemy.timers.last_moved) {
-            BaseGridEnemy.timers.last_moved = time + BaseGridEnemy.timers.move_cd;
-            for (let enemy of enemies)
-                enemy.move_x();
-        }
-
-        /* Right now, there are two grid enemy shooting types:
-         * 1) Closest enemy shoots at the player (Euclidean distance)
-         * 2) Random enemy shoots
-         */
-
-        // handle enemy shooting ai
-        let player = this.objs.player;
-
-        if (time > BaseGridEnemy.timers.last_fired) {
-            // Roll the dice
-            let shoot_mode = Phaser.Math.Between(0, 1);
-
-            if (enemies && enemies.length) {
-                BaseGridEnemy.timers.last_fired = time + BaseGridEnemy.timers.shoot_cd;
-                switch (shoot_mode) {
-                    case 0: // closest enemy shoots at player (Euclidean distance)
-                        {
-                            let closest = {
-                                enemy: null,
-                                dist: Number.MAX_SAFE_INTEGER
-                            };
-
-                            // Find the enemy closest to the player
-                            for (let enemy of enemies) {
-                                let dist = Phaser.Math.Distance.Between(player.x, player.y, enemy.x, enemy.y);
-                                if (dist < closest.dist)
-                                    closest = { enemy: enemy, dist: dist };
-                            }
-                            if (closest.enemy) closest.enemy.shoot();
-                            break;
-                        }
-                    case 1: // Completely random enemy shoots
-                        {
-                            // choose a random enemy
-                            let rand_index = Phaser.Math.Between(0, enemies.length - 1);
-                            let enemy = enemies[rand_index].shoot(time);
-                            break;
-                        }
-                    case 2: // Enemy closest to player's x position shoots
-                        if (enemies.length) {
-                            let closest = enemies[0];
-                            for (let enemy of enemies) {
-                                let x_dist = Math.abs(player.x - enemy.x);
-                                if (Math.abs(player.x - closest.x) == x_dist)
-                                    closest.push(enemy)
-                                else if (Math.abs(player.x - closest.x) < x_dist)
-                                    closest = [enemy];
-                            }
-
-                            // choose random from closest x
-                            let rand_index = Phaser.Math.Between(0, closest.length - 1);
-                            enemies[rand_index].shoot(time);
-                        }
-                        break;
-                    default:
-                        console.error(`Error: Invalid grid enemy shoot mode!`);
-                        break;
-                }
-            }
-
-        }
-
-    }
 
     check_gameover() {
-        if (this.objs.enemies.grid.children.entries.length == 0 &&
+        if (this.win_flag &&
             !this.level_transition_flag) {
             this.player_vars.active_bullets = 0;
             this.registry.set({ 'level': this.level + 1 });
@@ -213,7 +125,7 @@ export class Testing extends Scene {
             this.goto_scene("Player Win");
         } else if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
-
+            console.log('PLAYER LOSE')
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.goto_scene("Player Lose");
         }
@@ -328,6 +240,12 @@ export class Testing extends Scene {
         barr_chunk.parent.update_flame_size();
 
         bullet.deactivate();
+    }
+
+    update_mouse_pos_text() {
+        let x = this.game.input.mousePointer.x.toFixed(1);
+        let y = this.game.input.mousePointer.y.toFixed(1);
+        this.mouse_pos_text.setText(`(${x},${y})`);
     }
 
     /**

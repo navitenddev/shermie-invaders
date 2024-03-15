@@ -61,6 +61,7 @@ export class MainMenu extends Scene {
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
+                this.sounds.bank.music.start.stop();
                 this.sounds.bank.sfx.click.play();
                 this.scene.start('Testing');
             });

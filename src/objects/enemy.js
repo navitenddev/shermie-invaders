@@ -223,79 +223,135 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
     }
 }
 class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
-    emitter = EventDispatcher.getInstance();
     ai_state = "CHASING";
     path;
-    bullets_shot = 0;
+    shots_fired = 0;
+    shoot_cd = 300;
+    last_fired = 0;
+    tween;
+    state_list = ["CHASING", "SHOOT1", "SHOOT2"];
     constructor(scene, x, y) {
         super(scene, x, y);
         this.scene = scene;
         this.anim_key = "reaper_idle";
         this.play(this.anim_key);
 
-
-
         scene.physics.add.existing(this);
         scene.add.existing(this);
         scene.objs.enemies.special.add(this);
-        this.emitter.on('reaper_chasing', () => {
-            this.ai_state = "CHASING";
-        });
-        this.emitter.on('reaper_runaway', () => {
-            this.ai_state = "RUNAWAY";
-        });
-        this.emitter.on('reaper_idle', () => {
-            this.ai_state = "IDLE";
-        });
-        this.emitter.emit('reaper_chasing', []);
 
         this.graphics = this.scene.add.graphics();
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
         this.path = new Phaser.Curves.Path();
+
+        let player = this.scene.objs.player;
+        scene.physics.moveTo(this, player.x, 200, 400);
+    }
+
+    #clear_path() {
+        this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
+        this.path = new Phaser.Curves.Path();
+        if (this.tween)
+            this.tween.remove();
+    }
+
+    /**
+     * @description State changes will require set up, which this function
+     * handles. If no state is provided, a random state will be chosen
+     * @param {string} new_state The state to change to
+     */
+    #change_state(new_state) {
+        if (new_state === undefined) {
+            new_state = this.state_list[Phaser.Math.Between(0, this.state_list.length - 1)];
+        }
+        console.log(`USING STATE ${new_state}`)
+        this.ai_state = new_state;
+        this.#clear_path(); // the path should be cleared for every state transition
+
+        switch (new_state) {
+            case "CHASING":
+                break;
+            case "SHOOT1":
+                this.path.add(
+                    new Phaser.Curves.Ellipse(this.x, this.y, 200, 120)
+                );
+                this.tween = this.scene.tweens.add({
+                    targets: this.follower,
+                    t: 1,
+                    ease: 'Linear',
+                    // ease: 'Sine.easeInOut',
+                    duration: 2000,
+                    yoyo: false,
+                    repeat: 1
+                })
+                break;
+            case "SHOOT2": // shoot in a bezier curve
+                this.path.moveTo(50, 300);
+                this.path.quadraticBezierTo(900, 300, 520, 96);
+                this.tween = this.scene.tweens.add({
+                    targets: this.follower,
+                    t: 1,
+                    ease: 'Linear',
+                    // ease: 'Sine.easeInOut',
+                    duration: 2000,
+                    yoyo: true,
+                    repeat: -1
+                })
+                break;
+        }
     }
 
     update(time, delta) {
-        this.graphics.clear();
         let player = this.scene.objs.player;
 
         this.graphics.clear();
-        this.graphics.lineStyle(2, 0xffffff, 1);
+        this.graphics.lineStyle(1, 0xffffff, 1);
         this.path.draw(this.graphics);
         this.path.getPoint(this.follower.t, this.follower.vec);
 
         switch (this.ai_state) {
             case "CHASING":
-                // this.scene.physics.moveTo(this, player.x, 200, 120);
+                this.scene.physics.moveTo(this, player.x, 200, 400);
                 let delta_x = Math.abs(this.x - player.x);
-                console.log(delta_x)
                 // https://github.com/phaserjs/examples/blob/master/public/src/paths/circle%20path.js
-                if (delta_x <= 50) {
-                    console.log("SHOOT")
-                    this.path.add(new Phaser.Curves.Ellipse(this.x, this.y, 100));
-                    this.scene.tweens.add({
-                        targets: this.follower,
-                        t: 1,
-                        ease: 'Sine.easeInOut',
-                        duration: 4000,
-                        yoyo: true,
-                        repeat: -1
-                    })
-
-                    this.ai_state = "SHOOT";
+                if (delta_x <= 10) {
+                    this.#change_state();
                 }
                 break;
-            case "SHOOT":
-                this.setPosition(this.follower.vec.x, this.follower.vec.y)
+            case "ROAMING":
                 break;
-            case "RUNAWAY":
+            case "SHOOT1":
+            case "SHOOT2": // fall through
+                this.scene.physics.moveTo(this, this.follower.vec.x, this.follower.vec.y, 400);
+                if (this.shots_fired >= 10) {
+                    this.shots_fired = 0;
+                    this.#change_state("CHASING");
+                    break;
+                }
+
+                if (time > this.last_fired) {
+                    this.last_fired = time + this.shoot_cd;
+                    this.shoot();
+                    this.shots_fired++;
+                }
                 break;
-            case "IDLE":
+            default:
+                console.error("BRUV, YOU SHOULD NOT BE SEEING THIS");
                 break;
         }
     }
 
     die() {
         this.destroy();
+    }
+
+    shoot() {
+        // if condition
+        let bullet = this.scene.objs.bullets.enemy.getFirstDead(false, 0, 0, "enemy_bullet");
+        if (bullet !== null) {
+            bullet.activate(true);
+            bullet.setPosition(this.x, this.y);
+        }
     }
 }
 
