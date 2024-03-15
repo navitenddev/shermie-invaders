@@ -55,7 +55,7 @@ class ObjectSpawner {
         let secs = Phaser.Math.Between(15, 60);
         console.log(`Spawning enemy USB in ${secs}s`)
         // spawn usb in secs seconds
-        this.scene.time.delayedCall(secs * 1000, this.spawn_usb_enemy, [], this.scene.scene)
+        // this.scene.time.delayedCall(secs * 1000, this.spawn_usb_enemy, [], this.scene.scene)
     }
 
     /**

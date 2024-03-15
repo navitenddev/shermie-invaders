@@ -58,20 +58,21 @@ function test_cb(arg1, arg2) {
  * @classdesc A button with an icon as its surface that calls cb with args when
  * clicked.
  */
-class IconButton {
+class IconButton extends Phaser.GameObjects.Image {
     /**
-     * 
      * @param {Phaser.scene} scene The scene to add the button into
      * @param {string} icon The asset key of the image defined in Preloader.js
      * @param {number} x top-left x-coordinate of the button
      * @param {number} y top-right y-coordinate of the button
      * @callback cb Callback function that is used when button is clicked
      * @param {Array<any>} args A variadic number of arguments to pass into cb when it's called
+     * @example new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
      */
     constructor(scene, icon, x, y, cb, args = []) {
         console.log(icon)
-        scene.add.image(x, y, icon)
-            .setOrigin(0.5)
+        super(scene, x, y, icon);
+        scene.add.existing(this);
+        this.setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
                 // do visual indicator that button was clicked
@@ -82,6 +83,7 @@ class IconButton {
             })
     }
 };
+
 
 export class StatsMenu extends Scene {
     constructor() {
