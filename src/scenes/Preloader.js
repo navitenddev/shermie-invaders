@@ -68,6 +68,8 @@ export class Preloader extends Scene {
 
         this.load.audio('start', ['SFX/start_screen.mp3']);
 
+        this.load.audio('ff7_fighting', 'SFX/ff7_fighting.mp3');
+
         this.load.audio('click', ['SFX/click.wav']);
 
         this.load.spritesheet("necromancer", "necromancer.png", {
