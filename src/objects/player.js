@@ -80,6 +80,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.move(false);
         }
         else if (
+            this.anims &&
             this.anims.isPlaying &&
             this.anims.currentAnim.key !== "shermie_idle" &&
             this.anims.currentAnim.key !== "shermie_shoot"
@@ -151,7 +152,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @param {boolean} moving_right True if moving right, false if left
      */
     move(moving_right) {
-        if (this.anims.isPlaying && this.anims.currentAnim.key === "shermie_idle")
+        if (this.anims &&
+            this.anims.isPlaying &&
+            this.anims.currentAnim.key === "shermie_idle")
             this.play("shermie_walk");
 
         if (moving_right) {
@@ -179,8 +182,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 let bullet_speed = player_bull_defs.speed.y + (this.stats.bullet_speed - 1);
 
                 bullet.activate(this.x, this.y, bullet_speed);
-                this.anims.play("shermie_shoot");
-                this.anims.nextAnim = "shermie_idle";
+                if (this.anims) {
+                    this.anims.play("shermie_shoot");
+                    this.anims.nextAnim = "shermie_idle";
+                }
                 this.sounds.bank.sfx.shoot.play();
             }
             else {
