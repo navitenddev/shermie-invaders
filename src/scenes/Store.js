@@ -93,7 +93,7 @@ class MenuSpinner {
             return;
         }
 
-        const permanentStats = this.scene.registry.get('playerPermanentStats') || {};
+        const permanentStats = this.scene.registry.get('player_vars') || {};
         const isMaxedOut = this.stats[this.statKey] === STAT_MAX;
         const canAfford = this.scene.canAffordUpgrade(this.statKey, this.stats[this.statKey]);
         const nextLevelCost = isMaxedOut ? 'Max' : this.scene.getUpgradeCost(this.statKey, this.stats[this.statKey]);
