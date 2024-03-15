@@ -371,7 +371,8 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     update(time, delta) {
         let player = this.scene.objs.player;
 
-        if (this.anims.isPlaying &&
+        if (this.anims &&
+            this.anims.isPlaying &&
             this.anims.currentAnim.key !== "reaper_idle" &&
             this.anims.currentAnim.key !== "reaper_shoot")
             this.play("reaper_idle");

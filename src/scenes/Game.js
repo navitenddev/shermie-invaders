@@ -64,7 +64,8 @@ export class Game extends Scene {
         // The timers will be useful for tweaking the difficulty
         BaseGridEnemy.timers = {
             last_fired: 0,
-            shoot_cd: 1000 - (this.level * 10),
+            // shoot_cd will not go below 100 frames per shot
+            shoot_cd: Math.max(100, 1000 - (this.level * 10)),
             last_moved: 0,
             move_cd: 0, // NOTE: This is set in ai_grid_enemies()
         };
@@ -113,11 +114,6 @@ export class Game extends Scene {
     update(time, delta) {
         if (this.objs.player)
             this.objs.player.update(time, delta, this.keys)
-
-        if (this.anims.isPlaying &&
-            this.anims.currentAnim.key !== "reaper_idle" &&
-            this.anims.currentAnim.key !== "reaper_shoot")
-            this.play("reaper_idle");
 
         // Update lives text and sprites
         this.livesText.setText(this.player_vars.lives);
