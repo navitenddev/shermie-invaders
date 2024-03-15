@@ -37,6 +37,7 @@ const config = {
         Preloader,
         MainMenu,
         Game,
+        Testing,
         PlayerWin,
         PlayerLose,
         LevelSelect,
@@ -45,7 +46,6 @@ const config = {
         StatsMenu,
         Store,
         Dialogue,
-        Testing,
     ]
 };
 export default new Phaser.Game(config);

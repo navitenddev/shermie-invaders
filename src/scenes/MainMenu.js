@@ -14,7 +14,7 @@ export class MainMenu extends Scene {
 
         this.add.image(512, 300, 'titlelogo');
         this.sounds = this.registry.get('sound_bank');
-        
+
         // reset global vars 
         this.player_vars = this.registry.get('player_vars');
         this.registry.set({ 'score': 0 });
@@ -61,9 +61,12 @@ export class MainMenu extends Scene {
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
-                this.sounds.bank.music.start.stop();
-                this.sounds.bank.sfx.click.play();
-                this.scene.start('Testing');
+                this.sound.get('start').stop();
+                this.sounds.bank.sfx.win.play();
+                this.cameras.main.fadeOut(200, 0, 0, 0);
+                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                    this.scene.start('Testing');
+                });
             });
 
         this.keys.m.on('down', this.sounds.toggle_mute)
