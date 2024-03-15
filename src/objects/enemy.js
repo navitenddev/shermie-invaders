@@ -13,6 +13,12 @@ const EnemyConstDefs = {
         enemy3: 10,
         enemyUSB: 100,
     },
+    moneyValue: {
+        enemy1: 25,
+        enemy2: 10,
+        enemy3: 5,
+        enemyUSB: 50,
+    }
 };
 /* TODO: We might wanna fix the hierarchy of enemy classes. Something like:
  *
@@ -127,6 +133,7 @@ class Enemy1 extends BaseGridEnemy {
     constructor(scene, x, y) {
         super(scene, x, y, "enemy_l1_top_idle", EnemyConstDefs);
         this.scoreValue = EnemyConstDefs.scoreValue.enemy1;
+        this.moneyValue = EnemyConstDefs.moneyValue.enemy1;
     }
 }
 
@@ -134,6 +141,7 @@ class Enemy2 extends BaseGridEnemy {
     constructor(scene, x, y) {
         super(scene, x, y, "enemy_l1_middle_idle", EnemyConstDefs);
         this.scoreValue = EnemyConstDefs.scoreValue.enemy2;
+        this.moneyValue = EnemyConstDefs.moneyValue.enemy2;
     }
 }
 
@@ -141,6 +149,7 @@ class Enemy3 extends BaseGridEnemy {
     constructor(scene, x, y) {
         super(scene, x, y, "enemy_l1_bottom_idle", EnemyConstDefs);
         this.scoreValue = EnemyConstDefs.scoreValue.enemy3;
+        this.moneyValue = EnemyConstDefs.moneyValue.enemy3;
     }
 }
 
@@ -161,6 +170,7 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
         this.scene = scene;
         this.anim_key = "usb";
         this.scoreValue = EnemyConstDefs.scoreValue.enemyUSB;
+        this.moneyValue = EnemyConstDefs.moneyValue.enemyUSB;
 
         scene.physics.add.existing(this);
         scene.add.existing(this);
