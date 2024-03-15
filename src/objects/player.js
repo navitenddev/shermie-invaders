@@ -172,7 +172,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      */
     shoot(time) {
         let timer = Player.timers;
-        if (this.player_vars.active_bullets < this.stats.max_bullets &&
+        let bullet_cap = 10;
+        if (this.player_vars.active_bullets < bullet_cap &&
             time > timer.last_fired) {
             // get the next available bullet, if one is available.
             let bullet = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");

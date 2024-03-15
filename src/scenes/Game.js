@@ -46,6 +46,9 @@ export class Game extends Scene {
         // Score and high score
         this.scoreManager = new ScoreManager(this);
 
+        // Event to kill all enemies
+        this.events.on('killAllEnemies', this.killAllEnemies, this);
+
         // Note: this.level is pass by value!
         this.level = this.registry.get('level');
         this.level_transition_flag = false;
@@ -98,6 +101,20 @@ export class Game extends Scene {
         this.scene.launch('PauseMenu', { prev_scene: 'Game' });
     }
 
+    killAllEnemies() {
+        // Loop through all enemies and destroy them
+        this.objs.enemies.grid.children.each(enemy => {
+            this.objs.explode_at(enemy.x, enemy.y);
+            enemy.die();
+            this.scoreManager.addMoney(enemy.moneyValue);
+            this.scoreManager.addScore(enemy.scoreValue);
+        });
+        this.objs.enemies.special.children.each(enemy => {
+            enemy.die();  
+            this.scoreManager.addScore(enemy.scoreValue);
+        });
+    }
+
     /**
      * @description Updates the lives sprites to reflect the current number of lives
      * @param {number} lives The number of lives the player has
@@ -114,7 +131,7 @@ export class Game extends Scene {
     update(time, delta) {
         if (this.objs.player)
             this.objs.player.update(time, delta, this.keys)
-
+        console.log(`Active bullets: ${this.player_vars.active_bullets}`)
         // Update lives text and sprites
         this.livesText.setText(this.player_vars.lives);
         this.updateLivesSprites();

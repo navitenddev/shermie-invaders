@@ -215,7 +215,6 @@ export class Store extends Scene {
             { key: 'move_speed', displayName: 'Movement Speed' },
             { key: 'bullet_speed', displayName: 'Bullet Speed' },
             { key: 'fire_rate', displayName: 'Fire Rate' },
-            { key: 'max_bullets', displayName: 'Max Bullets' }
         ];
 
         //Update and initialize new spinners 

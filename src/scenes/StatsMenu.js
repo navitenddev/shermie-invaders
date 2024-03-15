@@ -124,7 +124,6 @@ export class StatsMenu extends Scene {
             ['move_speed', 'Move Speed'],
             ['bullet_speed', 'Bullet Speed'],
             ['fire_rate', 'Fire Rate'],
-            ['max_bullets', 'Maximum Bullets'],
         ]
 
         let i = 1;
@@ -132,6 +131,13 @@ export class StatsMenu extends Scene {
             new MenuSpinner(this, x, y + (y_gap * i++), w,
                 sd[1], this.player_vars.stats, sd[0]);
 
+        this.levelSkipButton = this.add.text(x, y + (y_gap * i), 'KILL EVERYTHING AHAHAHA', fonts.small)
+            .setInteractive()
+            .on('pointerdown', () => {this.scene.get('Game').events.emit('killAllEnemies'); })
+            .setStyle({ fill: '#ff0000' });
+            
+        i++;
+        
         this.backButton = this.add.text(boxX + 260, y + (y_gap * i), 'Back', fonts.small)
             .setInteractive()
             .on('pointerdown', () => { this.sounds.bank.sfx.click.play(); this.go_back(); });
