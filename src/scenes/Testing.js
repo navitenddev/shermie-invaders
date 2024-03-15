@@ -73,7 +73,7 @@ export class Testing extends Scene {
             repeat: this.player_vars.lives - 2
         });
 
-        this.sounds.bank.music.bg.play();
+        this.sounds.bank.music.ff7_fighting.play();
 
         this.init_collision_events();
 
@@ -83,7 +83,7 @@ export class Testing extends Scene {
         this.keys.esc.on('down', () => this.pause());
 
         this.mouse_pos_text = this.add.text(25, 50, `(0,0)`, fonts.small);
-        this.reaper = this.add.enemy_reaper(this, 400, 200, 40);
+        this.reaper = this.add.enemy_reaper(this, 0, 0, 40);
     }
 
     pause() {
@@ -138,6 +138,7 @@ export class Testing extends Scene {
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
             this.sounds.bank.music.bg.stop();
+            this.sounds.bank.music.ff7_fighting.stop();
             this.scene.start(targetScene);
         });
     }

@@ -232,7 +232,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     tween;
     state_list = ["CHASING", "SHOOT1", "SHOOT2", "SHOOT3"];
     hp;
-    constructor(scene, x, y, hp = 40, shoot_cd = 300, should_clone = true) {
+    constructor(scene, x, y, hp = 40, shoot_cd = 500, should_clone = true) {
         super(scene, x, y);
         this.hp = hp;
         this.shoot_cd = shoot_cd;
@@ -245,6 +245,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
 
 
         this.graphics = this.scene.add.graphics();
+        this.graphics.lineStyle(1, 0xffffff, 1);
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
         this.path = new Phaser.Curves.Path();
 
@@ -257,6 +258,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     }
 
     #clear_path() {
+        this.graphics.clear();
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
         this.path = new Phaser.Curves.Path();
         if (this.tween)
@@ -272,7 +274,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
         if (new_state === undefined) {
             new_state = this.state_list[Phaser.Math.Between(0, this.state_list.length - 1)];
         }
-        console.log(`USING STATE ${new_state}`)
+        console.log(`REAPER: ${new_state}`)
         this.ai_state = new_state;
         this.#clear_path(); // the path should be cleared for every state transition
 
@@ -286,30 +288,31 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
                 this.tween = this.scene.tweens.add({
                     targets: this.follower,
                     t: 1,
-                    ease: 'Linear',
-                    // ease: 'Sine.easeInOut',
+                    // ease: 'Linear',
+                    ease: 'Sine.easeInOut',
                     duration: 2000,
-                    yoyo: false,
-                    repeat: 1
+                    yoyo: true,
+                    repeat: -1
                 })
                 break;
             case "SHOOT2": // shoot in a bezier curve
                 const LEFT = new Phaser.Math.Vector2(50, 300),
                     RIGHT = new Phaser.Math.Vector2(900, 300);
+
+                const MULT = (Phaser.Math.Between(0, 1) === 0) ? 1 : -1;
                 // move to either left or right side of screen
                 let rng = Phaser.Math.Between(0, 1);
                 if (rng === 0) {
                     this.path.moveTo(LEFT.x, LEFT.y);
-                    this.path.quadraticBezierTo(RIGHT.x, RIGHT.y, 520, 0);
+                    this.path.quadraticBezierTo(RIGHT.x, RIGHT.y, this.scene.game.config.width / 2, MULT * 400);
                 } else {
                     this.path.moveTo(RIGHT.x, RIGHT.y);
-                    this.path.quadraticBezierTo(LEFT.x, LEFT.y, 520, 0);
+                    this.path.quadraticBezierTo(LEFT.x, LEFT.y, this.scene.game.config.width / 2, MULT * 400);
                 }
 
                 this.tween = this.scene.tweens.add({
                     targets: this.follower,
                     t: 1,
-                    ease: 'Linear',
                     ease: 'Sine.easeInOut',
                     duration: 2000,
                     yoyo: true,
@@ -318,7 +321,21 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
                 break;
             case "SHOOT3":
                 // TODO: lemniscate shooting pattern?
-                this.#change_state("SHOOT2");
+                const MID = new Phaser.Math.Vector2(this.scene.game.config.width / 2, 300);
+                const OFFSET = Phaser.Math.Between(-100, 100);
+                this.path = new Phaser.Curves.Path(400, 300);
+                console.log(`MOVING TO ${MID.x + OFFSET}, ${MID.y}`)
+                this.path.moveTo(MID.x + OFFSET, MID.y);
+                this.path.circleTo(100, false, 360);
+                this.path.circleTo(100, true, 180);
+                this.tween = this.scene.tweens.add({
+                    targets: this.follower,
+                    t: 1,
+                    ease: 'Linear',
+                    duration: 2000,
+                    repeat: -1,
+                    yoyo: true,
+                })
                 break;
         }
     }
@@ -339,9 +356,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     update(time, delta) {
         let player = this.scene.objs.player;
 
-        this.graphics.clear();
-        this.graphics.lineStyle(1, 0xffffff, 1);
-        this.path.draw(this.graphics);
+        // this.path.draw(this.graphics);
         this.path.getPoint(this.follower.t, this.follower.vec);
 
         switch (this.ai_state) {
@@ -357,6 +372,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
                 break;
             case "SHOOT1":
             case "SHOOT2": // fall through
+            case "SHOOT3": // fall through
                 this.scene.physics.moveTo(this, this.follower.vec.x, this.follower.vec.y, 400);
                 if (this.shots_fired >= 10) {
                     this.shots_fired = 0;

@@ -38,7 +38,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
         this.text_data = data;
         this.bg = scene.add.graphics()
-            .fillStyle(0xb2b2b2, 1)
+            .fillStyle(0xb2b2b2, 0.8)
             .fillRoundedRect(10, 10, w - this.border_w, h, 10);
 
         this.w = w - this.border_w;
