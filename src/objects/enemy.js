@@ -57,11 +57,11 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
 
         scene.physics.add.existing(this);
         scene.add.existing(this);
-        this.setPosition(x, y);
-        this.setSize(this.const_defs.dims.w, this.const_defs.dims.h);
-        this.setScale(this.const_defs.scale.w, this.const_defs.scale.h);
-        this.setOffset(0, 0);
-        this.play(this.anim_key);
+        this.setPosition(x, y)
+            .setSize(this.const_defs.dims.w, this.const_defs.dims.h)
+            .setScale(this.const_defs.scale.w, this.const_defs.scale.h)
+            .setOffset(0, 0)
+            .play(this.anim_key);
 
         this.scene = scene;
 
@@ -232,11 +232,24 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     tween;
     state_list = ["CHASING", "SHOOT1", "SHOOT2", "SHOOT3"];
     hp;
-    constructor(scene, x, y, hp = 40, shoot_cd = 500, should_clone = true) {
+    /**
+     * 
+     * @param {Phaser.Scene} scene   The scene to spawn the Reaper in
+     * @param {number} x             x-position to spawn at
+     * @param {number} y             y-position to spawn at
+     * @param {number} hp            total HP of Reaper 
+     * @param {number} shoot_cd      Fire rate of Reaper
+     * @param {boolean} should_clone If true, will clone itself.
+     * @param {number} score_value   The number of points yielded per hit
+     * @param {number} money_value   The number of Shermie Bux dropped per hit
+     */
+    constructor(scene, x, y, hp = 40, shoot_cd = 500, should_clone = true, score_value = 100, money_value = 10) {
         super(scene, x, y);
         this.hp = hp;
         this.shoot_cd = shoot_cd;
         this.anim_key = "reaper_idle";
+        this.scoreValue = score_value;
+        this.moneyValue = money_value;
         this.play(this.anim_key);
 
         scene.physics.add.existing(this);
@@ -345,9 +358,11 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
         if (this.scene) {
             let clone_delay = Phaser.Math.Between(EnemyReaper.CLONE_DELAY.min, EnemyReaper.CLONE_DELAY.max);
             this.scene.add.enemy_reaper(this.scene, this.x, this.y,
-                1,    // clones have 1 hp
-                1000, // clone should have a slow fire rate
-                false // clones should not clone themselves
+                1,    // clones will have 1 hp
+                1000, // clones should have a slow fire rate
+                false,// clones should not clone themselves
+                100,  // clones should only yield a few points
+                5,    // clones should only yield a little bit of money
             );
             this.scene.time.delayedCall(clone_delay * 1000, this.#clone_self, [], this);
         }

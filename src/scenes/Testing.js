@@ -211,6 +211,7 @@ export class Testing extends Scene {
             player_bullet.deactivate();
             enemy.die();
             this.scoreManager.addScore(enemy.scoreValue);
+            this.scoreManager.addMoney(enemy.moneyValue);
         });
 
         // player bullet hits special enemy
@@ -219,6 +220,7 @@ export class Testing extends Scene {
             player_bullet.deactivate();
             enemy.die();
             this.scoreManager.addScore(enemy.scoreValue);
+            this.scoreManager.addMoney(enemy.moneyValue);
         });
 
         // enemy bullet hits player
