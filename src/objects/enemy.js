@@ -229,7 +229,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     shoot_cd = 300;
     last_fired = 0;
     tween;
-    state_list = ["CHASING", "SHOOT1", "SHOOT2"];
+    state_list = ["CHASING", "SHOOT1", "SHOOT2", "SHOOT3"];
     hp = 50;
     constructor(scene, x, y) {
         super(scene, x, y);
@@ -287,17 +287,30 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
                 })
                 break;
             case "SHOOT2": // shoot in a bezier curve
-                this.path.moveTo(50, 300);
-                this.path.quadraticBezierTo(900, 300, 520, 96);
+                const LEFT = new Phaser.Math.Vector2(50, 300),
+                    RIGHT = new Phaser.Math.Vector2(900, 300);
+                // move to either left or right side of screen
+                let rng = Phaser.Math.Between(0, 1);
+                if (rng === 0) {
+                    this.path.moveTo(LEFT.x, LEFT.y);
+                    this.path.quadraticBezierTo(RIGHT.x, RIGHT.y, 520, 0);
+                } else {
+                    this.path.moveTo(RIGHT.x, RIGHT.y);
+                    this.path.quadraticBezierTo(LEFT.x, LEFT.y, 520, 0);
+                }
+
                 this.tween = this.scene.tweens.add({
                     targets: this.follower,
                     t: 1,
                     ease: 'Linear',
-                    // ease: 'Sine.easeInOut',
+                    ease: 'Sine.easeInOut',
                     duration: 2000,
                     yoyo: true,
                     repeat: -1
                 })
+                break;
+            case "SHOOT3":
+                this.#change_state("SHOOT2");
                 break;
         }
     }
