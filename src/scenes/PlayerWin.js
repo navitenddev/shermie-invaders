@@ -22,7 +22,7 @@ export class PlayerWin extends Scene {
 
         this.sounds.bank.sfx.win.play();
 
-        this.add.text(512, 384, 'You win, click anywhere on the screen to continue to the next level.', {
+        this.add.text(512, 384, 'Welcome to Shermie Depot!', {
             fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center',
@@ -30,8 +30,7 @@ export class PlayerWin extends Scene {
         }).setOrigin(0.5);
 
         this.input.once('pointerdown', () => {
-            // this.scene.start('MainMenu');
-            this.scene.start("Game")
+            this.scene.start("Store")
         });
     }
 

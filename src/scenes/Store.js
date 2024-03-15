@@ -13,7 +13,7 @@ class MenuSpinner {
         const centerX = scene.cameras.main.width / 2.25;
         const boxHeight = 30;
         const boxWidth = 30;
-        const boxSpacing = 2; 
+        const boxSpacing = 2;
         const totalBoxesWidth = STAT_MAX * (boxWidth + boxSpacing);
         const firstBoxX = centerX - totalBoxesWidth / 2 - 15;
 
@@ -48,20 +48,20 @@ class MenuSpinner {
             .setInteractive()
             .on('pointerdown', () => {
                 this.updateStat(-1);
-                this.minusButton.setScale(1.2); 
+                this.minusButton.setScale(1.2);
             })
             .on('pointerup', () => {
-                this.minusButton.setScale(1.5); 
+                this.minusButton.setScale(1.5);
             });
 
         this.plusButton
             .setInteractive()
             .on('pointerdown', () => {
                 this.updateStat(1);
-                this.plusButton.setScale(1.2); 
+                this.plusButton.setScale(1.2);
             })
             .on('pointerup', () => {
-                this.plusButton.setScale(1.5); 
+                this.plusButton.setScale(1.5);
             });
 
         // Initial display update
@@ -93,7 +93,7 @@ class MenuSpinner {
             return;
         }
 
-        const permanentStats = this.scene.registry.get('playerPermanentStats') || {};
+        const permanentStats = this.scene.registry.get('player_vars') || {};
         const isMaxedOut = this.stats[this.statKey] === STAT_MAX;
         const canAfford = this.scene.canAffordUpgrade(this.statKey, this.stats[this.statKey]);
         const nextLevelCost = isMaxedOut ? 'Max' : this.scene.getUpgradeCost(this.statKey, this.stats[this.statKey]);
@@ -113,24 +113,80 @@ class MenuSpinner {
         this.upgradeCostText.setText(nextLevelCost).setFill(isMaxedOut ? '#FFD700' : (canAfford ? '#00ff00' : '#FF0000'));
         this.statText.setText(`${this.displayName}: ${isMaxedOut ? 'Max' : this.stats[this.statKey]}`);
     }
-
 }
+
+class MenuButton extends Phaser.GameObjects.Container {
+    constructor(scene, x, y, text, cb, args) {
+        super(scene, x, y);
+        scene.add.existing(this);
+
+        this.setInteractive()
+
+
+        this.border_w = 4;
+        this.btn = scene.add.text(this.border_w, this.border_w, text, {
+            ...fonts.small,
+            padding: { left: 15, right: 15, top: 10, bottom: 10 },
+            backgroundColor: '#FFD700',
+            borderRadius: 10,
+        })
+            .setInteractive()
+            .setFontSize(24)
+            .setOrigin(0, 0);
+
+        this.btn_rect = this.btn.getBounds();
+        this.btn_border = scene.add.graphics();
+
+        this.btn_border.lineStyle(2, 0xFFFF00, 1)
+            .strokeRoundedRect(0, 0,
+                this.btn_rect.width + this.border_w * 2, this.btn_rect.height + this.border_w * 2,
+                10
+            );
+
+        this.btn.on('pointerover', () => {
+            this.btn.setStyle({ fill: '#FFEA00' });
+            this.btn_border
+                .clear()
+                .lineStyle(3, 0xFFEA00, 1)
+                .strokeRoundedRect(0, 0,
+                    this.btn_rect.width + this.border_w * 2, this.btn_rect.height + this.border_w * 2,
+                    10
+                );
+        })
+            .on('pointerout', () => {
+                this.btn.setStyle({ fill: '#FFFFFF' });
+                this.btn_border
+                    .clear()
+                    .lineStyle(2, 0xFFFF00, 1)
+                    .strokeRoundedRect(0, 0,
+                        this.btn_rect.width + this.border_w * 2, this.btn_rect.height + this.border_w * 2,
+                        10
+                    );
+            })
+            .on('pointerdown', () => {
+                (args) ? cb(...args) : cb(args);
+            });
+
+        this.add([this.btn, this.btn_border])
+    }
+}
+
 export class Store extends Scene {
     constructor() {
         super('Store');
         this.menuSpinners = [];
         //****SET MONEY AMOUNT HERE***
-        this.money = 9000;
         this.initialStats = {};
     }
 
     create() {
+        this.player_vars = this.registry.get('player_vars')
         //Background
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'upgradeTilemap')
             .setOrigin(0.5, 0.5);
 
-        const startY = 250; 
-        const spinnerGap = 70; 
+        const startY = 250;
+        const spinnerGap = 70;
 
         let borderGraphics = this.add.graphics();
         borderGraphics.lineStyle(2, 0xffffff, 1);
@@ -188,43 +244,20 @@ export class Store extends Scene {
         const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_coin').setOrigin(0.5, 0.5).setScale(0.12);
         const moneyTextX = moneyIconX + moneyIcon.displayWidth / 2 + 5;
         const moneyTextY = moneyIconY;
-        this.moneyText = this.add.text(moneyTextX, moneyTextY, `${this.money}`, fonts.medium).setOrigin(0, 0.5);
+        this.moneyText = this.add.text(moneyTextX, moneyTextY, `${this.player_vars.wallet}`, fonts.medium).setOrigin(0, 0.5);
 
-        //Next level button
-        let nextLevelButton = this.add.text(this.cameras.main.width / 2, this.cameras.main.height - 100, 'Next Level?', {
-            ...fonts.small, 
-            padding: { left: 15, right: 15, top: 10, bottom: 10 },
-            backgroundColor: '#FFD700', 
-            borderRadius: 10,
-        })
-            .setInteractive()
-            .setFontSize(24) 
-            .setOrigin(0.5, 0);
-
-        let nextLevelButtonBorder = this.add.graphics();
-        nextLevelButtonBorder.lineStyle(2, 0xFFFF00, 1);
-        let buttonRect = nextLevelButton.getBounds();
-
-        nextLevelButtonBorder.strokeRoundedRect(buttonRect.x - 5, buttonRect.y - 5, buttonRect.width + 10, buttonRect.height + 10, 10);
-
-        nextLevelButton.on('pointerover', () => {
-            nextLevelButton.setStyle({ fill: '#FFEA00' }); 
-            nextLevelButtonBorder.clear().lineStyle(3, 0xFFEA00, 1); 
-            nextLevelButtonBorder.strokeRoundedRect(buttonRect.x - 5, buttonRect.y - 5, buttonRect.width + 10, buttonRect.height + 10, 10);
-        })
-            .on('pointerout', () => {
-                nextLevelButton.setStyle({ fill: '#FFFFFF' }); 
-                nextLevelButtonBorder.clear().lineStyle(2, 0xFFFF00, 1); 
-                nextLevelButtonBorder.strokeRoundedRect(buttonRect.x - 5, buttonRect.y - 5, buttonRect.width + 10, buttonRect.height + 10, 10);
-            })
-            .on('pointerdown', () => {
+        let next_level_btn = new MenuButton(this,
+            this.game.config.width / 2.8, this.game.config.height - 100,
+            'Next Level?',
+            () => {
                 this.initialStats = Object.assign({}, this.stats);
                 this.registry.set('playerPermanentStats', Object.assign({}, this.stats));
                 let playerVars = this.registry.get('player_vars');
                 playerVars.stats = this.stats;
                 this.registry.set('player_vars', playerVars);
                 this.scene.start('Game', { playerStats: this.stats });
-            });
+            }
+        );
     }
 
     updateAllSpinners() {
@@ -249,24 +282,24 @@ export class Store extends Scene {
             this.purchaseUpgrade(statKey, newStatValue - 1);
             return true; // Return true to indicate the upgrade was successful
         }
-        return false; 
+        return false;
     }
 
     canAffordUpgrade(statKey, currentLevel) {
         const cost = this.getUpgradeCost(statKey, currentLevel);
-        return this.money >= cost;
+        return this.player_vars.wallet >= cost;
     }
 
     purchaseUpgrade(statKey, currentLevel) {
         const cost = this.getUpgradeCost(statKey, currentLevel - 1);
-        this.money -= cost;
-        this.moneyText.setText(`${this.money}`);
+        this.player_vars.wallet -= cost;
+        this.moneyText.setText(`${this.player_vars.wallet}`);
     }
 
     refundUpgrade(statKey, currentLevel) {
-        const refundAmount = this.getRefundAmount(statKey, currentLevel + 1); 
-        this.money += refundAmount;
-        this.moneyText.setText(`${this.money}`);
+        const refundAmount = this.getRefundAmount(statKey, currentLevel + 1);
+        this.player_vars.wallet += refundAmount;
+        this.moneyText.setText(`${this.player_vars.wallet}`);
     }
 
     getRefundAmount(statKey, level) {

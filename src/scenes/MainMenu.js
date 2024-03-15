@@ -14,6 +14,18 @@ export class MainMenu extends Scene {
 
         this.add.image(512, 300, 'titlelogo');
         this.sounds = this.registry.get('sound_bank');
+        
+        // reset global vars 
+        this.player_vars = this.registry.get('player_vars');
+        this.registry.set({ 'score': 0 });
+        this.player_vars.lives = 3;
+
+        // reset player stats to defaults
+        for (let [key, value] of Object.entries(this.player_vars.stats))
+            this.player_vars.stats[key] = 1;
+        this.player_vars.active_bullets = 0;
+        this.player_vars.wallet = 0;
+
         this.keys = InitKeyDefs(this);
 
         // Start Button

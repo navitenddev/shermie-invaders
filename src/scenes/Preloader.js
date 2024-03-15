@@ -44,6 +44,8 @@ export class Preloader extends Scene {
 
         this.load.image("placeholder", "placeholder.png");
 
+        this.load.image("shermie_bux", "Shermie-coin.png")
+
         //this.load.audio(['bgmusic','shoot','explosion'], ['SFX/spacebg.wav','SFX/shoot.wav', 'SFX/explosion.wav']);
 
         this.load.audio('bgmusic', 'SFX/bgmusic.mp3');
@@ -144,6 +146,7 @@ export class Preloader extends Scene {
                 move_speed: 1,
                 // ...more to be added
             },
+            wallet: 0, // holds shermie bux
             active_bullets: 0, // the number of bullets that the player currently has on screen
         });
         this.sounds.bank.music.start.play();
