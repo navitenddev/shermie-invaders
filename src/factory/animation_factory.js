@@ -132,7 +132,6 @@ class AnimationFactory {
                 start: 5, end: 9,
             }),
             frameRate: 8,
-            repeat: -1,
         });
 
         this.scene.anims.create({

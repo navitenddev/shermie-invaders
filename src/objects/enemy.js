@@ -371,6 +371,11 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     update(time, delta) {
         let player = this.scene.objs.player;
 
+        if (this.anims.isPlaying &&
+            this.anims.currentAnim.key !== "reaper_idle" &&
+            this.anims.currentAnim.key !== "reaper_shoot")
+            this.play("reaper_idle");
+
         // this.path.draw(this.graphics);
         this.path.getPoint(this.follower.t, this.follower.vec);
 
@@ -422,6 +427,8 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
         if (bullet !== null) {
             bullet.activate(true);
             bullet.setPosition(this.x, this.y);
+            this.anims.play("reaper_shoot");
+            this.anims.nextAnim = "reaper_idle";
         }
     }
 }
