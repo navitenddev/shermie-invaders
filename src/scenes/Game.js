@@ -114,6 +114,11 @@ export class Game extends Scene {
         if (this.objs.player)
             this.objs.player.update(time, delta, this.keys)
 
+        if (this.anims.isPlaying &&
+            this.anims.currentAnim.key !== "reaper_idle" &&
+            this.anims.currentAnim.key !== "reaper_shoot")
+            this.play("reaper_idle");
+
         // Update lives text and sprites
         this.livesText.setText(this.player_vars.lives);
         this.updateLivesSprites();
