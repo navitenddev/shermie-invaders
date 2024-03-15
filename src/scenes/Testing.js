@@ -25,7 +25,6 @@ class IconButton extends Phaser.GameObjects.Container {
      * @example new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
      */
     constructor(scene, icon, x, y, cb, args = []) {
-        console.log(icon)
         super(scene, x, y);
         scene.add.existing(this);
 
