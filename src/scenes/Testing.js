@@ -110,11 +110,13 @@ export class Testing extends Scene {
         // this.objs.player = this.add.player(this, this.sys.game.config.width / 2, this.game.config.height - 96);
 
         // Player lives text and sprites
-        this.livesText = this.add.text(16, this.sys.game.config.height - 48, '3', fonts.medium);
+        this.livesText = this.add.text(16, this.sys.game.config.height - 48, '---', fonts.medium);
         this.livesSprites = this.add.group({
             key: 'lives',
-            repeat: this.player_vars.lives - 2
+            repeat: 2
         });
+
+        this.livesSprites.create(84, this.sys.game.config.height - 32, 'lives', 0);
 
         this.sounds.bank.music.ff7_fighting.play();
 
@@ -156,25 +158,11 @@ export class Testing extends Scene {
         this.scene.launch('PauseMenu', { prev_scene: 'Testing' });
     }
 
-    /**
-     * @description Updates the lives sprites to reflect the current number of lives
-     * @param {number} lives The number of lives the player has
-    */
-    updateLivesSprites() {
-        this.livesSprites.clear(true, true); // Clear sprites
-        for (let i = 0; i < this.player_vars.lives; i++) {
-            // coordinates for the lives sprites
-            let lifeConsts = { x: 84 + i * 48, y: this.sys.game.config.height - 32 };
-            this.livesSprites.create(lifeConsts.x, lifeConsts.y, 'lives', 0)
-        }
-    }
-
     update(time, delta) {
         if (this.objs.player.update)
             this.objs.player.update(time, delta, this.keys)
         // Update lives text and sprites
-        this.livesText.setText(this.player_vars.lives);
-        this.updateLivesSprites();
+        this.livesText.setText('-');
         this.update_mouse_pos_text();
     }
 
@@ -221,6 +209,7 @@ export class Testing extends Scene {
                 this.objs.explode_at(player.x, player.y);
                 enemy_bullet.deactivate();
                 player.die();
+                this.player_vars.lives = 3; // never run out of lives
                 if (this.player_vars.lives === 0)
                     this.start_dialogue('shermie_dead', false);
                 else
@@ -257,12 +246,12 @@ export class Testing extends Scene {
 
         // enemy bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            this.explode_at_bullet_hit(bullet, barr_chunk);
+            this.explode_at_bullet_hit(bullet, barr_chunk, 25);
         });
     }
 
-    explode_at_bullet_hit(bullet, barr_chunk) {
-        const baseExplosionRadius = 18;
+    explode_at_bullet_hit(bullet, barr_chunk, radius = 18) {
+        const baseExplosionRadius = radius;
         const maxDamage = 100;
 
         // randomn explosion radius
@@ -276,7 +265,7 @@ export class Testing extends Scene {
             if (chunk.active && distance < explosionRadius) {
                 // calculate damage based on distance
                 let damage = maxDamage * (1 - distance / explosionRadius);
-                let randomDamageFactor = Phaser.Math.FloatBetween(0.1, 1.2);
+                let randomDamageFactor = Phaser.Math.FloatBetween(0.4, 1.2);
                 damage *= randomDamageFactor;
 
                 chunk.applyDamage(damage);
