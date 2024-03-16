@@ -175,10 +175,10 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
      */
     activate(x, y, vx = 0, vy = 600) {
         this.setVelocity(vx, vy)
-        this.setPosition(x, y);
-        this.setAngle(Math.atan2(vy, vx) * (180 / Math.PI));
-        this.setVisible(true);
-        this.setActive(true);
+            .setPosition(x, y)
+            .setAngle(Math.atan2(vy, vx) * (180 / Math.PI))
+            .setVisible(true)
+            .setActive(true);
     }
 
     /** 
@@ -186,9 +186,10 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
      * @description Deactivate the bullet and move it offscreen
      */
     deactivate() {
-        this.setPosition(-1024, -1024);
-        this.setVisible(false);
-        this.setActive(false);
+        this.setPosition(-1024, -1024)
+            .setVelocity(0, 0)
+            .setVisible(false)
+            .setActive(false);
     }
 
 }
