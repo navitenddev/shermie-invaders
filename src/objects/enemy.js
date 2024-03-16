@@ -376,6 +376,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
                     break;
                 }
         }
+        this.path.draw(this.graphics);
     }
 
     #clone_self() { // clones thyself
@@ -402,7 +403,6 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
             this.anims.currentAnim.key !== "reaper_shoot")
             this.play("reaper_idle");
 
-        this.path.draw(this.graphics);
         this.path.getPoint(this.follower.t, this.follower.vec);
 
         switch (this.ai_state) {
@@ -465,7 +465,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     hp = 40;
 
     // though BARRIER_SWEEP is a state, we only want to use it in the beginning, so don't add it here
-    state_list = ["CHASING"]
+    state_list = ["CHASING", "SHOOT1"]
     follower = { t: 0, vec: new Phaser.Math.Vector2() };
     path = new Phaser.Curves.Path();
     graphics;
@@ -547,20 +547,28 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                     yoyo: true,
                     repeat: -1
                 })
+                this.scene.time.delayedCall(3 * 1000, this.#change_state, [], this);
                 break;
             case "SHOOT1":
+                this.setAngularVelocity(400);
+                this.path.moveTo(this.scene.game.config.width / 2, EnemyLupa.Y_NORMAL);
+                this.scene.time.delayedCall(3 * 1000, this.#shoot, [], this);
                 break;
             default:
                 console.error(`Invalid Enemy state: ${this.ai_state}`);
                 break;
         }
+        this.path.draw(this.graphics);
+    }
+
+    #shoot() {
+
     }
 
     update() {
         let player = this.scene.objs.player;
 
         this.graphics.clear();
-        this.path.draw(this.graphics);
         this.path.getPoint(this.follower.t, this.follower.vec);
 
         switch (this.ai_state) {
@@ -571,6 +579,13 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                 this.scene.physics.moveTo(this, this.follower.vec.x, this.follower.vec.y, EnemyLupa.Y_NORMAL);
                 break;
             case "SHOOT1":
+                {
+                    this.scene.physics.moveTo(this, this.follower.vec.x, this.follower.vec.y, EnemyLupa.Y_NORMAL);
+                    this.scene.time.delayedCall(2 * 1000, this.#change_state, ["CHASING"], this);
+                    break;
+                }
+            default:
+                console.error(`Invalid state ${this.ai_state}`);
                 break;
         }
     }
