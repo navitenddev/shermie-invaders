@@ -461,16 +461,19 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
 
 class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     static Y_NORMAL = 300;
+    static ANGLE_VEL = 500;
     hp = 40;
     shoot_cd = 50;
     last_fired = 0;
 
     // though BARRIER_SWEEP is a state, we only want to use it in the beginning, so don't add it here
-    state_list = ["CHASING", "SHOOT1"]
+    state_list = ["ROAMING", "SHOOT1"]
     follower = { t: 0, vec: new Phaser.Math.Vector2() };
     path = new Phaser.Curves.Path();
     graphics;
     ai_state;
+
+    target_pos = new Phaser.Math.Vector2();
     constructor(scene, x, y) {
         super(scene, x, y);
         scene.physics.add.existing(this);
@@ -479,7 +482,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         this.anim_key = "lupa_idle";
         this.setSize(64, 64)
             .setOffset(0, 0)
-            .setAngularVelocity(400)
+            .setAngularVelocity(EnemyLupa.ANGLE_VEL)
             .play(this.anim_key);
 
         this.graphics = this.scene.add.graphics();
@@ -515,45 +518,56 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         this.#clear_path(); // the path should be cleared for every state transition
         switch (this.ai_state) {
             case "BARRIER_SWEEP": // Lupa will only barrier sweep in the beginning, then will only use other states after
-                const LEFT = new Phaser.Math.Vector2(58, 530),
-                    RIGHT = new Phaser.Math.Vector2(900, 530);
-                this.path.lineTo(RIGHT);
-                this.path.lineTo(LEFT);
-                this.tween = this.scene.tweens.add({
-                    targets: this.follower,
-                    t: 1,
-                    ease: 'Linear',
-                    // ease: 'Cubic.inOut',
-                    duration: 4000,
-                    yoyo: false,
-                })
-                // Tween events: https://newdocs.phaser.io/docs/3.80.0/Phaser.Tweens.Events.TWEEN_COMPLETE
-                this.tween.on('complete', () => {
-                    this.#change_state();
-                });
-                break;
-            case "CHASING":
-                // this.scene.time.delayedCall(Phaser.Math.Between(3, 6),
-                //     this.#change_state, [], this);
+                {
+                    const LEFT = new Phaser.Math.Vector2(58, 530),
+                        RIGHT = new Phaser.Math.Vector2(900, 530);
+                    this.path.lineTo(RIGHT);
+                    this.path.lineTo(LEFT);
+                    this.tween = this.scene.tweens.add({
+                        targets: this.follower,
+                        t: 1,
+                        ease: 'Linear',
+                        // ease: 'Cubic.inOut',
+                        duration: 4000,
+                        yoyo: false,
+                    })
+                    // Tween events: https://newdocs.phaser.io/docs/3.80.0/Phaser.Tweens.Events.TWEEN_COMPLETE
+                    this.tween.on('complete', () => {
+                        this.#change_state();
+                    });
+                    break;
+                }
+            case "ROAMING":
+                {
+                    this.setAngle(0)
+                        .setAngularVelocity(0);
+                    // this.scene.time.delayedCall(Phaser.Math.Between(3, 6),
+                    //     this.#change_state, [], this);
+                    const LEFT = new Phaser.Math.Vector2(58, EnemyLupa.Y_NORMAL),
+                        RIGHT = new Phaser.Math.Vector2(900, EnemyLupa.Y_NORMAL);
 
-                this.path.moveTo(player.x, EnemyLupa.Y_NORMAL);
-                // this.path.splineTo([164, 446, 274, 542, 412, 457, 522, 541, 664, 464]) // ??
-                // this.path.circleTo(100, false, 180);
-                // this.path.circleTo(100, true, 180);
-                this.tween = this.scene.tweens.add({
-                    targets: this.follower,
-                    t: 1,
-                    ease: 'Sine.easeInOut',
-                    duration: 4000,
-                    yoyo: true,
-                    repeat: -1
-                })
-                this.scene.time.delayedCall(3 * 1000, this.#change_state, [], this);
-                break;
+                    let target = (Phaser.Math.Between(0, 1)) ? LEFT : RIGHT;
+
+                    this.scene.physics.moveTo(this, target.x, target.y, 300);
+                    this.target_pos = target;
+                    this.scene.time.delayedCall(3 * 1000, this.#change_state, [], this);
+                    break;
+                }
             case "SHOOT1":
-                this.path.moveTo(this.scene.game.config.width / 2, EnemyLupa.Y_NORMAL);
-                this.scene.time.delayedCall(3 * 1000, this.#change_state, ["CHASING"], this);
-                break;
+                {
+                    this.setAngularVelocity(400);
+                    const x_dest = [
+                        100, // left
+                        this.scene.game.config.width / 2, // mids
+                        850 // right
+                    ];
+
+                    // pick a random x
+                    let x = x_dest[Phaser.Math.Between(0, x_dest.length - 1)]
+                    this.scene.physics.moveTo(this, x, EnemyLupa.Y_NORMAL, 200);
+                    this.scene.time.delayedCall(3 * 1000, this.#change_state, ["ROAMING"], this);
+                    break;
+                }
             default:
                 console.error(`Invalid Enemy state: ${this.ai_state}`);
                 break;
@@ -565,10 +579,10 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         // if condition
         let bullet = this.scene.objs.bullets.enemy.getFirstDead(false, 0, 0, "enemy_bullet");
 
-        let angle = this.angle - 90;
-        var V = 600;
-        var vx = V * Math.cos(angle * Math.PI / 180);
-        var vy = V * Math.sin(angle * Math.PI / 180);
+        let angle = this.angle + 90;
+        const V = 600,
+            vx = V * Math.cos(angle * Math.PI / 180),
+            vy = V * Math.sin(angle * Math.PI / 180);
 
         if (bullet !== null) {
             bullet.activate(this.x, this.y, vx, vy);
@@ -582,15 +596,23 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         this.path.getPoint(this.follower.t, this.follower.vec);
 
         switch (this.ai_state) {
-            case "CHASING":
-                this.scene.physics.moveTo(this, player.x, 200, EnemyLupa.Y_NORMAL);
+            case "ROAMING":
+                // this.scene.physics.moveTo(this, this.follower.vec.x, this.follower.vec.y, EnemyLupa.Y_NORMAL);
+                let dist = Phaser.Math.Distance.BetweenPoints({ x: this.x, y: this.y }, this.target_pos);
+                // console.log(`dist: ${dist}`);
+                if (dist <= 10) {
+                    this.setVelocity(0, 0);
+                    this.#clear_path();
+                    this.#change_state("SHOOT1");
+                    // this.#change_state();
+                }
                 break;
             case "BARRIER_SWEEP":
-                this.scene.physics.moveTo(this, this.follower.vec.x, this.follower.vec.y, EnemyLupa.Y_NORMAL);
+                this.scene.physics.moveTo(this, this.follower.vec.x, this.follower.vec.y, 400);
                 break;
             case "SHOOT1":
                 {
-                    this.scene.physics.moveTo(this, this.follower.vec.x, this.follower.vec.y, EnemyLupa.Y_NORMAL);
+                    // this.scene.physics.moveTo(this, this.follower.vec.x, this.follower.vec.y, EnemyLupa.Y_NORMAL);
                     if (time > this.last_fired) {
                         this.last_fired = time + this.shoot_cd;
                         this.#shoot();
