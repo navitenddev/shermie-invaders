@@ -133,7 +133,7 @@ export class StatsMenu extends Scene {
             new MenuSpinner(this, x, y + (y_gap * i++), w,
                 sd[1], this.player_vars.stats, sd[0]);
 
-        this.levelSkipButton = this.add.text(x, y + (y_gap * i), 'KILL EVERYTHING AHAHAHA', fonts.small)
+        this.levelSkipButton = this.add.text(x, y + (y_gap * i), 'KILL ALL ENEMIES', fonts.small)
             .setInteractive()
             .on('pointerdown', () => {
                 this.emitter.emit('kill_all_enemies');

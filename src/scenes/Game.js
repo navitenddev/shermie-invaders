@@ -152,7 +152,6 @@ export class Game extends Scene {
     update(time, delta) {
         if (this.objs.player)
             this.objs.player.update(time, delta, this.keys)
-        console.log(`Active bullets: ${this.player_vars.active_bullets}`)
         // Update lives text and sprites
         this.livesText.setText(this.player_vars.lives);
         this.updateLivesSprites();

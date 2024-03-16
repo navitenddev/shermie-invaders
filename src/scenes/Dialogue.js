@@ -12,7 +12,7 @@ class Dialogue extends Phaser.Scene {
     }
 
     create(data) {
-        console.log("Initialized Dialogue Scene")
+        // console.log("Initialized Dialogue Scene")
         this.dialogue_mgr = new DialogueManager(this);
         this.prev_scene = data.caller_scene;
 
@@ -25,9 +25,9 @@ class Dialogue extends Phaser.Scene {
     }
 
     return_to_caller_scene() {
-        console.log(`returning to caller scene`)
+        // console.log(`resuming ${this.prev_scene}`)
         this.scene.stop('Dialogue')
-        console.log(`resuming ${this.prev_scene}`)
+        // console.log(`returning to caller scene`)
         this.scene.resume(this.prev_scene);
     }
 }

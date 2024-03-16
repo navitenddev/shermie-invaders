@@ -24,7 +24,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     static timers = {
-        base_shoot_cd: 400,
+        base_shoot_cd: 1000,
         last_fired: 0,
     }
 
@@ -123,7 +123,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     updateShield() {
-        console.log(`Shields: ${this.stats.shield}`);
+        // console.log(`Shields: ${this.stats.shield}`);
         this.shieldVisuals.clear();
         if (this.stats.shield > 1) {
             // Create shield circle around the player
