@@ -70,7 +70,7 @@ export class Testing extends Scene {
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
             () => {
-                this.start_dialogue("sandbox_tips");
+                this.start_dialogue("sandbox_tips", false);
             }
         );
 
@@ -147,7 +147,7 @@ export class Testing extends Scene {
         this.lupa_btn = new IconButton(this, "lupa_icon",
             this.game.config.width - 20, 172,
             this.add.enemy_lupa,
-            [this, 400, 400]
+            [this, this.game.config.width, 500]
         );
     }
 
@@ -239,11 +239,13 @@ export class Testing extends Scene {
 
         // when grid enemy hits barrier, it eats it
         this.physics.add.overlap(this.objs.enemies.grid, this.objs.barrier_chunks, (enemy, barr_chunk) => {
+            barr_chunk.parent.update_flame_size();
             barr_chunk.destroy(); // OM NOM NOM
         });
 
         // when special enemy hits barrier, it eats it
         this.physics.add.overlap(this.objs.enemies.special, this.objs.barrier_chunks, (enemy, barr_chunk) => {
+            barr_chunk.parent.update_flame_size();
             barr_chunk.destroy(); // OM NOM NOM
         });
 

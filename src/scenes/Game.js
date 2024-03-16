@@ -290,12 +290,16 @@ export class Game extends Scene {
 
         // when grid enemy hits barrier, it eats it
         this.physics.add.overlap(this.objs.enemies.grid, this.objs.barrier_chunks, (enemy, barr_chunk) => {
+            console.log(barr_chunk);
+            barr_chunk.parent.update_flame_size();
             barr_chunk.destroy(); // OM NOM NOM
         });
 
         // when special enemy hits barrier, it eats it
         this.physics.add.overlap(this.objs.enemies.special, this.objs.barrier_chunks, (enemy, barr_chunk) => {
-            barr_chunk.destroy(); // OM NOM NOM
+            barr_chunk.parent.update_flame_size();
+            console.log(barr_chunk);
+            // barr_chunk.destroy(); // OM NOM NOM
         });
 
         // player bullet collides with barrier

@@ -1,6 +1,8 @@
 import { EnemyBulletConstDefs as bull_defs } from "./bullet"
 import { EventDispatcher } from "../utils/event_dispatcher";
 
+// Ease Helper: https://labs.phaser.io/view.html?src=src/tweens/eases/ease%20mixer.js
+
 // Grid gap and spawn_start are not scaled factors
 const EnemyConstDefs = {
     dims: { w: 80, h: 80 },
@@ -400,7 +402,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
             this.anims.currentAnim.key !== "reaper_shoot")
             this.play("reaper_idle");
 
-        // this.path.draw(this.graphics);
+        this.path.draw(this.graphics);
         this.path.getPoint(this.follower.t, this.follower.vec);
 
         switch (this.ai_state) {
@@ -461,7 +463,9 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
 class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     static Y_NORMAL = 300;
     hp = 40;
-    state_list = ["ROAMING", "SHOOT1"]
+
+    // though BARRIER_SWEEP is a state, we only want to use it in the beginning, so don't add it here
+    state_list = ["CHASING"]
     follower = { t: 0, vec: new Phaser.Math.Vector2() };
     path = new Phaser.Curves.Path();
     graphics;
@@ -479,16 +483,17 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
 
         this.graphics = this.scene.add.graphics();
         this.graphics.lineStyle(1, 0xffffff, 1);
+
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
         this.path = new Phaser.Curves.Path();
 
-        this.#change_state("ROAMING");
+        this.#change_state("BARRIER_SWEEP"); // do the sweep
     }
 
     #clear_path() {
         this.graphics.clear();
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
-        this.path = new Phaser.Curves.Path();
+        this.path = new Phaser.Curves.Path(this.x, this.y);
         if (this.tween)
             this.tween.remove();
     }
@@ -508,18 +513,37 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         this.ai_state = new_state;
         this.#clear_path(); // the path should be cleared for every state transition
         switch (this.ai_state) {
-            case "ROAMING":
-                this.scene.time.delayedCall(Phaser.Math.Between(3, 6),
-                    this.#change_state, [], this);
-
-                this.path.moveTo(player.x, EnemyLupa.Y_NORMAL);
-                // this.path.splineTo([164, 446, 274, 542, 412, 457, 522, 541, 664, 464])
+            case "BARRIER_SWEEP": // Lupa will only barrier sweep in the beginning, then will only use other states after
+                const LEFT = new Phaser.Math.Vector2(58, 530),
+                    RIGHT = new Phaser.Math.Vector2(900, 530);
+                this.path.lineTo(RIGHT);
+                this.path.lineTo(LEFT);
                 this.tween = this.scene.tweens.add({
                     targets: this.follower,
                     t: 1,
-                    // ease: 'Linear',
+                    ease: 'Linear',
+                    // ease: 'Cubic.inOut',
+                    duration: 4000,
+                    yoyo: false,
+                })
+                // Tween events: https://newdocs.phaser.io/docs/3.80.0/Phaser.Tweens.Events.TWEEN_COMPLETE
+                this.tween.on('complete', () => {
+                    this.#change_state();
+                });
+                break;
+            case "CHASING":
+                // this.scene.time.delayedCall(Phaser.Math.Between(3, 6),
+                //     this.#change_state, [], this);
+
+                this.path.moveTo(player.x, EnemyLupa.Y_NORMAL);
+                // this.path.splineTo([164, 446, 274, 542, 412, 457, 522, 541, 664, 464]) // ??
+                // this.path.circleTo(100, false, 180);
+                // this.path.circleTo(100, true, 180);
+                this.tween = this.scene.tweens.add({
+                    targets: this.follower,
+                    t: 1,
                     ease: 'Sine.easeInOut',
-                    duration: 2000,
+                    duration: 4000,
                     yoyo: true,
                     repeat: -1
                 })
@@ -534,15 +558,19 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
 
     update() {
         let player = this.scene.objs.player;
+
+        this.graphics.clear();
         this.path.draw(this.graphics);
         this.path.getPoint(this.follower.t, this.follower.vec);
 
         switch (this.ai_state) {
-            case "ROAMING":
-                this.scene.physics.moveTo(this, this.follower.vec.x, this.follower.vec.y, 300);
+            case "CHASING":
+                this.scene.physics.moveTo(this, player.x, 200, EnemyLupa.Y_NORMAL);
+                break;
+            case "BARRIER_SWEEP":
+                this.scene.physics.moveTo(this, this.follower.vec.x, this.follower.vec.y, EnemyLupa.Y_NORMAL);
                 break;
             case "SHOOT1":
-                this.#change_state("ROAMING");
                 break;
         }
     }
