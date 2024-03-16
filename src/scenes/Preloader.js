@@ -50,8 +50,11 @@ export class Preloader extends Scene {
 
         this.load.image("usb_icon", "USB-icon.png");
 
+<<<<<<< HEAD
         this.load.image("lupa_icon", "lupa-icon.png");
 
+=======
+>>>>>>> main
         //this.load.audio(['bgmusic','shoot','explosion'], ['SFX/spacebg.wav','SFX/shoot.wav', 'SFX/explosion.wav']);
 
         this.load.audio('bgmusic', 'SFX/bgmusic.mp3');
@@ -133,11 +136,14 @@ export class Preloader extends Scene {
             frameHeight: 128,
         });
 
+<<<<<<< HEAD
         this.load.spritesheet("enemy_lupa", "lupa.png", {
             frameWidth: 64,
             frameHeight: 64,
         });
 
+=======
+>>>>>>> main
 
         this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');
 

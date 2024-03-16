@@ -1,7 +1,10 @@
 import { EnemyBulletConstDefs as bull_defs } from "./bullet"
 import { EventDispatcher } from "../utils/event_dispatcher";
+<<<<<<< HEAD
 
 // Ease Helper: https://labs.phaser.io/view.html?src=src/tweens/eases/ease%20mixer.js
+=======
+>>>>>>> main
 
 // Grid gap and spawn_start are not scaled factors
 const EnemyConstDefs = {
@@ -376,7 +379,10 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
                     break;
                 }
         }
+<<<<<<< HEAD
         this.path.draw(this.graphics);
+=======
+>>>>>>> main
     }
 
     #clone_self() { // clones thyself
@@ -403,6 +409,10 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
             this.anims.currentAnim.key !== "reaper_shoot")
             this.play("reaper_idle");
 
+<<<<<<< HEAD
+=======
+        // this.path.draw(this.graphics);
+>>>>>>> main
         this.path.getPoint(this.follower.t, this.follower.vec);
 
         switch (this.ai_state) {
@@ -460,6 +470,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     }
 }
 
+<<<<<<< HEAD
 class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     static Y_NORMAL = 300;
     hp = 40;
@@ -603,3 +614,6 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
 }
 
 export { BaseGridEnemy, Enemy1, Enemy2, Enemy3, EnemyUSB, EnemyReaper, EnemyLupa, EnemyConstDefs };
+=======
+export { BaseGridEnemy, Enemy1, Enemy2, Enemy3, EnemyUSB, EnemyReaper, EnemyConstDefs };
+>>>>>>> main
