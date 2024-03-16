@@ -142,7 +142,6 @@ class AnimationFactory {
             frameRate: 8,
             repeat: -1,
         });
-<<<<<<< HEAD
 
 
         this.scene.anims.create({
@@ -153,8 +152,6 @@ class AnimationFactory {
             frameRate: 8,
             repeat: -1,
         });
-=======
->>>>>>> main
     }
 }
 
