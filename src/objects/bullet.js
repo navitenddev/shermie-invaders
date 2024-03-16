@@ -143,7 +143,7 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(time, delta) {
-        if (this.active) this.move();
+        // if (this.active) this.move();
         this.check_bounds();
         this.debugBodyColor = this.body?.touching.none ? 0x0099ff : 0xff9900;
     }
@@ -170,9 +170,13 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
      * @description Activate the bullet at (x,y)
      * @param {number} x The x-coord in which the bullet should appear at
      * @param {number} y The y-coord in which the bullet should appear at
+     * @param {number} vx The velocity in the x-direction
+     * @param {number} vy The velocity in the y-direction
      */
-    activate(x, y) {
+    activate(x, y, vx = 0, vy = 600) {
+        this.setVelocity(vx, vy)
         this.setPosition(x, y);
+        this.setAngle(Math.atan2(vy, vx) * (180 / Math.PI));
         this.setVisible(true);
         this.setActive(true);
     }
