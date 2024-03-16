@@ -42,6 +42,8 @@ export class Preloader extends Scene {
 
         this.load.image("lives", "lives.png");
 
+        this.load.image("shields", "shields.png");
+
         this.load.image("placeholder", "placeholder.png");
 
         this.load.image("shermie_bux", "Shermie-coin.png")
@@ -156,6 +158,7 @@ export class Preloader extends Scene {
                 bullet_speed: 1,
                 fire_rate: 1,
                 move_speed: 1,
+                shield: 1,
                 // ...more to be added
             },
             wallet: 0, // holds shermie bux
