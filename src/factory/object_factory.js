@@ -1,5 +1,5 @@
 import { Player } from "../objects/player";
-import { Enemy1, Enemy2, Enemy3, EnemyUSB, EnemyReaper } from "../objects/enemy";
+import { Enemy1, Enemy2, Enemy3, EnemyUSB, EnemyReaper, EnemyLupa } from "../objects/enemy";
 import { PlayerBullet, EnemyBullet, PlayerBulletConstDefs, EnemyBulletConstDefs } from "../objects/bullet";
 import { Explosion } from "../objects/explosions"
 import { BarrierChunk } from "../objects/barrier";
@@ -52,6 +52,13 @@ Phaser.GameObjects.GameObjectFactory.register(
     "enemy_reaper",
     function (scene, x, y, hp, shoot_cd, should_clone, score_value, money_value) {
         return new EnemyReaper(scene, x, y, hp, shoot_cd, should_clone, score_value, money_value);
+    }
+);
+
+Phaser.GameObjects.GameObjectFactory.register(
+    "enemy_lupa",
+    function (scene, x, y) {
+        return new EnemyLupa(scene, x, y);
     }
 );
 

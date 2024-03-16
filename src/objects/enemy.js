@@ -458,4 +458,104 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     }
 }
 
-export { BaseGridEnemy, Enemy1, Enemy2, Enemy3, EnemyUSB, EnemyReaper, EnemyConstDefs };
+class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
+    static Y_NORMAL = 300;
+    hp = 40;
+    state_list = ["ROAMING", "SHOOT1"]
+    follower = { t: 0, vec: new Phaser.Math.Vector2() };
+    path = new Phaser.Curves.Path();
+    graphics;
+    ai_state;
+
+    constructor(scene, x, y) {
+        super(scene, x, y);
+        scene.physics.add.existing(this);
+        scene.add.existing(this);
+        scene.objs.enemies.special.add(this);
+        this.anim_key = "lupa_idle";
+        this.setSize(64, 64)
+            .setOffset(0, 0)
+            .play(this.anim_key);
+
+        this.graphics = this.scene.add.graphics();
+        this.graphics.lineStyle(1, 0xffffff, 1);
+        this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
+        this.path = new Phaser.Curves.Path();
+
+        this.#change_state("ROAMING");
+    }
+
+    #clear_path() {
+        this.graphics.clear();
+        this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
+        this.path = new Phaser.Curves.Path();
+        if (this.tween)
+            this.tween.remove();
+    }
+
+    /**
+     * @description State changes will require set up, which this function
+     * handles. If no state is provided, a random state will be chosen
+     * @param {string} new_state The state to change to
+     */
+    #change_state(new_state) {
+        let player = this.scene.objs.player;
+
+        if (new_state === undefined) {
+            new_state = this.state_list[Phaser.Math.Between(0, this.state_list.length - 1)];
+        }
+        console.log(`LUPA: ${new_state}`)
+        this.ai_state = new_state;
+        this.#clear_path(); // the path should be cleared for every state transition
+        switch (this.ai_state) {
+            case "ROAMING":
+                this.scene.time.delayedCall(Phaser.Math.Between(3, 6),
+                    this.#change_state, [], this);
+
+                this.path.moveTo(player.x, EnemyLupa.Y_NORMAL);
+                // this.path.splineTo([164, 446, 274, 542, 412, 457, 522, 541, 664, 464])
+                this.tween = this.scene.tweens.add({
+                    targets: this.follower,
+                    t: 1,
+                    // ease: 'Linear',
+                    ease: 'Sine.easeInOut',
+                    duration: 2000,
+                    yoyo: true,
+                    repeat: -1
+                })
+                break;
+            case "SHOOT1":
+                break;
+            default:
+                console.error(`Invalid Enemy state: ${this.ai_state}`);
+                break;
+        }
+    }
+
+    update() {
+        let player = this.scene.objs.player;
+        this.path.draw(this.graphics);
+        this.path.getPoint(this.follower.t, this.follower.vec);
+
+        switch (this.ai_state) {
+            case "ROAMING":
+                this.scene.physics.moveTo(this, this.follower.vec.x, this.follower.vec.y, 300);
+                break;
+            case "SHOOT1":
+                this.#change_state("ROAMING");
+                break;
+        }
+    }
+
+
+    die() {
+        if (this.hp <= 1) {
+            this.destroy();
+            return;
+        }
+
+        this.hp--;
+    }
+}
+
+export { BaseGridEnemy, Enemy1, Enemy2, Enemy3, EnemyUSB, EnemyReaper, EnemyLupa, EnemyConstDefs };

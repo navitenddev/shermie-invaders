@@ -68,6 +68,12 @@ export class Testing extends Scene {
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
 
+        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
+            () => {
+                this.start_dialogue("sandbox_tips");
+            }
+        );
+
         // create/scale BG image 
         let bg = this.add.image(0, 0, 'background').setAlpha(0.85);
         bg.setOrigin(0, 0);
@@ -123,21 +129,26 @@ export class Testing extends Scene {
         this.legend_text = this.add.text(this.game.config.width - 64, 300, "Click to Spawn", fonts.small);
         this.legend_text.setAngle(-90);
 
-        // this.reaper = this.add.enemy_reaper(this, 0, 0, 40);
-        this.reaper_btn = new IconButton(this, "reaper_icon",
-            this.game.config.width - 20, 100,
-            this.add.enemy_reaper,
-            [this, 0, 0, 40]
-        );
-
         this.usb_btn = new IconButton(this, "usb_icon",
-            this.game.config.width - 20, 136,
+            this.game.config.width - 20, 100,
             () => {
                 (Phaser.Math.Between(0, 1) === 0) ?
                     this.add.enemy_usb(this, true) :
                     this.add.enemy_usb(this, false);
             }
         )
+
+        this.reaper_btn = new IconButton(this, "reaper_icon",
+            this.game.config.width - 20, 136,
+            this.add.enemy_reaper,
+            [this, 0, 0, 40]
+        );
+
+        this.lupa_btn = new IconButton(this, "lupa_icon",
+            this.game.config.width - 20, 172,
+            this.add.enemy_lupa,
+            [this, 400, 400]
+        );
     }
 
     pause() {
@@ -165,24 +176,6 @@ export class Testing extends Scene {
         this.livesText.setText(this.player_vars.lives);
         this.updateLivesSprites();
         this.update_mouse_pos_text();
-        this.check_gameover();
-    }
-
-
-    check_gameover() {
-        if (this.win_flag &&
-            !this.level_transition_flag) {
-            this.player_vars.active_bullets = 0;
-            this.registry.set({ 'level': this.level + 1 });
-            this.level_transition_flag = true;
-            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
-            this.goto_scene("Player Win");
-        } else if (this.player_vars.lives <= 0 &&
-            !this.objs.player.is_inbounds()) {
-            console.log('PLAYER LOSE')
-            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
-            this.goto_scene("Player Lose");
-        }
     }
 
     goto_scene(targetScene) {
