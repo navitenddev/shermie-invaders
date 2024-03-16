@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs } from '../keyboard_input';
 import { fonts } from '../utils/fontStyle.js';
+import { EventDispatcher } from '../utils/event_dispatcher.js';
 
 const STAT_MIN = 1, STAT_MAX = 10;
 /**
@@ -86,6 +87,7 @@ class IconButton extends Phaser.GameObjects.Image {
 
 
 export class StatsMenu extends Scene {
+    emitter = EventDispatcher.getInstance();
     constructor() {
         super('StatsMenu');
     }
@@ -133,11 +135,13 @@ export class StatsMenu extends Scene {
 
         this.levelSkipButton = this.add.text(x, y + (y_gap * i), 'KILL EVERYTHING AHAHAHA', fonts.small)
             .setInteractive()
-            .on('pointerdown', () => {this.scene.get('Game').events.emit('killAllEnemies'); })
+            .on('pointerdown', () => {
+                this.emitter.emit('kill_all_enemies');
+            })
             .setStyle({ fill: '#ff0000' });
-            
+
         i++;
-        
+
         this.backButton = this.add.text(boxX + 260, y + (y_gap * i), 'Back', fonts.small)
             .setInteractive()
             .on('pointerdown', () => { this.sounds.bank.sfx.click.play(); this.go_back(); });
