@@ -463,6 +463,8 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
 class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     static Y_NORMAL = 300;
     hp = 40;
+    shoot_cd = 300;
+    last_fired = 0;
 
     // though BARRIER_SWEEP is a state, we only want to use it in the beginning, so don't add it here
     state_list = ["CHASING", "SHOOT1"]
@@ -470,7 +472,6 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     path = new Phaser.Curves.Path();
     graphics;
     ai_state;
-
     constructor(scene, x, y) {
         super(scene, x, y);
         scene.physics.add.existing(this);
@@ -479,6 +480,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         this.anim_key = "lupa_idle";
         this.setSize(64, 64)
             .setOffset(0, 0)
+            .setAngularVelocity(400)
             .play(this.anim_key);
 
         this.graphics = this.scene.add.graphics();
@@ -550,7 +552,6 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                 this.scene.time.delayedCall(3 * 1000, this.#change_state, [], this);
                 break;
             case "SHOOT1":
-                this.setAngularVelocity(400);
                 this.path.moveTo(this.scene.game.config.width / 2, EnemyLupa.Y_NORMAL);
                 this.scene.time.delayedCall(3 * 1000, this.#shoot, [], this);
                 break;
