@@ -1,7 +1,6 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs, CHEAT_CODE_SEQUENCE as CheatCode } from '../keyboard_input';
 import { fonts } from '../utils/fontStyle.js';
-import { SoundBank } from '../sounds.js';
 
 export class MainMenu extends Scene {
     constructor() {
@@ -68,7 +67,7 @@ export class MainMenu extends Scene {
                     this.sounds.bank.sfx.win.play();
                     this.cameras.main.fadeOut(200, 0, 0, 0);
                     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-                        this.scene.start('Testing');
+                        this.scene.start('Sandbox');
                     });
                 });
         }

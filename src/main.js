@@ -10,7 +10,7 @@ import { PauseMenu } from './scenes/PauseMenu';
 import { StatsMenu } from './scenes/StatsMenu';
 import { Store } from './scenes/Store';
 import { Dialogue } from './scenes/Dialogue';
-import { Testing } from './scenes/Testing';
+import { Sandbox } from './scenes/Sandbox';
 
 
 //  Find out more information about the Game Config at:
@@ -37,7 +37,7 @@ const config = {
         Preloader,
         MainMenu,
         Game,
-        Testing,
+        Sandbox,
         PlayerWin,
         PlayerLose,
         LevelSelect,

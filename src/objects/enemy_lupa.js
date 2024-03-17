@@ -41,7 +41,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
 
         this.#change_state("BARRIER_SWEEP"); // do the sweep
         this.state_text = this.scene.add.text(this.x, this.y, this.ai_state, fonts.tiny);
-        this.hp_text = this.scene.add.text(this.x, this.y - 16, this.ai_state, fonts.tiny);
+        this.hp_text = this.scene.add.text(this.x, this.y - 16, this.hp, fonts.tiny);
     }
 
     #clear_path() {
@@ -212,8 +212,8 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
             return;
         this.#update_text();
 
+        console.log(this.follower.t);
         let player = this.scene.objs.player;
-
         let dist = Phaser.Math.Distance.BetweenPoints({ x: this.x, y: this.y }, this.target_pos); // dist from target
 
         this.path.getPoint(this.follower.t, this.follower.vec);

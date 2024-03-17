@@ -143,10 +143,18 @@ class AnimationFactory {
             repeat: -1,
         });
 
-
         this.scene.anims.create({
             key: "lupa_idle",
             frames: this.scene.anims.generateFrameNumbers("enemy_lupa", {
+                start: 0, end: 5,
+            }),
+            frameRate: 8,
+            repeat: -1,
+        });
+
+        this.scene.anims.create({
+            key: "pupa_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy_pupa", {
                 start: 0, end: 5,
             }),
             frameRate: 8,

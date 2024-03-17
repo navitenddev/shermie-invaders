@@ -55,12 +55,12 @@ class IconButton extends Phaser.GameObjects.Container {
  * @property {Object} timers An object that encapsulates all timing-related values for anything in the game.
  */
 
-export class Testing extends Scene {
+export class Sandbox extends Scene {
     emitter = EventDispatcher.getInstance();
     win_flag = false;
     lose_flag = false;
     constructor() {
-        super('Testing');
+        super('Sandbox');
     }
 
     create() {
@@ -151,11 +151,17 @@ export class Testing extends Scene {
             this.add.enemy_lupa,
             [this, this.game.config.width, 525]
         );
+
+        this.pupa_btn = new IconButton(this, "pupa_icon",
+            this.game.config.width - 20, 208,
+            this.add.enemy_pupa,
+            [this, 400, 400]
+        );
     }
 
     pause() {
-        this.scene.pause('Testing');
-        this.scene.launch('PauseMenu', { prev_scene: 'Testing' });
+        this.scene.pause('Sandbox');
+        this.scene.launch('PauseMenu', { prev_scene: 'Sandbox' });
     }
 
     update(time, delta) {
@@ -296,7 +302,7 @@ export class Testing extends Scene {
      */
     start_dialogue(key, blocking = true) {
         this.emitter.emit('force_dialogue_stop'); // never have more than one dialogue manager at once
-        this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Testing' });
+        this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Sandbox' });
         if (blocking)
             this.scene.pause();
     }
