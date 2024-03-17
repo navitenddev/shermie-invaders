@@ -1,6 +1,14 @@
 let gamefont = '"Press Start 2P", system-ui';
 
 const fonts = {
+    tiny: {
+        fontFamily: gamefont,
+        fontSize: 10,
+        color: '#ffffff',
+        stroke: '#000000',
+        strokeThickness: 8,
+        align: 'left'
+    },
     small: {
         fontFamily: gamefont,
         fontSize: 15,

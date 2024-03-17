@@ -5,7 +5,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     moneyValue = 100;
     static Y_NORMAL = 300;
     static ANGLE_VEL = 500;
-    hp = 3;
+    hp = 40;
     shoot_cd = 85;
     last_fired = 0;
     shots_fired = 0;
@@ -40,8 +40,8 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         this.path = new Phaser.Curves.Path();
 
         this.#change_state("BARRIER_SWEEP"); // do the sweep
-        this.state_text = this.scene.add.text(this.x, this.y, this.ai_state, fonts.small);
-        this.hp_text = this.scene.add.text(this.x, this.y - 16, this.ai_state, fonts.small);
+        this.state_text = this.scene.add.text(this.x, this.y, this.ai_state, fonts.tiny);
+        this.hp_text = this.scene.add.text(this.x, this.y - 16, this.ai_state, fonts.tiny);
     }
 
     #clear_path() {
@@ -105,16 +105,10 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                 {
                     this.setAngle(0)
                         .setAngularVelocity(0);
+
                     // if on right side
-                    if (this.x > this.scene.game.config.width / 2) {
-                        // console.log("ROAM ON RIGHT")
-                        this.path.circleTo(100, true, 360);
-                        this.path.circleTo(100, false, 180);
-                    } else { // if on left side
-                        // console.log("ROAM ON LEFT")
-                        this.path.circleTo(100, false, 360);
-                        this.path.circleTo(100, true, 180);
-                    }
+                    this.path.circleTo(100, true, 360);
+                    this.path.circleTo(100, false, 180);
 
                     this.tween = this.scene.tweens.add({
                         targets: this.follower,
@@ -126,13 +120,14 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                     });
                     this.path.draw(this.graphics);
 
-                    console.log("SETTING DELAYED CALL");
+                    // Hacky workaround that stops events from stacking. This shouldn't be needed but idk
                     this.scene.time.removeAllEvents();
+                    // choose a random shoot state
                     this.scene.time.delayedCall(Phaser.Math.FloatBetween(3, 5) * 1000,
                         this.#change_state, [["SHOOT1", "SHOOT2"]], this);
                     break;
                 }
-            case "SHOOT1":
+            case "SHOOT1": // Go to left or right side, then shoot inplace
                 {
                     this.shots_fired = 0;
                     let x;
@@ -153,7 +148,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                     this.scene.physics.moveTo(this, this.target_pos.x, this.target_pos.y, 200);
                     break;
                 }
-            case "SHOOT2": // Go to a side, then shoot while traversing to the other side
+            case "SHOOT2": // Go to a side, then shoot while traversing to the opposite side
                 {
                     const LEFT = new Phaser.Math.Vector2(50, EnemyLupa.Y_NORMAL),
                         RIGHT = new Phaser.Math.Vector2(950, EnemyLupa.Y_NORMAL);
@@ -244,7 +239,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                 if (dist <= 10)
                     this.#change_state("ROAM_CENTER");
                 break;
-            case "SHOOT1":
+            case "SHOOT1": // shoot while moving to either left or right side. Stop shooting at destination
                 {
                     if (dist <= 10) {
                         this.setVelocity(0, 0);

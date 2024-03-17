@@ -51,8 +51,8 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
             this.scene.time.delayedCall(clone_delay * 1000, this.#clone_self, [], this);
         }
         this.scene = scene;
-        this.state_text = this.scene.add.text(this.x, this.y, this.ai_state, fonts.small);
-        this.hp_text = this.scene.add.text(this.x, this.y, this.hp_text, fonts.small);
+        this.state_text = this.scene.add.text(this.x, this.y, this.ai_state, fonts.tiny);
+        this.hp_text = this.scene.add.text(this.x, this.y, this.hp_text, fonts.tiny);
 
         // console.log(`Spawned Reaper with ${this.hp} HP, Cloning: ${should_clone}`)
     }
