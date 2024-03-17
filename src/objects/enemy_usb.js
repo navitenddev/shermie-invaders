@@ -19,8 +19,6 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
         super(scene, 0, 0);
         this.scene = scene;
         this.anim_key = "usb";
-        this.scoreValue = EnemyConstDefs.scoreValue.enemyUSB;
-        this.moneyValue = EnemyConstDefs.moneyValue.enemyUSB;
 
         scene.physics.add.existing(this);
         scene.add.existing(this);
