@@ -126,6 +126,7 @@ export class StatsMenu extends Scene {
             ['move_speed', 'Move Speed'],
             ['bullet_speed', 'Bullet Speed'],
             ['fire_rate', 'Fire Rate'],
+            ['shield', 'Shield']
         ]
 
         let i = 1;
