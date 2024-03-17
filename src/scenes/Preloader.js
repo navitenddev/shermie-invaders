@@ -42,6 +42,8 @@ export class Preloader extends Scene {
 
         this.load.image("lives", "lives.png");
 
+        this.load.image("shields", "shields.png");
+
         this.load.image("placeholder", "placeholder.png");
 
         this.load.image("shermie_bux", "Shermie-coin.png")
@@ -154,13 +156,14 @@ export class Preloader extends Scene {
              */
             stats: {
                 bullet_speed: 1,
-                max_bullets: 1,
                 fire_rate: 1,
                 move_speed: 1,
+                shield: 1,
                 // ...more to be added
             },
             wallet: 0, // holds shermie bux
             active_bullets: 0, // the number of bullets that the player currently has on screen
+            score: 0, // player score
         });
         this.sounds.bank.music.start.play();
         //  Move to the MainMenu. You could also swap this for a Scene

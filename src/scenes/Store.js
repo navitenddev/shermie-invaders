@@ -202,9 +202,9 @@ export class Store extends Scene {
         const playerVars = this.registry.get('player_vars');
         this.stats = playerVars && playerVars.stats ? playerVars.stats : {
             bullet_speed: 1,
-            max_bullets: 1,
             fire_rate: 1,
-            move_speed: 1
+            move_speed: 1,
+            shield: 1,
         };
 
         this.add.text(this.cameras.main.width / 2, 40, "Shermie Store", fonts.large).setOrigin(0.5, 0);
@@ -215,7 +215,7 @@ export class Store extends Scene {
             { key: 'move_speed', displayName: 'Movement Speed' },
             { key: 'bullet_speed', displayName: 'Bullet Speed' },
             { key: 'fire_rate', displayName: 'Fire Rate' },
-            { key: 'max_bullets', displayName: 'Max Bullets' }
+            { key: 'shield', displayName: 'Shield' },
         ];
 
         //Update and initialize new spinners 
@@ -270,10 +270,13 @@ export class Store extends Scene {
             move_speed: 75,
             bullet_speed: 105,
             fire_rate: 150,
-            max_bullets: 420
+            shield: 600
         };
 
-        // cost increases linearly. 
+        // cost increases linearly except for shields. 
+        if (statKey === 'shield'){
+            return baseCosts[statKey];
+        }
         return baseCosts[statKey] * (currentLevel + 1);
     }
 

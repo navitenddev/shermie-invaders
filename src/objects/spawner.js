@@ -20,7 +20,7 @@ const BARRIER_COLOR = {
  */
 
 class ObjectSpawner {
-    static GRID_COUNT = { row: 5, col: 13 }; // The # rows/cols of enemies
+    static GRID_COUNT = { row: 5, col: 12 }; // The # rows/cols of enemies
 
     constructor(scene) {
         this.scene = scene;
@@ -110,8 +110,6 @@ class ObjectSpawner {
      * @description initializes the grid of the enemies. Should only be called at the start of the level.  */
     init_enemy_grid() {
         let gc = ObjectSpawner.GRID_COUNT;
-        console.log(gc);
-        console.log(enemy_defs);
         for (let y = 0; y < gc.row; ++y) {
             for (let x = 0; x < gc.col; ++x) {
                 let spawn_pos = {

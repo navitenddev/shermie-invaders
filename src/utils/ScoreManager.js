@@ -6,8 +6,8 @@ import { fonts } from './fontStyle.js';
 export default class ScoreManager {
     constructor(scene) {
         this.scene = scene;
-        this.score = this.scene.registry.get('score');
         this.player_vars = this.scene.registry.get('player_vars');
+        this.score = this.player_vars.score;
         this.highScore = this.loadHighScore();
         this.initText();
         this.scene.add.image(40, 75, "shermie_bux") // shermie coin image
@@ -21,8 +21,8 @@ export default class ScoreManager {
     }
 
     addScore(points) {
-        this.score += points;
-        this.scoreText.setText(`SCORE:${this.score}`);
+        this.player_vars.score += points;
+        this.scoreText.setText(`SCORE:${this.player_vars.score}`);
     }
 
     addMoney(amount) {
@@ -31,8 +31,8 @@ export default class ScoreManager {
     }
 
     updateHighScore() {
-        if (this.score > this.highScore) {
-            this.highScore = this.score;
+        if (this.player_vars.score > this.highScore) {
+            this.highScore = this.player_vars.score;
             localStorage.setItem('highScore', this.highScore.toString());
             this.updateHighScoreDisplay();
         }
@@ -48,7 +48,7 @@ export default class ScoreManager {
     }
 
     resetScore() {
-        this.score = 0;
+        this.player_vars.score = 0;
         this.updateScoreDisplay();
     }
 }
