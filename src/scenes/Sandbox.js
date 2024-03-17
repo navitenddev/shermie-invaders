@@ -59,12 +59,45 @@ export class Sandbox extends Scene {
     emitter = EventDispatcher.getInstance();
     win_flag = false;
     lose_flag = false;
+
+    PUPA_PATHS = {};
+    preload() {
+        this.load.json({
+            key: "PUPA_LEMNISCATE",
+            url: "assets/paths/pupa.json",
+            dataKey: "LEMNISCATE",
+        });
+        this.load.json({
+            key: "PUPA_TRIANGLE",
+            url: "assets/paths/pupa.json",
+            dataKey: "TRIANGLE",
+        });
+        this.load.json({
+            key: "PUPA_SPLINE",
+            url: "assets/paths/pupa.json",
+            dataKey: "SPLINE1",
+        });
+        this.load.json({
+            key: "PUPA_ILLUMINATI",
+            url: "assets/paths/pupa.json",
+            dataKey: "ILLUMINATI",
+        });
+    }
+
     constructor() {
         super('Sandbox');
     }
 
     create() {
-
+        this.PUPA_PATHS = {
+            LEMNISCATE: this.cache.json.get('PUPA_LEMNISCATE'),
+            TRIANGLE: this.cache.json.get('PUPA_TRIANGLE'),
+            SPLINE: this.cache.json.get('PUPA_SPLINE'),
+            ILLUMINATI: this.cache.json.get('PUPA_ILLUMINATI'),
+        }
+        this.PUPA_PATHS.ILLUMINATI.t_vals = [0.00, 0.41, 0.72];
+        console.log("ILLUMINATI PATH");
+        console.log(this.PUPA_PATHS.ILLUMINATI);
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
 

@@ -212,7 +212,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
             return;
         this.#update_text();
 
-        console.log(this.follower.t);
+        // console.log(this.follower.t);
         let player = this.scene.objs.player;
         let dist = Phaser.Math.Distance.BetweenPoints({ x: this.x, y: this.y }, this.target_pos); // dist from target
 

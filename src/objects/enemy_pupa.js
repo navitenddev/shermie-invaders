@@ -1,28 +1,5 @@
 import { fonts } from "../utils/fontStyle";
 
-const PUPA_PATHS = {
-    // infinity sign path
-    "LEMNISCATE": new Phaser.Curves.Path(512, 300) // center pt
-        .circleTo(150) // left circle
-        .circleTo(150, true, 180), // right circle
-    // right-side-up traingle
-    "TRIANGLE": new Phaser.Curves.Path(125, 420) // bottom-left
-        .lineTo(522, 86)  // top-point
-        .lineTo(893, 420) // bottom-right
-        .closePath(),
-    // up-side-down triangle
-    "ILLUMINATI": new Phaser.Curves.Path(195, 110) // top-left
-        .lineTo(840, 110) // top-right
-        .lineTo(508, 420) // bottom-point
-        .closePath(),
-    // the normalized t values at each illuminati triangle point
-    "ILLUMINATI_T_VALS": [
-        0.00, // top-left
-        0.41, // top-right
-        0.72, // bottom-point
-    ],
-}
-
 class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     scoreValue = 200;
     moneyValue = 100;
@@ -61,11 +38,13 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
         this.graphics_follower = this.scene.add.graphics();
 
         this.path = new Phaser.Curves.Path();
+        console.log("PUPA_PATHS");
+        console.log(this.scene.PUPA_PATHS);
 
-        this.#change_state("ROAMING"); // do the sweep
         this.state_text = this.scene.add.text(this.x, this.y, this.ai_state, fonts.tiny);
         this.hp_text = this.scene.add.text(this.x, this.y - 16, this.hp, fonts.tiny);
         this.t_text = this.scene.add.text(this.follower.vec.x, this.follower.vec.y - 32, this.follower.t.toFixed(2), fonts.tiny);
+        this.#change_state("ROAMING"); // do the sweep
     }
 
     #clear_path() {
@@ -109,14 +88,15 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
             case "ROAMING":
                 {
                     this.#clear_path();
-                    // this.path = PUPA_PATHS.TRIANGLE;
-                    this.path = PUPA_PATHS.LEMNISCATE;
+                    this.setAngularVelocity(0);
+
+                    this.path = new Phaser.Curves.Path(this.scene.PUPA_PATHS.LEMNISCATE);
                     this.tween = this.scene.tweens.add({
                         targets: this.follower,
                         t: 1,
                         // ease: 'Linear',
                         ease: 'Sine.easeInOut',
-                        duration: 3500,
+                        duration: 4000,
                         yoyo: false,
                         repeat: -1,
                         // persist: false,
@@ -129,44 +109,33 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
             case "ILLUM_START": // pick random point in ILLUM triangle to start at
                 {
                     this.#clear_path();
-                    this.path = PUPA_PATHS.ILLUMINATI;
+
+                    this.setAngle(90)
+                        .setAngularVelocity(EnemyPupa.ANGLE_VEL);
+                    this.path = new Phaser.Curves.Path(this.scene.PUPA_PATHS.ILLUMINATI);
+                    console.log("ILLUMINATI PATH")
+                    console.log(this.path)
 
                     // choose random point in illuminati path to start
                     this.illum_count = 0; // when we finish visiting all 3 points in triangle, stop
                     this.illum_idx = Phaser.Math.Between(0, 2);
-                    this.illum_t = PUPA_PATHS.ILLUMINATI_T_VALS[this.illum_idx];
+                    this.illum_t = this.scene.PUPA_PATHS.ILLUMINATI.t_vals[this.illum_idx];
+                    console.log(`illum_t: ${this.illum_t}`);
 
                     this.target_pos = this.path.getPoint(this.illum_t);
                     // console.log(`target_pos: (${this.target_pos.x},${this.target_pos.y})`)
                     this.scene.physics.moveTo(this, this.target_pos.x, this.target_pos.y, 350)
-                    this.tween = this.scene.tweens.add({
-                        targets: this.follower,
-                        t: 1,
-                        ease: 'Linear',
-                        duration: 2000,
-                        yoyo: false,
-                        repeat: -1,
-                        // persist: false,
-                    });
                 }
             case "ILLUM_NEXT": // pick next point in ILLUM triangle and traverse while shooting
                 {
                     this.tween.resume();
                     this.illum_count++;
                     this.illum_idx = (this.illum_idx + 1) % 3;
-                    this.illum_t = PUPA_PATHS.ILLUMINATI_T_VALS[this.illum_idx];
+                    this.illum_t = this.scene.PUPA_PATHS.ILLUMINATI.t_vals[this.illum_idx];
+                    console.log(`illum_t: ${this.illum_t}`);
 
                     this.target_pos = this.path.getPoint(this.illum_t);
                     this.scene.physics.moveTo(this, this.target_pos.x, this.target_pos.y, 350);
-                    this.tween = this.scene.tweens.add({
-                        targets: this.follower,
-                        t: 1,
-                        ease: 'Linear',
-                        duration: 2000,
-                        yoyo: false,
-                        repeat: -1,
-                        // persist: false,
-                    });
                 }
             case "ILLUM_PAUSE": // pause movement, shoot
                 {
@@ -188,9 +157,9 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
 
     update(time, delta) {
         this.#update_text();
-        this.graphics_follower.clear();
-        this.graphics_follower.fillStyle(0xff0000, 1);
-        this.graphics_follower.fillCircle(this.follower.vec.x, this.follower.vec.y, 12);
+        this.graphics_follower.clear()
+            .fillStyle(0xff0000, 1)
+            .fillCircle(this.follower.vec.x, this.follower.vec.y, 12);
 
         this.path.getPoint(this.follower.t, this.follower.vec);
 
@@ -203,7 +172,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
                 this.#shoot(time);
             case "ILLUM_START": // FALL THROUGH
                 {
-                    console.log(`dist from target_pos, ${this.#dist_from_target_pos()}`);
+                    // console.log(`dist from target_pos, ${this.#dist_from_target_pos()}`);
                     if (this.#dist_from_target_pos() < 5) {
                         this.tween.remove();
                         this.setVelocity(0, 0).setAngle(0);
