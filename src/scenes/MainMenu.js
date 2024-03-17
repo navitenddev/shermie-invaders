@@ -16,8 +16,11 @@ export class MainMenu extends Scene {
 
         // reset global vars 
         this.player_vars = this.registry.get('player_vars');
-        this.registry.set({ 'score': 0 });
+        this.player_vars.score = 0;
         this.player_vars.lives = 3;
+
+        // reset level back to 1
+        this.registry.set('level', 1);
 
         // reset player stats to defaults
         for (let [key, value] of Object.entries(this.player_vars.stats))

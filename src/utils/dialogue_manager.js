@@ -86,7 +86,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
             this.#deactivate();
             return;
         }
-        // console.log(`activated dialogue with key: ${key}`)
+        console.log(`started dialogue: "${key}"`)
         // console.log(this.lines)
         this.line_index = 0;
         this.char_index = 0;

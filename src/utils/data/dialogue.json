@@ -42,6 +42,10 @@
     "lines": ["ouch! that hurt!"]
   },
   {
+    "key": "shermie_shieldgone",
+    "lines": ["Ah! Blasted right through the shield!"]
+  },
+  {
     "key": "shermie_start",
     "lines": [
       "Player, we're being invaded by malware!",

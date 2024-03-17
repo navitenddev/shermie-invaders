@@ -24,7 +24,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     static timers = {
-        base_shoot_cd: 400,
+        base_shoot_cd: 1000,
         last_fired: 0,
     }
 
@@ -37,6 +37,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         scene.physics.add.existing(this);
         scene.add.existing(this);
+
+        // Add shield graphics
+        this.shieldVisuals = scene.add.graphics();
+        this.updateShield();
 
         this.setCollideWorldBounds(true)
             .setSize(Player.dims.w - 16, Player.dims.h - 8)
@@ -74,6 +78,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             return;
         }
 
+        // Update shield visuals
+        this.updateShield();
+
         if (keys.d.isDown || keys.right.isDown) {
             this.move(true);
         } else if (keys.a.isDown || keys.left.isDown) {
@@ -97,7 +104,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * Marks the player as dead so that phaser knows to do start the death animation.
      */
     die() {
-        if (this.player_vars.lives > 0 && !this.isInvincible) {
+        if (this.player_vars.lives > 0 && !this.isInvincible && this.stats.shield <= 1) {
             this.player_vars.lives -= 1;
             this.sounds.bank.sfx.hurt.play();
             this.is_dead = true;
@@ -107,6 +114,21 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             let ang = Phaser.Math.Between(3, 10);
             this.dead_vel.x =
                 (this.x < this.scene.game.config.width / 2) ? ang : -ang;
+        }
+        else if (this.stats.shield > 1 && !this.isInvincible) {
+            this.stats.shield -= 1;
+            this.sounds.bank.sfx.hurt.play();
+            this.shieldVisuals.clear();
+        }
+    }
+
+    updateShield() {
+        // console.log(`Shields: ${this.stats.shield}`);
+        this.shieldVisuals.clear();
+        if (this.stats.shield > 1) {
+            // Create shield circle around the player
+            this.shieldVisuals.lineStyle(2, 0x00FFFF, 1);
+            this.shieldVisuals.strokeCircle(this.x, this.y, 40); // Adjust the radius as needed           
         }
     }
 
@@ -172,7 +194,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      */
     shoot(time) {
         let timer = Player.timers;
-        if (this.player_vars.active_bullets < this.stats.max_bullets &&
+        let bullet_cap = 10;
+        if (this.player_vars.active_bullets < bullet_cap &&
             time > timer.last_fired) {
             // get the next available bullet, if one is available.
             let bullet = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");

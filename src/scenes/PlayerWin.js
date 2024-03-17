@@ -22,7 +22,7 @@ export class PlayerWin extends Scene {
 
         this.sounds.bank.sfx.win.play();
 
-        this.add.text(512, 384, 'Welcome to Shermie Depot!', {
+        this.add.text(512, 384, 'Welcome to Shermie Depot! Time to buy some goodies!', {
             fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center',

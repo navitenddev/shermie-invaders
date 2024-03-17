@@ -46,6 +46,9 @@ export class Game extends Scene {
         // Score and high score
         this.scoreManager = new ScoreManager(this);
 
+        // Event to kill all enemies
+        this.emitter.once('kill_all_enemies', this.killAllEnemies, this);
+
         // Note: this.level is pass by value!
         this.level = this.registry.get('level');
         this.level_transition_flag = false;
@@ -58,6 +61,8 @@ export class Game extends Scene {
             () => {
                 if (this.level === 1)
                     this.start_dialogue('shermie_start', true)
+                this.keys.p.on('down', () => this.pause());
+                this.keys.esc.on('down', () => this.pause());
             }
         );
 
@@ -79,6 +84,13 @@ export class Game extends Scene {
             repeat: this.player_vars.lives - 2
         });
 
+        // Player shields text and sprites
+        this.shieldsText = this.add.text(970, this.sys.game.config.height - 48, '0', fonts.medium);
+        this.shieldsSprites = this.add.group({
+            key: 'shields',
+            repeat: this.player_stats.shield - 1
+        });
+
         let secs = Phaser.Math.Between(15, 60);
         console.log(`Spawning enemy USB in ${secs}s`)
         this.time.delayedCall(secs * 1000, this.objs.spawn_usb_enemy, [], this.scene);
@@ -89,13 +101,26 @@ export class Game extends Scene {
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
-        this.keys.p.on('down', () => this.pause());
-        this.keys.esc.on('down', () => this.pause());
     }
 
     pause() {
         this.scene.pause('Game');
         this.scene.launch('PauseMenu', { prev_scene: 'Game' });
+    }
+
+    killAllEnemies() {
+        // Loop through all enemies and destroy them
+        this.objs.enemies.grid.children.each(enemy => {
+            this.objs.explode_at(enemy.x, enemy.y);
+            enemy.die();
+            this.scoreManager.addMoney(enemy.moneyValue);
+            this.scoreManager.addScore(enemy.scoreValue);
+        });
+
+        this.objs.enemies.special.children.each(enemy => {
+            enemy.die();
+            this.scoreManager.addScore(enemy.scoreValue);
+        });
     }
 
     /**
@@ -111,14 +136,27 @@ export class Game extends Scene {
         }
     }
 
+    /**
+ * @description Updates the shield sprites to reflect the current number of shields
+ * @param {number} shields The number of shields the player has
+*/
+    updateShieldSprites() {
+        this.shieldsSprites.clear(true, true); // Clear sprites
+        for (let i = 1; i < this.player_stats.shield; i++) {
+            // coordinates for the shield sprites
+            let shieldConsts = { x: 990 - i * 48, y: this.sys.game.config.height - 32 };
+            this.shieldsSprites.create(shieldConsts.x, shieldConsts.y, 'shields', 0)
+        }
+    }
+
     update(time, delta) {
         if (this.objs.player)
             this.objs.player.update(time, delta, this.keys)
-
         // Update lives text and sprites
         this.livesText.setText(this.player_vars.lives);
         this.updateLivesSprites();
-
+        this.shieldsText.setText(this.player_stats.shield - 1);
+        this.updateShieldSprites();
         this.ai_grid_enemies(time);
         this.check_gameover();
     }
@@ -266,6 +304,7 @@ export class Game extends Scene {
             this
         });
 
+        let currShield = this.player_stats.shield;
         // enemy bullet hits player
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player, (player, enemy_bullet) => {
             if (!player.is_dead) {
@@ -274,6 +313,10 @@ export class Game extends Scene {
                 player.die();
                 if (this.player_vars.lives === 0)
                     this.start_dialogue('shermie_dead', false);
+                else if (this.player_stats.shield < currShield) {
+                    this.start_dialogue('shermie_shieldgone', false);
+                    currShield--;
+                }
                 else
                     this.start_dialogue('shermie_hurt', false);
             }

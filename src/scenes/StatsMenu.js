@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs } from '../keyboard_input';
 import { fonts } from '../utils/fontStyle.js';
+import { EventDispatcher } from '../utils/event_dispatcher.js';
 
 const STAT_MIN = 1, STAT_MAX = 10;
 /**
@@ -86,6 +87,7 @@ class IconButton extends Phaser.GameObjects.Image {
 
 
 export class StatsMenu extends Scene {
+    emitter = EventDispatcher.getInstance();
     constructor() {
         super('StatsMenu');
     }
@@ -124,13 +126,22 @@ export class StatsMenu extends Scene {
             ['move_speed', 'Move Speed'],
             ['bullet_speed', 'Bullet Speed'],
             ['fire_rate', 'Fire Rate'],
-            ['max_bullets', 'Maximum Bullets'],
+            ['shield', 'Shield']
         ]
 
         let i = 1;
         for (let sd of spinner_defs)
             new MenuSpinner(this, x, y + (y_gap * i++), w,
                 sd[1], this.player_vars.stats, sd[0]);
+
+        this.levelSkipButton = this.add.text(x, y + (y_gap * i), 'KILL ALL ENEMIES', fonts.small)
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.emitter.emit('kill_all_enemies');
+            })
+            .setStyle({ fill: '#ff0000' });
+
+        i++;
 
         this.backButton = this.add.text(boxX + 260, y + (y_gap * i), 'Back', fonts.small)
             .setInteractive()
