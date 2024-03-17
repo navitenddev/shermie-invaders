@@ -1,9 +1,10 @@
 import { fonts } from "../utils/fontStyle";
+
 class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
-    static Y_NORMAL = 300;
-    static CLONE_DELAY = { min: 10, max: 25 }; // time in seconds before Reaper clones itself
     scoreValue; // defined by constructor
     moneyValue; // defined by constructor
+    static Y_NORMAL = 300;
+    static CLONE_DELAY = { min: 10, max: 25 }; // time in seconds before Reaper clones itself
     ai_state = "CHASING";
     path;
     shots_fired = 0;
@@ -234,7 +235,9 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
 
     die() {
         if (this.hp <= 1) {
-            this.graphics.clear();
+            this.state_text.destroy();
+            this.hp_text.destroy();
+            this.graphics.destroy();
             this.#clear_path();
             this.destroy();
         }

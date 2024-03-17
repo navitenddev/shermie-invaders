@@ -1,10 +1,11 @@
 import { fonts } from "../utils/fontStyle";
+
 class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
-    static Y_NORMAL = 300;
-    static ANGLE_VEL = 500;
     scoreValue = 200;
     moneyValue = 100;
-    hp = 40;
+    static Y_NORMAL = 300;
+    static ANGLE_VEL = 500;
+    hp = 3;
     shoot_cd = 85;
     last_fired = 0;
     shots_fired = 0;
@@ -20,6 +21,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
 
     target_pos = new Phaser.Math.Vector2();
     reached_target = false;
+    is_dead = false;
     constructor(scene, x, y) {
         super(scene, x, y);
         scene.physics.add.existing(this);
@@ -56,6 +58,8 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
      * @param {Array<string>} states list of states to randomly choose from
      */
     #change_state(states) {
+        if (this.is_dead)
+            return;
         this.graphics.clear();
         let player = this.scene.objs.player;
 
@@ -67,7 +71,6 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         } else {
             new_state = states;
         }
-
 
         console.log(`LUPA: ${new_state}`)
         this.reached_target = false;
@@ -104,11 +107,11 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                         .setAngularVelocity(0);
                     // if on right side
                     if (this.x > this.scene.game.config.width / 2) {
-                        console.log("ROAM ON RIGHT")
+                        // console.log("ROAM ON RIGHT")
                         this.path.circleTo(100, true, 360);
                         this.path.circleTo(100, false, 180);
                     } else { // if on left side
-                        console.log("ROAM ON LEFT")
+                        // console.log("ROAM ON LEFT")
                         this.path.circleTo(100, false, 360);
                         this.path.circleTo(100, true, 180);
                     }
@@ -204,16 +207,18 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         this.hp_text
             .setPosition(this.x, this.y - 16)
             .setText(this.hp);
-
         this.state_text
             .setPosition(this.x, this.y)
             .setText(this.ai_state);
     }
 
     update(time, delta) {
+        if (this.is_dead)
+            return;
         this.#update_text();
 
         let player = this.scene.objs.player;
+
         let dist = Phaser.Math.Distance.BetweenPoints({ x: this.x, y: this.y }, this.target_pos); // dist from target
 
         this.path.getPoint(this.follower.t, this.follower.vec);
@@ -295,10 +300,13 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
 
     die() {
         if (this.hp <= 1) {
+            this.state_text.destroy();
+            this.hp_text.destroy();
+            this.graphics.destroy();
             this.destroy();
+            this.is_dead = true;
             return;
         }
-
         this.hp--;
     }
 }
