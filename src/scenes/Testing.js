@@ -149,7 +149,7 @@ export class Testing extends Scene {
         this.lupa_btn = new IconButton(this, "lupa_icon",
             this.game.config.width - 20, 172,
             this.add.enemy_lupa,
-            [this, this.game.config.width, 500]
+            [this, this.game.config.width, 525]
         );
     }
 

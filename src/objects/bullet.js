@@ -79,7 +79,11 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
      * @description Checks if the bullet is offscreen. If so, then the bullet is deactivated.
      */
     check_bounds() {
-        if (this.y < -16) this.deactivate();
+        if (this.y < -16 ||
+            this.y > this.scene.game.config.height ||
+            this.x < 0 ||
+            this.x > this.scene.game.config.width)
+            this.deactivate();
     }
 
     /**
