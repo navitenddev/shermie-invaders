@@ -164,8 +164,10 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
      * @description deactivates the bullet if it's out of bounds
      */
     check_bounds() {
-        if (this.y < -EnemyBulletConstDefs.dims.w ||
-            this.y > this.scene.game.config.height + EnemyBulletConstDefs.dims.h)
+        if (this.y < -16 ||
+            this.y > this.scene.game.config.height ||
+            this.x < 0 ||
+            this.x > this.scene.game.config.width)
             this.deactivate();
     }
 
