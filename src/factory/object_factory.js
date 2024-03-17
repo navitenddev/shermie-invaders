@@ -1,5 +1,8 @@
 import { Player } from "../objects/player";
-import { Enemy1, Enemy2, Enemy3, EnemyUSB, EnemyReaper, EnemyLupa } from "../objects/enemy";
+import { Enemy1, Enemy2, Enemy3 } from "../objects/enemy";
+import { EnemyReaper } from "../objects/enemy_reaper";
+import { EnemyLupa } from "../objects/enemy_lupa";
+import { EnemyUSB } from "../objects/enemy_usb";
 import { PlayerBullet, EnemyBullet, PlayerBulletConstDefs, EnemyBulletConstDefs } from "../objects/bullet";
 import { Explosion } from "../objects/explosions"
 import { BarrierChunk } from "../objects/barrier";
