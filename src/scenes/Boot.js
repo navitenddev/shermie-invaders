@@ -11,10 +11,9 @@ export class Boot extends Scene {
         this.load.setPath("assets");
 
         this.load.image("bg_navitend", "backgrounds/bg_navitend.png");
+
         this.load.svg('animatedbg', 'ui/animatedbg.svg');
-        this.load.image('titlelogo', 'ui/SHERMIE INVADERS.png');
-        this.load.image('levelSelectlogo', 'ui/Level_Select.png');
-        this.load.image('howToPlayLogo', 'ui/How_to_play.png');
+
     }
 
     create() {

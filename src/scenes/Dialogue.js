@@ -6,7 +6,7 @@ class Dialogue extends Phaser.Scene {
     emitter = EventDispatcher.getInstance();
     dialogue_mgr;
 
-    caller_scene;
+    prev_scene;
     keys;
     constructor() {
         super('Dialogue');

@@ -1,3 +1,4 @@
+import { InitKeyDefs } from "../keyboard_input";
 import { Game } from "../scenes/Game";
 import { PlayerBulletConstDefs as player_bull_defs } from "./bullet";
 
@@ -28,6 +29,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         last_fired: 0,
     }
 
+    #coord_list = [];
+    #mouse_pos;
     constructor(scene, x, y) {
         super(scene, x, y, "Player");
 
@@ -56,15 +59,20 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             y: -4,
             rot: 0.2, // rotation velocity
         };
+
+        this.keys = InitKeyDefs(scene);
     }
+
 
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
     }
 
     update(time, delta, keys) {
+        let x = this.scene.game.input.mousePointer.x.toFixed(1);
+        let y = this.scene.game.input.mousePointer.y.toFixed(1);
+        this.#mouse_pos = { x: x, y: y };
         // respawn the player
-
         if (this.is_dead) {
             this.x += this.dead_vel.x;
             this.y += this.dead_vel.y;
@@ -77,7 +85,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             }
             return;
         }
-
+        ;
         // Update shield visuals
         this.updateShield();
 

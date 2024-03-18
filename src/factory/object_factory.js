@@ -3,6 +3,7 @@ import { Enemy1, Enemy2, Enemy3 } from "../objects/enemy";
 import { EnemyReaper } from "../objects/enemy_reaper";
 import { EnemyLupa } from "../objects/enemy_lupa";
 import { EnemyPupa } from "../objects/enemy_pupa";
+import { EnemyZupa } from "../objects/enemy_zupa";
 import { EnemyUSB } from "../objects/enemy_usb";
 import { PlayerBullet, EnemyBullet, PlayerBulletConstDefs, EnemyBulletConstDefs } from "../objects/bullet";
 import { Explosion } from "../objects/explosions"
@@ -70,6 +71,13 @@ Phaser.GameObjects.GameObjectFactory.register(
     "enemy_pupa",
     function (scene, x, y) {
         return new EnemyPupa(scene, x, y);
+    }
+);
+
+Phaser.GameObjects.GameObjectFactory.register(
+    "enemy_zupa",
+    function (scene, x, y) {
+        return new EnemyZupa(scene, x, y);
     }
 );
 

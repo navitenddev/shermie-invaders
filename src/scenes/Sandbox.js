@@ -7,9 +7,6 @@ import ScoreManager from '../utils/ScoreManager.js';
 import { BaseGridEnemy } from '../objects/enemy.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 
-// The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
-import { SoundBank } from '../sounds';
-
 /**
  * @classdesc A button with an icon as its surface that calls cb with args when
  * clicked.
@@ -47,6 +44,15 @@ class IconButton extends Phaser.GameObjects.Container {
     }
 };
 
+const ZUPA_PATHS = {
+    // Triangle
+    // [179.6, 388.8, 497.2, 92.0, 831.1, 439.3]
+    "START": new Phaser.Curves.Path(180, 389)
+        .lineTo(497, 92)
+        .lineTo(831, 440)
+        .closePath(),
+};
+
 /**
  * @description The scene in which gameplay will occur.
  * @property {ObjectSpawner} objs The object spawner for this scene.
@@ -57,10 +63,15 @@ class IconButton extends Phaser.GameObjects.Container {
 
 export class Sandbox extends Scene {
     emitter = EventDispatcher.getInstance();
-    win_flag = false;
-    lose_flag = false;
-
     PUPA_PATHS = {};
+
+    #coord_list = [];
+    #mouse_pos = { x: 0, y: 0 };
+
+    constructor() {
+        super('Sandbox');
+    }
+
     preload() {
         this.load.json({
             key: "PUPA_LEMNISCATE",
@@ -77,27 +88,25 @@ export class Sandbox extends Scene {
             url: "assets/paths/pupa.json",
             dataKey: "SPLINE1",
         });
-        this.load.json({
-            key: "PUPA_ILLUMINATI",
-            url: "assets/paths/pupa.json",
-            dataKey: "ILLUMINATI",
-        });
-    }
-
-    constructor() {
-        super('Sandbox');
     }
 
     create() {
+
+        // create/scale BG image 
+        let bg = this.add.image(0, 0, 'background').setAlpha(0.85);
+        bg.setOrigin(0, 0);
+        bg.displayWidth = this.sys.game.config.width;
+        bg.setScale(bg.scaleX, bg.scaleX);
+        bg.y = -250;
+
+        ZUPA_PATHS.START.toJSON();
+
         this.PUPA_PATHS = {
             LEMNISCATE: this.cache.json.get('PUPA_LEMNISCATE'),
             TRIANGLE: this.cache.json.get('PUPA_TRIANGLE'),
             SPLINE: this.cache.json.get('PUPA_SPLINE'),
             ILLUMINATI: this.cache.json.get('PUPA_ILLUMINATI'),
         }
-        this.PUPA_PATHS.ILLUMINATI.t_vals = [0.00, 0.41, 0.72];
-        console.log("ILLUMINATI PATH");
-        console.log(this.PUPA_PATHS.ILLUMINATI);
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
 
@@ -106,13 +115,6 @@ export class Sandbox extends Scene {
                 this.start_dialogue("sandbox_tips", false);
             }
         );
-
-        // create/scale BG image 
-        let bg = this.add.image(0, 0, 'background').setAlpha(0.85);
-        bg.setOrigin(0, 0);
-        bg.displayWidth = this.sys.game.config.width;
-        bg.scaleY = bg.scaleX;
-        bg.y = -250;
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
@@ -190,6 +192,24 @@ export class Sandbox extends Scene {
             this.add.enemy_pupa,
             [this, 400, 400]
         );
+
+        this.zupa_btn = new IconButton(this, "zupa_icon",
+            this.game.config.width - 20, 244,
+            this.add.enemy_zupa,
+            [this, 400, 400]
+        );
+
+        this.coord_graphics = this.add.graphics();
+
+        this.keys.g.on('down', () => {
+            this.#add_coord();
+        });
+        this.keys.c.on('down', () => {
+            this.#clear_coord_list();
+        });
+        this.keys.v.on('down', () => {
+            this.#print_coord_list();
+        });
     }
 
     pause() {
@@ -203,6 +223,7 @@ export class Sandbox extends Scene {
         // Update lives text and sprites
         this.livesText.setText('-');
         this.update_mouse_pos_text();
+        let vec = this.#mouse_pos;
     }
 
     goto_scene(targetScene) {
@@ -322,9 +343,37 @@ export class Sandbox extends Scene {
         bullet.deactivate();
     }
 
+    #add_coord() {
+        const x = this.game.input.mousePointer.x;
+        const y = this.game.input.mousePointer.y;
+        const vec = { x: x, y: y };
+        this.#coord_list.push(vec);
+        console.log("Added coordinate to list")
+        console.log(this.#coord_list);
+        this.coord_graphics
+            .fillStyle(0xFF0000, 1)
+            .fillCircle(x, y, 6);
+    }
+
+    #clear_coord_list() {
+        this.#coord_list = [];
+        console.log("Cleared all coordinates from the list")
+        this.coord_graphics.clear();
+    }
+
+    #print_coord_list() {
+        let out = "[";
+        for (const vec of this.#coord_list) {
+            console.log(vec);
+            out += `${vec.x}, ${vec.y}, `;
+        }
+        console.log(out + "]");
+    }
+
     update_mouse_pos_text() {
         let x = this.game.input.mousePointer.x.toFixed(1);
         let y = this.game.input.mousePointer.y.toFixed(1);
+        this.#mouse_pos = { x: x, y: y };
         this.mouse_pos_text.setText(`(${x},${y})`);
     }
 

@@ -1,0 +1,46 @@
+{
+  "TRIANGLE": {
+    "type": "Path",
+    "x": 180,
+    "y": 389,
+    "autoClose": false,
+    "curves": [
+      {
+        "type": "LineCurve",
+        "points": [180, 389, 497, 92]
+      },
+      {
+        "type": "LineCurve",
+        "points": [497, 92, 831, 440]
+      },
+      {
+        "type": "LineCurve",
+        "points": [831, 440, 180, 389]
+      }
+    ]
+  },
+  "SQUARE": {
+    "type": "Path",
+    "x": 277,
+    "y": 135,
+    "autoClose": false,
+    "curves": [
+      {
+        "type": "LineCurve",
+        "points": [277, 135, 289, 394]
+      },
+      {
+        "type": "LineCurve",
+        "points": [289, 394, 722, 394]
+      },
+      {
+        "type": "LineCurve",
+        "points": [722, 394, 728, 135]
+      },
+      {
+        "type": "LineCurve",
+        "points": [728, 135, 277, 135]
+      }
+    ]
+  }
+}
