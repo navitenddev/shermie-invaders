@@ -30,8 +30,6 @@ export class MainMenu extends Scene {
 
         this.keys = InitKeyDefs(this);
 
-        this.cc_idx = 0; // cheatcode index
-
         // Start Button
         this.start_btn = this.add.text(512, 460, 'PLAY', fonts.medium)
             .setOrigin(0.5)
