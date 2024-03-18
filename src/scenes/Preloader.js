@@ -64,6 +64,8 @@ export class Preloader extends Scene {
 
         this.load.image("pupa_icon", "characters/pupa-icon.png");
 
+        this.load.image("zupa_icon", "characters/zupa-icon.png");
+
         //this.load.audio(['bgmusic','shoot','explosion'], ['SFX/spacebg.wav','SFX/shoot.wav', 'SFX/explosion.wav']);
 
         this.load.audio('bgmusic', 'SFX/bgmusic.mp3');
@@ -151,6 +153,11 @@ export class Preloader extends Scene {
         });
 
         this.load.spritesheet("enemy_pupa", "characters/pupa.png", {
+            frameWidth: 64,
+            frameHeight: 64,
+        });
+
+        this.load.spritesheet("enemy_zupa", "characters/zupa.png", {
             frameWidth: 64,
             frameHeight: 64,
         });
