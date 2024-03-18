@@ -120,9 +120,6 @@ class MenuButton extends Phaser.GameObjects.Container {
         super(scene, x, y);
         scene.add.existing(this);
 
-        this.setInteractive()
-
-
         this.border_w = 4;
         this.btn = scene.add.text(this.border_w, this.border_w, text, {
             ...fonts.small,
@@ -241,7 +238,7 @@ export class Store extends Scene {
         //Show Shermie Bux here
         const moneyIconX = 270;
         const moneyIconY = 190;
-        const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_coin').setOrigin(0.5, 0.5).setScale(0.12);
+        const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_bux').setOrigin(0.5, 0.5).setScale(0.12);
         const moneyTextX = moneyIconX + moneyIcon.displayWidth / 2 + 5;
         const moneyTextY = moneyIconY;
         this.moneyText = this.add.text(moneyTextX, moneyTextY, `${this.player_vars.wallet}`, fonts.medium).setOrigin(0, 0.5);
@@ -274,7 +271,7 @@ export class Store extends Scene {
         };
 
         // cost increases linearly except for shields. 
-        if (statKey === 'shield'){
+        if (statKey === 'shield') {
             return baseCosts[statKey];
         }
         return baseCosts[statKey] * (currentLevel + 1);

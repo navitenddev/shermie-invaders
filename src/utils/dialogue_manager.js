@@ -108,7 +108,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
             this.#deactivate();
             return;
         }
-        console.log(`Loaded line ${this.line_index}`)
+        // console.log(`Loaded line ${this.line_index}`)
         this.line = this.lines[this.line_index++];
         this.char_index = 0;
     }
@@ -116,7 +116,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
     #add_next_char() {
         this.text.text += this.line[this.char_index++];
         if (this.char_index === this.line.length) {
-            console.log("Line is done, waiting on player to click again")
+            // console.log("Line is done, waiting on player to click again")
             this.auto_emit_flag = true;
 
             const cont_dialogue_in = 1.5; // # continue dialogue in # of seconds

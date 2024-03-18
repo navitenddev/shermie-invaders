@@ -90,32 +90,32 @@ class Barrier {
 
     init_particles() {
         const flames = this.scene.add.particles(150, 550, 'flares',
-        {
-            frame: 'white',
-            color: [ 0xfacc22, 0xf89800, 0xf83600, 0x9f0404 ],
-            colorEase: 'quad.out',
-            lifespan: 1200,
-            angle: { min: -90, max: -90 },
-            scale: { start: 0.50, end: 0, ease: 'sine.in' },
-            speed: 100,
-            blendMode: 'ADD',
-            emitZone: {
-                type: 'random',
-                source: new Phaser.Geom.Rectangle(-55, 0, this.rect.width, 10),
-                quantity: 50,
-            }
-        });
+            {
+                frame: 'white',
+                color: [0xfacc22, 0xf89800, 0xf83600, 0x9f0404],
+                colorEase: 'quad.out',
+                lifespan: 1200,
+                angle: { min: -90, max: -90 },
+                scale: { start: 0.50, end: 0, ease: 'sine.in' },
+                speed: 100,
+                blendMode: 'ADD',
+                emitZone: {
+                    type: 'random',
+                    source: new Phaser.Geom.Rectangle(-55, 0, this.rect.width, 10),
+                    quantity: 50,
+                }
+            });
 
         this.flames = flames; // reference to the flames particle emitter so we can update the size based on chunks remaining
-   
+
         flames.setPosition(this.rect.x + this.rect.width / 2, this.rect.centerY);
     }
 
     update_flame_size() {
         const remainingChunks = this.chunks.filter(chunk => chunk.active).length; // count the number of active chunks
-        const totalChunks = this.chunk_defs.n.rows * this.chunk_defs.n.cols; 
-        const percentRemaining = remainingChunks / totalChunks; 
-    
+        const totalChunks = this.chunk_defs.n.rows * this.chunk_defs.n.cols;
+        const percentRemaining = remainingChunks / totalChunks;
+
         // if less than 50% of the barrier is remaining, scale/fade away the flames
         if (percentRemaining <= 0.5) {
             if (this.flames && this.flames.active) {
@@ -143,22 +143,22 @@ class Barrier {
                     ease: 'Quintic.Out',
                 });
             }
-        }    
+        }
     }
 
     chunk_particle_emitter() {
         this.destructionEmitter = this.scene.add.particles(0, 0, 'flares', {
-          frame: ['white'],
-          color: [0xffffff, 0xf89800, 0xf83600, 0x9f0404],
-          scale: { start: 0.2, end: 0, ease: 'exp.out' },
-          alpha: { start: 1, end: 0, ease: 'exp.out' },
-          lifespan: 500,
-          speed: { min: 150, max: 350 },
-          gravityY: 1000,
-          blendMode: 'ADD',
-          emitting: false
+            frame: ['white'],
+            color: [0xffffff, 0xf89800, 0xf83600, 0x9f0404],
+            scale: { start: 0.2, end: 0, ease: 'exp.out' },
+            alpha: { start: 1, end: 0, ease: 'exp.out' },
+            lifespan: 500,
+            speed: { min: 150, max: 350 },
+            gravityY: 1000,
+            blendMode: 'ADD',
+            emitting: false
         });
-      }
+    }
 }
 
 export { BarrierChunk, Barrier };

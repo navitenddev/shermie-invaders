@@ -1,0 +1,95 @@
+{
+  "LEMNISCATE": {
+    "type": "Path",
+    "x": 512,
+    "y": 300,
+    "curves": [
+      {
+        "type": "EllipseCurve",
+        "x": 362,
+        "y": 300,
+        "xRadius": 150,
+        "yRadius": 150,
+        "startAngle": 0,
+        "endAngle": 360,
+        "clockwise": true,
+        "rotation": 0
+      },
+      {
+        "type": "EllipseCurve",
+        "x": 662,
+        "y": 300,
+        "xRadius": 150,
+        "yRadius": 150,
+        "startAngle": 0,
+        "endAngle": 360,
+        "clockwise": false,
+        "rotation": 180
+      }
+    ]
+  },
+  "TRIANGLE": {
+    "type": "Path",
+    "x": 125,
+    "y": 420,
+    "curves": [
+      {
+        "type": "LineCurve",
+        "points": [125, 420, 522, 85]
+      },
+      {
+        "type": "LineCurve",
+        "points": [522, 85, 893, 420]
+      },
+      {
+        "type": "LineCurve",
+        "points": [893, 420, 125, 420]
+      }
+    ]
+  },
+  "ILLUMINATI": {
+    "type": "Path",
+    "x": 195,
+    "y": 110,
+    "curves": [
+      {
+        "type": "LineCurve",
+        "points": [195, 110, 840, 110]
+      },
+      {
+        "type": "LineCurve",
+        "points": [840, 110, 508, 420]
+      },
+      {
+        "type": "LineCurve",
+        "points": [508, 420, 195, 110]
+      }
+    ],
+    "t_vals": [0.0, 0.41, 0.72]
+  },
+
+  "SPLINE1": {
+    "type": "Path",
+    "x": 80,
+    "y": 390,
+    "autoClose": false,
+    "curves": [
+      {
+        "type": "SplineCurve",
+        "x": 85,
+        "y": 370,
+        "points": [
+          [100, 390],
+          [200, 252],
+          [300, 390],
+          [400, 252],
+          [500, 390],
+          [600, 252],
+          [700, 390],
+          [800, 252],
+          [900, 390]
+        ]
+      }
+    ]
+  }
+}

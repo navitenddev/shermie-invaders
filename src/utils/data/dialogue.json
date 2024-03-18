@@ -55,5 +55,12 @@
   {
     "key": "shermie_dead",
     "lines": ["NoooooOOOOoOOOoOOOO!!!"]
+  },
+  {
+    "key": "sandbox_tips",
+    "lines": [
+      "Welcome to Sandbox Mode!",
+      "Click the buttons on the top right to spawn enemies!"
+    ]
   }
 ]
