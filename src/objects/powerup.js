@@ -6,15 +6,8 @@ const PowerupsConstDefs = {
 };
 
 /**
- * @classdesc A bullet that the player shoots.
- * 
- * Note: Reusable objects (like bullets and explosions) are not constantly created and destroyed. Reusable objects are first initialized as invisble, inactive, and offscreen when the game begins. 
- * 
- * When they are needed, the caller will first find if any of said object is available (aka, inactive). If so, that object is teleported to where it should appear and activated.
- * 
- * Then, they are automatically set to inactive and invisible again when they are no longer needed.
- * 
- * This way we don't have to waste resources on constantly creating and destroying objects.
+ * @classdesc powerups that buff the player.
+
  */
 class Powerups extends Phaser.Physics.Arcade.Sprite {
     // the absolute max bullets a player can ever shoot at once
@@ -63,14 +56,14 @@ class Powerups extends Phaser.Physics.Arcade.Sprite {
     }
     /**
      * @private
-     * @description The bullet movement per `update()`
+     * @description The falling speed per `update()`
      */
     move() {
         this.y -= this.speed;
     }
     /**
      * @public
-     * @description Checks if the bullet is offscreen. If so, then the bullet is deactivated.
+     * @description Checks powerup is offscreen. If so, then it is deactivated.
      */
     check_bounds() {
         if (this.y < -16 ||
@@ -81,10 +74,10 @@ class Powerups extends Phaser.Physics.Arcade.Sprite {
     }
     /**
      * @public
-     * @description Activate the bullet at (x,y) at a given speed
-     * @param {number} x The x-coord in which the bullet should appear at
-     * @param {number} y The y-coord in which the bullet should appear at
-     * @param {number} speed The movement speed of the bullet
+     * @description Activate the powerup at (x,y) at a given speed
+     * @param {number} x The x-coord in which the powerup should appear at
+     * @param {number} y The y-coord in which the powerup should appear at
+     * @param {number} speed The movement speed of the powerup
      */
     activate(x, y, speed) {
         this.speed = speed;
@@ -95,7 +88,7 @@ class Powerups extends Phaser.Physics.Arcade.Sprite {
 
     /** 
      * @public
-     * @description Deactivate the bullet and move it offscreen
+     * @description Deactivate the powerup and move it offscreen
      */
     deactivate() {
         if (this.active) this.scene.powerup_stats.active_powerups--;
