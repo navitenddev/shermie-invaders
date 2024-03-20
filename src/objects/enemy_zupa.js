@@ -79,6 +79,10 @@ class EnemyZupa extends Phaser.GameObjects.PathFollower {
         });
 
     }
+
+    die() {
+        this.destroy();
+    }
 }
 
 export { EnemyZupa }
