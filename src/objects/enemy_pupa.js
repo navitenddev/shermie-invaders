@@ -88,7 +88,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
             case "ROAMING":
                 {
                     this.#clear_path();
-                    this.setAngle(90)
+                    this.setAngle(0)
                         .setAngularVelocity(0);
 
                     this.path = new Phaser.Curves.Path(this.scene.PUPA_PATHS.LEMNISCATE);
@@ -110,7 +110,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
             case "ROAMING1": // roaming with spline path
                 {
                     this.#clear_path();
-                    this.setAngle(90)
+                    this.setAngle(0)
                         .setAngularVelocity(0);
                     this.path = new Phaser.Curves.Path(this.scene.PUPA_PATHS.SPLINE);
                     this.tween = this.scene.tweens.add({
@@ -132,7 +132,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
                 {
                     this.#clear_path();
 
-                    this.setAngle(90)
+                    this.setAngle(0)
                         .setAngularVelocity(EnemyPupa.ANGLE_VEL);
                     this.path = new Phaser.Curves.Path(this.scene.PUPA_PATHS.ILLUMINATI);
                     console.log("ILLUMINATI PATH")
@@ -220,6 +220,18 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
                 console.error(`Invalid update state: ${this.ai_state}`);
                 break;
         }
+    }
+
+    die() {
+        if (this.hp <= 1) {
+            this.state_text.destroy();
+            this.hp_text.destroy();
+            this.graphics.destroy();
+            this.destroy();
+            this.is_dead = true;
+            return;
+        }
+        this.hp--;
     }
 
     #update_text() {
