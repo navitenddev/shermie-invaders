@@ -53,33 +53,27 @@ class AnimationFactory {
         });
 
         this.scene.anims.create({
-            key: "enemy_l1_top_idle",
-            frames: this.scene.anims.generateFrameNumbers("enemy_l1_top", {
+            key: "enemy3_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy3", {
                 start: 0,
-                end: 3,
-            }),
-            frameRate: 4,
-            repeat: -1,
+                end: 0,
+            })
         });
 
         this.scene.anims.create({
-            key: "enemy_l1_middle_idle",
-            frames: this.scene.anims.generateFrameNumbers("enemy_l1_middle", {
+            key: "enemy2_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy2", {
                 start: 0,
-                end: 3,
-            }),
-            frameRate: 4,
-            repeat: -1,
+                end: 0,
+            })
         });
 
         this.scene.anims.create({
-            key: "enemy_l1_bottom_idle",
-            frames: this.scene.anims.generateFrameNumbers("enemy_l1_bottom", {
+            key: "enemy1_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy1", {
                 start: 0,
-                end: 3,
-            }),
-            frameRate: 4,
-            repeat: -1,
+                end: 0,
+            })
         });
 
         this.scene.anims.create({

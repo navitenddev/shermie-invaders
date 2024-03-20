@@ -126,21 +126,21 @@ class ObjectSpawner {
 
                 // spawn enemy based on row
                 if (y == 0) {
-                    enemy = this.scene.add.enemy_l1_top(
+                    enemy = this.scene.add.enemy1(
                         this.scene,
                         spawn_pos.x,
                         spawn_pos.y,
                         this.level
                     );
                 } else if (y == 1 || y == 2) {
-                    enemy = this.scene.add.enemy_l1_middle(
+                    enemy = this.scene.add.enemy2(
                         this.scene,
                         spawn_pos.x,
                         spawn_pos.y,
                         this.level
                     );
                 } else {
-                    enemy = this.scene.add.enemy_l1_bottom(
+                    enemy = this.scene.add.enemy3(
                         this.scene,
                         spawn_pos.x,
                         spawn_pos.y,

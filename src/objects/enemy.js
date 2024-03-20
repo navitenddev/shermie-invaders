@@ -6,8 +6,8 @@ import { fonts } from "../utils/fontStyle";
 
 // Grid gap and spawn_start are not scaled factors
 const EnemyConstDefs = {
-    dims: { w: 80, h: 80 },
-    scale: { w: .5, h: .5 },
+    dims: { w: 60, h: 60 },
+    scale: { w: .66, h: .66 },
     spawn_start: { x: 80, y: 140 },
     grid_gap: { x: 28, y: 12 },
 };
@@ -116,7 +116,7 @@ class Enemy1 extends BaseGridEnemy {
     scoreValue = 30;
     moneyValue = 25;
     constructor(scene, x, y) {
-        super(scene, x, y, "enemy_l1_top_idle", EnemyConstDefs);
+        super(scene, x, y, "enemy3_idle", EnemyConstDefs);
     }
 }
 
@@ -124,7 +124,7 @@ class Enemy2 extends BaseGridEnemy {
     scoreValue = 20;
     moneyValue = 10;
     constructor(scene, x, y) {
-        super(scene, x, y, "enemy_l1_middle_idle", EnemyConstDefs);
+        super(scene, x, y, "enemy2_idle", EnemyConstDefs);
     }
 }
 
@@ -132,7 +132,7 @@ class Enemy3 extends BaseGridEnemy {
     scoreValue = 10;
     moneyValue = 5;
     constructor(scene, x, y) {
-        super(scene, x, y, "enemy_l1_bottom_idle", EnemyConstDefs);
+        super(scene, x, y, "enemy1_idle", EnemyConstDefs);
     }
 }
 

@@ -113,20 +113,12 @@ export class Preloader extends Scene {
             frameHeight: 32,
         });
 
-        this.load.spritesheet("enemy_l1_top", "characters/enemy_l1_lock.png", {
-            frameWidth: 80,
-            frameHeight: 80,
-        });
-
-        this.load.spritesheet("enemy_l1_bottom", "characters/enemy_l1_virus.png", {
-            frameWidth: 80,
-            frameHeight: 80,
-        });
-
-        this.load.spritesheet("enemy_l1_middle", "characters/enemy_l1_worm.png", {
-            frameWidth: 80,
-            frameHeight: 80,
-        });
+        for (let i = 1; i <= 22; i++) {
+            this.load.spritesheet(`enemy${i}`, `characters/enemies/enemy${i}.png`, {
+                frameWidth: 60,
+                frameHeight: 60,
+            });
+        }
 
         this.load.spritesheet("shermie", "characters/shermie.png", {
             frameWidth: 80,
