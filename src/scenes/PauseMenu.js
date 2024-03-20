@@ -1,8 +1,10 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs } from '../keyboard_input';
 import { fonts } from '../utils/fontStyle.js';
+import { EventDispatcher } from '../utils/event_dispatcher.js';
 
 export class PauseMenu extends Scene {
+    emitter = EventDispatcher.getInstance();
     constructor() {
         super('PauseMenu');
     }
@@ -32,11 +34,13 @@ export class PauseMenu extends Scene {
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
+                this.emitter.removeAllListeners(); // Clean up loose event listeners
                 this.cameras.main.fadeOut(200, 0, 0, 0);
                 this.sounds.bank.music.bg.stop();
                 this.sounds.bank.music.ff7_fighting.stop();
                 this.sounds.bank.sfx.click.play();
                 this.sounds.bank.music.start.play();
+
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                     this.scene.stop('PauseMenu');
                     this.scene.stop(this.prev_scene);

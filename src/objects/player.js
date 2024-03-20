@@ -25,7 +25,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     static timers = {
-        base_shoot_cd: 1000,
+        base_shoot_cd: 800,
         last_fired: 0,
     }
 
@@ -71,8 +71,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(time, delta, keys) {
-        let x = this.scene.game.input.mousePointer.x.toFixed(1);
-        let y = this.scene.game.input.mousePointer.y.toFixed(1);
+        let x, y;
+        if (this.scene) {
+            x = this.scene.game.input.mousePointer.x.toFixed(1);
+            y = this.scene.game.input.mousePointer.y.toFixed(1);
+        }
         this.#mouse_pos = { x: x, y: y };
         // respawn the player
         if (this.is_dead) {
@@ -88,7 +91,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             return;
         }
         ;
-    
+
         this.updateShield();
         this.updateHitbox();
 
@@ -211,7 +214,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             // get the next available bullet, if one is available.
             let bullet = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
             if (bullet !== null) {
-                timer.last_fired = time + timer.base_shoot_cd - (this.stats.fire_rate * 25);
+                timer.last_fired = time + timer.base_shoot_cd - (this.stats.fire_rate * 50);
                 this.player_vars.active_bullets++;
                 let bullet_speed = player_bull_defs.speed.y + (this.stats.bullet_speed - 1);
 
