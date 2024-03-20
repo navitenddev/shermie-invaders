@@ -25,9 +25,14 @@ class SoundBank {
                 lose: null,
                 shoot: null,
                 explosion: [],
+                hurt: null,
+                click: null,
+                reload: null,
             },
             music: {
                 bg: null,
+                start: null,
+                ff7_fighting: null,
             }
         }
         this.init_sounds();

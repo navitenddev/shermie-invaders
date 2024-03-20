@@ -1,5 +1,6 @@
 import { GridEnemy as grid_enemy } from "./enemy_grid";
 import { PlayerBullet, EnemyBulletConstDefs as enemy_bull_defs } from "./bullet";
+import { Powerups, PowerupsConstDefs as power_defs } from "./powerup";
 import { Explosion, ExplosionConstDefs as expl_defs } from "./explosions";
 import { Player } from "./player";
 import { Barrier } from "./barrier";
@@ -34,6 +35,10 @@ class ObjectSpawner {
                 runChildUpdate: true,
             }),
         }
+        
+        this.powers = this.scene.physics.add.group({
+            runChildUpdate: true,
+        });
 
         this.bullets = {
             player: this.scene.physics.add.group({
@@ -101,8 +106,17 @@ class ObjectSpawner {
         this.init_player_bullets();
         this.init_enemy_bullets();
         this.init_explosions();
-        if (with_grid)
-            this.init_enemy_grid();
+        this.init_enemy_grid();
+        this.init_powerups();
+    }
+
+    init_all_without_grid() {
+        this.init_barriers();
+        this.init_player();
+        this.init_player_bullets();
+        this.init_enemy_bullets();
+        this.init_explosions();
+        this.init_powerups();
     }
 
     init_player() {
@@ -197,10 +211,19 @@ class ObjectSpawner {
      */
     init_player_bullets() {
         console.log("Initializing player bullets");
-        for (let i = 0; i < PlayerBullet.bullet_capacity; ++i) {
+        for (let i = 0; i < PlayerBullet.bullet_capacity*3; ++i) {
             // console.log(`Adding bullet #${i + 1}`);
             let bullet = this.scene.add.player_bullet(this.scene);
             this.bullets.player.add(bullet);
+        }
+    }
+
+    init_powerups() {
+        console.log("Initializing powerups");
+        for (let i = 0; i < Powerups.powerup_capacity; ++i) {
+            // console.log(`Adding bullet #${i + 1}`);
+            let power = this.scene.add.powerup(this.scene);
+            this.powers.add(power);
         }
     }
 
