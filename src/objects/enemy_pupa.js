@@ -222,6 +222,18 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    die() {
+        if (this.hp <= 1) {
+            this.state_text.destroy();
+            this.hp_text.destroy();
+            this.graphics.destroy();
+            this.destroy();
+            this.is_dead = true;
+            return;
+        }
+        this.hp--;
+    }
+
     #update_text() {
         this.state_text
             .setPosition(this.x, this.y)
