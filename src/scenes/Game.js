@@ -317,6 +317,7 @@ export class Game extends Scene {
                         this.start_dialogue('shermie_shieldgone', false);
                         currShield = player.stats.shield;
                     }
+                player.updateHitbox();
                 } else {
                     this.objs.explode_at(player.x, player.y);
                     player.die();

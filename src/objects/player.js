@@ -45,6 +45,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.shieldVisuals = scene.add.graphics();
         this.updateShield();
         this.initShieldParticles();
+        this.updateHitbox();
 
         this.setCollideWorldBounds(true)
             .setSize(Player.dims.w - 16, Player.dims.h - 8)
@@ -238,6 +239,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.x < this.scene.game.config.width + Player.dims.w);
     }
 
+    /**
+     * @description Initializes the shield particles
+     * @returns {void}
+     */
     initShieldParticles() {
         console.log("Initializing shield particles");
         this.shieldParticles = this.scene.add.particles(0, 0, 'flares', {
@@ -251,6 +256,20 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             blendMode: 'ADD',
             emitting: false
         });
+    }
+
+    /**
+     * @description Updates the player's hitbox size based on the current shield status
+     * @returns {void}
+     */
+    updateHitbox() {
+        if (this.stats.shield > 1) {
+            this.setCircle(40);
+            this.setOffset(Player.body_offset.x - 16, Player.body_offset.y - 36);
+        } else {
+            this.setSize(Player.dims.w - 16, Player.dims.h - 8);
+            this.setOffset(Player.body_offset.x, Player.body_offset.y);
+        }
     }
 }
 
