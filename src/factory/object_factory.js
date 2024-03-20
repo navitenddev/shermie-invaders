@@ -113,6 +113,7 @@ Phaser.GameObjects.GameObjectFactory.register(
 Phaser.GameObjects.GameObjectFactory.register(
     "powerup",
     function (scene) {
-        return new Powerups(scene);
+        let temp=this.scene.powerup_stats.power_bank[Phaser.Math.Between(0, this.scene.powerup_stats.power_bank.length-1 )];
+        return new Powerups(scene,temp);
     }
 );

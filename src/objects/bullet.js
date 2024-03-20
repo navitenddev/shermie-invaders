@@ -38,6 +38,7 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         scene.add.existing(this);
         //this.setScale(.25); 
+        this.health=5;
         this.play('cottonBullet')
             .setSize(PlayerBulletConstDefs.dims.w, PlayerBulletConstDefs.dims.h)
             .setScale(0.75)
@@ -46,7 +47,8 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
 
         this.player_vars = scene.registry.get('player_vars');
         this.body.onOverlap = true;
-        this.speed = PlayerBulletConstDefs.speed.y;
+        this.speedy = PlayerBulletConstDefs.speed.y;
+        this.speedx= PlayerBulletConstDefs.speed.x;
     }
 
     /* It's important to add this to every subclass that extends a phaser object.
@@ -71,9 +73,17 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
      * @description The bullet movement per `update()`
      */
     move() {
-        this.y -= this.speed;
+        this.y -= this.speedy;
+        if(this.player_vars.power=="spread")this.x -= this.speedx;
     }
 
+    hurt_bullet(){
+        this.health--;
+        if(this.health==0) {
+            this.health=5
+            this.deactivate();
+        }
+    }
     /**
      * @public
      * @description Checks if the bullet is offscreen. If so, then the bullet is deactivated.
@@ -93,8 +103,10 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
      * @param {number} y The y-coord in which the bullet should appear at
      * @param {number} speed The movement speed of the bullet
      */
-    activate(x, y, speed) {
-        this.speed = speed;
+    activate(x, y, speed, direction) {
+        this.speedy = speed;
+        if(direction=='left') this.speedx= -0.5;
+        else if(direction=='right') this.speedx= 0.5;
         this.setPosition(x, y);
         this.setVisible(true);
         this.setActive(true);
@@ -109,6 +121,7 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         this.setPosition(-1024, -1024);
         this.setVisible(false);
         this.setActive(false);
+        this.setVelocity(0, 0);
     }
 
 }
@@ -134,6 +147,7 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
     constructor(scene) {
         super(scene, -1024, -1024, "enemy_bullet");
         this.scene.physics.add.existing(this);
+        
         this.scene.add.existing(this);
         this.play("bullet")
             .setSize(EnemyBulletConstDefs.dims.w, EnemyBulletConstDefs.dims.h)

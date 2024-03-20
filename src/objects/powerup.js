@@ -18,17 +18,18 @@ const PowerupsConstDefs = {
  */
 class Powerups extends Phaser.Physics.Arcade.Sprite {
     // the absolute max bullets a player can ever shoot at once
-    static powerup_capacity = 4;
-    static buff =""
+    static powerup_capacity = 3;
     /**
      * @constructor
      * @param {Phaser.Scene} scene - The scene in which the bullet exists.
      * @param {number} x - The x-coord of the bullet's initial position.
      * @param {number} y - The y-coord of the bullet's initial position.
      */
-    constructor(scene, pow) {
-        this.buff=pow
-        super(scene, -1024, -1024, "powerup");
+    constructor(scene,pow) {
+        if(pow=="spread") super(scene, -1024, -1024, "poweruppic"); //icon for spread powerup
+        else if(pow=="pierce") super(scene, -1024, -1024, "powerup"); //icon for pierce powerup
+        else super(scene, -1024, -1024, "powerup"); //default placeholder for others
+        this.buff=pow;
         scene.physics.add.existing(this);
         scene.add.existing(this);
         //this.setScale(.25); 
@@ -67,7 +68,6 @@ class Powerups extends Phaser.Physics.Arcade.Sprite {
     move() {
         this.y -= this.speed;
     }
-
     /**
      * @public
      * @description Checks if the bullet is offscreen. If so, then the bullet is deactivated.
@@ -79,7 +79,6 @@ class Powerups extends Phaser.Physics.Arcade.Sprite {
             this.x > this.scene.game.config.width)
             this.deactivate();
     }
-
     /**
      * @public
      * @description Activate the bullet at (x,y) at a given speed
@@ -99,7 +98,6 @@ class Powerups extends Phaser.Physics.Arcade.Sprite {
      * @description Deactivate the bullet and move it offscreen
      */
     deactivate() {
-        console.log(this.buff);
         if (this.active) this.scene.powerup_stats.active_powerups--;
         this.setPosition(-1024, -1024);
         this.setVisible(false);

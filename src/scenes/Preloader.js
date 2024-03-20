@@ -103,7 +103,7 @@ export class Preloader extends Scene {
             frameHeight: 32,
         });
 
-        this.load.spritesheet("powerup", "placeholder.png", {
+        this.load.spritesheet("poweruppic", "placeholder.png", {
             frameWidth: 80,
             frameHeight: 80,
         });

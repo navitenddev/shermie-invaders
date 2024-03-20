@@ -27,7 +27,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     static timers = {
         base_shoot_cd: 1000,
         last_fired: 0,
-        powerup_cd: 30000,
+        powerup_cd: 1000,
         powerup_timer: 0
     }
 
@@ -90,7 +90,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         ;
         // Update shield visuals
         this.updateShield();
-
         if (keys.d.isDown || keys.right.isDown) {
             this.move(true);
         } else if (keys.a.isDown || keys.left.isDown) {
@@ -105,8 +104,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.play("shermie_idle");
 
         if (keys.space.isDown || keys.w.isDown) this.shoot(time);
-        if (keys.b.isDown) this.spawn(time);
-
+        if(this.player_vars.power!="" && Player.timers.powerup_timer>0) {
+            console.log(Player.timers.powerup_timer)
+            Player.timers.powerup_timer--;}
+        if(this.player_vars.power!="" && Player.timers.powerup_timer<=0) this.changePower("");
     }
 
     /**
@@ -131,6 +132,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.sounds.bank.sfx.hurt.play();
             this.shieldVisuals.clear();
         }
+        this.changePower("");
     }
 
     updateShield() {
@@ -185,6 +187,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     */
     changePower(pow) {
         this.player_vars.power=pow;
+        if(pow==""){ 
+            console.log("end");
+            Player.timers.powerup_timer=0;}
+        else {
+            console.log("start");
+            Player.timers.powerup_timer=Player.timers.powerup_cd;
+        }
     }
 
     /**
@@ -213,6 +222,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     shoot(time) {
         let timer = Player.timers;
         let bullet_cap = 10;
+        if (this.player_vars.power=="spread") bullet_cap*=3;
         if (this.player_vars.active_bullets < bullet_cap &&
             time > timer.last_fired) {
             // get the next available bullet, if one is available.
@@ -222,10 +232,22 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.player_vars.active_bullets++;
                 let bullet_speed = player_bull_defs.speed.y + (this.stats.bullet_speed - 1);
 
-                bullet.activate(this.x, this.y, bullet_speed);
+                bullet.activate(this.x, this.y, bullet_speed, "");
                 if (this.anims) {
                     this.anims.play("shermie_shoot");
                     this.anims.nextAnim = "shermie_idle";
+                }
+                if (this.player_vars.power=="spread"){
+                    let bulletr = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
+                    if (bulletr !== null) {
+                        this.player_vars.active_bullets++;
+                        bulletr.activate(this.x, this.y, bullet_speed, "right");
+                        let bulletl = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
+                        if (bulletl !== null) {
+                            this.player_vars.active_bullets++;
+                            bulletl.activate(this.x, this.y, bullet_speed, "left");                            
+                        }
+                    }
                 }
                 this.sounds.bank.sfx.shoot.play();
             }
@@ -235,9 +257,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
     //summons a powerup(for testing)
-    spawn(time) {
-        // get the next available bullet, if one is available.
-    }
 
     /**
      * @public

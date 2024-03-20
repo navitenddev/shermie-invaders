@@ -118,6 +118,7 @@ export class Sandbox extends Scene {
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
+        this.powerup_stats = this.registry.get('powerup_stats');
         this.objs.init_all_without_grid();
         this.sounds = this.registry.get('sound_bank');
 

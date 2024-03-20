@@ -165,7 +165,7 @@ class ObjectSpawner {
      */
     init_player_bullets() {
         console.log("Initializing player bullets");
-        for (let i = 0; i < PlayerBullet.bullet_capacity; ++i) {
+        for (let i = 0; i < PlayerBullet.bullet_capacity*3; ++i) {
             // console.log(`Adding bullet #${i + 1}`);
             let bullet = this.scene.add.player_bullet(this.scene);
             this.bullets.player.add(bullet);
@@ -176,8 +176,7 @@ class ObjectSpawner {
         console.log("Initializing powerups");
         for (let i = 0; i < Powerups.powerup_capacity; ++i) {
             // console.log(`Adding bullet #${i + 1}`);
-            console.log(this.scene.powerup_stats.power_bank[Phaser.Math.Between(0, this.scene.powerup_stats.power_bank.length-1 )]);
-            let power = this.scene.add.powerup(this.scene, this.scene.powerup_stats.power_bank[Phaser.Math.Between(0, this.scene.powerup_stats.power_bank.length-1 )]);
+            let power = this.scene.add.powerup(this.scene);
             this.powers.add(power);
         }
     }

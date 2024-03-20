@@ -56,7 +56,7 @@ export class Game extends Scene {
 
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
-
+        this.player_vars.power="";
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
             () => {
                 if (this.level === 1)
@@ -259,12 +259,13 @@ export class Game extends Scene {
             this.registry.set({ 'level': this.level + 1 });
             this.level_transition_flag = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
+            this.player_vars.power="";
             this.goto_scene("Player Win");
         } else if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
-
-            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
-            this.goto_scene("Player Lose");
+                this.player_vars.power="";
+                this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
+                this.goto_scene("Player Lose");
         }
     }
 
@@ -289,7 +290,8 @@ export class Game extends Scene {
         // player bullet hits grid enemy
         this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies.grid, (player_bullet, enemy) => {
             this.objs.explode_at(enemy.x, enemy.y);
-            player_bullet.deactivate();
+            if(this.player_vars.power == "pierce")  player_bullet.hurt_bullet();
+            else player_bullet.deactivate();
             enemy.die();
             this.scoreManager.addScore(enemy.scoreValue);
             this.scoreManager.addMoney(enemy.moneyValue);
@@ -324,8 +326,8 @@ export class Game extends Scene {
 
         // player catches powerup
         this.physics.add.overlap(this.objs.powers, this.objs.player, (player, powerup) => {
+            player.changePower(powerup.buff);
             powerup.deactivate();
-            player.changePower("pow");
         });
 
         // enemy bullet collides with player bullet
@@ -392,8 +394,9 @@ export class Game extends Scene {
 
         // update the flame size based on remaining barrier chunks
         barr_chunk.parent.update_flame_size();
-
-        bullet.deactivate();
+        console.log(bullet.defaultKey);
+        if(bullet.defaultKey=="player_bullet" && this.player_vars.power=="pierce") bullet.hurt_bullet();
+        else bullet.deactivate();
     }
 
     /**
