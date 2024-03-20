@@ -27,7 +27,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     static timers = {
         base_shoot_cd: 800,
         last_fired: 0,
-        powerup_cd: 1000,
+        powerup_cd: 500,
         powerup_timer: 0
     }
 

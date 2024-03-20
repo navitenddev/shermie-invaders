@@ -38,7 +38,7 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         scene.add.existing(this);
         //this.setScale(.25); 
-        this.health=5;
+        this.health=3;
         this.play('cottonBullet')
             .setSize(PlayerBulletConstDefs.dims.w, PlayerBulletConstDefs.dims.h)
             .setScale(0.75)
@@ -80,7 +80,7 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
     hurt_bullet(){
         this.health--;
         if(this.health==0) {
-            this.health=5
+            this.health=3
             this.deactivate();
         }
     }

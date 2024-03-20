@@ -11,7 +11,7 @@ const PowerupsConstDefs = {
  */
 class Powerups extends Phaser.Physics.Arcade.Sprite {
     // the absolute max bullets a player can ever shoot at once
-    static powerup_capacity = 3;
+    static powerup_capacity = 4;
     /**
      * @constructor
      * @param {Phaser.Scene} scene - The scene in which the bullet exists.
@@ -19,8 +19,8 @@ class Powerups extends Phaser.Physics.Arcade.Sprite {
      * @param {number} y - The y-coord of the bullet's initial position.
      */
     constructor(scene,pow) {
-        if(pow=="spread") super(scene, -1024, -1024, "poweruppic"); //icon for spread powerup
-        else if(pow=="pierce") super(scene, -1024, -1024, "powerup"); //icon for pierce powerup
+        if(pow=="spread") super(scene, -1024, -1024, "spreadshot"); //icon for spread powerup
+        else if(pow=="pierce") super(scene, -1024, -1024, "piercingshot"); //icon for pierce powerup
         else super(scene, -1024, -1024, "powerup"); //default placeholder for others
         this.buff=pow;
         scene.physics.add.existing(this);

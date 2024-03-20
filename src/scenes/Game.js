@@ -341,7 +341,8 @@ export class Game extends Scene {
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.bullets.player, (enemy_bullet, player_bullet) => {
             if (player_bullet.active && enemy_bullet.active) {
                 this.objs.explode_at(player_bullet.x, player_bullet.y);
-                player_bullet.deactivate();
+                if(this.player_vars.power == "pierce")  player_bullet.hurt_bullet();
+                else player_bullet.deactivate();
                 enemy_bullet.deactivate();
             }
         });
