@@ -53,8 +53,8 @@ class AnimationFactory {
         });
 
         this.scene.anims.create({
-            key: "enemy3_idle",
-            frames: this.scene.anims.generateFrameNumbers("enemy3", {
+            key: "enemy1_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy1", {
                 start: 0,
                 end: 0,
             })
@@ -69,8 +69,112 @@ class AnimationFactory {
         });
 
         this.scene.anims.create({
-            key: "enemy1_idle",
-            frames: this.scene.anims.generateFrameNumbers("enemy1", {
+            key: "enemy3_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy3", {
+                start: 0,
+                end: 0,
+            })
+        });
+
+        this.scene.anims.create({
+            key: "enemy4_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy4", {
+                start: 0,
+                end: 0,
+            })
+        });
+
+        this.scene.anims.create({
+            key: "enemy5_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy5", {
+                start: 0,
+                end: 0,
+            })
+        });
+
+        this.scene.anims.create({
+            key: "enemy6_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy6", {
+                start: 0,
+                end: 0,
+            })
+        });
+
+        this.scene.anims.create({
+            key: "enemy7_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy7", {
+                start: 0,
+                end: 0,
+            })
+        });
+
+        this.scene.anims.create({
+            key: "enemy8_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy8", {
+                start: 0,
+                end: 0,
+            })
+        });
+
+        this.scene.anims.create({
+            key: "enemy9_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy9", {
+                start: 0,
+                end: 0,
+            })
+        });
+
+        this.scene.anims.create({
+            key: "enemy10_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy10", {
+                start: 0,
+                end: 0,
+            })
+        });
+
+        this.scene.anims.create({
+            key: "enemy11_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy11", {
+                start: 0,
+                end: 0,
+            })
+        });
+
+        this.scene.anims.create({
+            key: "enemy12_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy12", {
+                start: 0,
+                end: 0,
+            })
+        });
+
+        this.scene.anims.create({
+            key: "enemy13_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy13", {
+                start: 0,
+                end: 0,
+            })
+        });
+
+        this.scene.anims.create({
+            key: "enemy14_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy14", {
+                start: 0,
+                end: 0,
+            })
+        });
+
+        this.scene.anims.create({
+            key: "enemy15_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy15", {
+                start: 0,
+                end: 0,
+            })
+        });
+
+        this.scene.anims.create({
+            key: "enemy16_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy16", {
                 start: 0,
                 end: 0,
             })

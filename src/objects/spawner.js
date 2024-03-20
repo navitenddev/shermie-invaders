@@ -126,7 +126,7 @@ class ObjectSpawner {
 
                 // spawn enemy based on row
                 if (y == 0) {
-                    enemy = this.scene.add.enemy1(
+                    enemy = this.scene.add.enemy3(
                         this.scene,
                         spawn_pos.x,
                         spawn_pos.y,
@@ -140,7 +140,7 @@ class ObjectSpawner {
                         this.level
                     );
                 } else {
-                    enemy = this.scene.add.enemy3(
+                    enemy = this.scene.add.enemy1(
                         this.scene,
                         spawn_pos.x,
                         spawn_pos.y,

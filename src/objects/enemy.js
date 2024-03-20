@@ -116,7 +116,7 @@ class Enemy1 extends BaseGridEnemy {
     scoreValue = 30;
     moneyValue = 25;
     constructor(scene, x, y) {
-        super(scene, x, y, "enemy3_idle", EnemyConstDefs);
+        super(scene, x, y, "enemy1_idle", EnemyConstDefs);
     }
 }
 
@@ -132,8 +132,10 @@ class Enemy3 extends BaseGridEnemy {
     scoreValue = 10;
     moneyValue = 5;
     constructor(scene, x, y) {
-        super(scene, x, y, "enemy1_idle", EnemyConstDefs);
+        super(scene, x, y, "enemy3_idle", EnemyConstDefs);
     }
 }
+
+
 
 export { BaseGridEnemy, Enemy1, Enemy2, Enemy3, EnemyConstDefs };
