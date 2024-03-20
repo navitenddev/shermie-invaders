@@ -44,6 +44,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         // Add shield graphics
         this.shieldVisuals = scene.add.graphics();
         this.updateShield();
+        this.initShieldParticles();
 
         this.setCollideWorldBounds(true)
             .setSize(Player.dims.w - 16, Player.dims.h - 8)
@@ -235,6 +236,21 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.y < this.scene.game.config.height + Player.dims.h &&
             this.x > -Player.dims.w &&
             this.x < this.scene.game.config.width + Player.dims.w);
+    }
+
+    initShieldParticles() {
+        console.log("Initializing shield particles");
+        this.shieldParticles = this.scene.add.particles(0, 0, 'flares', {
+            frame: ['white'],
+            color: [0x00FFFF, 0x0080FF, 0x004080],
+            scale: { start: 0.3, end: 0, ease: 'exp.out' },
+            alpha: { start: 1, end: 0, ease: 'exp.out' },
+            lifespan: 500,
+            speed: { min: 150, max: 350 },
+            gravityY: 1500,
+            blendMode: 'ADD',
+            emitting: false
+        });
     }
 }
 
