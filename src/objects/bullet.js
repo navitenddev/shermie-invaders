@@ -43,7 +43,8 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
             .setSize(PlayerBulletConstDefs.dims.w, PlayerBulletConstDefs.dims.h)
             .setScale(0.75)
             .setVisible(false)
-            .setActive(false);
+            .setActive(false)
+
 
         this.player_vars = scene.registry.get('player_vars');
         this.body.onOverlap = true;
@@ -63,7 +64,6 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         * See:`ObjectSpawner.js`
         */
         if (this.active) {
-            this.move();
             this.check_bounds();
             this.debugBodyColor = this.body?.touching.none ? 0x0099ff : 0xff9900;
         }
@@ -103,13 +103,12 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
      * @param {number} y The y-coord in which the bullet should appear at
      * @param {number} speed The movement speed of the bullet
      */
-    activate(x, y, speed, direction) {
-        this.speedy = speed;
-        if(direction=='left') this.speedx= -0.5;
-        else if(direction=='right') this.speedx= 0.5;
-        this.setPosition(x, y);
-        this.setVisible(true);
-        this.setActive(true);
+    activate(x, y, vx=0, vy=-500) {
+        this.setVelocity(vx, vy)
+            .setPosition(x, y)
+            .setAngle(Math.atan2(vy, vx)* (180 / Math.PI)+90)
+            .setVisible(true)
+            .setActive(true);
     }
 
     /** 

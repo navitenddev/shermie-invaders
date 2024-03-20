@@ -303,7 +303,7 @@ export class Game extends Scene {
             player_bullet.deactivate();
             enemy.die();
             this.scoreManager.addScore(enemy.scoreValue);
-            this
+
         });
 
         let currShield = this.player_stats.shield;
