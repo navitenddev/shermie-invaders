@@ -1,7 +1,7 @@
 import { InitKeyDefs } from "../keyboard_input";
 import { Game } from "../scenes/Game";
 import { PlayerBulletConstDefs as player_bull_defs } from "./bullet";
-
+import { Powerups, PowerupsConstDefs } from "../objects/powerup";
 /**
  * @classdesc
  * @property {Object} An object that contains all constant vars for the player
@@ -27,6 +27,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     static timers = {
         base_shoot_cd: 1000,
         last_fired: 0,
+        powerup_cd: 30000,
+        powerup_timer: 0
     }
 
     #coord_list = [];
@@ -103,6 +105,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.play("shermie_idle");
 
         if (keys.space.isDown || keys.w.isDown) this.shoot(time);
+        if (keys.b.isDown) this.spawn(time);
 
     }
 
@@ -178,6 +181,13 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     /**
+     * @description changes powerup
+    */
+    changePower(pow) {
+        this.player_vars.power=pow;
+    }
+
+    /**
      * @description Handles Player movement
      * @param {boolean} moving_right True if moving right, false if left
      */
@@ -223,6 +233,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.sounds.bank.sfx.reload.play();
             }
         }
+    }
+    //summons a powerup(for testing)
+    spawn(time) {
+        // get the next available bullet, if one is available.
     }
 
     /**

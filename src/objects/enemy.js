@@ -1,6 +1,7 @@
 import { EnemyBulletConstDefs as bull_defs } from "./bullet"
 import { EventDispatcher } from "../utils/event_dispatcher";
 import { fonts } from "../utils/fontStyle";
+import { Powerups, PowerupsConstDefs } from "../objects/powerup";
 
 // Ease Helper: https://labs.phaser.io/view.html?src=src/tweens/eases/ease%20mixer.js
 
@@ -100,6 +101,13 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
 
 
     die() {
+        let power = this.scene.objs.powers.getFirstDead(false, 0, 0, "powerup");
+        if (power !== null) {
+            let fall_speed = PowerupsConstDefs.speed.y;
+
+            power.activate(this.x, this.y, -fall_speed);
+        }
+        
         this.destroy();
     }
     // return true if this enemy is overlapping an x boundary

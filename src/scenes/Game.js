@@ -38,9 +38,9 @@ export class Game extends Scene {
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
+        this.powerup_stats = this.registry.get('powerup_stats');
         this.objs.init_all();
         this.sounds = this.registry.get('sound_bank');
-
         this.keys = InitKeyDefs(this);
 
         // Score and high score
@@ -320,6 +320,12 @@ export class Game extends Scene {
                 else
                     this.start_dialogue('shermie_hurt', false);
             }
+        });
+
+        // player catches powerup
+        this.physics.add.overlap(this.objs.powers, this.objs.player, (player, powerup) => {
+            powerup.deactivate();
+            player.changePower("pow");
         });
 
         // enemy bullet collides with player bullet

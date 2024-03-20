@@ -103,6 +103,11 @@ export class Preloader extends Scene {
             frameHeight: 32,
         });
 
+        this.load.spritesheet("powerup", "placeholder.png", {
+            frameWidth: 80,
+            frameHeight: 80,
+        });
+
         this.load.spritesheet("usb", "characters/USB.png", {
             frameWidth: 32,
             frameHeight: 32,
@@ -168,7 +173,10 @@ export class Preloader extends Scene {
         //  can define global animations here, so we can use them in other
         //  scenes.
         this.anim_factory = new AnimationFactory(this);
-
+        this.registry.set('powerup_stats',{
+            power_bank: ['spread','pierce'],// list of powerups
+            active_powerups: 0, // active # of powerups on field
+        })
         this.registry.set('level', 1);
         this.registry.set('score', 0);
         this.registry.set('sound_bank', new SoundBank(this));
@@ -189,6 +197,7 @@ export class Preloader extends Scene {
             wallet: 0, // holds shermie bux
             active_bullets: 0, // the number of bullets that the player currently has on screen
             score: 0, // player score
+            power:"None", //powerup
         });
         this.sounds.bank.music.start.play();
         //  Move to the MainMenu. You could also swap this for a Scene
