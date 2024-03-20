@@ -247,11 +247,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                     let bulletr = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
                     if (bulletr !== null) {
                         this.player_vars.active_bullets++;
-                        bulletr.activate(this.x, this.y, 50 ,);
+                        bulletr.activate(this.x, this.y, 50 ,bullet_speed*100);
                         let bulletl = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
                         if (bulletl !== null) {
                             this.player_vars.active_bullets++;
-                            bulletl.activate(this.x, this.y, -50,);                            
+                            bulletl.activate(this.x, this.y, -50,bullet_speed*100);                            
                         }
                     }
                 }

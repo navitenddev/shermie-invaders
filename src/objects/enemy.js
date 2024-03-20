@@ -102,7 +102,8 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
 
     die() {
         if(Phaser.Math.Between(0,5)==0){
-            let power = this.scene.objs.powers.getFirstNth(Phaser.Math.Between(0,this.scene.objs.powers.countActive(false)), false, false, 0, 0, "powerup");
+            let temp=Phaser.Math.Between(0,this.scene.objs.powers.countActive(false));
+            let power = this.scene.objs.powers.getFirstNth(temp, false, false, 0, 0, "powerup");
             if (power !== null) {
                 let fall_speed = PowerupsConstDefs.speed.y;
                 power.activate(this.x, this.y, -fall_speed);
