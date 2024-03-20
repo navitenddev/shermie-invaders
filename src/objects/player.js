@@ -1,3 +1,4 @@
+import { InitKeyDefs } from "../keyboard_input";
 import { Game } from "../scenes/Game";
 import { PlayerBulletConstDefs as player_bull_defs } from "./bullet";
 
@@ -24,10 +25,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     static timers = {
-        base_shoot_cd: 400,
+        base_shoot_cd: 1000,
         last_fired: 0,
     }
 
+    #coord_list = [];
+    #mouse_pos;
     constructor(scene, x, y) {
         super(scene, x, y, "Player");
 
@@ -37,6 +40,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         scene.physics.add.existing(this);
         scene.add.existing(this);
+
+        // Add shield graphics
+        this.shieldVisuals = scene.add.graphics();
+        this.updateShield();
+        this.initShieldParticles();
+        this.updateHitbox();
 
         this.setCollideWorldBounds(true)
             .setSize(Player.dims.w - 16, Player.dims.h - 8)
@@ -52,15 +61,20 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             y: -4,
             rot: 0.2, // rotation velocity
         };
+
+        this.keys = InitKeyDefs(scene);
     }
+
 
     preUpdate(time, delta) {
         super.preUpdate(time, delta);
     }
 
     update(time, delta, keys) {
+        let x = this.scene.game.input.mousePointer.x.toFixed(1);
+        let y = this.scene.game.input.mousePointer.y.toFixed(1);
+        this.#mouse_pos = { x: x, y: y };
         // respawn the player
-
         if (this.is_dead) {
             this.x += this.dead_vel.x;
             this.y += this.dead_vel.y;
@@ -73,6 +87,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             }
             return;
         }
+        ;
+    
+        this.updateShield();
+        this.updateHitbox();
 
         if (keys.d.isDown || keys.right.isDown) {
             this.move(true);
@@ -80,6 +98,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.move(false);
         }
         else if (
+            this.anims &&
             this.anims.isPlaying &&
             this.anims.currentAnim.key !== "shermie_idle" &&
             this.anims.currentAnim.key !== "shermie_shoot"
@@ -96,7 +115,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * Marks the player as dead so that phaser knows to do start the death animation.
      */
     die() {
-        if (this.player_vars.lives > 0 && !this.isInvincible) {
+        if (this.player_vars.lives > 0 && !this.isInvincible && this.stats.shield <= 1) {
             this.player_vars.lives -= 1;
             this.sounds.bank.sfx.hurt.play();
             this.is_dead = true;
@@ -106,6 +125,21 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             let ang = Phaser.Math.Between(3, 10);
             this.dead_vel.x =
                 (this.x < this.scene.game.config.width / 2) ? ang : -ang;
+        }
+        else if (this.stats.shield > 1 && !this.isInvincible) {
+            this.stats.shield -= 1;
+            this.sounds.bank.sfx.hurt.play();
+            this.shieldVisuals.clear();
+        }
+    }
+
+    updateShield() {
+        // console.log(`Shields: ${this.stats.shield}`);
+        this.shieldVisuals.clear();
+        if (this.stats.shield > 1) {
+            // Create shield circle around the player
+            this.shieldVisuals.lineStyle(2, 0x00FFFF, 1);
+            this.shieldVisuals.strokeCircle(this.x, this.y, 40); // Adjust the radius as needed           
         }
     }
 
@@ -151,7 +185,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @param {boolean} moving_right True if moving right, false if left
      */
     move(moving_right) {
-        if (this.anims.isPlaying && this.anims.currentAnim.key === "shermie_idle")
+        if (this.anims &&
+            this.anims.isPlaying &&
+            this.anims.currentAnim.key === "shermie_idle")
             this.play("shermie_walk");
 
         if (moving_right) {
@@ -169,7 +205,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      */
     shoot(time) {
         let timer = Player.timers;
-        if (this.player_vars.active_bullets < this.stats.max_bullets &&
+        let bullet_cap = 10;
+        if (this.player_vars.active_bullets < bullet_cap &&
             time > timer.last_fired) {
             // get the next available bullet, if one is available.
             let bullet = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
@@ -179,8 +216,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 let bullet_speed = player_bull_defs.speed.y + (this.stats.bullet_speed - 1);
 
                 bullet.activate(this.x, this.y, bullet_speed);
-                this.anims.play("shermie_shoot");
-                this.anims.nextAnim = "shermie_idle";
+                if (this.anims) {
+                    this.anims.play("shermie_shoot");
+                    this.anims.nextAnim = "shermie_idle";
+                }
                 this.sounds.bank.sfx.shoot.play();
             }
             else {
@@ -199,6 +238,39 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.y < this.scene.game.config.height + Player.dims.h &&
             this.x > -Player.dims.w &&
             this.x < this.scene.game.config.width + Player.dims.w);
+    }
+
+    /**
+     * @description Initializes the shield particles
+     * @returns {void}
+     */
+    initShieldParticles() {
+        console.log("Initializing shield particles");
+        this.shieldParticles = this.scene.add.particles(0, 0, 'flares', {
+            frame: ['white'],
+            color: [0x00FFFF, 0x0080FF, 0x004080],
+            scale: { start: 0.3, end: 0, ease: 'exp.out' },
+            alpha: { start: 1, end: 0, ease: 'exp.out' },
+            lifespan: 500,
+            speed: { min: 150, max: 350 },
+            gravityY: 1500,
+            blendMode: 'ADD',
+            emitting: false
+        });
+    }
+
+    /**
+     * @description Updates the player's hitbox size based on the current shield status
+     * @returns {void}
+     */
+    updateHitbox() {
+        if (this.stats.shield > 1) {
+            this.setCircle(40);
+            this.setOffset(Player.body_offset.x - 16, Player.body_offset.y - 36);
+        } else {
+            this.setSize(Player.dims.w - 16, Player.dims.h - 8);
+            this.setOffset(Player.body_offset.x, Player.body_offset.y);
+        }
     }
 }
 

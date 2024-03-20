@@ -30,15 +30,37 @@
     "lines": ["Yo what's goodie", "Okay cool beans", "buh bye dood"]
   },
   {
-    "key": "shermie_hurt",
-    "lines": ["ouch! that hurt!"]
-  },
-  {
     "key": "win1",
     "lines": ["AYOOOOOO", "SHERMIE IN DA HOUSE"]
   },
   {
     "key": "lose1",
     "lines": ["We may have lost the battle...", "but not the war..."]
+  },
+  {
+    "key": "shermie_hurt",
+    "lines": ["ouch! that hurt!"]
+  },
+  {
+    "key": "shermie_shieldgone",
+    "lines": ["Ah! Blasted right through the shield!"]
+  },
+  {
+    "key": "shermie_start",
+    "lines": [
+      "Player, we're being invaded by malware!",
+      "Help me take them out so we don't lose our jobs!"
+    ]
+  },
+  {
+    "key": "shermie_dead",
+    "lines": ["NoooooOOOOoOOOoOOOO!!!"]
+  },
+  {
+    "key": "sandbox_tips",
+    "lines": [
+      "Welcome to Sandbox Mode!",
+      "Click the buttons on the top right to spawn enemies!"
+    ]
   }
 ]

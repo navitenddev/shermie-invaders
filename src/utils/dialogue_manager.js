@@ -25,23 +25,28 @@ class DialogueManager extends Phaser.GameObjects.Container {
     line_index;
     char_index;
 
+    auto_emit_flag = false;
+
     delay_timer = 0;
-    constructor(scene, data = dialogue_data, x = 0, y = 490) {
+    constructor(scene, data = dialogue_data, x = 700, y = 490) {
         super(scene, x, y);
         scene.add.existing(this);
         this.border_w = 25;
 
+        let w = 325;
+        let h = (scene.game.config.height / 5);
+
         this.text_data = data;
         this.bg = scene.add.graphics()
-            .fillStyle(0xb2b2b2, 1)
-            .fillRoundedRect(10, 10, scene.game.config.width - this.border_w, scene.game.config.height / 3, 10);
+            .fillStyle(0xb2b2b2, 0.8)
+            .fillRoundedRect(10, 10, w - this.border_w, h, 10);
 
-        this.w = scene.game.config.width - this.border_w;
-        this.h = scene.game.config.height / 3;
+        this.w = w - this.border_w;
+        this.h = h;
         this.start = { x: x, y: y, w: this.w, h: this.h };
 
         this.font = {
-            fontFamily: 'Arial Black', fontSize: 60, color: '#ffffff',
+            fontFamily: 'Arial Black', fontSize: 16, color: '#ffffff',
             stroke: '#000000', strokeThickness: 4,
             align: 'left',
             wordWrap: { width: this.w - this.border_w * 2, useAdvancedWrap: true }
@@ -49,8 +54,12 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
         this.text = scene.add.text(25, 25, "", this.font);
         this.add([this.bg, this.text]);
-        this.emitter.on('dialogue_start', (key) => {
+        this.emitter.once('dialogue_start', (key) => {
             this.#activate(key)
+        })
+
+        this.emitter.once('force_dialogue_stop', () => {
+            this.#deactivate();
         })
 
         this.setPosition(42069, 42069);
@@ -77,7 +86,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
             this.#deactivate();
             return;
         }
-        console.log(`activated dialogue with key: ${key}`)
+        console.log(`started dialogue: "${key}"`)
         // console.log(this.lines)
         this.line_index = 0;
         this.char_index = 0;
@@ -85,10 +94,9 @@ class DialogueManager extends Phaser.GameObjects.Container {
     }
 
     #deactivate() {
-        console.log("Deactivating dialogue")
+        // console.log("Deactivating dialogue")
         this.setPosition(42069, 42069);
         // this.setPosition(400, 400);
-        console.log(this);
         this.is_active = false;
         this.emitter.emit('dialogue_stop', [])
         this.emitter.off('dialogue_start');
@@ -100,7 +108,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
             this.#deactivate();
             return;
         }
-        console.log(`Loaded line ${this.line_index}`)
+        // console.log(`Loaded line ${this.line_index}`)
         this.line = this.lines[this.line_index++];
         this.char_index = 0;
     }
@@ -108,9 +116,18 @@ class DialogueManager extends Phaser.GameObjects.Container {
     #add_next_char() {
         this.text.text += this.line[this.char_index++];
         if (this.char_index === this.line.length) {
-            console.log("Line is done, waiting on player to click again")
+            // console.log("Line is done, waiting on player to click again")
+            this.auto_emit_flag = true;
+
+            const cont_dialogue_in = 1.5; // # continue dialogue in # of seconds
+            this.scene.time.delayedCall(cont_dialogue_in * 1000, () => {
+                if (this.auto_emit_flag)
+                    this.scene.input.emit('pointerdown');
+            }, this.scene.scene)
+
             this.scene.input.once('pointerdown', () => {
                 this.text.setText(""); // 4 hours to fix this FML
+                this.auto_emit_flag = false;
                 this.#load_next_line();
             });
         }

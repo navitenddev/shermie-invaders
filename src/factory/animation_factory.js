@@ -116,6 +116,59 @@ class AnimationFactory {
             }),
             frameRate: 16,
         });
+
+        this.scene.anims.create({
+            key: "reaper_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy_reaper", {
+                start: 15, end: 19,
+            }),
+            frameRate: 8,
+            repeat: -1,
+        });
+
+        this.scene.anims.create({
+            key: "reaper_shoot",
+            frames: this.scene.anims.generateFrameNumbers("enemy_reaper", {
+                start: 5, end: 9,
+            }),
+            frameRate: 8,
+        });
+
+        this.scene.anims.create({
+            key: "reaper_move",
+            frames: this.scene.anims.generateFrameNumbers("enemy_reaper", {
+                start: 10, end: 13,
+            }),
+            frameRate: 8,
+            repeat: -1,
+        });
+
+        this.scene.anims.create({
+            key: "lupa_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy_lupa", {
+                start: 0, end: 5,
+            }),
+            frameRate: 8,
+            repeat: -1,
+        });
+
+        this.scene.anims.create({
+            key: "pupa_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy_pupa", {
+                start: 0, end: 5,
+            }),
+            frameRate: 8,
+            repeat: -1,
+        });
+
+        this.scene.anims.create({
+            key: "zupa_idle",
+            frames: this.scene.anims.generateFrameNumbers("enemy_zupa", {
+                start: 0, end: 5,
+            }),
+            frameRate: 8,
+            repeat: -1,
+        });
     }
 }
 

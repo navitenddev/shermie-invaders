@@ -23,7 +23,7 @@ export class Game extends Scene {
     constructor() {
         super('Game');
     }
-    
+
     create() {
 
         // fade in from black
@@ -38,12 +38,16 @@ export class Game extends Scene {
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
+        this.objs.init_all();
         this.sounds = this.registry.get('sound_bank');
 
         this.keys = InitKeyDefs(this);
 
         // Score and high score
         this.scoreManager = new ScoreManager(this);
+
+        // Event to kill all enemies
+        this.emitter.once('kill_all_enemies', this.killAllEnemies, this);
 
         // Note: this.level is pass by value!
         this.level = this.registry.get('level');
@@ -53,10 +57,20 @@ export class Game extends Scene {
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
 
+        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
+            () => {
+                if (this.level === 1)
+                    this.start_dialogue('shermie_start', true)
+                this.keys.p.on('down', () => this.pause());
+                this.keys.esc.on('down', () => this.pause());
+            }
+        );
+
         // The timers will be useful for tweaking the difficulty
         BaseGridEnemy.timers = {
             last_fired: 0,
-            shoot_cd: 1000 - (this.level * 10),
+            // shoot_cd will not go below 100 frames per shot
+            shoot_cd: Math.max(100, 1000 - (this.level * 10)),
             last_moved: 0,
             move_cd: 0, // NOTE: This is set in ai_grid_enemies()
         };
@@ -70,19 +84,43 @@ export class Game extends Scene {
             repeat: this.player_vars.lives - 2
         });
 
+        // Player shields text and sprites
+        this.shieldsText = this.add.text(970, this.sys.game.config.height - 48, '0', fonts.medium);
+        this.shieldsSprites = this.add.group({
+            key: 'shields',
+            repeat: this.player_stats.shield - 1
+        });
+
+        let secs = Phaser.Math.Between(15, 60);
+        console.log(`Spawning enemy USB in ${secs}s`)
+        this.time.delayedCall(secs * 1000, this.objs.spawn_usb_enemy, [], this.scene);
+
         this.sounds.bank.music.bg.play();
 
         this.init_collision_events();
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
-        this.keys.p.on('down', () => this.pause());
-        this.keys.esc.on('down', () => this.pause());
     }
 
     pause() {
         this.scene.pause('Game');
-        this.scene.launch('PauseMenu');
+        this.scene.launch('PauseMenu', { prev_scene: 'Game' });
+    }
+
+    killAllEnemies() {
+        // Loop through all enemies and destroy them
+        this.objs.enemies.grid.children.each(enemy => {
+            this.objs.explode_at(enemy.x, enemy.y);
+            enemy.die();
+            this.scoreManager.addMoney(enemy.moneyValue);
+            this.scoreManager.addScore(enemy.scoreValue);
+        });
+
+        this.objs.enemies.special.children.each(enemy => {
+            enemy.die();
+            this.scoreManager.addScore(enemy.scoreValue);
+        });
     }
 
     /**
@@ -98,13 +136,27 @@ export class Game extends Scene {
         }
     }
 
-    update(time, delta) {
-        this.objs.player.update(time, delta, this.keys)
+    /**
+ * @description Updates the shield sprites to reflect the current number of shields
+ * @param {number} shields The number of shields the player has
+*/
+    updateShieldSprites() {
+        this.shieldsSprites.clear(true, true); // Clear sprites
+        for (let i = 1; i < this.player_stats.shield; i++) {
+            // coordinates for the shield sprites
+            let shieldConsts = { x: 990 - i * 48, y: this.sys.game.config.height - 32 };
+            this.shieldsSprites.create(shieldConsts.x, shieldConsts.y, 'shields', 0)
+        }
+    }
 
+    update(time, delta) {
+        if (this.objs.player)
+            this.objs.player.update(time, delta, this.keys)
         // Update lives text and sprites
         this.livesText.setText(this.player_vars.lives);
         this.updateLivesSprites();
-
+        this.shieldsText.setText(this.player_stats.shield - 1);
+        this.updateShieldSprites();
         this.ai_grid_enemies(time);
         this.check_gameover();
     }
@@ -206,10 +258,12 @@ export class Game extends Scene {
             this.player_vars.active_bullets = 0;
             this.registry.set({ 'level': this.level + 1 });
             this.level_transition_flag = true;
+            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.goto_scene("Player Win");
         } else if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
 
+            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.goto_scene("Player Lose");
         }
     }
@@ -238,6 +292,7 @@ export class Game extends Scene {
             player_bullet.deactivate();
             enemy.die();
             this.scoreManager.addScore(enemy.scoreValue);
+            this.scoreManager.addMoney(enemy.moneyValue);
         });
 
         // player bullet hits special enemy
@@ -246,14 +301,31 @@ export class Game extends Scene {
             player_bullet.deactivate();
             enemy.die();
             this.scoreManager.addScore(enemy.scoreValue);
+            this
         });
 
+        let currShield = this.player_stats.shield;
         // enemy bullet hits player
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player, (player, enemy_bullet) => {
             if (!player.is_dead) {
-                this.objs.explode_at(player.x, player.y);
                 enemy_bullet.deactivate();
-                player.die();
+                if (player.stats.shield > 1) {
+                    player.shieldParticles.explode(10, player.x, this.sys.game.config.height - 135);
+                    // console.log('Shield particle emitter explode called');
+                    player.stats.shield--;
+                    if (player.stats.shield < currShield) {
+                        this.start_dialogue('shermie_shieldgone', false);
+                        currShield = player.stats.shield;
+                    }
+                player.updateHitbox();
+                } else {
+                    this.objs.explode_at(player.x, player.y);
+                    player.die();
+                    if (this.player_vars.lives === 0)
+                        this.start_dialogue('shermie_dead', false);
+                    else
+                        this.start_dialogue('shermie_hurt', false);
+                }
             }
         });
 
@@ -268,12 +340,16 @@ export class Game extends Scene {
 
         // when grid enemy hits barrier, it eats it
         this.physics.add.overlap(this.objs.enemies.grid, this.objs.barrier_chunks, (enemy, barr_chunk) => {
+            console.log(barr_chunk);
+            barr_chunk.parent.update_flame_size();
             barr_chunk.destroy(); // OM NOM NOM
         });
 
         // when special enemy hits barrier, it eats it
         this.physics.add.overlap(this.objs.enemies.special, this.objs.barrier_chunks, (enemy, barr_chunk) => {
-            barr_chunk.destroy(); // OM NOM NOM
+            barr_chunk.parent.update_flame_size();
+            console.log(barr_chunk);
+            // barr_chunk.destroy(); // OM NOM NOM
         });
 
         // player bullet collides with barrier
@@ -291,11 +367,11 @@ export class Game extends Scene {
     explode_at_bullet_hit(bullet, barr_chunk) {
         const baseExplosionRadius = 18;
         const maxDamage = 100;
-    
+
         // randomn explosion radius
         const randomRadiusFactor = Phaser.Math.FloatBetween(1.0, 1.6);
         const explosionRadius = baseExplosionRadius * randomRadiusFactor;
-    
+
         // loop through all barrier chunks to apply damage
         this.objs.barrier_chunks.children.each(chunk => {
             const distance = Phaser.Math.Distance.Between(bullet.x, bullet.y, chunk.x, chunk.y);
@@ -305,7 +381,7 @@ export class Game extends Scene {
                 let damage = maxDamage * (1 - distance / explosionRadius);
                 let randomDamageFactor = Phaser.Math.FloatBetween(0.1, 1.2);
                 damage *= randomDamageFactor;
-    
+
                 chunk.applyDamage(damage);
 
                 // destruction particles
@@ -314,10 +390,21 @@ export class Game extends Scene {
                 }
             }
         });
-    
+
         // update the flame size based on remaining barrier chunks
         barr_chunk.parent.update_flame_size();
-    
+
         bullet.deactivate();
-    }    
+    }
+
+    /**
+     * @param {*} key Start the dialogue sequence with this key
+     * @param {*} blocking If true, will stop all actions in the current scene. Until dialogue complete
+     */
+    start_dialogue(key, blocking = true) {
+        this.emitter.emit('force_dialogue_stop'); // never have more than one dialogue manager at once
+        this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Game' });
+        if (blocking)
+            this.scene.pause();
+    }
 }

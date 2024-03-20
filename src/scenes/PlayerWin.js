@@ -1,6 +1,8 @@
 import { Scene } from 'phaser';
+import { EventDispatcher } from '../utils/event_dispatcher';
 
 export class PlayerWin extends Scene {
+    emitter = EventDispatcher.getInstance();
     constructor() {
         super('Player Win');
     }
@@ -13,12 +15,14 @@ export class PlayerWin extends Scene {
             this.start_dialogue('win1')
         });
 
+        this.emitter.removeAllListeners(); // clean up event listeners
+
         this.add.image(512, 384, 'background').setAlpha(0.5);
         this.sounds = this.registry.get('sound_bank');
 
         this.sounds.bank.sfx.win.play();
 
-        this.add.text(512, 384, 'You win, click anywhere on the screen to continue to the next level.', {
+        this.add.text(512, 384, 'Welcome to Shermie Depot! Time to buy some goodies!', {
             fontFamily: 'Arial Black', fontSize: 64, color: '#ffffff',
             stroke: '#000000', strokeThickness: 8,
             align: 'center',
@@ -26,8 +30,7 @@ export class PlayerWin extends Scene {
         }).setOrigin(0.5);
 
         this.input.once('pointerdown', () => {
-            // this.scene.start('MainMenu');
-            this.scene.start("Game")
+            this.scene.start("Store")
         });
     }
 

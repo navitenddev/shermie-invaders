@@ -6,7 +6,7 @@ const PlayerBulletConstDefs = {
 };
 
 const EnemyBulletConstDefs = {
-    max_bullets: 5, // max bullets that the enemies can have on the screen at once
+    max_bullets: 50, // max bullets that the enemies can have on the screen at once
     dims: { w: 8, h: 16 },
     speed: { x: 0, y: +3.5 },
     offset: { x: 0, y: 0 },
@@ -79,7 +79,11 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
      * @description Checks if the bullet is offscreen. If so, then the bullet is deactivated.
      */
     check_bounds() {
-        if (this.y < -16) this.deactivate();
+        if (this.y < -16 ||
+            this.y > this.scene.game.config.height ||
+            this.x < 0 ||
+            this.x > this.scene.game.config.width)
+            this.deactivate();
     }
 
     /**
@@ -143,7 +147,7 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(time, delta) {
-        if (this.active) this.move();
+        // if (this.active) this.move();
         this.check_bounds();
         this.debugBodyColor = this.body?.touching.none ? 0x0099ff : 0xff9900;
     }
@@ -160,8 +164,10 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
      * @description deactivates the bullet if it's out of bounds
      */
     check_bounds() {
-        if (this.y < -EnemyBulletConstDefs.dims.w ||
-            this.y > this.scene.game.config.height + EnemyBulletConstDefs.dims.h)
+        if (this.y < -16 ||
+            this.y > this.scene.game.config.height ||
+            this.x < 0 ||
+            this.x > this.scene.game.config.width)
             this.deactivate();
     }
 
@@ -170,11 +176,15 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
      * @description Activate the bullet at (x,y)
      * @param {number} x The x-coord in which the bullet should appear at
      * @param {number} y The y-coord in which the bullet should appear at
+     * @param {number} vx The velocity in the x-direction
+     * @param {number} vy The velocity in the y-direction
      */
-    activate(x, y) {
-        this.setPosition(x, y);
-        this.setVisible(true);
-        this.setActive(true);
+    activate(x, y, vx = 0, vy = 600) {
+        this.setVelocity(vx, vy)
+            .setPosition(x, y)
+            .setAngle(Math.atan2(vy, vx) * (180 / Math.PI))
+            .setVisible(true)
+            .setActive(true);
     }
 
     /** 
@@ -182,9 +192,10 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
      * @description Deactivate the bullet and move it offscreen
      */
     deactivate() {
-        this.setPosition(-1024, -1024);
-        this.setVisible(false);
-        this.setActive(false);
+        this.setPosition(-1024, -1024)
+            .setVelocity(0, 0)
+            .setVisible(false)
+            .setActive(false);
     }
 
 }
