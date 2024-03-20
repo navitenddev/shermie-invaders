@@ -88,8 +88,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             return;
         }
         ;
-        // Update shield visuals
+    
         this.updateShield();
+        this.updateHitbox();
 
         if (keys.d.isDown || keys.right.isDown) {
             this.move(true);
