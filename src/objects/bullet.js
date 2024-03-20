@@ -1,6 +1,6 @@
 const PlayerBulletConstDefs = {
     dims: { w: 14, h: 32 },
-    speed: { x: 0, y: 10 }, // base speed (before upgrade calculations)
+    speed: { x: 0, y: 7 }, // base speed (before upgrade calculations)
     offset: { x: 0, y: 0 },
     rotation_speed: 0.1,
 };
