@@ -1,5 +1,5 @@
 import { Player } from "../objects/player";
-import { Enemy1, Enemy2, Enemy3 } from "../objects/enemy";
+import { GridEnemy } from "../objects/enemy_grid";
 import { EnemyReaper } from "../objects/enemy_reaper";
 import { EnemyLupa } from "../objects/enemy_lupa";
 import { EnemyPupa } from "../objects/enemy_pupa";
@@ -26,12 +26,13 @@ Phaser.GameObjects.GameObjectFactory.register(
 );
 
 Phaser.GameObjects.GameObjectFactory.register(
-    "enemy1",
-    function (scene, x, y) {
-        return new Enemy1(scene, x, y);
+    "grid_enemy",
+    function (scene, x, y, anim_key, score_val = 0, money_val = 0) {
+        return new GridEnemy(scene, x, y, anim_key, score_val, money_val);
     }
 );
 
+/*
 Phaser.GameObjects.GameObjectFactory.register(
     "enemy2",
     function (scene, x, y) {
@@ -178,6 +179,7 @@ Phaser.GameObjects.GameObjectFactory.register(
         return new Enemy22(scene, x, y);
     }
 );
+*/
 
 Phaser.GameObjects.GameObjectFactory.register(
     "enemy_usb",

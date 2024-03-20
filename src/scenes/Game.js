@@ -4,7 +4,7 @@ import { InitKeyDefs } from '../keyboard_input';
 import { fonts } from '../utils/fontStyle.js';
 import { Barrier } from '../objects/barrier.js';
 import ScoreManager from '../utils/ScoreManager.js';
-import { BaseGridEnemy } from '../objects/enemy.js';
+import { GridEnemy } from '../objects/enemy_grid';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 
 // The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
@@ -67,7 +67,7 @@ export class Game extends Scene {
         );
 
         // The timers will be useful for tweaking the difficulty
-        BaseGridEnemy.timers = {
+        GridEnemy.timers = {
             last_fired: 0,
             // shoot_cd will not go below 100 frames per shot
             shoot_cd: Math.max(100, 1000 - (this.level * 10)),
@@ -168,7 +168,7 @@ export class Game extends Scene {
     ai_grid_enemies(time) {
         let enemies = this.objs.enemies.grid.children.entries;
 
-        BaseGridEnemy.timers.move_cd = (enemies.length * 10) - (this.level * 2);
+        GridEnemy.timers.move_cd = (enemies.length * 10) - (this.level * 2);
         // Move all enemies down if we hit the x boundaries
         for (let enemy of enemies) {
             if (!enemy.is_x_inbounds()) {
@@ -182,8 +182,8 @@ export class Game extends Scene {
         }
 
         // Move left or right if it's time to do so
-        if (time > BaseGridEnemy.timers.last_moved) {
-            BaseGridEnemy.timers.last_moved = time + BaseGridEnemy.timers.move_cd;
+        if (time > GridEnemy.timers.last_moved) {
+            GridEnemy.timers.last_moved = time + GridEnemy.timers.move_cd;
             for (let enemy of enemies)
                 enemy.move_x();
         }
@@ -196,12 +196,12 @@ export class Game extends Scene {
         // handle enemy shooting ai
         let player = this.objs.player;
 
-        if (time > BaseGridEnemy.timers.last_fired) {
+        if (time > GridEnemy.timers.last_fired) {
             // Roll the dice
             let shoot_mode = Phaser.Math.Between(0, 1);
 
             if (enemies && enemies.length) {
-                BaseGridEnemy.timers.last_fired = time + BaseGridEnemy.timers.shoot_cd;
+                GridEnemy.timers.last_fired = time + GridEnemy.timers.shoot_cd;
                 switch (shoot_mode) {
                     case 0: // closest enemy shoots at player (Euclidean distance)
                         {
@@ -317,7 +317,7 @@ export class Game extends Scene {
                         this.start_dialogue('shermie_shieldgone', false);
                         currShield = player.stats.shield;
                     }
-                player.updateHitbox();
+                    player.updateHitbox();
                 } else {
                     this.objs.explode_at(player.x, player.y);
                     player.die();

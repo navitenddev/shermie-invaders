@@ -2,47 +2,40 @@ import { EnemyBulletConstDefs as bull_defs } from "./bullet"
 import { EventDispatcher } from "../utils/event_dispatcher";
 import { fonts } from "../utils/fontStyle";
 
-// Ease Helper: https://labs.phaser.io/view.html?src=src/tweens/eases/ease%20mixer.js
-
-// Grid gap and spawn_start are not scaled factors
-const EnemyConstDefs = {
-    dims: { w: 60, h: 60 },
-    scale: { w: .66, h: .66 },
-    spawn_start: { x: 80, y: 140 },
-    grid_gap: { x: 28, y: 12 },
-};
-
 /**
  * @classdesc The base class for the main enemies that form the grid.
  * @property TODO: Add details about the properties for this object
  */
-class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
+class GridEnemy extends Phaser.Physics.Arcade.Sprite {
+    static const_defs = {
+        dims: { w: 60, h: 60 },
+        scale: { w: .66, h: .66 },
+        spawn_start: { x: 80, y: 140 },
+        grid_gap: { x: 28, y: 12 },
+    };
     static move_gap = { x: 8, y: 10 };
-    static timers = {
-        last_fired: 0,
-        shoot_cd: 1000,
-        last_moved: 0,
-        move_cd: 0,
-    }
-    moneyValue; // defined in subclass
-    scoreValue; // defined in subclass
+    static timers; // defined in Game.js
+    scoreValue; // defined in args
+    moneyValue; // defined in args
     /**
      * @param {Phaser.Scene} scene The scene to spawn the enemy in
      * @param {number} x x-coord of spawn pos
      * @param {number} y y-coord of spawn pos
      * @param {string} anim_key The animation key to play for this enemy
-     * @param {*} const_defs A collection of constant vars
+     * @param {number} score_val Amount of score rewarded for kill
+     * @param {number} money_val Amount of money rewarded for kill
      */
-    constructor(scene, x, y, anim_key, const_defs) {
+    constructor(scene, x, y, anim_key = "placeholder", score_val = 0, money_val = 0) {
         super(scene, x, y);
-        this.const_defs = const_defs;
         this.anim_key = anim_key;
+        this.scoreValue = score_val;
+        this.moneyValue = money_val;
 
         scene.physics.add.existing(this);
         scene.add.existing(this);
         this.setPosition(x, y)
-            .setSize(this.const_defs.dims.w, this.const_defs.dims.h)
-            .setScale(this.const_defs.scale.w, this.const_defs.scale.h)
+            .setSize(GridEnemy.const_defs.dims.w, GridEnemy.const_defs.dims.h)
+            .setScale(GridEnemy.const_defs.scale.w, GridEnemy.const_defs.scale.h)
             .setOffset(0, 0)
             .play(this.anim_key);
 
@@ -52,11 +45,11 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
         // when enemy1 reaches x_bound, it changes row and direction
 
         this.x_bound = {
-            min: this.const_defs.dims.w / 2,
-            max: scene.game.config.width - this.const_defs.dims.w / 2
+            min: GridEnemy.const_defs.dims.w / 2,
+            max: scene.game.config.width - GridEnemy.const_defs.dims.w / 2
         };
         // when enemy reaches y_bound, it's gameover
-        this.y_bound = scene.game.config.height - this.const_defs.dims.h;
+        this.y_bound = scene.game.config.height - GridEnemy.const_defs.dims.h;
 
         this.x_shoot_bound = 200; // distance from the player.x where the enemy will shoot
 
@@ -85,7 +78,7 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
      */
 
     move_x(time) {
-        this.x += (BaseGridEnemy.move_gap.x * this.move_gap_scalar * this.move_direction);
+        this.x += (GridEnemy.move_gap.x * this.move_gap_scalar * this.move_direction);
     }
 
     /**
@@ -94,8 +87,8 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
      */
     move_down() {
         this.move_direction *= -1; // flip move direction
-        this.y += BaseGridEnemy.move_gap.y;
-        this.x += (BaseGridEnemy.move_gap.x * this.move_direction); // move back in bounds
+        this.y += GridEnemy.move_gap.y;
+        this.x += (GridEnemy.move_gap.x * this.move_direction); // move back in bounds
     }
 
 
@@ -108,34 +101,8 @@ class BaseGridEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     is_y_inbounds() {
-        return (this.y + this.const_defs.dims.h < this.y_bound);
+        return (this.y + GridEnemy.const_defs.dims.h < this.y_bound);
     }
 }
 
-class Enemy1 extends BaseGridEnemy {
-    scoreValue = 30;
-    moneyValue = 25;
-    constructor(scene, x, y) {
-        super(scene, x, y, "enemy1_idle", EnemyConstDefs);
-    }
-}
-
-class Enemy2 extends BaseGridEnemy {
-    scoreValue = 20;
-    moneyValue = 10;
-    constructor(scene, x, y) {
-        super(scene, x, y, "enemy2_idle", EnemyConstDefs);
-    }
-}
-
-class Enemy3 extends BaseGridEnemy {
-    scoreValue = 10;
-    moneyValue = 5;
-    constructor(scene, x, y) {
-        super(scene, x, y, "enemy3_idle", EnemyConstDefs);
-    }
-}
-
-
-
-export { BaseGridEnemy, Enemy1, Enemy2, Enemy3, EnemyConstDefs };
+export { GridEnemy };
