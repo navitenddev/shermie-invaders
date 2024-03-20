@@ -8,6 +8,7 @@ import { EnemyUSB } from "../objects/enemy_usb";
 import { PlayerBullet, EnemyBullet, PlayerBulletConstDefs, EnemyBulletConstDefs } from "../objects/bullet";
 import { Explosion } from "../objects/explosions"
 import { BarrierChunk } from "../objects/barrier";
+import { Powerups, PowerupsConstDefs } from "../objects/powerup";
 import "../factory/object_factory";
 
 /* All factory object defintions are responsible for handling object spawning. 
@@ -106,5 +107,14 @@ Phaser.GameObjects.GameObjectFactory.register(
     "player_bullet",
     function (scene) {
         return new PlayerBullet(scene);
+    }
+);
+
+Phaser.GameObjects.GameObjectFactory.register(
+    "powerup",
+    function (scene) {
+        let temp=this.scene.powerup_stats.power_bank[Phaser.Math.Between(0, this.scene.powerup_stats.power_bank.length-1 )];
+        console.log(temp);
+        return new Powerups(scene,temp);
     }
 );

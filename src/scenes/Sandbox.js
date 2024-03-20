@@ -88,11 +88,6 @@ export class Sandbox extends Scene {
             url: "assets/paths/pupa.json",
             dataKey: "SPLINE1",
         });
-        this.load.json({
-            key: "PUPA_ILLUMINATI",
-            url: "assets/paths/pupa.json",
-            dataKey: "ILLUMINATI",
-        });
     }
 
     create() {
@@ -112,7 +107,6 @@ export class Sandbox extends Scene {
             SPLINE: this.cache.json.get('PUPA_SPLINE'),
             ILLUMINATI: this.cache.json.get('PUPA_ILLUMINATI'),
         }
-
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
 
@@ -124,6 +118,7 @@ export class Sandbox extends Scene {
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
+        this.powerup_stats = this.registry.get('powerup_stats');
         this.objs.init_all_without_grid();
         this.sounds = this.registry.get('sound_bank');
 
@@ -254,7 +249,8 @@ export class Sandbox extends Scene {
         // player bullet hits grid enemy
         this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies.grid, (player_bullet, enemy) => {
             this.objs.explode_at(enemy.x, enemy.y);
-            player_bullet.deactivate();
+            if(this.player_vars.power == "pierce")  player_bullet.hurt_bullet();
+            else player_bullet.deactivate();
             enemy.die();
             this.scoreManager.addScore(enemy.scoreValue);
             this.scoreManager.addMoney(enemy.moneyValue);
@@ -266,21 +262,37 @@ export class Sandbox extends Scene {
             player_bullet.deactivate();
             enemy.die();
             this.scoreManager.addScore(enemy.scoreValue);
-            this.scoreManager.addMoney(enemy.moneyValue);
         });
 
+        let currShield = this.player_stats.shield;
         // enemy bullet hits player
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player, (player, enemy_bullet) => {
             if (!player.is_dead) {
-                this.objs.explode_at(player.x, player.y);
                 enemy_bullet.deactivate();
-                player.die();
-                this.player_vars.lives = 3; // never run out of lives
-                if (this.player_vars.lives === 0)
-                    this.start_dialogue('shermie_dead', false);
-                else
-                    this.start_dialogue('shermie_hurt', false);
+                if (player.stats.shield > 1) {
+                    player.shieldParticles.explode(10, player.x, this.sys.game.config.height - 135);
+                    // console.log('Shield particle emitter explode called');
+                    player.stats.shield--;
+                    if (player.stats.shield < currShield) {
+                        this.start_dialogue('shermie_shieldgone', false);
+                        currShield = player.stats.shield;
+                    }
+                player.updateHitbox();
+                } else {
+                    this.objs.explode_at(player.x, player.y);
+                    player.die();
+                    if (this.player_vars.lives === 0)
+                        this.start_dialogue('shermie_dead', false);
+                    else
+                        this.start_dialogue('shermie_hurt', false);
+                }
             }
+        });
+
+        // player catches powerup
+        this.physics.add.overlap(this.objs.powers, this.objs.player, (player, powerup) => {
+            player.changePower(powerup.buff);
+            powerup.deactivate();
         });
 
         // enemy bullet collides with player bullet
@@ -294,6 +306,7 @@ export class Sandbox extends Scene {
 
         // when grid enemy hits barrier, it eats it
         this.physics.add.overlap(this.objs.enemies.grid, this.objs.barrier_chunks, (enemy, barr_chunk) => {
+            console.log(barr_chunk);
             barr_chunk.parent.update_flame_size();
             barr_chunk.destroy(); // OM NOM NOM
         });
@@ -301,7 +314,8 @@ export class Sandbox extends Scene {
         // when special enemy hits barrier, it eats it
         this.physics.add.overlap(this.objs.enemies.special, this.objs.barrier_chunks, (enemy, barr_chunk) => {
             barr_chunk.parent.update_flame_size();
-            barr_chunk.destroy(); // OM NOM NOM
+            console.log(barr_chunk);
+            // barr_chunk.destroy(); // OM NOM NOM
         });
 
         // player bullet collides with barrier
@@ -312,7 +326,7 @@ export class Sandbox extends Scene {
 
         // enemy bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            this.explode_at_bullet_hit(bullet, barr_chunk, 25);
+            this.explode_at_bullet_hit(bullet, barr_chunk);
         });
     }
 
@@ -344,9 +358,8 @@ export class Sandbox extends Scene {
         });
 
         // update the flame size based on remaining barrier chunks
-        barr_chunk.parent.update_flame_size();
-
-        bullet.deactivate();
+        if(bullet.defaultKey=="player_bullet" && this.player_vars.power=="pierce") bullet.hurt_bullet();
+        else bullet.deactivate();
     }
 
     #add_coord() {
