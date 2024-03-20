@@ -137,10 +137,11 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
                     this.path = new Phaser.Curves.Path(this.scene.PUPA_PATHS.ILLUMINATI);
                     console.log("ILLUMINATI PATH")
                     console.log(this.path)
-
+                    console.log(this.scene.PUPA_PATHS)
                     // choose random point in illuminati path to start
                     this.illum_count = 0; // when we finish visiting all 3 points in triangle, stop
                     this.illum_idx = Phaser.Math.Between(0, 2);
+                    console.log(`illum_idx: ${this.illum_idx}`)
                     this.illum_t = this.scene.PUPA_PATHS.ILLUMINATI.t_vals[this.illum_idx];
                     console.log(`illum_t: ${this.illum_t}`);
 

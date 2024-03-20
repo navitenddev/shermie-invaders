@@ -88,6 +88,11 @@ export class Sandbox extends Scene {
             url: "assets/paths/pupa.json",
             dataKey: "SPLINE1",
         });
+        this.load.json({
+            key: "PUPA_ILLUMINATI",
+            url: "assets/paths/pupa.json",
+            dataKey: "ILLUMINATI",
+        });
     }
 
     create() {
@@ -107,6 +112,7 @@ export class Sandbox extends Scene {
             SPLINE: this.cache.json.get('PUPA_SPLINE'),
             ILLUMINATI: this.cache.json.get('PUPA_ILLUMINATI'),
         }
+
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
 

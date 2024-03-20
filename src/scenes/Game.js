@@ -310,17 +310,24 @@ export class Game extends Scene {
         // enemy bullet hits player
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player, (player, enemy_bullet) => {
             if (!player.is_dead) {
-                this.objs.explode_at(player.x, player.y);
                 enemy_bullet.deactivate();
-                player.die();
-                if (this.player_vars.lives === 0)
-                    this.start_dialogue('shermie_dead', false);
-                else if (this.player_stats.shield < currShield) {
-                    this.start_dialogue('shermie_shieldgone', false);
-                    currShield--;
+                if (player.stats.shield > 1) {
+                    player.shieldParticles.explode(10, player.x, this.sys.game.config.height - 135);
+                    // console.log('Shield particle emitter explode called');
+                    player.stats.shield--;
+                    if (player.stats.shield < currShield) {
+                        this.start_dialogue('shermie_shieldgone', false);
+                        currShield = player.stats.shield;
+                    }
+                player.updateHitbox();
+                } else {
+                    this.objs.explode_at(player.x, player.y);
+                    player.die();
+                    if (this.player_vars.lives === 0)
+                        this.start_dialogue('shermie_dead', false);
+                    else
+                        this.start_dialogue('shermie_hurt', false);
                 }
-                else
-                    this.start_dialogue('shermie_hurt', false);
             }
         });
 

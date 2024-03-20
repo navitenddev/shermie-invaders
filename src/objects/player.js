@@ -46,6 +46,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         // Add shield graphics
         this.shieldVisuals = scene.add.graphics();
         this.updateShield();
+        this.initShieldParticles();
+        this.updateHitbox();
 
         this.setCollideWorldBounds(true)
             .setSize(Player.dims.w - 16, Player.dims.h - 8)
@@ -88,8 +90,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             return;
         }
         ;
-        // Update shield visuals
+    
         this.updateShield();
+        this.updateHitbox();
+
         if (keys.d.isDown || keys.right.isDown) {
             this.move(true);
         } else if (keys.a.isDown || keys.left.isDown) {
@@ -268,6 +272,39 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.y < this.scene.game.config.height + Player.dims.h &&
             this.x > -Player.dims.w &&
             this.x < this.scene.game.config.width + Player.dims.w);
+    }
+
+    /**
+     * @description Initializes the shield particles
+     * @returns {void}
+     */
+    initShieldParticles() {
+        console.log("Initializing shield particles");
+        this.shieldParticles = this.scene.add.particles(0, 0, 'flares', {
+            frame: ['white'],
+            color: [0x00FFFF, 0x0080FF, 0x004080],
+            scale: { start: 0.3, end: 0, ease: 'exp.out' },
+            alpha: { start: 1, end: 0, ease: 'exp.out' },
+            lifespan: 500,
+            speed: { min: 150, max: 350 },
+            gravityY: 1500,
+            blendMode: 'ADD',
+            emitting: false
+        });
+    }
+
+    /**
+     * @description Updates the player's hitbox size based on the current shield status
+     * @returns {void}
+     */
+    updateHitbox() {
+        if (this.stats.shield > 1) {
+            this.setCircle(40);
+            this.setOffset(Player.body_offset.x - 16, Player.body_offset.y - 36);
+        } else {
+            this.setSize(Player.dims.w - 16, Player.dims.h - 8);
+            this.setOffset(Player.body_offset.x, Player.body_offset.y);
+        }
     }
 }
 
