@@ -60,7 +60,7 @@ class ObjectSpawner {
         // Note: since every animation has _idle appended, I am omitting that 
         // here and handling that below to make typing less tedious
         this.grid_anims = [
-            ["enemy1", "enemy2", "enemy3"],
+            ["enemy3", "enemy2", "enemy1"],
             ["enemy4", "enemy5", "enemy6"],
             ["enemy7", "enemy8", "enemy9"],
             ["enemy10", "enemy11", "enemy12"],
@@ -69,7 +69,7 @@ class ObjectSpawner {
             ["enemy19", "enemy20", "enemy21"],
         ]
         // anim keys for this level
-        const ANIM_KEYS_LVL = this.grid_anims[this.level % this.grid_anims.length];
+        const ANIM_KEYS_LVL = this.grid_anims[this.level - 1 % this.grid_anims.length];
         this.anim_keys = {
             top: `${ANIM_KEYS_LVL[0]}_idle`,
             mid: `${ANIM_KEYS_LVL[1]}_idle`,
