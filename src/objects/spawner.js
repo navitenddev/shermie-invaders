@@ -139,9 +139,6 @@ class ObjectSpawner {
     /**
      * @private
      * @description initializes the grid of the enemies. Should only be called at the start of the level.  
-     * @param {string} anim_top anim_key to use for top enemies
-     * @param {string} anim_mid anim_key to use for mid enemies
-     * @param {string} anim_bot anim_key to use for bottom enemies
      * 
      */
     init_enemy_grid() {
