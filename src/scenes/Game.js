@@ -363,7 +363,7 @@ export class Game extends Scene {
 
         // player bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            this.explode_at_bullet_hit(bullet, barr_chunk);
+            this.explode_at_bullet_hit(bullet, barr_chunk, 25);
 
         });
 
@@ -373,8 +373,7 @@ export class Game extends Scene {
         });
     }
 
-    explode_at_bullet_hit(bullet, barr_chunk) {
-        const baseExplosionRadius = 18;
+    explode_at_bullet_hit(bullet, barr_chunk, baseExplosionRadius = 18) {
         const maxDamage = 100;
 
         // randomn explosion radius
@@ -402,9 +401,7 @@ export class Game extends Scene {
 
         // update the flame size based on remaining barrier chunks
         barr_chunk.parent.update_flame_size();
-        console.log(bullet.defaultKey);
-        if(bullet.defaultKey=="player_bullet" && this.player_vars.power=="pierce") bullet.hurt_bullet();
-        else bullet.deactivate();
+        bullet.deactivate();
     }
 
     /**

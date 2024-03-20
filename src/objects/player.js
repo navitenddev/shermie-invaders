@@ -238,7 +238,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.player_vars.active_bullets++;
                 let bullet_speed = player_bull_defs.speed.y + (this.stats.bullet_speed - 1);
 
-                bullet.activate(this.x, this.y, 0,);
+                bullet.activate(this.x, this.y, 0, bullet_speed*100);
                 if (this.anims) {
                     this.anims.play("shermie_shoot");
                     this.anims.nextAnim = "shermie_idle";

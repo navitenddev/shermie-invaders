@@ -103,10 +103,10 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
      * @param {number} y The y-coord in which the bullet should appear at
      * @param {number} speed The movement speed of the bullet
      */
-    activate(x, y, vx=0, vy=-500) {
-        this.setVelocity(vx, vy)
+    activate(x, y, vx=0, vy=500) {
+        this.setVelocity(vx, -vy)
             .setPosition(x, y)
-            .setAngle(Math.atan2(vy, vx)* (180 / Math.PI)+90)
+            .setAngle(Math.atan2(-vy, vx)* (180 / Math.PI)+90)
             .setVisible(true)
             .setActive(true);
     }
