@@ -61,7 +61,6 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         * See:`ObjectSpawner.js`
         */
         if (this.active) {
-            this.move();
             this.check_bounds();
             this.debugBodyColor = this.body?.touching.none ? 0x0099ff : 0xff9900;
         }
@@ -93,11 +92,12 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
      * @param {number} y The y-coord in which the bullet should appear at
      * @param {number} speed The movement speed of the bullet
      */
-    activate(x, y, speed) {
-        this.speed = speed;
-        this.setPosition(x, y);
-        this.setVisible(true);
-        this.setActive(true);
+    activate(x, y, vx = 0, vy = 3.5) {
+        this.setVelocity(vx, -vy*100)
+            .setPosition(x, y)
+            .setAngle(Math.atan2(-vy*100, vx) * (180 / Math.PI)+90)
+            .setVisible(true)
+            .setActive(true);
     }
 
     /** 

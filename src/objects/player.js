@@ -20,8 +20,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     static dims = { w: 64, h: 48 };
     static body_offset = { x: 16, y: 36 };
     static base_stats = {
-        move_speed: 3,
-        bullet_speed: 3,
+        move_speed: 6,
+        bullet_speed: 4,
     }
 
     static timers = {
@@ -71,8 +71,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(time, delta, keys) {
-        let x = this.scene.game.input.mousePointer.x.toFixed(1);
-        let y = this.scene.game.input.mousePointer.y.toFixed(1);
+        let x, y;
+        if (this.scene) {
+            x = this.scene.game.input.mousePointer.x.toFixed(1);
+            y = this.scene.game.input.mousePointer.y.toFixed(1);
+        }
         this.#mouse_pos = { x: x, y: y };
         // respawn the player
         if (this.is_dead) {
@@ -215,7 +218,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.player_vars.active_bullets++;
                 let bullet_speed = player_bull_defs.speed.y + (this.stats.bullet_speed - 1);
 
-                bullet.activate(this.x, this.y, bullet_speed);
+                bullet.activate(this.x, this.y, 0,bullet_speed);
                 if (this.anims) {
                     this.anims.play("shermie_shoot");
                     this.anims.nextAnim = "shermie_idle";
