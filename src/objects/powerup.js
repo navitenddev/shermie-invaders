@@ -99,6 +99,7 @@ class Powerups extends Phaser.Physics.Arcade.Sprite {
      * @description Deactivate the bullet and move it offscreen
      */
     deactivate() {
+        console.log(this.buff);
         if (this.active) this.scene.powerup_stats.active_powerups--;
         this.setPosition(-1024, -1024);
         this.setVisible(false);
