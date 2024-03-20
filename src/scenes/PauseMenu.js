@@ -22,11 +22,14 @@ export class PauseMenu extends Scene {
 
         this.keys = InitKeyDefs(this);
 
-        this.resumeButton = this.add.text(boxX + 20, boxY + 20, 'Resume', fonts.medium)
+        this.resumeButton = this.add.text(0, 0, 'Resume', fonts.medium)
+            .setOrigin(0.5)
             .setInteractive()
-            .on('pointerdown', () => { this.sounds.bank.sfx.click.play(); this.unpause(); });
+            .on('pointerdown', () => { this.sounds.bank.sfx.click.play(); this.unpause(); })
+            .setPosition(boxX + boxWidth / 2, boxY + 60);
 
-        this.quitButton = this.add.text(boxX + 20, boxY + 70, 'Quit', fonts.medium)
+        this.quitButton = this.add.text(0, 0, 'Quit', fonts.medium)
+            .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
                 this.cameras.main.fadeOut(200, 0, 0, 0);
@@ -39,22 +42,26 @@ export class PauseMenu extends Scene {
                     this.scene.stop(this.prev_scene);
                     this.scene.start('MainMenu');
                 });
-            });
+            })
+            .setPosition(boxX + boxWidth / 2, boxY + 120);
 
         if (this.registry.get('debug_mode') === true) {
-            this.cheatsButton = this.add.text(boxX + 20, boxY + 120, 'Cheats', fonts.medium)
+            this.cheatsButton = this.add.text(0, 0, 'Cheats', fonts.medium)
+                .setOrigin(0.5)
                 .setInteractive()
                 .on('pointerdown', () => {
                     this.sounds.bank.sfx.click.play();
                     this.scene.stop('PauseMenu');
-                    this.scene.start('StatsMenu')
+                    this.scene.start('StatsMenu');
                 })
+                .setPosition(boxX + boxWidth / 2, boxY + 180);
         }
 
         this.keys.p.on('down', () => this.unpause());
         this.keys.esc.on('down', () => this.unpause());
         this.keys.m.on('down', () => this.sounds.toggle_mute());
     }
+
     unpause() {
         this.scene.stop('PauseMenu');
         this.scene.resume(this.prev_scene);
