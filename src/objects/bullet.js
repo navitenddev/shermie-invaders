@@ -1,6 +1,6 @@
 const PlayerBulletConstDefs = {
     dims: { w: 14, h: 32 },
-    speed: { x: 0, y: 3.5 }, // base speed (before upgrade calculations)
+    speed: { x: 0, y: 10 }, // base speed (before upgrade calculations)
     offset: { x: 0, y: 0 },
     rotation_speed: 0.1,
 };
@@ -179,7 +179,7 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
      * @param {number} vx The velocity in the x-direction
      * @param {number} vy The velocity in the y-direction
      */
-    activate(x, y, vx = 0, vy = 600) {
+    activate(x, y, vx = 0, vy = 300) {
         this.setVelocity(vx, vy)
             .setPosition(x, y)
             .setAngle(Math.atan2(vy, vx) * (180 / Math.PI))

@@ -51,7 +51,7 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
         // when enemy reaches y_bound, it's gameover
         this.y_bound = scene.game.config.height - GridEnemy.const_defs.dims.h;
 
-        this.x_shoot_bound = 200; // distance from the player.x where the enemy will shoot
+        this.x_shoot_bound = 250; // distance from the player.x where the enemy will shoot
 
         this.move_gap_scalar = 1; // changes depending on enemies remaining
     }
