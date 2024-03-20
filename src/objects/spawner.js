@@ -69,7 +69,7 @@ class ObjectSpawner {
             ["enemy19", "enemy20", "enemy21"],
         ]
         // anim keys for this level
-        const ANIM_KEYS_LVL = this.grid_anims[this.level - 1 % this.grid_anims.length];
+        const ANIM_KEYS_LVL = this.grid_anims[(this.level - 1) % this.grid_anims.length];
         this.anim_keys = {
             top: `${ANIM_KEYS_LVL[0]}_idle`,
             mid: `${ANIM_KEYS_LVL[1]}_idle`,
