@@ -1,4 +1,4 @@
-import { EnemyConstDefs as enemy_defs } from "./enemy";
+import { GridEnemy as grid_enemy } from "./enemy_grid";
 import { PlayerBullet, EnemyBulletConstDefs as enemy_bull_defs } from "./bullet";
 import { Powerups, PowerupsConstDefs as power_defs } from "./powerup";
 import { Explosion, ExplosionConstDefs as expl_defs } from "./explosions";
@@ -10,6 +10,8 @@ const BARRIER_COLOR = {
     fill: 0xda4723,
     border: 0xffffff,
 }
+
+const enemy_defs = grid_enemy.const_defs;
 
 /**
  * @classdesc An object that encapsulates all Phaser Groups. It initializes and spawns them to the game world when it is constructed.
@@ -54,15 +56,51 @@ class ObjectSpawner {
             runChildUpdate: true,
         });
 
-        this.level = this.scene.scene.get('Preloader').level;
+        this.level = scene.registry.get('level');
+
+        // For Josh: PLEASE MAKE THIS NEATER
+
+        // grid_anims should be 3xN (3 for top mid bot)
+        // Define the different grid enemy animation keys here. 
+        // Note: since every animation has _idle appended, I am omitting that 
+        // here and handling that below to make typing less tedious
+        this.grid_anims = [
+            ["enemy3", "enemy2", "enemy1"],
+            ["enemy4", "enemy5", "enemy6"],
+            ["enemy7", "enemy8", "enemy9"],
+            ["enemy10", "enemy11", "enemy12"],
+            ["enemy13", "enemy14", "enemy15"],
+            ["enemy16", "enemy17", "enemy18"],
+            ["enemy19", "enemy20", "enemy21"],
+        ]
+        // anim keys for this level
+        const ANIM_KEYS_LVL = this.grid_anims[(this.level - 1) % this.grid_anims.length];
+        this.anim_keys = {
+            top: `${ANIM_KEYS_LVL[0]}_idle`,
+            mid: `${ANIM_KEYS_LVL[1]}_idle`,
+            bot: `${ANIM_KEYS_LVL[2]}_idle`,
+        }
+
+        this.score_vals = {
+            top: 30,
+            mid: 20,
+            bot: 10,
+        }
+
+        this.money_vals = {
+            top: 25,
+            mid: 10,
+            bot: 5,
+        }
     }
 
     /**
      * @private
      * @description initializes all level objects
+     * @param with_grid Should the scene be initialized with the grid enemies?
      */
 
-    init_all() {
+    init_all(with_grid = true) {
         this.init_barriers();
         this.init_player();
         this.init_player_bullets();
@@ -114,7 +152,9 @@ class ObjectSpawner {
 
     /**
      * @private
-     * @description initializes the grid of the enemies. Should only be called at the start of the level.  */
+     * @description initializes the grid of the enemies. Should only be called at the start of the level.  
+     * 
+     */
     init_enemy_grid() {
         let gc = ObjectSpawner.GRID_COUNT;
         for (let y = 0; y < gc.row; ++y) {
@@ -133,25 +173,31 @@ class ObjectSpawner {
 
                 // spawn enemy based on row
                 if (y == 0) {
-                    enemy = this.scene.add.enemy_l1_top(
+                    enemy = this.scene.add.grid_enemy(
                         this.scene,
                         spawn_pos.x,
                         spawn_pos.y,
-                        this.level
+                        this.anim_keys.top,
+                        this.score_vals.top,
+                        this.money_vals.top,
                     );
                 } else if (y == 1 || y == 2) {
-                    enemy = this.scene.add.enemy_l1_middle(
+                    enemy = this.scene.add.grid_enemy(
                         this.scene,
                         spawn_pos.x,
                         spawn_pos.y,
-                        this.level
+                        this.anim_keys.mid,
+                        this.score_vals.mid,
+                        this.money_vals.mid,
                     );
                 } else {
-                    enemy = this.scene.add.enemy_l1_bottom(
+                    enemy = this.scene.add.grid_enemy(
                         this.scene,
                         spawn_pos.x,
                         spawn_pos.y,
-                        this.level
+                        this.anim_keys.bot,
+                        this.score_vals.bot,
+                        this.money_vals.bot,
                     );
                 }
                 this.enemies.grid.add(enemy);

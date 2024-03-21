@@ -4,7 +4,7 @@ import { InitKeyDefs } from '../keyboard_input';
 import { fonts } from '../utils/fontStyle.js';
 import { Barrier } from '../objects/barrier.js';
 import ScoreManager from '../utils/ScoreManager.js';
-import { BaseGridEnemy } from '../objects/enemy.js';
+import { GridEnemy } from '../objects/enemy_grid';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 
 /**
@@ -42,15 +42,6 @@ class IconButton extends Phaser.GameObjects.Container {
 
         this.add([this.rect, this.image]);
     }
-};
-
-const ZUPA_PATHS = {
-    // Triangle
-    // [179.6, 388.8, 497.2, 92.0, 831.1, 439.3]
-    "START": new Phaser.Curves.Path(180, 389)
-        .lineTo(497, 92)
-        .lineTo(831, 440)
-        .closePath(),
 };
 
 /**
@@ -99,8 +90,6 @@ export class Sandbox extends Scene {
         bg.setScale(bg.scaleX, bg.scaleX);
         bg.y = -250;
 
-        ZUPA_PATHS.START.toJSON();
-
         this.PUPA_PATHS = {
             LEMNISCATE: this.cache.json.get('PUPA_LEMNISCATE'),
             TRIANGLE: this.cache.json.get('PUPA_TRIANGLE'),
@@ -136,7 +125,7 @@ export class Sandbox extends Scene {
         this.player_stats = this.player_vars.stats;
 
         // The timers will be useful for tweaking the difficulty
-        BaseGridEnemy.timers = {
+        GridEnemy.timers = {
             last_fired: 0,
             shoot_cd: 1000 - (this.level * 10),
             last_moved: 0,

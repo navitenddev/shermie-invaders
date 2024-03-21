@@ -21,7 +21,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     static body_offset = { x: 16, y: 36 };
     static base_stats = {
         move_speed: 3,
-        bullet_speed: 3,
+        bullet_speed: 10,
     }
 
     static timers = {
