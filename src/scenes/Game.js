@@ -369,11 +369,11 @@ export class Game extends Scene {
 
         // enemy bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            this.explode_at_bullet_hit(bullet, barr_chunk);
+            this.explode_at_bullet_hit(bullet, barr_chunk, 25);
         });
     }
 
-    explode_at_bullet_hit(bullet, barr_chunk, baseExplosionRadius = 18) {
+    explode_at_bullet_hit(bullet, barr_chunk, baseExplosionRadius = 20) {
         const maxDamage = 100;
 
         // randomn explosion radius

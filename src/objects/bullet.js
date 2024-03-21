@@ -7,7 +7,7 @@ const PlayerBulletConstDefs = {
 
 const EnemyBulletConstDefs = {
     max_bullets: 50, // max bullets that the enemies can have on the screen at once
-    dims: { w: 8, h: 16 },
+    dims: { w: 4, h: 24 },
     speed: { x: 0, y: +3.5 },
     offset: { x: 0, y: 0 },
 };

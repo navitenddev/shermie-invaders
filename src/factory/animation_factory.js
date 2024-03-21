@@ -45,11 +45,9 @@ class AnimationFactory {
         this.scene.anims.create({
             key: "bullet",
             frames: this.scene.anims.generateFrameNumbers("bullet", {
-                start: 1,
-                end: 4,
+                start: 0,
+                end:0,
             }),
-            frameRate: 8,
-            repeat: -1,
         });
 
         for (let i = 1; i <= 22; i++) {
