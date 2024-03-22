@@ -94,15 +94,27 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
 
 
     die() {
-        if(Phaser.Math.Between(0,29)==0){
+        let ran=Phaser.Math.Between(0,29)
+        if(ran==0){
             let temp=Phaser.Math.Between(0,this.scene.objs.powers.countActive(false));
             let power = this.scene.objs.powers.getFirstNth(temp, false, false, 0, 0, "powerup");
+            while(power==null && this.scene.objs.powers.countActive(false)>0){
+                if(temp>this.scene.objs.powers.countActive(false)){
+                    temp=0;
+                }
+                temp++;
+                power = this.scene.objs.powers.getFirstNth(temp, false, false, 0, 0, "powerup");
+            }//while there is at least one inactive powerup available, finds a random inactive powerup to take
             if (power !== null) {
                 let fall_speed = PowerupsConstDefs.speed.y;
                 power.activate(this.x, this.y, -fall_speed);
                 this.scene.powerup_stats.active_powerups++;
             }
+            else{
+                console.log("hey")
+            }
         }
+        
         this.destroy();
     }
     // return true if this enemy is overlapping an x boundary
