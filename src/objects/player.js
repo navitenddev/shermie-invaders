@@ -2,6 +2,26 @@ import { InitKeyDefs } from "../keyboard_input";
 import { Game } from "../scenes/Game";
 import { PlayerBulletConstDefs as player_bull_defs } from "./bullet";
 import { Powerups, PowerupsConstDefs } from "../objects/powerup";
+
+// Index of stat array is player stat level - 1
+const STAT_MAP = {
+    // maps to pixels traversed per update
+    bullet_speed: [
+        4, 6, 8.5, 10, 12.5,
+        13.5, 14.5, 15, 16.5, 17
+    ],
+    // maps to player velocity
+    move_speed: [
+        200, 300, 400, 500, 600,
+    ],
+    // maps to cooldown time between shots
+    fire_rate: [
+        800, 700, 600, 500, 400,
+        350, 300, 250, 200, 150
+    ],
+    // shield does not need to map to anything 
+}
+
 /**
  * @classdesc
  * @property {Object} An object that contains all constant vars for the player
@@ -19,13 +39,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      */
     static dims = { w: 64, h: 48 };
     static body_offset = { x: 16, y: 36 };
-    static base_stats = {
-        move_speed: 3,
-        bullet_speed: 10,
-    }
 
     static timers = {
-        base_shoot_cd: 800,
         last_fired: 0,
         powerup_cd: 500,
         powerup_timer: 0
@@ -101,8 +116,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.move(true);
         } else if (keys.a.isDown || keys.left.isDown) {
             this.move(false);
-        }
-        else if (
+        } else if (
             this.anims &&
             this.anims.isPlaying &&
             this.anims.currentAnim.key !== "shermie_idle" &&
@@ -110,10 +124,17 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         )
             this.play("shermie_idle");
 
-        if (keys.space.isDown || keys.w.isDown) this.shoot(time);
-        if(this.player_vars.power!="" && Player.timers.powerup_timer>0) {
-            Player.timers.powerup_timer--;}
-        if(this.player_vars.power!="" && Player.timers.powerup_timer<=0) this.changePower("");
+        if (keys.space.isDown || keys.w.isDown)
+            this.shoot(time);
+
+        if (!keys.d.isDown && !keys.right.isDown &&
+            !keys.a.isDown && !keys.left.isDown)
+            this.setVelocity(0);
+
+        if (this.player_vars.power != "" && Player.timers.powerup_timer > 0) {
+            Player.timers.powerup_timer--;
+        }
+        if (this.player_vars.power != "" && Player.timers.powerup_timer <= 0) this.changePower("");
     }
 
     /**
@@ -192,13 +213,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @description changes powerup
     */
     changePower(pow) {
-        this.player_vars.power=pow;
-        if(pow==""){ 
+        this.player_vars.power = pow;
+        if (pow == "") {
             console.log("end");
-            Player.timers.powerup_timer=0;}
+            Player.timers.powerup_timer = 0;
+        }
         else {
             console.log("start");
-            Player.timers.powerup_timer=Player.timers.powerup_cd;
+            Player.timers.powerup_timer = Player.timers.powerup_cd;
         }
     }
 
@@ -214,10 +236,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         if (moving_right) {
             if (this.flipX) this.flipX = false;
-            this.x += Player.base_stats.move_speed + (this.stats.move_speed - 1) / 2;
+            this.setVelocityX(STAT_MAP.move_speed[this.stats.move_speed - 1]);
         } else {
             if (!this.flipX) this.flipX = true;
-            this.x -= Player.base_stats.move_speed + (this.stats.move_speed - 1) / 2;
+            this.setVelocityX(-STAT_MAP.move_speed[this.stats.move_speed - 1]);
         }
     }
 
@@ -228,30 +250,30 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     shoot(time) {
         let timer = Player.timers;
         let bullet_cap = 10;
-        if (this.player_vars.power=="spread") bullet_cap*=3;
+        if (this.player_vars.power == "spread") bullet_cap *= 3;
         if (this.player_vars.active_bullets < bullet_cap &&
             time > timer.last_fired) {
             // get the next available bullet, if one is available.
             let bullet = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
             if (bullet !== null) {
-                timer.last_fired = time + timer.base_shoot_cd - (this.stats.fire_rate * 50);
+                timer.last_fired = time + STAT_MAP.fire_rate[this.stats.fire_rate - 1];
                 this.player_vars.active_bullets++;
-                let bullet_speed = player_bull_defs.speed.y + (this.stats.bullet_speed - 1);
+                let bullet_speed = STAT_MAP.bullet_speed[this.stats.bullet_speed - 1];
 
-                bullet.activate(this.x, this.y, 0, bullet_speed*100);
+                bullet.activate(this.x, this.y, 0, bullet_speed * 100);
                 if (this.anims) {
                     this.anims.play("shermie_shoot");
                     this.anims.nextAnim = "shermie_idle";
                 }
-                if (this.player_vars.power=="spread"){
+                if (this.player_vars.power == "spread") {
                     let bulletr = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
                     if (bulletr !== null) {
                         this.player_vars.active_bullets++;
-                        bulletr.activate(this.x, this.y, 50 ,bullet_speed*100);
+                        bulletr.activate(this.x, this.y, 50, bullet_speed * 100);
                         let bulletl = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
                         if (bulletl !== null) {
                             this.player_vars.active_bullets++;
-                            bulletl.activate(this.x, this.y, -50,bullet_speed*100);                            
+                            bulletl.activate(this.x, this.y, -50, bullet_speed * 100);
                         }
                     }
                 }

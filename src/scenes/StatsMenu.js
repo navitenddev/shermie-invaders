@@ -2,8 +2,9 @@ import { Scene } from 'phaser';
 import { InitKeyDefs } from '../keyboard_input';
 import { fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
+import { SHOP_PRICES } from './Store.js';
 
-const STAT_MIN = 1, STAT_MAX = 10;
+const STAT_MIN = 1;
 /**
  * @description A UI component which has a - + around some text to change a numerical value
  * Note: If we end up creating components that we wish to reuse, we should
@@ -36,7 +37,10 @@ class MenuSpinner {
         scene.add.text(x + w, y, '+', fonts.small)
             .setInteractive()
             .on('pointerdown', function () {
-                obj[key] = Math.min(obj[key] + 1, STAT_MAX);
+                if (key === 'lives') // LOL
+                    obj[key] = Math.min(obj[key] + 1, 10);
+                else
+                    obj[key] = Math.min(obj[key] + 1, SHOP_PRICES[key].length);
                 this.setStyle({ color: '#ff0000' });
             })
             .on('pointerup', function () {
