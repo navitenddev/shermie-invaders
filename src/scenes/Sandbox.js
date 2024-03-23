@@ -350,8 +350,7 @@ export class Sandbox extends Scene {
         // when special enemy hits barrier, it eats it
         this.physics.add.overlap(this.objs.enemies.special, this.objs.barrier_chunks, (enemy, barr_chunk) => {
             barr_chunk.parent.update_flame_size();
-            console.log(barr_chunk);
-            // barr_chunk.destroy(); // OM NOM NOM
+            barr_chunk.destroy(); // OM NOM NOM
         });
 
 
