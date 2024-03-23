@@ -1,6 +1,7 @@
-import { GridEnemy as grid_enemy } from "./enemy_grid";
+import { GridEnemy } from "./enemy_grid";
 import { PlayerBullet, EnemyBulletConstDefs as enemy_bull_defs } from "./bullet";
 import { Powerups, PowerupsConstDefs as power_defs } from "./powerup";
+import { EventDispatcher } from "../utils/event_dispatcher";
 import { Explosion, ExplosionConstDefs as expl_defs } from "./explosions";
 import { Player } from "./player";
 import { Barrier } from "./barrier";
@@ -11,7 +12,7 @@ const BARRIER_COLOR = {
     border: 0xffffff,
 }
 
-const enemy_defs = grid_enemy.const_defs;
+const enemy_defs = GridEnemy.const_defs;
 
 /**
  * @classdesc An object that encapsulates all Phaser Groups. It initializes and spawns them to the game world when it is constructed.
@@ -23,6 +24,7 @@ const enemy_defs = grid_enemy.const_defs;
  */
 
 class ObjectSpawner {
+    emitter = EventDispatcher.getInstance();
     static GRID_COUNT = { row: 5, col: 12 }; // The # rows/cols of enemies
 
     constructor(scene) {
@@ -35,7 +37,7 @@ class ObjectSpawner {
                 runChildUpdate: true,
             }),
         }
-        
+
         this.powers = this.scene.physics.add.group({
             runChildUpdate: true,
         });
@@ -56,8 +58,6 @@ class ObjectSpawner {
             runChildUpdate: true,
         });
 
-        this.level = scene.registry.get('level');
-
         // For Josh: PLEASE MAKE THIS NEATER
 
         // grid_anims should be 3xN (3 for top mid bot)
@@ -74,7 +74,8 @@ class ObjectSpawner {
             ["enemy19", "enemy20", "enemy21"],
         ]
         // anim keys for this level
-        const ANIM_KEYS_LVL = this.grid_anims[(this.level - 1) % this.grid_anims.length];
+        const ANIM_KEYS_LVL = this.grid_anims[(this.scene.registry.get('level') - 1) % this.grid_anims.length];
+
         this.anim_keys = {
             top: `${ANIM_KEYS_LVL[0]}_idle`,
             mid: `${ANIM_KEYS_LVL[1]}_idle`,
@@ -106,16 +107,8 @@ class ObjectSpawner {
         this.init_player_bullets();
         this.init_enemy_bullets();
         this.init_explosions();
-        this.init_enemy_grid();
-        this.init_powerups();
-    }
-
-    init_all_without_grid() {
-        this.init_barriers();
-        this.init_player();
-        this.init_player_bullets();
-        this.init_enemy_bullets();
-        this.init_explosions();
+        if (with_grid)
+            this.init_enemy_grid();
         this.init_powerups();
     }
 
@@ -151,11 +144,18 @@ class ObjectSpawner {
     }
 
     /**
-     * @private
      * @description initializes the grid of the enemies. Should only be called at the start of the level.  
-     * 
      */
     init_enemy_grid() {
+        console.log('init_enemy_grid()')
+        console.log(`LEVEL: ${this.scene.registry.get('level')}`)
+        const ANIM_KEYS_LVL = this.grid_anims[(this.scene.registry.get('level') - 1) % this.grid_anims.length];
+        this.anim_keys = {
+            top: `${ANIM_KEYS_LVL[0]}_idle`,
+            mid: `${ANIM_KEYS_LVL[1]}_idle`,
+            bot: `${ANIM_KEYS_LVL[2]}_idle`,
+        }
+
         let gc = ObjectSpawner.GRID_COUNT;
         for (let y = 0; y < gc.row; ++y) {
             for (let x = 0; x < gc.col; ++x) {
@@ -211,7 +211,7 @@ class ObjectSpawner {
      */
     init_player_bullets() {
         console.log("Initializing player bullets");
-        for (let i = 0; i < PlayerBullet.bullet_capacity*3; ++i) {
+        for (let i = 0; i < PlayerBullet.bullet_capacity * 3; ++i) {
             // console.log(`Adding bullet #${i + 1}`);
             let bullet = this.scene.add.player_bullet(this.scene);
             this.bullets.player.add(bullet);
@@ -281,6 +281,80 @@ class ObjectSpawner {
             this.scene.add.enemy_usb(this.scene, true);
         else
             this.scene.add.enemy_usb(this.scene, false);
+    }
+
+    /**
+     * @public
+     * Handles all logic for grid-based enemies
+     */
+    ai_grid_enemies(time) {
+        let enemies = this.enemies.grid.children.entries;
+        GridEnemy.timers.shoot_cd = Math.max(100, 1000 - (this.scene.registry.get('level') * 10));
+        GridEnemy.timers.move_cd = (enemies.length * 10) - (this.scene.registry.get('level') * 2);
+        // Move all enemies down if we hit the x boundaries
+        for (let enemy of enemies) {
+            if (!enemy.is_x_inbounds()) {
+                console.log("Enemy1 is changing rows!")
+                for (let enemy of enemies)
+                    enemy.move_down()
+                break;
+            }
+            if (!enemy.is_y_inbounds())
+                this.emitter.emit('player_lose', 'Player Lose')
+        }
+
+        // Move left or right if it's time to do so
+        if (time > GridEnemy.timers.last_moved) {
+            GridEnemy.timers.last_moved = time + GridEnemy.timers.move_cd;
+            for (let enemy of enemies)
+                enemy.move_x();
+        }
+
+        /* Right now, there are two grid enemy shooting types:
+         * 1) Closest enemy shoots at the player (Euclidean distance)
+         * 2) Random enemy shoots
+         */
+
+        // handle enemy shooting ai
+        let player = this.player;
+
+        if (time > GridEnemy.timers.last_fired) {
+            // Roll the dice
+            let shoot_mode = Phaser.Math.Between(0, 1);
+
+            if (enemies && enemies.length) {
+                GridEnemy.timers.last_fired = time + GridEnemy.timers.shoot_cd;
+                switch (shoot_mode) {
+                    case 0: // closest enemy shoots at player (Euclidean distance)
+                        {
+                            let closest = {
+                                enemy: null,
+                                dist: Number.MAX_SAFE_INTEGER
+                            };
+
+                            // Find the enemy closest to the player
+                            for (let enemy of enemies) {
+                                let dist = Phaser.Math.Distance.Between(player.x, player.y, enemy.x, enemy.y);
+                                if (dist < closest.dist)
+                                    closest = { enemy: enemy, dist: dist };
+                            }
+                            if (closest.enemy) closest.enemy.shoot();
+                            break;
+                        }
+                    case 1: // Completely random enemy shoots
+                        {
+                            // choose a random enemy
+                            let rand_index = Phaser.Math.Between(0, enemies.length - 1);
+                            enemies[rand_index].shoot(time);
+                            break;
+                        }
+
+                    default:
+                        console.error(`Error: Invalid grid enemy shoot mode!`);
+                        break;
+                }
+            }
+        }
     }
 }
 

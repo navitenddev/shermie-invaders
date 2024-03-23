@@ -136,6 +136,8 @@ export class Preloader extends Scene {
             });
         }
 
+        this.load.image('enemy_icon', 'characters/enemies/enemy-icon.png');
+
         this.load.spritesheet("shermie", "characters/shermie.png", {
             frameWidth: 80,
             frameHeight: 80,
@@ -161,12 +163,6 @@ export class Preloader extends Scene {
             frameHeight: 64,
         });
 
-        this.load.spritesheet("enemy_zupa", "characters/zupa.png", {
-            frameWidth: 64,
-            frameHeight: 64,
-        });
-
-
         this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');
 
     }
@@ -176,8 +172,8 @@ export class Preloader extends Scene {
         //  can define global animations here, so we can use them in other
         //  scenes.
         this.anim_factory = new AnimationFactory(this);
-        this.registry.set('powerup_stats',{
-            power_bank: ['spread','pierce'],// list of powerups
+        this.registry.set('powerup_stats', {
+            power_bank: ['spread', 'pierce'],// list of powerups
             active_powerups: 0, // active # of powerups on field
         })
         this.registry.set('level', 1);
@@ -200,7 +196,7 @@ export class Preloader extends Scene {
             wallet: 0, // holds shermie bux
             active_bullets: 0, // the number of bullets that the player currently has on screen
             score: 0, // player score
-            power:"None", //powerup
+            power: "None", //powerup
         });
         this.sounds.bank.music.start.play();
         //  Move to the MainMenu. You could also swap this for a Scene

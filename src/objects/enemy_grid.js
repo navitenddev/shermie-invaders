@@ -15,7 +15,12 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
         grid_gap: { x: 28, y: 12 },
     };
     static move_gap = { x: 8, y: 10 };
-    static timers; // defined in Game.js
+    static timers = {
+        last_fired: 0,
+        shoot_cd: 0, // set in ai_grid_enemies()
+        last_moved: 0,
+        move_cd: 0, // set in ai_grid_enemies()
+    };
     scoreValue; // defined in args
     moneyValue; // defined in args
     /**
@@ -94,8 +99,8 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
 
 
     die() {
-        if(Phaser.Math.Between(0,29)==0){
-            let temp=Phaser.Math.Between(0,this.scene.objs.powers.countActive(false));
+        if (Phaser.Math.Between(0, 29) == 0) {
+            let temp = Phaser.Math.Between(0, this.scene.objs.powers.countActive(false));
             let power = this.scene.objs.powers.getFirstNth(temp, false, false, 0, 0, "powerup");
             if (power !== null) {
                 let fall_speed = PowerupsConstDefs.speed.y;

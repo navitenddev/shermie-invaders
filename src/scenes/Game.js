@@ -49,6 +49,8 @@ export class Game extends Scene {
         // Event to kill all enemies
         this.emitter.once('kill_all_enemies', this.killAllEnemies, this);
 
+        this.emitter.once('player_lose', this.goto_scene, this)
+
         // Note: this.level is pass by value!
         this.level = this.registry.get('level');
         this.level_transition_flag = false;
@@ -56,7 +58,7 @@ export class Game extends Scene {
 
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
-        this.player_vars.power="";
+        this.player_vars.power = "";
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
             () => {
                 if (this.level === 1)
@@ -65,17 +67,6 @@ export class Game extends Scene {
                 this.keys.esc.on('down', () => this.pause());
             }
         );
-
-        // The timers will be useful for tweaking the difficulty
-        GridEnemy.timers = {
-            last_fired: 0,
-            // shoot_cd will not go below 100 frames per shot
-            shoot_cd: Math.max(100, 1000 - (this.level * 10)),
-            last_moved: 0,
-            move_cd: 0, // NOTE: This is set in ai_grid_enemies()
-        };
-
-        // this.objs.player = this.add.player(this, this.sys.game.config.width / 2, this.game.config.height - 96);
 
         // Player lives text and sprites
         this.livesText = this.add.text(16, this.sys.game.config.height - 48, '3', fonts.medium);
@@ -157,100 +148,10 @@ export class Game extends Scene {
         this.updateLivesSprites();
         this.shieldsText.setText(this.player_stats.shield - 1);
         this.updateShieldSprites();
-        this.ai_grid_enemies(time);
+        this.objs.ai_grid_enemies(time);
         this.check_gameover();
     }
 
-    /**
-     * @private
-     * Handles all logic for grid-based enemies
-     */
-    ai_grid_enemies(time) {
-        let enemies = this.objs.enemies.grid.children.entries;
-
-        GridEnemy.timers.move_cd = (enemies.length * 10) - (this.level * 2);
-        // Move all enemies down if we hit the x boundaries
-        for (let enemy of enemies) {
-            if (!enemy.is_x_inbounds()) {
-                console.log("Enemy1 is changing rows!")
-                for (let enemy of enemies)
-                    enemy.move_down()
-                break;
-            }
-            if (!enemy.is_y_inbounds())
-                this.goto_scene('Player Lose');
-        }
-
-        // Move left or right if it's time to do so
-        if (time > GridEnemy.timers.last_moved) {
-            GridEnemy.timers.last_moved = time + GridEnemy.timers.move_cd;
-            for (let enemy of enemies)
-                enemy.move_x();
-        }
-
-        /* Right now, there are two grid enemy shooting types:
-         * 1) Closest enemy shoots at the player (Euclidean distance)
-         * 2) Random enemy shoots
-         */
-
-        // handle enemy shooting ai
-        let player = this.objs.player;
-
-        if (time > GridEnemy.timers.last_fired) {
-            // Roll the dice
-            let shoot_mode = Phaser.Math.Between(0, 1);
-
-            if (enemies && enemies.length) {
-                GridEnemy.timers.last_fired = time + GridEnemy.timers.shoot_cd;
-                switch (shoot_mode) {
-                    case 0: // closest enemy shoots at player (Euclidean distance)
-                        {
-                            let closest = {
-                                enemy: null,
-                                dist: Number.MAX_SAFE_INTEGER
-                            };
-
-                            // Find the enemy closest to the player
-                            for (let enemy of enemies) {
-                                let dist = Phaser.Math.Distance.Between(player.x, player.y, enemy.x, enemy.y);
-                                if (dist < closest.dist)
-                                    closest = { enemy: enemy, dist: dist };
-                            }
-                            if (closest.enemy) closest.enemy.shoot();
-                            break;
-                        }
-                    case 1: // Completely random enemy shoots
-                        {
-                            // choose a random enemy
-                            let rand_index = Phaser.Math.Between(0, enemies.length - 1);
-                            let enemy = enemies[rand_index].shoot(time);
-                            break;
-                        }
-                    case 2: // Enemy closest to player's x position shoots
-                        if (enemies.length) {
-                            let closest = enemies[0];
-                            for (let enemy of enemies) {
-                                let x_dist = Math.abs(player.x - enemy.x);
-                                if (Math.abs(player.x - closest.x) == x_dist)
-                                    closest.push(enemy)
-                                else if (Math.abs(player.x - closest.x) < x_dist)
-                                    closest = [enemy];
-                            }
-
-                            // choose random from closest x
-                            let rand_index = Phaser.Math.Between(0, closest.length - 1);
-                            enemies[rand_index].shoot(time);
-                        }
-                        break;
-                    default:
-                        console.error(`Error: Invalid grid enemy shoot mode!`);
-                        break;
-                }
-            }
-
-        }
-
-    }
 
     check_gameover() {
         if (this.objs.enemies.grid.children.entries.length == 0 &&
@@ -259,13 +160,13 @@ export class Game extends Scene {
             this.registry.set({ 'level': this.level + 1 });
             this.level_transition_flag = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
-            this.player_vars.power="";
+            this.player_vars.power = "";
             this.goto_scene("Player Win");
         } else if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
-                this.player_vars.power="";
-                this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
-                this.goto_scene("Player Lose");
+            this.player_vars.power = "";
+            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
+            this.goto_scene("Player Lose");
         }
     }
 
@@ -290,7 +191,7 @@ export class Game extends Scene {
         // player bullet hits grid enemy
         this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies.grid, (player_bullet, enemy) => {
             this.objs.explode_at(enemy.x, enemy.y);
-            if(this.player_vars.power == "pierce")  player_bullet.hurt_bullet();
+            if (this.player_vars.power == "pierce") player_bullet.hurt_bullet();
             else player_bullet.deactivate();
             enemy.die();
             this.scoreManager.addScore(enemy.scoreValue);
@@ -341,7 +242,7 @@ export class Game extends Scene {
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.bullets.player, (enemy_bullet, player_bullet) => {
             if (player_bullet.active && enemy_bullet.active) {
                 this.objs.explode_at(player_bullet.x, player_bullet.y);
-                if(this.player_vars.power == "pierce")  player_bullet.hurt_bullet();
+                if (this.player_vars.power == "pierce") player_bullet.hurt_bullet();
                 else player_bullet.deactivate();
                 enemy_bullet.deactivate();
             }
@@ -363,47 +264,14 @@ export class Game extends Scene {
 
         // player bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            this.explode_at_bullet_hit(bullet, barr_chunk, 25);
-
+            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 25);
         });
 
         // enemy bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            this.explode_at_bullet_hit(bullet, barr_chunk, 25);
+            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 25);
         });
     }
-
-    explode_at_bullet_hit(bullet, barr_chunk, baseExplosionRadius = 20) {
-        const maxDamage = 100;
-
-        // randomn explosion radius
-        const randomRadiusFactor = Phaser.Math.FloatBetween(1.0, 1.6);
-        const explosionRadius = baseExplosionRadius * randomRadiusFactor;
-
-        // loop through all barrier chunks to apply damage
-        this.objs.barrier_chunks.children.each(chunk => {
-            const distance = Phaser.Math.Distance.Between(bullet.x, bullet.y, chunk.x, chunk.y);
-
-            if (chunk.active && distance < explosionRadius) {
-                // calculate damage based on distance
-                let damage = maxDamage * (1 - distance / explosionRadius);
-                let randomDamageFactor = Phaser.Math.FloatBetween(0.1, 1.2);
-                damage *= randomDamageFactor;
-
-                chunk.applyDamage(damage);
-
-                // destruction particles
-                if (chunk.health <= 0) {
-                    barr_chunk.parent.destructionEmitter.explode(1, chunk.x, chunk.y);
-                }
-            }
-        });
-
-        // update the flame size based on remaining barrier chunks
-        barr_chunk.parent.update_flame_size();
-        bullet.deactivate();
-    }
-
     /**
      * @param {*} key Start the dialogue sequence with this key
      * @param {*} blocking If true, will stop all actions in the current scene. Until dialogue complete

@@ -1,8 +1,10 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs, CHEAT_CODE_SEQUENCE as CheatCode } from '../keyboard_input';
 import { fonts } from '../utils/fontStyle.js';
+import { EventDispatcher } from '../utils/event_dispatcher.js';
 
 export class MainMenu extends Scene {
+    emitter = EventDispatcher.getInstance();
     constructor() {
         super('MainMenu');
     }
@@ -13,6 +15,8 @@ export class MainMenu extends Scene {
 
         this.add.image(512, 300, 'titlelogo');
         this.sounds = this.registry.get('sound_bank');
+
+        this.emitter.removeAllListeners(); // clean up event listeners
 
         // reset global vars 
         this.player_vars = this.registry.get('player_vars');
