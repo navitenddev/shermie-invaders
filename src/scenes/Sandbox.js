@@ -241,7 +241,7 @@ export class Sandbox extends Scene {
             this.#print_coord_list();
         });
 
-        this.emitter.once('player_lose', this.goto_scene, 'Player Lose')
+        this.emitter.on('player_lose', this.#kill_all_enemies, this);
     }
 
     pause() {
