@@ -1,6 +1,6 @@
 const PowerupsConstDefs = {
     dims: { w: 80, h: 80 },
-    speed: { x: 0, y: 3.5 }, // base speed (before upgrade calculations)
+    speed: { x: 0, y: 2 }, // base speed (before upgrade calculations)
     offset: { x: 0, y: 0 },
     rotation_speed: 0.1,
 };
