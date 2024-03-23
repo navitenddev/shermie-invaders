@@ -303,7 +303,6 @@ export class Sandbox extends Scene {
                 enemy_bullet.deactivate();
                 if (player.stats.shield > 1) {
                     player.shieldParticles.explode(10, player.x, this.sys.game.config.height - 135);
-                    // console.log('Shield particle emitter explode called');
                     player.stats.shield--;
                     if (player.stats.shield < currShield) {
                         this.start_dialogue('shermie_shieldgone', false);
@@ -313,6 +312,7 @@ export class Sandbox extends Scene {
                 } else {
                     this.objs.explode_at(player.x, player.y);
                     player.die();
+                    this.player_vars.lives = 3; // disable lives in sandbox mode
                     if (this.player_vars.lives === 0)
                         this.start_dialogue('shermie_dead', false);
                     else
@@ -321,7 +321,7 @@ export class Sandbox extends Scene {
             }
         });
 
-        // player catches powerup
+        // player collides with powerup 
         this.physics.add.overlap(this.objs.powers, this.objs.player, (player, powerup) => {
             player.changePower(powerup.buff);
             powerup.deactivate();
