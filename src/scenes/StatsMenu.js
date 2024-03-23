@@ -37,7 +37,10 @@ class MenuSpinner {
         scene.add.text(x + w, y, '+', fonts.small)
             .setInteractive()
             .on('pointerdown', function () {
-                obj[key] = Math.min(obj[key] + 1, SHOP_PRICES[key].length);
+                if (key === 'lives') // LOL
+                    obj[key] = Math.min(obj[key] + 1, 10);
+                else
+                    obj[key] = Math.min(obj[key] + 1, SHOP_PRICES[key].length);
                 this.setStyle({ color: '#ff0000' });
             })
             .on('pointerup', function () {
