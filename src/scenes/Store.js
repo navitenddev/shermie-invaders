@@ -1,15 +1,13 @@
 import { Scene } from 'phaser';
 import { fonts } from '../utils/fontStyle.js';
 
-const STAT_MIN = 1, STAT_MAX = 10;
+const STAT_MIN = 1;
 
-// MAKE SURE EVERY ARRAY IS A LENGTH OF 10.
 // Note: I made this shit up on the fly, this needs to be balanced. 
 // Change these values here to change the shop prices.
 const SHOP_PRICES = {
     move_speed: [
-        50, 100, 150, 200, 250,
-        300, 400, 500, 600, 700
+        150, 200, 250, 300, 350,
     ],
     bullet_speed: [
         100, 150, 200, 250, 300,
@@ -54,7 +52,7 @@ class MenuSpinner {
         const boxHeight = 30;
         const boxWidth = 30;
         const boxSpacing = 2;
-        const totalBoxesWidth = STAT_MAX * (boxWidth + boxSpacing);
+        const totalBoxesWidth = 10 * (boxWidth + boxSpacing);
         const firstBoxX = centerX - totalBoxesWidth / 2 - 15;
 
         // Position the buttons relative to the center
@@ -110,7 +108,7 @@ class MenuSpinner {
     }
 
     updateStat(change) {
-        const newStatValue = Phaser.Math.Clamp(this.stats[this.statKey] + change, STAT_MIN, STAT_MAX);
+        const newStatValue = Phaser.Math.Clamp(this.stats[this.statKey] + change, STAT_MIN, SHOP_PRICES[this.statKey].length);
         const initialStatValue = this.scene.initialStats[this.statKey] || STAT_MIN;
         // Handle increase
         if (change > 0 && newStatValue > this.stats[this.statKey] && this.scene.canAffordUpgrade(this.statKey, this.stats[this.statKey])) {
@@ -135,13 +133,13 @@ class MenuSpinner {
         }
 
         const permanentStats = this.scene.registry.get('player_vars') || {};
-        const isMaxedOut = this.stats[this.statKey] === STAT_MAX;
+        const isMaxedOut = this.stats[this.statKey] === SHOP_PRICES[this.statKey].length;
         const canAfford = this.scene.canAffordUpgrade(this.statKey, this.stats[this.statKey]);
         const nextLevelCost = isMaxedOut ? 'Max' : this.scene.getUpgradeCost(this.statKey, this.stats[this.statKey]);
         // Determine if downgrading is possible based on whether the current stat level is greater than the permanent stat level.
         const canDowngrade = this.stats[this.statKey] > (permanentStats[this.statKey] || STAT_MIN);
 
-        this.fill_bar.update_bar(this.stats[this.statKey], 10);
+        this.fill_bar.update_bar(this.stats[this.statKey], SHOP_PRICES[this.statKey].length);
 
         // this.statBoxes.forEach((box, index) => {
         //     const isPermanent = index < permanentStats[this.statKey];
