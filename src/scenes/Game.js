@@ -54,7 +54,7 @@ export class Game extends Scene {
         // Note: this.level is pass by value!
         this.level = this.registry.get('level');
         this.level_transition_flag = false;
-        this.level_text = this.add.text(this.sys.game.config.width / 3, 16, `LEVEL:${this.level}`, fonts.medium);
+        this.level_text = this.add.text(this.sys.game.config.width * (2.9 / 4), 16, `LEVEL:${this.level}`, fonts.medium);
 
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;

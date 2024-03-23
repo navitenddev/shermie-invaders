@@ -61,7 +61,7 @@ class IconButton extends Phaser.GameObjects.Container {
      * @param {Array<any>} args A variadic number of arguments to pass into cb when it's called
      * @example new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
      */
-    constructor(scene, icon, x, y, cb, args = []) {
+    constructor(scene, icon, x, y, cb, args = [], ctx) {
         super(scene, x, y);
         scene.add.existing(this);
 
@@ -101,6 +101,7 @@ export class Sandbox extends Scene {
 
     constructor() {
         super('Sandbox');
+        this.kill_all_enemies = this.kill_all_enemies.bind(this);
     }
 
     preload() {
@@ -159,12 +160,10 @@ export class Sandbox extends Scene {
         // Note: this.level is pass by value!
         this.level = this.registry.get('level');
         this.level_transition_flag = false;
-        this.level_text = this.add.text(this.sys.game.config.width / 3, 16, `LEVEL:${this.level}`, fonts.medium);
+        this.level_text = this.add.text(this.sys.game.config.width * (2.9 / 4), 16, `LEVEL:${this.level}`, fonts.medium);
 
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
-
-        // this.objs.player = this.add.player(this, this.sys.game.config.width / 2, this.game.config.height - 96);
 
         // Player lives text and sprites
         this.livesText = this.add.text(16, this.sys.game.config.height - 48, '---', fonts.medium);
@@ -184,13 +183,14 @@ export class Sandbox extends Scene {
         this.keys.p.on('down', () => this.pause());
         this.keys.esc.on('down', () => this.pause());
 
-        this.mouse_pos_text = this.add.text(800, 50, `(0,0)`, fonts.small);
+        this.mouse_pos_text = this.add.text(750, 75, `(0,0)`, fonts.small);
         this.legend_text = this.add.text(this.game.config.width - 64, 300, "Click to Spawn", fonts.small);
         this.legend_text.setAngle(-90);
 
-        this.lvl_select = new LevelSelector(this, this.game.config.width / 2.8, 48, this.level_text);
-        // LHS buttons
-        this.grid_btn = new IconButton(this, "enemy_icon", 20, 136,
+        this.lvl_select = new LevelSelector(this, this.game.config.width * (3 / 4), 48, this.level_text);
+
+        this.grid_btn = new IconButton(this, "enemy_icon",
+            this.game.config.width - 20, 100,
             () => {
                 console.log(this.objs.enemies)
                 if (this.objs.enemies.grid.children.entries.length === 0)
@@ -200,7 +200,7 @@ export class Sandbox extends Scene {
 
         // RHS buttons
         this.usb_btn = new IconButton(this, "usb_icon",
-            this.game.config.width - 20, 100,
+            this.game.config.width - 20, 136,
             () => {
                 (Phaser.Math.Between(0, 1) === 0) ?
                     this.add.enemy_usb(this, true) :
@@ -209,27 +209,30 @@ export class Sandbox extends Scene {
         )
 
         this.reaper_btn = new IconButton(this, "reaper_icon",
-            this.game.config.width - 20, 136,
+            this.game.config.width - 20, 172,
             this.add.enemy_reaper,
             [this, 0, 0, 40]
         );
 
         this.lupa_btn = new IconButton(this, "lupa_icon",
-            this.game.config.width - 20, 172,
+            this.game.config.width - 20, 208,
             this.add.enemy_lupa,
             [this, this.game.config.width, 525]
         );
 
         this.pupa_btn = new IconButton(this, "pupa_icon",
-            this.game.config.width - 20, 208,
+            this.game.config.width - 20, 244,
             this.add.enemy_pupa,
             [this, 400, 400]
         );
 
-        this.coord_graphics = this.add.graphics();
+        this.nuke_btn = new IconButton(this, "nuke_icon",
+            this.game.config.width - 20, 280,
+            this.kill_all_enemies,
+            []
+        );
 
-        // Event to kill all enemies
-        this.emitter.on('kill_all_enemies', this.#kill_all_enemies, this);
+        this.coord_graphics = this.add.graphics();
 
         this.keys.g.on('down', () => {
             this.#add_coord();
@@ -241,7 +244,8 @@ export class Sandbox extends Scene {
             this.#print_coord_list();
         });
 
-        this.emitter.on('player_lose', this.#kill_all_enemies, this);
+
+        this.emitter.on('player_lose', this.kill_all_enemies, this);
     }
 
     pause() {
@@ -396,20 +400,22 @@ export class Sandbox extends Scene {
         this.mouse_pos_text.setText(`(${x},${y})`);
     }
 
-    #kill_all_enemies() {
+    kill_all_enemies() {
         // Loop through all enemies and destroy them
-        this.objs.enemies.grid.children.each(enemy => {
-            enemy.die();
-            this.scoreManager.addMoney(enemy.moneyValue);
-            this.scoreManager.addScore(enemy.scoreValue);
-        });
+        if (this.objs) {
+            this.objs.enemies.grid.children.each(enemy => {
+                enemy.die();
+                this.scoreManager.addMoney(enemy.moneyValue);
+                this.scoreManager.addScore(enemy.scoreValue);
+            });
 
-        this.objs.enemies.special.children.each(enemy => {
-            this.scoreManager.addMoney(enemy.moneyValue * enemy.hp);
-            this.scoreManager.addScore(enemy.scoreValue * enemy.hp);
-            enemy.hp = 1;
-            enemy.die();
-        });
+            this.objs.enemies.special.children.each(enemy => {
+                this.scoreManager.addMoney(enemy.moneyValue * enemy.hp);
+                this.scoreManager.addScore(enemy.scoreValue * enemy.hp);
+                enemy.hp = 1;
+                enemy.die();
+            });
+        }
     }
 
     /**

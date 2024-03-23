@@ -10,14 +10,16 @@ export default class ScoreManager {
         this.score = this.player_vars.score;
         this.highScore = this.loadHighScore();
         this.initText();
-        this.scene.add.image(40, 75, "shermie_bux") // shermie coin image
+        this.scene.add.image(40, 95, "shermie_bux") // shermie coin image
             .setScale(0.075, 0.075);
     }
 
     initText() {
-        this.scoreText = this.scene.add.text(16, 16, `SCORE:${this.score}`, fonts.medium);
-        this.highScoreText = this.scene.add.text(620, 16, `HI-SCORE:${this.highScore}`, fonts.medium);
-        this.walletText = this.scene.add.text(64, 60, `${this.player_vars.wallet}`, fonts.medium);
+        this.highScoreText = this.scene.add.text(16, 16, `HI-SCORE:${this.highScore}`, fonts.small);
+
+        this.scoreText = this.scene.add.text(16, 40, `SCORE:${this.score}`, fonts.medium);
+
+        this.walletText = this.scene.add.text(64, 80, `${this.player_vars.wallet}`, fonts.medium);
     }
 
     addScore(points) {
