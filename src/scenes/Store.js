@@ -2,6 +2,29 @@ import { Scene } from 'phaser';
 import { fonts } from '../utils/fontStyle.js';
 
 const STAT_MIN = 1, STAT_MAX = 10;
+
+// MAKE SURE EVERY ARRAY IS A LENGTH OF 10.
+// Note: I made this shit up on the fly, this needs to be balanced. 
+// Change these values here to change the shop prices.
+const SHOP_PRICES = {
+    move_speed: [
+        50, 100, 150, 200, 250,
+        300, 400, 500, 600, 700
+    ],
+    bullet_speed: [
+        100, 150, 200, 250, 300,
+        350, 500, 600, 750, 1000,
+    ],
+    fire_rate: [
+        100, 150, 200, 300, 400,
+        500, 600, 850, 1000, 1250
+    ],
+    shield: [
+        300, 300, 300, 300, 300,
+        300, 300, 300, 300, 300
+    ]
+};
+
 class MenuSpinner {
     constructor(scene, y, statKey, stats, onUpgrade, displayName) {
         this.displayName = displayName;
@@ -262,19 +285,7 @@ export class Store extends Scene {
     }
 
     getUpgradeCost(statKey, currentLevel) {
-        // Define base costs for each stat
-        const baseCosts = {
-            move_speed: 75,
-            bullet_speed: 105,
-            fire_rate: 150,
-            shield: 600
-        };
-
-        // cost increases linearly except for shields. 
-        if (statKey === 'shield') {
-            return baseCosts[statKey];
-        }
-        return baseCosts[statKey] * (currentLevel + 1);
+        return SHOP_PRICES[statKey][currentLevel];
     }
 
     onUpgrade(statKey, newStatValue) {

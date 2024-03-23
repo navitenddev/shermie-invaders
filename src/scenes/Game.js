@@ -47,7 +47,7 @@ export class Game extends Scene {
         this.scoreManager = new ScoreManager(this);
 
         // Event to kill all enemies
-        this.emitter.once('kill_all_enemies', this.killAllEnemies, this);
+        this.emitter.once('kill_all_enemies', this.#kill_all_enemies, this);
 
         this.emitter.once('player_lose', this.goto_scene, this)
 
@@ -99,18 +99,19 @@ export class Game extends Scene {
         this.scene.launch('PauseMenu', { prev_scene: 'Game' });
     }
 
-    killAllEnemies() {
+    #kill_all_enemies() {
         // Loop through all enemies and destroy them
         this.objs.enemies.grid.children.each(enemy => {
-            this.objs.explode_at(enemy.x, enemy.y);
             enemy.die();
             this.scoreManager.addMoney(enemy.moneyValue);
             this.scoreManager.addScore(enemy.scoreValue);
         });
 
         this.objs.enemies.special.children.each(enemy => {
+            this.scoreManager.addMoney(enemy.moneyValue * enemy.hp);
+            this.scoreManager.addScore(enemy.scoreValue * enemy.hp);
+            enemy.hp = 1;
             enemy.die();
-            this.scoreManager.addScore(enemy.scoreValue);
         });
     }
 
