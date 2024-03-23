@@ -12,8 +12,7 @@ const STAT_MAP = {
     ],
     // maps to player velocity
     move_speed: [
-        200, 250, 300, 350, 400,
-        450, 500, 550, 600, 650
+        200, 300, 400, 500, 600,
     ],
     // maps to cooldown time between shots
     fire_rate: [

@@ -5,7 +5,7 @@ const STAT_MIN = 1;
 
 // Note: I made this shit up on the fly, this needs to be balanced. 
 // Change these values here to change the shop prices.
-const SHOP_PRICES = {
+export const SHOP_PRICES = {
     move_speed: [
         150, 200, 250, 300, 350,
     ],
