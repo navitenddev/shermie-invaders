@@ -25,6 +25,23 @@ const SHOP_PRICES = {
     ]
 };
 
+class FillBar extends Phaser.GameObjects.Rectangle {
+    constructor(scene, x, y, width, height) {
+        super(scene, x, y, width, height, 0x000000);
+        scene.add.existing(this);
+        this.inner = scene.add.rectangle(x + 2 - (width / 2), y - 13, width - 12, height - 8, 0x33b013);
+    }
+
+    update_bar(remaining, total) {
+        this.total = total;
+        this.remaining = remaining;
+
+        const ratio = remaining / total;
+        this.inner.setOrigin(0, 0)
+            .setSize((this.width * ratio) - 3, this.height - 4)
+    }
+}
+
 class MenuSpinner {
     constructor(scene, y, statKey, stats, onUpgrade, displayName) {
         this.displayName = displayName;
@@ -60,11 +77,12 @@ class MenuSpinner {
         this.plusButton.setScale(1.5);
 
         // Stat Boxes below the stat text
-        this.statBoxes = [];
         const boxesStartX = centerX - totalBoxesWidth / 2;
-        for (let i = 0; i < STAT_MAX; i++) {
-            this.statBoxes.push(scene.add.rectangle(boxesStartX + i * (boxWidth + boxSpacing), y + 40, boxWidth, boxHeight, 0xffffff).setStrokeStyle(2, 0x000000));
-        }
+        this.fill_bar = new FillBar(scene,
+            boxesStartX + (boxWidth * 5), y + 40,
+            boxWidth * 10, boxHeight
+        );
+        // this.statBoxes.push(scene.add.rectangle(boxesStartX + i * (boxWidth + boxSpacing), y + 40, boxWidth, boxHeight, 0xffffff).setStrokeStyle(2, 0x000000));
 
         //Interactive minus and plus buttons
         this.minusButton
@@ -123,10 +141,14 @@ class MenuSpinner {
         // Determine if downgrading is possible based on whether the current stat level is greater than the permanent stat level.
         const canDowngrade = this.stats[this.statKey] > (permanentStats[this.statKey] || STAT_MIN);
 
-        this.statBoxes.forEach((box, index) => {
-            const isPermanent = index < permanentStats[this.statKey];
-            box.setFillStyle(isPermanent ? 0xFFD700 : (index < this.stats[this.statKey] ? 0x00ff00 : 0xffffff));
-        });
+        this.fill_bar.update_bar(this.stats[this.statKey], 10);
+
+        // this.statBoxes.forEach((box, index) => {
+        //     const isPermanent = index < permanentStats[this.statKey];
+        //     box.setFillStyle(isPermanent ? 0xFFD700 :
+        //         (index < this.stats[this.statKey] ? 0x00ff00 : 0xffffff)
+        //     );
+        // });
 
         // Update styles based on conditions
         this.minusButton.setStyle({
