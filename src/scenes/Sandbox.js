@@ -188,7 +188,7 @@ export class Sandbox extends Scene {
         this.legend_text = this.add.text(this.game.config.width - 64, 300, "Click to Spawn", fonts.small);
         this.legend_text.setAngle(-90);
 
-        this.lvl_select = new LevelSelector(this, this.game.config.width / 2.5, 48, this.level_text);
+        this.lvl_select = new LevelSelector(this, this.game.config.width / 2.8, 48, this.level_text);
         // LHS buttons
         this.grid_btn = new IconButton(this, "enemy_icon", 20, 136,
             () => {
