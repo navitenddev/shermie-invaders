@@ -42,7 +42,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     static timers = {
         last_fired: 0,
-        powerup_cd: 500,
+        powerup_cd: 10,
         powerup_timer: 0
     }
 
@@ -124,17 +124,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         )
             this.play("shermie_idle");
 
-        if (keys.space.isDown || keys.w.isDown)
-            this.shoot(time);
-
+        if (keys.space.isDown || keys.w.isDown) this.shoot(time);
         if (!keys.d.isDown && !keys.right.isDown &&
             !keys.a.isDown && !keys.left.isDown)
             this.setVelocity(0);
-
-        if (this.player_vars.power != "" && Player.timers.powerup_timer > 0) {
-            Player.timers.powerup_timer--;
-        }
-        if (this.player_vars.power != "" && Player.timers.powerup_timer <= 0) this.changePower("");
     }
 
     /**
@@ -278,6 +271,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                     }
                 }
                 this.sounds.bank.sfx.shoot.play();
+                if(this.player_vars.power!="" && Player.timers.powerup_timer>0) {
+                    Player.timers.powerup_timer--;}
+                if(this.player_vars.power!="" && Player.timers.powerup_timer<=0) this.changePower("");
             }
             else {
                 this.sounds.bank.sfx.reload.play();
