@@ -36,6 +36,19 @@ export class PauseMenu extends Scene {
             })
             .setPosition(boxX + boxWidth / 2, menuY);
 
+        if (this.registry.get('debug_mode') === true) {
+            menuY += menuSpacing;
+            this.cheatsButton = this.add.text(0, 0, 'Cheats', fonts.medium)
+                .setOrigin(0.5)
+                .setInteractive()
+                .on('pointerdown', () => {
+                    this.sounds.bank.sfx.click.play();
+                    this.scene.stop('PauseMenu');
+                    this.scene.start('StatsMenu');
+                })
+                .setPosition(boxX + boxWidth / 2, menuY);
+        }
+
         menuY += menuSpacing;
         this.quitButton = this.add.text(0, 0, 'Quit', fonts.medium)
             .setOrigin(0.5)
@@ -54,19 +67,6 @@ export class PauseMenu extends Scene {
                 });
             })
             .setPosition(boxX + boxWidth / 2, menuY);
-
-        if (this.registry.get('debug_mode') === true) {
-            menuY += menuSpacing;
-            this.cheatsButton = this.add.text(0, 0, 'Cheats', fonts.medium)
-                .setOrigin(0.5)
-                .setInteractive()
-                .on('pointerdown', () => {
-                    this.sounds.bank.sfx.click.play();
-                    this.scene.stop('PauseMenu');
-                    this.scene.start('StatsMenu');
-                })
-                .setPosition(boxX + boxWidth / 2, menuY);
-        }
 
         this.keys.p.on('down', () => this.unpause());
         this.keys.esc.on('down', () => this.unpause());
