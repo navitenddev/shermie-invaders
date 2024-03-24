@@ -3,7 +3,7 @@ import { fonts } from '../utils/fontStyle.js';
 
 const STAT_MIN = 1;
 
-// Note: I made this shit up on the fly, this needs to be balanced. 
+// BALANCE THIS
 // Change these values here to change the shop prices.
 export const SHOP_PRICES = {
     move_speed: [
