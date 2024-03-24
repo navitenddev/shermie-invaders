@@ -1,5 +1,5 @@
 const ExplosionConstDefs = {
-    max_explosions: 10,
+    max_explosions: 40,
 }
 
 /**

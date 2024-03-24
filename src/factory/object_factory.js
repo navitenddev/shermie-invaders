@@ -3,7 +3,6 @@ import { GridEnemy } from "../objects/enemy_grid";
 import { EnemyReaper } from "../objects/enemy_reaper";
 import { EnemyLupa } from "../objects/enemy_lupa";
 import { EnemyPupa } from "../objects/enemy_pupa";
-import { EnemyZupa } from "../objects/enemy_zupa";
 import { EnemyUSB } from "../objects/enemy_usb";
 import { PlayerBullet, EnemyBullet, PlayerBulletConstDefs, EnemyBulletConstDefs } from "../objects/bullet";
 import { Explosion } from "../objects/explosions"
@@ -62,13 +61,6 @@ Phaser.GameObjects.GameObjectFactory.register(
 );
 
 Phaser.GameObjects.GameObjectFactory.register(
-    "enemy_zupa",
-    function (scene, x, y) {
-        return new EnemyZupa(scene, x, y);
-    }
-);
-
-Phaser.GameObjects.GameObjectFactory.register(
     "enemy_bullet",
     function (scene, x, y) {
         return new EnemyBullet(scene, x, y);
@@ -99,8 +91,8 @@ Phaser.GameObjects.GameObjectFactory.register(
 Phaser.GameObjects.GameObjectFactory.register(
     "powerup",
     function (scene) {
-        let temp=this.scene.powerup_stats.power_bank[Phaser.Math.Between(0, this.scene.powerup_stats.power_bank.length-1 )];
+        let temp = this.scene.powerup_stats.power_bank[Phaser.Math.Between(0, this.scene.powerup_stats.power_bank.length - 1)];
         console.log(temp);
-        return new Powerups(scene,temp);
+        return new Powerups(scene, temp);
     }
 );

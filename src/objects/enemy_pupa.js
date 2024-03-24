@@ -14,6 +14,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     follower = { t: 0, vec: new Phaser.Math.Vector2() };
     path = new Phaser.Curves.Path();
     graphics;
+    graphics_follower;
     ai_state;
     state_text;
     hp_text;
@@ -226,7 +227,9 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
         if (this.hp <= 1) {
             this.state_text.destroy();
             this.hp_text.destroy();
+            this.t_text.destroy();
             this.graphics.destroy();
+            this.graphics_follower.destroy();
             this.destroy();
             this.is_dead = true;
             return;
