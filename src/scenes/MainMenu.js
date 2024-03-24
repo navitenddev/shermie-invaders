@@ -13,7 +13,8 @@ export class MainMenu extends Scene {
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg')
             .setOrigin(0.5, 0.5);
 
-        this.add.image(512, 300, 'titlelogo');
+        this.add.image(512, 300, 'titlelogo')
+            .setScale(0.5, 0.5);
         this.sounds = this.registry.get('sound_bank');
 
         this.emitter.removeAllListeners(); // clean up event listeners
@@ -34,8 +35,16 @@ export class MainMenu extends Scene {
 
         this.keys = InitKeyDefs(this);
 
+        // check if cheat codes are already activated
+        if (localStorage.getItem('cheatCodesActivated') === 'true') {
+            this.registry.set('debug_mode', true);
+        }
+
+        const menuSpacing = 50; // spacing between menu items
+        let menuY = 530; // starting Y position for menu items
+
         // Start Button
-        this.start_btn = this.add.text(512, 460, 'PLAY', fonts.medium)
+        this.start_btn = this.add.text(512, menuY, 'PLAY', fonts.medium)
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
@@ -47,7 +56,9 @@ export class MainMenu extends Scene {
                 });
             });
 
-        this.controls_btn = this.add.text(512, 510, 'CONTROLS', fonts.medium)
+        // Controls Button
+        menuY += menuSpacing;
+        this.controls_btn = this.add.text(512, menuY, 'CONTROLS', fonts.medium)
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
@@ -55,16 +66,20 @@ export class MainMenu extends Scene {
                 this.scene.start('HowToPlay');
             });
 
-        if (this.registry.get('debug_mode') === true) {
-            this.level_select_btn = this.add.text(512, 560, 'LEVELS', fonts.medium)
-                .setOrigin(0.5)
-                .setInteractive()
-                .on('pointerdown', () => {
-                    this.sounds.bank.sfx.click.play();
-                    this.scene.start('LevelSelect');
-                });
+        // Level Select Button
+        menuY += menuSpacing;
+        this.level_select_btn = this.add.text(512, menuY, 'LEVELS', fonts.medium)
+            .setOrigin(0.5)
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.sounds.bank.sfx.click.play();
+                this.scene.start('LevelSelect');
+            });
 
-            this.sandbox_btn = this.add.text(512, 610, 'SANDBOX', fonts.medium)
+        if (this.registry.get('debug_mode') === true) {
+            // Sandbox Button
+            menuY += menuSpacing;
+            this.sandbox_btn = this.add.text(512, menuY, 'SANDBOX', fonts.medium)
                 .setOrigin(0.5)
                 .setInteractive()
                 .on('pointerdown', () => {
@@ -74,6 +89,15 @@ export class MainMenu extends Scene {
                     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                         this.scene.start('Sandbox');
                     });
+                });
+                
+            // Disable Cheats Button
+            menuY += menuSpacing;
+            this.disable_cheats_btn = this.add.text(512, menuY, 'EXIT', fonts.medium)
+                .setOrigin(0.5)
+                .setInteractive()
+                .on('pointerdown', () => {
+                    this.#disable_cheats();
                 });
         }
 
@@ -94,7 +118,16 @@ export class MainMenu extends Scene {
     #activate_cheats() {
         console.log(`Cheat codes activated!`);
         this.registry.set('debug_mode', true);
+        localStorage.setItem('cheatCodesActivated', 'true'); // store cheat code activation in localStorage
         this.sounds.bank.sfx.click.play();
         this.scene.start('MainMenu');
+      }
+
+      #disable_cheats() {
+        console.log(`Cheat codes disabled!`);
+        this.registry.set('debug_mode', false);
+        localStorage.removeItem('cheatCodesActivated');
+        this.sounds.bank.sfx.click.play();
+        this.scene.start('MainMenu');
+      }
     }
-}
