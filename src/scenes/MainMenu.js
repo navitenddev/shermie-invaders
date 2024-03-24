@@ -32,6 +32,7 @@ export class MainMenu extends Scene {
             this.player_vars.stats[key] = 1;
         this.player_vars.active_bullets = 0;
         this.player_vars.wallet = 0;
+        this.player_vars.power = "";
 
         this.keys = InitKeyDefs(this);
 
