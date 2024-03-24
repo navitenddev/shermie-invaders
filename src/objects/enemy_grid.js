@@ -99,7 +99,7 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
 
 
     die() {
-        if (Phaser.Math.Between(0, 29) == 0) {
+        if (Phaser.Math.Between(0,0) == 0) {
             let temp = Phaser.Math.Between(0, this.scene.objs.powers.countActive(false));
             let power = this.scene.objs.powers.getFirstNth(temp, false, false, 0, 0, "powerup");
             while(power==null && this.scene.objs.powers.countActive(false)>0){
