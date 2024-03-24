@@ -24,8 +24,11 @@ export class Game extends Scene {
         super('Game');
     }
 
-    create() {
+    init() {
+        this.debugMode = true;
+    }
 
+    create() {
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
 
@@ -92,6 +95,22 @@ export class Game extends Scene {
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
+
+        // Toggle debug mode when 'X' key is pressed
+        this.keys.x.on('down', () => {
+            this.toggleDebug();
+        });
+
+        this.physics.world.drawDebug = this.debugMode;
+    }
+    
+    toggleDebug() {
+        this.debugMode = !this.debugMode;
+        this.physics.world.drawDebug = this.debugMode;
+        // Clear debug graphics when debug mode is turned off
+        if (!this.debugMode) {
+            this.physics.world.debugGraphic.clear();
+        }
     }
 
     pause() {
