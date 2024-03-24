@@ -34,6 +34,11 @@ export class MainMenu extends Scene {
 
         this.keys = InitKeyDefs(this);
 
+        // check if cheat codes are already activated
+        if (localStorage.getItem('cheatCodesActivated') === 'true') {
+            this.registry.set('debug_mode', true);
+        }
+
         // Start Button
         this.start_btn = this.add.text(512, 460, 'PLAY', fonts.medium)
             .setOrigin(0.5)
@@ -75,7 +80,15 @@ export class MainMenu extends Scene {
                         this.scene.start('Sandbox');
                     });
                 });
-        }
+                
+      // Disable Cheats Button
+      this.disable_cheats_btn = this.add.text(512, 660, 'EXIT', fonts.medium)
+        .setOrigin(0.5)
+        .setInteractive()
+        .on('pointerdown', () => {
+          this.#disable_cheats();
+        });
+    }
 
         this.keys.m.on('down', this.sounds.toggle_mute)
         this.input.keyboard.createCombo(CheatCode, { resetOnWrongKey: true });
@@ -94,7 +107,16 @@ export class MainMenu extends Scene {
     #activate_cheats() {
         console.log(`Cheat codes activated!`);
         this.registry.set('debug_mode', true);
+        localStorage.setItem('cheatCodesActivated', 'true'); // store cheat code activation in localStorage
         this.sounds.bank.sfx.click.play();
         this.scene.start('MainMenu');
+      }
+
+      #disable_cheats() {
+        console.log(`Cheat codes disabled!`);
+        this.registry.set('debug_mode', false);
+        localStorage.removeItem('cheatCodesActivated');
+        this.sounds.bank.sfx.click.play();
+        this.scene.start('MainMenu');
+      }
     }
-}
