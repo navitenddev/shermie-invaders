@@ -1,9 +1,8 @@
 import { Player } from "../objects/player";
-import { Enemy1, Enemy2, Enemy3 } from "../objects/enemy";
+import { GridEnemy } from "../objects/enemy_grid";
 import { EnemyReaper } from "../objects/enemy_reaper";
 import { EnemyLupa } from "../objects/enemy_lupa";
 import { EnemyPupa } from "../objects/enemy_pupa";
-import { EnemyZupa } from "../objects/enemy_zupa";
 import { EnemyUSB } from "../objects/enemy_usb";
 import { PlayerBullet, EnemyBullet, PlayerBulletConstDefs, EnemyBulletConstDefs } from "../objects/bullet";
 import { Explosion } from "../objects/explosions"
@@ -27,23 +26,9 @@ Phaser.GameObjects.GameObjectFactory.register(
 );
 
 Phaser.GameObjects.GameObjectFactory.register(
-    "enemy_l1_top",
-    function (scene, x, y) {
-        return new Enemy1(scene, x, y);
-    }
-);
-
-Phaser.GameObjects.GameObjectFactory.register(
-    "enemy_l1_middle",
-    function (scene, x, y) {
-        return new Enemy2(scene, x, y);
-    }
-);
-
-Phaser.GameObjects.GameObjectFactory.register(
-    "enemy_l1_bottom",
-    function (scene, x, y) {
-        return new Enemy3(scene, x, y);
+    "grid_enemy",
+    function (scene, x, y, anim_key, score_val = 0, money_val = 0) {
+        return new GridEnemy(scene, x, y, anim_key, score_val, money_val);
     }
 );
 
@@ -72,13 +57,6 @@ Phaser.GameObjects.GameObjectFactory.register(
     "enemy_pupa",
     function (scene, x, y) {
         return new EnemyPupa(scene, x, y);
-    }
-);
-
-Phaser.GameObjects.GameObjectFactory.register(
-    "enemy_zupa",
-    function (scene, x, y) {
-        return new EnemyZupa(scene, x, y);
     }
 );
 
@@ -113,8 +91,8 @@ Phaser.GameObjects.GameObjectFactory.register(
 Phaser.GameObjects.GameObjectFactory.register(
     "powerup",
     function (scene) {
-        let temp=this.scene.powerup_stats.power_bank[Phaser.Math.Between(0, this.scene.powerup_stats.power_bank.length-1 )];
+        let temp = this.scene.powerup_stats.power_bank[Phaser.Math.Between(0, this.scene.powerup_stats.power_bank.length - 1)];
         console.log(temp);
-        return new Powerups(scene,temp);
+        return new Powerups(scene, temp);
     }
 );

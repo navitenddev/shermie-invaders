@@ -248,7 +248,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
         // if condition
         let bullet = this.scene.objs.bullets.enemy.getFirstDead(false, 0, 0, "enemy_bullet");
         if (bullet !== null) {
-            bullet.activate(this.x, this.y);
+            bullet.activate(this.x, this.y, 0, 600);
             this.anims.play("reaper_shoot");
             this.anims.nextAnim = "reaper_idle";
         }

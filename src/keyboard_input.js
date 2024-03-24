@@ -14,6 +14,7 @@ const KEYBOARD_INPUT_DEFS = {
     g: Phaser.Input.Keyboard.KeyCodes.G,
     c: Phaser.Input.Keyboard.KeyCodes.C,
     v: Phaser.Input.Keyboard.KeyCodes.V,
+    x: Phaser.Input.Keyboard.KeyCodes.X,
     right: Phaser.Input.Keyboard.KeyCodes.RIGHT,
     left: Phaser.Input.Keyboard.KeyCodes.LEFT,
     space: Phaser.Input.Keyboard.KeyCodes.SPACE,

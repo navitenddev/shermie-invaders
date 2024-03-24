@@ -1,7 +1,45 @@
 import { Scene } from 'phaser';
 import { fonts } from '../utils/fontStyle.js';
 
-const STAT_MIN = 1, STAT_MAX = 10;
+const STAT_MIN = 1;
+
+// BALANCE THIS
+// Change these values here to change the shop prices.
+export const SHOP_PRICES = {
+    move_speed: [
+        150, 200, 250, 300, 350,
+    ],
+    bullet_speed: [
+        100, 150, 200, 250, 300,
+        350, 500, 600, 750, 1000,
+    ],
+    fire_rate: [
+        100, 150, 200, 300, 400,
+        500, 600, 850, 1000, 1250
+    ],
+    shield: [
+        300, 300, 300, 300, 300,
+        300, 300, 300, 300, 300
+    ]
+};
+
+class FillBar extends Phaser.GameObjects.Rectangle {
+    constructor(scene, x, y, width, height) {
+        super(scene, x, y, width, height, 0x000000);
+        scene.add.existing(this);
+        this.inner = scene.add.rectangle(x + 2 - (width / 2), y - 13, width - 12, height - 8, 0x33b013);
+    }
+
+    update_bar(remaining, total) {
+        this.total = total;
+        this.remaining = remaining;
+
+        const ratio = remaining / total;
+        this.inner.setOrigin(0, 0)
+            .setSize((this.width * ratio) - 3, this.height - 4)
+    }
+}
+
 class MenuSpinner {
     constructor(scene, y, statKey, stats, onUpgrade, displayName) {
         this.displayName = displayName;
@@ -14,7 +52,7 @@ class MenuSpinner {
         const boxHeight = 30;
         const boxWidth = 30;
         const boxSpacing = 2;
-        const totalBoxesWidth = STAT_MAX * (boxWidth + boxSpacing);
+        const totalBoxesWidth = 10 * (boxWidth + boxSpacing);
         const firstBoxX = centerX - totalBoxesWidth / 2 - 15;
 
         // Position the buttons relative to the center
@@ -37,11 +75,12 @@ class MenuSpinner {
         this.plusButton.setScale(1.5);
 
         // Stat Boxes below the stat text
-        this.statBoxes = [];
         const boxesStartX = centerX - totalBoxesWidth / 2;
-        for (let i = 0; i < STAT_MAX; i++) {
-            this.statBoxes.push(scene.add.rectangle(boxesStartX + i * (boxWidth + boxSpacing), y + 40, boxWidth, boxHeight, 0xffffff).setStrokeStyle(2, 0x000000));
-        }
+        this.fill_bar = new FillBar(scene,
+            boxesStartX + (boxWidth * 5), y + 40,
+            boxWidth * 10, boxHeight
+        );
+        // this.statBoxes.push(scene.add.rectangle(boxesStartX + i * (boxWidth + boxSpacing), y + 40, boxWidth, boxHeight, 0xffffff).setStrokeStyle(2, 0x000000));
 
         //Interactive minus and plus buttons
         this.minusButton
@@ -69,7 +108,7 @@ class MenuSpinner {
     }
 
     updateStat(change) {
-        const newStatValue = Phaser.Math.Clamp(this.stats[this.statKey] + change, STAT_MIN, STAT_MAX);
+        const newStatValue = Phaser.Math.Clamp(this.stats[this.statKey] + change, STAT_MIN, SHOP_PRICES[this.statKey].length);
         const initialStatValue = this.scene.initialStats[this.statKey] || STAT_MIN;
         // Handle increase
         if (change > 0 && newStatValue > this.stats[this.statKey] && this.scene.canAffordUpgrade(this.statKey, this.stats[this.statKey])) {
@@ -94,16 +133,20 @@ class MenuSpinner {
         }
 
         const permanentStats = this.scene.registry.get('player_vars') || {};
-        const isMaxedOut = this.stats[this.statKey] === STAT_MAX;
+        const isMaxedOut = this.stats[this.statKey] === SHOP_PRICES[this.statKey].length;
         const canAfford = this.scene.canAffordUpgrade(this.statKey, this.stats[this.statKey]);
         const nextLevelCost = isMaxedOut ? 'Max' : this.scene.getUpgradeCost(this.statKey, this.stats[this.statKey]);
         // Determine if downgrading is possible based on whether the current stat level is greater than the permanent stat level.
         const canDowngrade = this.stats[this.statKey] > (permanentStats[this.statKey] || STAT_MIN);
 
-        this.statBoxes.forEach((box, index) => {
-            const isPermanent = index < permanentStats[this.statKey];
-            box.setFillStyle(isPermanent ? 0xFFD700 : (index < this.stats[this.statKey] ? 0x00ff00 : 0xffffff));
-        });
+        this.fill_bar.update_bar(this.stats[this.statKey], SHOP_PRICES[this.statKey].length);
+
+        // this.statBoxes.forEach((box, index) => {
+        //     const isPermanent = index < permanentStats[this.statKey];
+        //     box.setFillStyle(isPermanent ? 0xFFD700 :
+        //         (index < this.stats[this.statKey] ? 0x00ff00 : 0xffffff)
+        //     );
+        // });
 
         // Update styles based on conditions
         this.minusButton.setStyle({
@@ -238,7 +281,7 @@ export class Store extends Scene {
         //Show Shermie Bux here
         const moneyIconX = 270;
         const moneyIconY = 190;
-        const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_bux').setOrigin(0.5, 0.5).setScale(0.12);
+        const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_bux').setOrigin(0.5, 0.5).setScale(0.25);
         const moneyTextX = moneyIconX + moneyIcon.displayWidth / 2 + 5;
         const moneyTextY = moneyIconY;
         this.moneyText = this.add.text(moneyTextX, moneyTextY, `${this.player_vars.wallet}`, fonts.medium).setOrigin(0, 0.5);
@@ -262,19 +305,7 @@ export class Store extends Scene {
     }
 
     getUpgradeCost(statKey, currentLevel) {
-        // Define base costs for each stat
-        const baseCosts = {
-            move_speed: 75,
-            bullet_speed: 105,
-            fire_rate: 150,
-            shield: 600
-        };
-
-        // cost increases linearly except for shields. 
-        if (statKey === 'shield') {
-            return baseCosts[statKey];
-        }
-        return baseCosts[statKey] * (currentLevel + 1);
+        return SHOP_PRICES[statKey][currentLevel];
     }
 
     onUpgrade(statKey, newStatValue) {
