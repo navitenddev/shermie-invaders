@@ -66,17 +66,17 @@ export class MainMenu extends Scene {
                 this.scene.start('HowToPlay');
             });
 
-        if (this.registry.get('debug_mode') === true) {
-            // Level Select Button
-            menuY += menuSpacing;
-            this.level_select_btn = this.add.text(512, menuY, 'LEVELS', fonts.medium)
-                .setOrigin(0.5)
-                .setInteractive()
-                .on('pointerdown', () => {
-                    this.sounds.bank.sfx.click.play();
-                    this.scene.start('LevelSelect');
-                });
+        // Level Select Button
+        menuY += menuSpacing;
+        this.level_select_btn = this.add.text(512, menuY, 'LEVELS', fonts.medium)
+            .setOrigin(0.5)
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.sounds.bank.sfx.click.play();
+                this.scene.start('LevelSelect');
+            });
 
+        if (this.registry.get('debug_mode') === true) {
             // Sandbox Button
             menuY += menuSpacing;
             this.sandbox_btn = this.add.text(512, menuY, 'SANDBOX', fonts.medium)

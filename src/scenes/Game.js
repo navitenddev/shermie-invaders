@@ -25,7 +25,7 @@ export class Game extends Scene {
     }
 
     init() {
-        this.debugMode = true;
+        this.debugMode = false;
     }
 
     create() {
@@ -181,6 +181,13 @@ export class Game extends Scene {
             this.level_transition_flag = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.player_vars.power = "";
+            
+            // Store the maximum level reached in localStorage
+            const maxLevelReached = localStorage.getItem('maxLevelReached') || 1;
+            if (this.level + 1 > maxLevelReached) {
+                localStorage.setItem('maxLevelReached', this.level + 1);
+            }
+            
             this.goto_scene("Player Win");
         } else if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
