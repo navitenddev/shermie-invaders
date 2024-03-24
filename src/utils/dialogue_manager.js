@@ -3,12 +3,12 @@ const dialogue_data = require('./data/dialogue.json');
 
 const DIALOGUE_MODE = {
     SLOW: 150,
-    MED: 75,
+    MED: 45,
     FAST: 25,
 };
 
 class DialogueManager extends Phaser.GameObjects.Container {
-    static text_delay = DIALOGUE_MODE.FAST;
+    static text_delay = DIALOGUE_MODE.MED;
     emitter = EventDispatcher.getInstance();
     text_data;
     bg;
@@ -31,25 +31,28 @@ class DialogueManager extends Phaser.GameObjects.Container {
     constructor(scene, data = dialogue_data, x = 700, y = 490) {
         super(scene, x, y);
         scene.add.existing(this);
-        this.border_w = 25;
+        this.border_w = 1;
 
-        let w = 325;
+        let w = 300;
         let h = (scene.game.config.height / 5);
 
         this.text_data = data;
         this.bg = scene.add.graphics()
-            .fillStyle(0xb2b2b2, 0.8)
-            .fillRoundedRect(10, 10, w - this.border_w, h, 10);
-
-        this.w = w - this.border_w;
+            .fillStyle(0x000000, 0.8)
+            .fillRect(10, 10, w - this.border_w, h, 10)
+            .lineStyle(this.border_w, 0x333833)
+            .strokeRect(10, 10, w - this.border_w, h, 10);
+        this.w = w - 20;
         this.h = h;
         this.start = { x: x, y: y, w: this.w, h: this.h };
 
         this.font = {
-            fontFamily: 'Arial Black', fontSize: 16, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 4,
-            align: 'left',
-            wordWrap: { width: this.w - this.border_w * 2, useAdvancedWrap: true }
+            fontFamily: '"Press Start 2P", system-ui', 
+            fontSize: 12, 
+            color: '#00ff00',
+            align: 'left', 
+            wordWrap: { width: this.w - this.border_w * 2, useAdvancedWrap: true },
+            lineSpacing: 8, 
         }
 
         this.text = scene.add.text(25, 25, "", this.font);
@@ -126,7 +129,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
             }, this.scene.scene)
 
             this.scene.input.once('pointerdown', () => {
-                this.text.setText(""); // 4 hours to fix this FML
+                this.text.setText(""); // 4 hours to fix this bug :)
                 this.auto_emit_flag = false;
                 this.#load_next_line();
             });
