@@ -13,7 +13,8 @@ export class MainMenu extends Scene {
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg')
             .setOrigin(0.5, 0.5);
 
-        this.add.image(512, 300, 'titlelogo');
+        this.add.image(512, 300, 'titlelogo')
+            .setScale(0.5, 0.5);
         this.sounds = this.registry.get('sound_bank');
 
         this.emitter.removeAllListeners(); // clean up event listeners
@@ -39,8 +40,11 @@ export class MainMenu extends Scene {
             this.registry.set('debug_mode', true);
         }
 
+        const menuSpacing = 50; // spacing between menu items
+        let menuY = 530; // starting Y position for menu items
+
         // Start Button
-        this.start_btn = this.add.text(512, 460, 'PLAY', fonts.medium)
+        this.start_btn = this.add.text(512, menuY, 'PLAY', fonts.medium)
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
@@ -52,7 +56,9 @@ export class MainMenu extends Scene {
                 });
             });
 
-        this.controls_btn = this.add.text(512, 510, 'CONTROLS', fonts.medium)
+        // Controls Button
+        menuY += menuSpacing;
+        this.controls_btn = this.add.text(512, menuY, 'CONTROLS', fonts.medium)
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
@@ -61,7 +67,9 @@ export class MainMenu extends Scene {
             });
 
         if (this.registry.get('debug_mode') === true) {
-            this.level_select_btn = this.add.text(512, 560, 'LEVELS', fonts.medium)
+            // Level Select Button
+            menuY += menuSpacing;
+            this.level_select_btn = this.add.text(512, menuY, 'LEVELS', fonts.medium)
                 .setOrigin(0.5)
                 .setInteractive()
                 .on('pointerdown', () => {
@@ -69,7 +77,9 @@ export class MainMenu extends Scene {
                     this.scene.start('LevelSelect');
                 });
 
-            this.sandbox_btn = this.add.text(512, 610, 'SANDBOX', fonts.medium)
+            // Sandbox Button
+            menuY += menuSpacing;
+            this.sandbox_btn = this.add.text(512, menuY, 'SANDBOX', fonts.medium)
                 .setOrigin(0.5)
                 .setInteractive()
                 .on('pointerdown', () => {
@@ -81,14 +91,15 @@ export class MainMenu extends Scene {
                     });
                 });
                 
-      // Disable Cheats Button
-      this.disable_cheats_btn = this.add.text(512, 660, 'EXIT', fonts.medium)
-        .setOrigin(0.5)
-        .setInteractive()
-        .on('pointerdown', () => {
-          this.#disable_cheats();
-        });
-    }
+            // Disable Cheats Button
+            menuY += menuSpacing;
+            this.disable_cheats_btn = this.add.text(512, menuY, 'EXIT', fonts.medium)
+                .setOrigin(0.5)
+                .setInteractive()
+                .on('pointerdown', () => {
+                    this.#disable_cheats();
+                });
+        }
 
         this.keys.m.on('down', this.sounds.toggle_mute)
         this.input.keyboard.createCombo(CheatCode, { resetOnWrongKey: true });
