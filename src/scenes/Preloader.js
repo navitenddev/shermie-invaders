@@ -132,7 +132,7 @@ export class Preloader extends Scene {
         });
 
         for (let i = 1; i <= 22; i++) {
-            this.load.spritesheet(`enemy${i}`, `characters/enemies/enemy${i}.png`, {
+            this.load.spritesheet(`enemy${i}`, `characters/enemies/enemyspritesheet.png`, {
                 frameWidth: 60,
                 frameHeight: 60,
             });

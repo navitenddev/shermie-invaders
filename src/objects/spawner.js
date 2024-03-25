@@ -71,7 +71,6 @@ class ObjectSpawner {
             ["enemy10", "enemy11", "enemy12"],
             ["enemy13", "enemy14", "enemy15"],
             ["enemy16", "enemy17", "enemy18"],
-            ["enemy19", "enemy20", "enemy21"],
         ]
         // anim keys for this level
         const ANIM_KEYS_LVL = this.grid_anims[(this.scene.registry.get('level') - 1) % this.grid_anims.length];
