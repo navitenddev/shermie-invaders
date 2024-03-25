@@ -1,66 +1,90 @@
 [
   {
-    "key": "prof_oak_intro_speech",
-    "lines": [
-      "Hello there! Welcome to the world of Pokémon!",
-      "My name is Oak! People call me the Pokémon Prof!",
-      "This world is inhabited by creatures called Pokémon!",
-      "For some people, Pokémon are pets. Other use them for fights.",
-      "Myself... I study Pokémon as a profession.",
-      "First, what is your name?",
-      "Right! So your name is PLAYER",
-      "This is my grandson. He's been your rival since you were a baby.",
-      "...Erm, what is his name again?",
-      "That's right! I remember now! His name is RIVAL.",
-      "Your very own Pokémon legend is about to unfold!",
-      "A world of dreams and adventures with Pokémon awaits! Let's go!"
-    ]
-  },
-  {
-    "key": "test1",
-    "lines": [
-      "Hello, this is the first thing I'm gonna say.",
-      "And then I'm gonna say this too. Oh boy isn't this exciting",
-      "Then by some freak of a miracle, I am ALSO going to say this too. Isn't life wild?",
-      "Okay im done bye"
-    ]
-  },
-  {
     "key": "test2",
-    "lines": ["Yo what's goodie", "Okay cool beans", "buh bye dood"]
+    "lines": [ "Yo what's goodie", "Okay cool beans", "buh bye dood" ]
   },
   {
     "key": "win1",
-    "lines": ["AYOOOOOO", "SHERMIE IN DA HOUSE"]
+    "lines": [ "AYOOOOOO", "SHERMIE IN DA HOUSE" ]
   },
   {
     "key": "lose1",
-    "lines": ["We may have lost the battle...", "but not the war..."]
+    "lines": [ "We may have lost the battle...", "but not the war..." ]
   },
   {
     "key": "shermie_hurt",
-    "lines": ["ouch! that hurt!"]
+    "lines": [ "ouch! that hurt!" ]
   },
   {
     "key": "shermie_shieldgone",
-    "lines": ["Ah! Blasted right through the shield!"]
+    "lines": [ "Ah! Blasted right through the shield!" ]
   },
   {
     "key": "shermie_start",
-    "lines": [
-      "Player, we're being invaded by malware!",
-      "Help me take them out so we don't lose our jobs!"
-    ]
+    "lines": [ "Player, we're being invaded by malware!", "Help me take them out so we don't lose our jobs!" ]
   },
   {
     "key": "shermie_dead",
-    "lines": ["NoooooOOOOoOOOoOOOO!!!"]
+    "lines": [ "NoooooOOOOoOOOoOOOO!!!" ]
   },
   {
     "key": "sandbox_tips",
+    "lines": [ "Welcome to Sandbox Mode!", "Click the buttons on the top right to spawn enemies!" ]
+  },
+  {
+    "key": "level1",
     "lines": [
-      "Welcome to Sandbox Mode!",
-      "Click the buttons on the top right to spawn enemies!"
+      "The adventure begins. Remember, every click can change your fate.",
+      "These malware are tricky! Keep your firewall up and your scanner running.",
+      "Victory lies in preparation. Upgrade often."
+    ]
+  },
+  {
+    "key": "level2",
+    "lines": [
+      "You've passed the first test, but beware, the challenges get harder.",
+      "Remember, some malware can hide. Stay vigilant.",
+      "Upgrades are essential for survival. Don't forget to visit the store."
+    ]
+  },
+  {
+    "key": "level3",
+    "lines": [
+      "Well done so far. Your skills are improving, but so are the malware.",
+      "Teamwork is key. Sometimes, a direct attack isn't the best option.",
+      "Keep an eye on your resources. Efficiency is crucial."
+    ]
+  },
+  {
+    "key": "level4",
+    "lines": [
+      "You're halfway there. But don't let your guard down.",
+      "The malware is evolving. Be ready to adapt your strategies.",
+      "Balance is important. Upgrade your attack and defense equally."
+    ]
+  },
+  {
+    "key": "level5",
+    "lines": [
+      "The battle intensifies. Your courage and skills are commendable.",
+      "Beware of overconfidence. The biggest threats await.",
+      "Diversity in your tactics will be your strength. Explore all possibilities."
+    ]
+  },
+  {
+    "key": "level6",
+    "lines": [
+      "You've come a long way, but the end is not yet in sight.",
+      "In the digital world, the strongest shield and the sharpest sword is knowledge.",
+      "Prepare for the final stretch. Your greatest challenge is coming."
+    ]
+  },
+  {
+    "key": "level7",
+    "lines": [
+      "The final level. All your skills will be tested.",
+      "Remember, in the world of cybersecurity, there's no end. Stay vigilant.",
+      "Congratulations on making it this far. The last battle will be your hardest."
     ]
   }
 ]

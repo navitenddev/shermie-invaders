@@ -7,6 +7,7 @@ import ScoreManager from '../utils/ScoreManager.js';
 import { GridEnemy } from '../objects/enemy_grid';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 
+
 // The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
 import { SoundBank } from '../sounds';
 
@@ -27,14 +28,16 @@ export class Game extends Scene {
     create() {
 
         // fade in from black
-        this.cameras.main.fadeIn(500, 0, 0, 0);
+        this.cameras.main.fadeIn(1000, 0, 0, 0);
+
+        this.level = this.registry.get('level');
+        this.level_transition_flag = false;
+        this.level_text = this.add.text(this.sys.game.config.width * (2.9 / 4), 16, `LEVEL:${this.level}`, fonts.medium);
 
         // create/scale BG image 
-        let bg = this.add.image(0, 0, 'background').setAlpha(0.85);
+        let bgKey = `BG${this.level}`;
+        let bg = this.add.image(0, 0, bgKey).setAlpha(0.90);
         bg.setOrigin(0, 0);
-        bg.displayWidth = this.sys.game.config.width;
-        bg.scaleY = bg.scaleX;
-        bg.y = -250;
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
@@ -52,17 +55,13 @@ export class Game extends Scene {
         this.emitter.once('player_lose', this.goto_scene, this)
 
         // Note: this.level is pass by value!
-        this.level = this.registry.get('level');
-        this.level_transition_flag = false;
-        this.level_text = this.add.text(this.sys.game.config.width * (2.9 / 4), 16, `LEVEL:${this.level}`, fonts.medium);
+
 
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
         this.player_vars.power = "";
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
             () => {
-                if (this.level === 1)
-                    this.start_dialogue('shermie_start', true)
                 this.keys.p.on('down', () => this.pause());
                 this.keys.esc.on('down', () => this.pause());
             }
@@ -218,17 +217,17 @@ export class Game extends Scene {
                     // console.log('Shield particle emitter explode called');
                     player.stats.shield--;
                     if (player.stats.shield < currShield) {
-                        this.start_dialogue('shermie_shieldgone', false);
+                        //this.start_dialogue('shermie_shieldgone', false);
                         currShield = player.stats.shield;
                     }
                     player.updateHitbox();
                 } else {
                     this.objs.explode_at(player.x, player.y);
                     player.die();
-                    if (this.player_vars.lives === 0)
-                        this.start_dialogue('shermie_dead', false);
-                    else
-                        this.start_dialogue('shermie_hurt', false);
+                    //if (this.player_vars.lives === 0)
+                        //this.start_dialogue('shermie_dead', false);
+                    //else
+                       // this.start_dialogue('shermie_hurt', false);
                 }
             }
         });

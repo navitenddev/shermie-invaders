@@ -295,7 +295,8 @@ export class Store extends Scene {
                 let playerVars = this.registry.get('player_vars');
                 playerVars.stats = this.stats;
                 this.registry.set('player_vars', playerVars);
-                this.scene.start('Game', { playerStats: this.stats });
+                // Before Dialouge change this.scene.start('Game', { playerStats: this.stats });
+                this.scene.start('Story');
             }
         );
     }
