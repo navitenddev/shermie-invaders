@@ -1,6 +1,5 @@
 import { EnemyBulletConstDefs as bull_defs } from "./bullet"
 import { EventDispatcher } from "../utils/event_dispatcher";
-import { fonts } from "../utils/fontStyle";
 import { Powerups, PowerupsConstDefs } from "../objects/powerup";
 
 /**

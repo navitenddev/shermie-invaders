@@ -172,6 +172,10 @@ export class Preloader extends Scene {
 
         this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');
 
+        this.load.bitmapFont('GlassTTY', 'fonts/GlassTTY.png', 'fonts/GlassTTY.xml');
+        this.load.bitmapFont('PressStart2P', 'fonts/PressStart2P.png', 'fonts/PressStart2P.xml');
+        this.load.bitmapFont('PressStart2P-Stroke', 'fonts/PressStart2P-Stroke.png', 'fonts/PressStart2P-Stroke.xml');
+
     }
     create() {
         //  When all the assets have loaded, it's often worth creating global

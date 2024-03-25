@@ -1,4 +1,6 @@
 import { EventDispatcher } from "../utils/event_dispatcher"
+import { bitmapFonts, fonts } from './fontStyle.js';
+
 const dialogue_data = require('./data/dialogue.json');
 
 const DIALOGUE_MODE = {
@@ -46,16 +48,9 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.h = h;
         this.start = { x: x, y: y, w: this.w, h: this.h };
 
-        this.font = {
-            fontFamily: '"Press Start 2P", system-ui', 
-            fontSize: 12, 
-            color: '#00ff00',
-            align: 'left', 
-            wordWrap: { width: this.w - this.border_w * 2, useAdvancedWrap: true },
-            lineSpacing: 8, 
-        }
-
-        this.text = scene.add.text(25, 25, "", this.font);
+        this.text = scene.add.bitmapText(25, 25, bitmapFonts.PressStart2P, '', fonts.small.sizes[bitmapFonts.PressStart2P]).setMaxWidth(this.w - 10);;
+        this.text.setLineSpacing(14);
+        this.text.setTint(0x00FF00);
         this.add([this.bg, this.text]);
         this.emitter.once('dialogue_start', (key) => {
             this.#activate(key)
@@ -117,7 +112,10 @@ class DialogueManager extends Phaser.GameObjects.Container {
     }
 
     #add_next_char() {
-        this.text.text += this.line[this.char_index++];
+        const currentText = this.text.text;
+        const newText = currentText + this.line[this.char_index++];
+        this.text.setText(newText);
+    
         if (this.char_index === this.line.length) {
             // console.log("Line is done, waiting on player to click again")
             this.auto_emit_flag = true;

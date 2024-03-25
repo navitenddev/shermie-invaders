@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs, CHEAT_CODE_SEQUENCE as CheatCode } from '../keyboard_input';
-import { fonts } from '../utils/fontStyle.js';
+import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 
 export class MainMenu extends Scene {
@@ -45,7 +45,7 @@ export class MainMenu extends Scene {
         let menuY = 530; // starting Y position for menu items
 
         // Start Button
-        this.start_btn = this.add.text(512, menuY, 'PLAY', fonts.medium)
+        this.start_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'PLAY', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
@@ -59,7 +59,7 @@ export class MainMenu extends Scene {
 
         // Controls Button
         menuY += menuSpacing;
-        this.controls_btn = this.add.text(512, menuY, 'CONTROLS', fonts.medium)
+        this.controls_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke,'CONTROLS', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
@@ -69,7 +69,7 @@ export class MainMenu extends Scene {
 
         // Level Select Button
         menuY += menuSpacing;
-        this.level_select_btn = this.add.text(512, menuY, 'LEVELS', fonts.medium)
+        this.level_select_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke,'LEVELS', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
@@ -80,7 +80,7 @@ export class MainMenu extends Scene {
         if (this.registry.get('debug_mode') === true) {
             // Sandbox Button
             menuY += menuSpacing;
-            this.sandbox_btn = this.add.text(512, menuY, 'SANDBOX', fonts.medium)
+            this.sandbox_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke,'SANDBOX', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
                 .setOrigin(0.5)
                 .setInteractive()
                 .on('pointerdown', () => {
@@ -94,7 +94,7 @@ export class MainMenu extends Scene {
                 
             // Disable Cheats Button
             menuY += menuSpacing;
-            this.disable_cheats_btn = this.add.text(512, menuY, 'EXIT', fonts.medium)
+            this.disable_cheats_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke,'EXIT', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
                 .setOrigin(0.5)
                 .setInteractive()
                 .on('pointerdown', () => {

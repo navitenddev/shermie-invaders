@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { fonts } from '../utils/fontStyle.js';
+import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 
 const STAT_MIN = 1;
 
@@ -60,18 +60,18 @@ class MenuSpinner {
         const plusButtonX = centerX + totalBoxesWidth / 2; // 10 is an arbitrary offset for the button
 
         // Stat Name Text positioned above the boxes
-        this.statText = scene.add.text(firstBoxX, y - 5, `${displayName}:`, fonts.small).setOrigin(0, 0);
+        this.statText = scene.add.bitmapText(firstBoxX, y - 5, bitmapFonts.PressStart2P_Stroke, `${displayName}:`, fonts.small.sizes[bitmapFonts.PressStart2P]).setOrigin(0, 0);
         this.statText.setScale(1.2);
 
         // Display the current upgrade cost
-        this.upgradeCostText = scene.add.text(plusButtonX + 100, y + 15, '', fonts.medium).setOrigin(0.5, 0);
+        this.upgradeCostText = scene.add.bitmapText(plusButtonX + 100, y + 15, bitmapFonts.PressStart2P_Stroke, '', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0.5, 0);
 
         // Minus Button
-        this.minusButton = scene.add.text(minusButtonX, y + 25, '-', fonts.small).setOrigin(0.5, 0).setInteractive();
+        this.minusButton = scene.add.bitmapText(minusButtonX, y + 25, bitmapFonts.PressStart2P_Stroke, '-', fonts.small.sizes[bitmapFonts.PressStart2P]).setOrigin(0.5, 0).setInteractive();
         this.minusButton.setScale(1.5);
 
         // Plus Button
-        this.plusButton = scene.add.text(plusButtonX, y + 25, '+', fonts.small).setOrigin(0.5, 0).setInteractive();
+        this.plusButton = scene.add.bitmapText(plusButtonX, y + 25, bitmapFonts.PressStart2P_Stroke, '+', fonts.small.sizes[bitmapFonts.PressStart2P]).setOrigin(0.5, 0).setInteractive();
         this.plusButton.setScale(1.5);
 
         // Stat Boxes below the stat text
@@ -131,16 +131,15 @@ class MenuSpinner {
             console.warn("Catching warning on Update stat Display");
             return;
         }
-
+    
         const permanentStats = this.scene.registry.get('player_vars') || {};
         const isMaxedOut = this.stats[this.statKey] === SHOP_PRICES[this.statKey].length;
         const canAfford = this.scene.canAffordUpgrade(this.statKey, this.stats[this.statKey]);
         const nextLevelCost = isMaxedOut ? 'Max' : this.scene.getUpgradeCost(this.statKey, this.stats[this.statKey]);
-        // Determine if downgrading is possible based on whether the current stat level is greater than the permanent stat level.
         const canDowngrade = this.stats[this.statKey] > (permanentStats[this.statKey] || STAT_MIN);
-
+    
         this.fill_bar.update_bar(this.stats[this.statKey], SHOP_PRICES[this.statKey].length);
-
+    
         // this.statBoxes.forEach((box, index) => {
         //     const isPermanent = index < permanentStats[this.statKey];
         //     box.setFillStyle(isPermanent ? 0xFFD700 :
@@ -149,13 +148,11 @@ class MenuSpinner {
         // });
 
         // Update styles based on conditions
-        this.minusButton.setStyle({
-            color: canDowngrade ? '#FF0000' : '#ffffff'
-        });
-        this.plusButton.setFill(canAfford && !isMaxedOut ? '#00ff00' : '#ffffff');
-        this.upgradeCostText.setText(nextLevelCost).setFill(isMaxedOut ? '#FFD700' : (canAfford ? '#00ff00' : '#FF0000'));
+        this.minusButton.setTint(canDowngrade ? 0xFF0000 : 0xffffff);
+        this.plusButton.setTint(canAfford && !isMaxedOut ? 0x00ff00 : 0xffffff);
+        this.upgradeCostText.setText(nextLevelCost).setTint(isMaxedOut ? 0xFFD700 : (canAfford ? 0x00ff00 : 0xFF0000));
         this.statText.setText(`${this.displayName}: ${isMaxedOut ? 'Max' : this.stats[this.statKey]}`);
-    }
+        }
 }
 
 class MenuButton extends Phaser.GameObjects.Container {
@@ -164,50 +161,47 @@ class MenuButton extends Phaser.GameObjects.Container {
         scene.add.existing(this);
 
         this.border_w = 4;
-        this.btn = scene.add.text(this.border_w, this.border_w, text, {
-            ...fonts.small,
-            padding: { left: 15, right: 15, top: 10, bottom: 10 },
-            backgroundColor: '#FFD700',
-            borderRadius: 10,
-        })
+
+        // Create the background rectangle
+        this.background = scene.add.rectangle(0, 0, 0, 0, 0xFFD700);
+        this.background.setOrigin(0, 0);
+
+        this.btn = scene.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, text, fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
             .setInteractive()
             .setFontSize(24)
-            .setOrigin(0, 0);
+            .setOrigin(0.5, 0.5); // Set the origin to the center of the text
 
-        this.btn_rect = this.btn.getBounds();
+        // Update the background size based on the text dimensions
+        const textWidth = this.btn.width + 30;
+        const textHeight = this.btn.height + 20;
+        this.background.setSize(textWidth, textHeight);
+
+        // Position the text at the center of the background rectangle
+        this.btn.setPosition(textWidth / 2, textHeight / 2);
+
         this.btn_border = scene.add.graphics();
-
         this.btn_border.lineStyle(2, 0xFFFF00, 1)
-            .strokeRoundedRect(0, 0,
-                this.btn_rect.width + this.border_w * 2, this.btn_rect.height + this.border_w * 2,
-                10
-            );
+            .strokeRect(0, 0, textWidth, textHeight);
 
         this.btn.on('pointerover', () => {
-            this.btn.setStyle({ fill: '#FFEA00' });
+            this.background.setFillStyle(0xFFEA00);
             this.btn_border
                 .clear()
                 .lineStyle(3, 0xFFEA00, 1)
-                .strokeRoundedRect(0, 0,
-                    this.btn_rect.width + this.border_w * 2, this.btn_rect.height + this.border_w * 2,
-                    10
-                );
+                .strokeRect(0, 0, textWidth, textHeight);
         })
-            .on('pointerout', () => {
-                this.btn.setStyle({ fill: '#FFFFFF' });
-                this.btn_border
-                    .clear()
-                    .lineStyle(2, 0xFFFF00, 1)
-                    .strokeRoundedRect(0, 0,
-                        this.btn_rect.width + this.border_w * 2, this.btn_rect.height + this.border_w * 2,
-                        10
-                    );
-            })
-            .on('pointerdown', () => {
-                (args) ? cb(...args) : cb(args);
-            });
+        .on('pointerout', () => {
+            this.background.setFillStyle(0xFFD700);
+            this.btn_border
+                .clear()
+                .lineStyle(2, 0xFFFF00, 1)
+                .strokeRect(0, 0, textWidth, textHeight);
+        })
+        .on('pointerdown', () => {
+            (args) ? cb(...args) : cb(args);
+        });
 
-        this.add([this.btn, this.btn_border])
+        this.add([this.background, this.btn, this.btn_border]);
     }
 }
 
@@ -247,8 +241,8 @@ export class Store extends Scene {
             shield: 1,
         };
 
-        this.add.text(this.cameras.main.width / 2, 40, "Shermie Store", fonts.large).setOrigin(0.5, 0);
-        this.add.text(715, 190, "Cost", fonts.medium).setOrigin(0.5, 0.5);
+        this.add.bitmapText(this.cameras.main.width / 2, 40, bitmapFonts.PressStart2P_Stroke, "Shermie Store", fonts.large.sizes[bitmapFonts.PressStart2P]).setOrigin(0.5, 0);
+        this.add.bitmapText(715, 190, bitmapFonts.PressStart2P_Stroke, "Cost", fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0.5, 0.5);
 
         //Link Player stat key to display name
         const statDefinitions = [
@@ -284,11 +278,11 @@ export class Store extends Scene {
         const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_bux').setOrigin(0.5, 0.5).setScale(0.25);
         const moneyTextX = moneyIconX + moneyIcon.displayWidth / 2 + 5;
         const moneyTextY = moneyIconY;
-        this.moneyText = this.add.text(moneyTextX, moneyTextY, `${this.player_vars.wallet}`, fonts.medium).setOrigin(0, 0.5);
+        this.moneyText = this.add.bitmapText(moneyTextX, moneyTextY,bitmapFonts.PressStart2P_Stroke, `${this.player_vars.wallet}`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0, 0.5);
 
         let next_level_btn = new MenuButton(this,
             this.game.config.width / 2.8, this.game.config.height - 100,
-            'Next Level?',
+            'Next Level',
             () => {
                 this.initialStats = Object.assign({}, this.stats);
                 this.registry.set('playerPermanentStats', Object.assign({}, this.stats));
