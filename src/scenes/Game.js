@@ -153,6 +153,13 @@ export class Game extends Scene {
     }
 
     update(time, delta) {
+        if (this.inGameDialogueManager.isActive) {
+            // Update dialogue position to follow the player
+            this.inGameDialogueManager.updateDialoguePosition(
+                this.objs.player.x -130,
+                this.objs.player.y - 50 
+            );
+        }
         if (this.objs.player)
             this.objs.player.update(time, delta, this.keys)
         // Update lives text and sprites
@@ -238,7 +245,7 @@ export class Game extends Scene {
                     // console.log('Shield particle emitter explode called');
                     player.stats.shield--;
                     if (player.stats.shield < currShield) {
-                        //this.start_dialogue('shermie_shieldgone', false);
+                        this.inGameDialogueManager.displayDialogue('shermie_shieldgone', 2500);
                         currShield = player.stats.shield;
                     }
                     player.updateHitbox();
@@ -248,7 +255,7 @@ export class Game extends Scene {
                     if (this.player_vars.lives === 0)
                         this.inGameDialogueManager.displayDialogue('shermie_dead', 3000);
                     else
-                        this.inGameDialogueManager.displayDialogue('shermie_hurt', 3000);
+                        this.inGameDialogueManager.displayDialogue('shermie_hurt', 2000);
                 }
             }
         });

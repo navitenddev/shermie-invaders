@@ -12,19 +12,12 @@ class InGameDialogueManager {
         this.initDialogueBox();
     }
 
-    initDialogueBox() {
-        this.dialogueBox = this.scene.add.text(
-            this.scene.cameras.main.centerX, // Centered horizontally
-            this.scene.cameras.main.height * 0.85, // Positioned at the bottom of the screen
-            '', // Initial text
-            {
-                ...fonts.medium,
-                align: 'center',
-                fixedWidth: 800, // Adjust as needed
-                fixedHeight: 100, // Adjust as needed
-            }
-        ).setOrigin(0.5, 0.5).setVisible(false).setDepth(169);
-    }
+initDialogueBox() {
+    this.dialogueBox = this.scene.add.text(0, 0, '', {
+        ...fonts.small,
+        align: 'center'
+    }).setVisible(false).setDepth(101); // Ensure it's above the character
+}
 
     displayDialogue(key, duration = 3000) {
         const dialogueEntry = this.textData.find(entry => entry.key === key);
@@ -51,6 +44,12 @@ class InGameDialogueManager {
                 }
             }
         });
+    }
+
+    updateDialoguePosition(x, y) {
+        if (this.dialogueBox && this.isActive) {
+            this.dialogueBox.setPosition(x, y);
+        }
     }
 
     showLine(line) {
