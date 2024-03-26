@@ -222,7 +222,7 @@ export class Store extends Scene {
     create() {
         this.player_vars = this.registry.get('player_vars')
         //Background
-        this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'upgradeTilemap')
+        this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'BG5')
             .setOrigin(0.5, 0.5);
 
         const startY = 250;
@@ -295,7 +295,8 @@ export class Store extends Scene {
                 let playerVars = this.registry.get('player_vars');
                 playerVars.stats = this.stats;
                 this.registry.set('player_vars', playerVars);
-                this.scene.start('Game', { playerStats: this.stats });
+                // Before Dialouge change this.scene.start('Game', { playerStats: this.stats });
+                this.scene.start('Story');
             }
         );
     }

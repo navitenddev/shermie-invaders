@@ -6,6 +6,8 @@ import { Barrier } from '../objects/barrier.js';
 import ScoreManager from '../utils/ScoreManager.js';
 import { GridEnemy } from '../objects/enemy_grid';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
+import InGameDialogueManager from '../utils/InGameDialogueManager.js';
+
 
 // The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
 import { SoundBank } from '../sounds';
@@ -20,6 +22,7 @@ import { SoundBank } from '../sounds';
 
 export class Game extends Scene {
     emitter = EventDispatcher.getInstance();
+
     constructor() {
         super('Game');
     }
@@ -29,15 +32,28 @@ export class Game extends Scene {
     }
 
     create() {
+        this.inGameDialogueManager = new InGameDialogueManager(this);
         // fade in from black
-        this.cameras.main.fadeIn(500, 0, 0, 0);
+        this.cameras.main.fadeIn(1000, 0, 0, 0);
+
+        this.level = this.registry.get('level');
+        this.level_transition_flag = false;
+        this.level_text = this.add.text(this.sys.game.config.width * (2.9 / 4), 16, `LEVEL:${this.level}`, fonts.medium);
 
         // create/scale BG image 
-        let bg = this.add.image(0, 0, 'background').setAlpha(0.85);
-        bg.setOrigin(0, 0);
-        bg.displayWidth = this.sys.game.config.width;
-        bg.scaleY = bg.scaleX;
-        bg.y = -250;
+        let bgKey = `BG${this.level}`;
+        if (this.level === 3 || this.level === 5) {
+
+            let bg = this.add.tileSprite(0, 0, this.sys.game.config.width, this.sys.game.config.height, bgKey);
+            bg.setOrigin(0, 0);
+            bg.setScrollFactor(0); 
+            this.bgScrollSpeed = 0.5; 
+        } else {
+
+            // For other levels, just add the image normally
+            let bg = this.add.image(0, 0, bgKey).setAlpha(.90);
+            bg.setOrigin(0, 0);
+        }
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
@@ -55,17 +71,13 @@ export class Game extends Scene {
         this.emitter.once('player_lose', this.goto_scene, this)
 
         // Note: this.level is pass by value!
-        this.level = this.registry.get('level');
-        this.level_transition_flag = false;
-        this.level_text = this.add.text(this.sys.game.config.width * (2.9 / 4), 16, `LEVEL:${this.level}`, fonts.medium);
+
 
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
         this.player_vars.power = "";
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
             () => {
-                if (this.level === 1)
-                    this.start_dialogue('shermie_start', true)
                 this.keys.p.on('down', () => this.pause());
                 this.keys.esc.on('down', () => this.pause());
             }
@@ -111,6 +123,7 @@ export class Game extends Scene {
         if (!this.debugMode) {
             this.physics.world.debugGraphic.clear();
         }
+
     }
 
     pause() {
@@ -161,6 +174,14 @@ export class Game extends Scene {
     }
 
     update(time, delta) {
+        //Move dialogue with player
+        if (this.inGameDialogueManager.isActive) {
+            this.inGameDialogueManager.updateDialoguePosition(
+                this.objs.player.x -130,
+                this.objs.player.y - 50 
+            );
+        }
+
         if (this.objs.player)
             this.objs.player.update(time, delta, this.keys)
         // Update lives text and sprites
@@ -170,6 +191,15 @@ export class Game extends Scene {
         this.updateShieldSprites();
         this.objs.ai_grid_enemies(time);
         this.check_gameover();
+
+        //background scroller affect for scroller levels
+        if (this.level === 3 || this.level === 5) {
+            this.children.list.forEach((child) => {
+                if (child instanceof Phaser.GameObjects.TileSprite) {
+                    child.tilePositionY -= this.bgScrollSpeed * delta/2;
+                }
+            });
+        }
     }
 
 
@@ -244,7 +274,7 @@ export class Game extends Scene {
                     // console.log('Shield particle emitter explode called');
                     player.stats.shield--;
                     if (player.stats.shield < currShield) {
-                        this.start_dialogue('shermie_shieldgone', false);
+                        this.inGameDialogueManager.displayDialogue('shermie_shieldgone', 2500);
                         currShield = player.stats.shield;
                     }
                     player.updateHitbox();
@@ -252,9 +282,9 @@ export class Game extends Scene {
                     this.objs.explode_at(player.x, player.y);
                     player.die();
                     if (this.player_vars.lives === 0)
-                        this.start_dialogue('shermie_dead', false);
+                        this.inGameDialogueManager.displayDialogue('shermie_dead', 3000);
                     else
-                        this.start_dialogue('shermie_hurt', false);
+                        this.inGameDialogueManager.displayDialogue('shermie_hurt', 2000);
                 }
             }
         });

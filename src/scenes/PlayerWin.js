@@ -12,7 +12,7 @@ export class PlayerWin extends Scene {
         this.cameras.main.fadeIn(1000, 0, 0, 0);
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE, () => {
             // do dis when fade done
-            this.start_dialogue('win1')
+            //this.start_dialogue('win1')
         });
 
         this.emitter.removeAllListeners(); // clean up event listeners

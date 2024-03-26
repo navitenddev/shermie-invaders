@@ -1,66 +1,106 @@
 [
   {
-    "key": "prof_oak_intro_speech",
-    "lines": [
-      "Hello there! Welcome to the world of Pokémon!",
-      "My name is Oak! People call me the Pokémon Prof!",
-      "This world is inhabited by creatures called Pokémon!",
-      "For some people, Pokémon are pets. Other use them for fights.",
-      "Myself... I study Pokémon as a profession.",
-      "First, what is your name?",
-      "Right! So your name is PLAYER",
-      "This is my grandson. He's been your rival since you were a baby.",
-      "...Erm, what is his name again?",
-      "That's right! I remember now! His name is RIVAL.",
-      "Your very own Pokémon legend is about to unfold!",
-      "A world of dreams and adventures with Pokémon awaits! Let's go!"
-    ]
-  },
-  {
-    "key": "test1",
-    "lines": [
-      "Hello, this is the first thing I'm gonna say.",
-      "And then I'm gonna say this too. Oh boy isn't this exciting",
-      "Then by some freak of a miracle, I am ALSO going to say this too. Isn't life wild?",
-      "Okay im done bye"
-    ]
-  },
-  {
     "key": "test2",
-    "lines": ["Yo what's goodie", "Okay cool beans", "buh bye dood"]
+    "lines": [ "Yo what's goodie", "Okay cool beans", "buh bye dood" ]
   },
   {
     "key": "win1",
-    "lines": ["AYOOOOOO", "SHERMIE IN DA HOUSE"]
+    "lines": [ "AYOOOOOO", "SHERMIE IN DA HOUSE" ]
   },
   {
     "key": "lose1",
-    "lines": ["We may have lost the battle...", "but not the war..."]
+    "lines": [ "We may have lost the battle...", "but not the war..." ]
   },
   {
     "key": "shermie_hurt",
-    "lines": ["ouch! that hurt!"]
+    "lines": [ "ouch! that hurt!" ]
   },
   {
     "key": "shermie_shieldgone",
-    "lines": ["Ah! Blasted right through the shield!"]
+    "lines": [ "Ah! Blasted right through the shield!" ]
   },
   {
     "key": "shermie_start",
-    "lines": [
-      "Player, we're being invaded by malware!",
-      "Help me take them out so we don't lose our jobs!"
-    ]
+    "lines": [ "Player, we're being invaded by malware!", "Help me take them out so we don't lose our jobs!" ]
   },
   {
     "key": "shermie_dead",
-    "lines": ["NoooooOOOOoOOOoOOOO!!!"]
+    "lines": [ "NoooooOOOOoOOOoOOOO!!!" ]
   },
   {
     "key": "sandbox_tips",
+    "lines": [ "Welcome to Sandbox Mode!", "Click the buttons on the top right to spawn enemies!" ]
+  },
+  {
+    "key": "level1",
     "lines": [
-      "Welcome to Sandbox Mode!",
-      "Click the buttons on the top right to spawn enemies!"
+      "Shermie's adventure begins at the peaceful Navitend Farm.",
+      "A place of harmony, soon to be disturbed by the shadow of The Nexus.",
+      "Little did Shermie know, his world was about to change forever.",
+      "As the sun sets, a strange silence falls over the farm, heralding the onset of chaos.",
+      "Shermie looks up, sensing the impending threat, ready to protect his home."
+    ]
+  },
+  {
+    "key": "level2",
+    "lines": [
+      "The city is under siege! Buildings crumble under the digital assault of The Nexus.",
+      "Shermie must navigate through the chaos to save his friends.",
+      "Streets once filled with joy are now battlegrounds of despair.",
+      "The Nexus's cyber minions swarm, exploiting every vulnerability.",
+      "With each step, Shermie vows to restore peace to the city's heart."
+    ]
+  },
+  {
+    "key": "level3",
+    "lines": [
+      "Ascending beyond the city's turmoil, Shermie finds himself amidst the clouds,",
+      "determined to halt the invaders' advance before they reach space.",
+      "Surrounded by the vastness of the sky, he faces the enemy's aerial fleet,",
+      "Each cloud a witness to the fierce battle between hope and despair.",
+      "With the wind as his ally, Shermie maneuvers through this ethereal battlefield,",
+      "His resolve as strong as the thunder, striking fear into the heart of the enemy.",
+      "This skyward clash is but a prelude to the greater war looming in the stars."
+    ]
+  },
+  {
+    "key": "level4",
+    "lines": [
+      "Now in orbit, Shermie defends Earth from a relentless barrage,",
+      "shielding his home from the debris of war and cyber threats.",
+      "Each missile intercepted, each enemy vanquished, brings hope.",
+      "Earth hangs in the balance, its fate tied to Shermie's bravery.",
+      "The orbit becomes a dance of danger and defiance, Shermie leading the way."
+    ]
+  },
+  {
+    "key": "level5",
+    "lines": [
+      "The chase continues back to the enemy's lair, the boss spaceship.",
+      "Shermie's resolve hardens against the cold backdrop of space.",
+      "The enemy's stronghold looms large, a dark fortress of digital doom.",
+      "Inside, The Nexus concocts its final plans for galaxy-wide domination.",
+      "Shermie prepares for the onslaught, a beacon of hope against the darkness."
+    ]
+  },
+  {
+    "key": "level6",
+    "lines": [
+      "Facing the ultimate defense outside the boss enemy spaceship,",
+      "Shermie prepares for the final confrontation with The Nexus.",
+      "The silence of space is shattered by the clash of wills.",
+      "Shermie's determination lights up the void, a challenge to the darkness.",
+      "This is more than a battle; it's a fight for the soul of the galaxy."
+    ]
+  },
+  {
+    "key": "level7",
+    "lines": [
+      "Inside the heart of darkness, Shermie faces The Nexus,",
+      "a vile entity hacking planets across the galaxy. This is the final battle.",
+      "With every fiber of his being, Shermie stands defiant against the looming threat.",
+      "The Nexus, a network of malice, meets its match in the heart of a hero.",
+      "This battle will decide the fate of countless worlds, Shermie's courage their last hope."
     ]
   }
 ]
