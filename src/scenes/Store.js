@@ -281,7 +281,7 @@ export class Store extends Scene {
         //Show Shermie Bux here
         const moneyIconX = 270;
         const moneyIconY = 190;
-        const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_bux').setOrigin(0.5, 0.5).setScale(0.25);
+        const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_bux').setOrigin(0.5, 0.5).setScale(0.12);
         const moneyTextX = moneyIconX + moneyIcon.displayWidth / 2 + 5;
         const moneyTextY = moneyIconY;
         this.moneyText = this.add.text(moneyTextX, moneyTextY, `${this.player_vars.wallet}`, fonts.medium).setOrigin(0, 0.5);
