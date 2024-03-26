@@ -16,6 +16,7 @@ class Dialogue extends Phaser.Scene {
         this.background = this.add.image(0, 0, 'Dialogue').setOrigin(0, 0);
         this.background.setDisplaySize(this.cameras.main.width, this.cameras.main.height); // Adjust the size to fit the screen
         this.background.setDepth(-1);
+        this.cameras.main.fadeIn(1000, 0, 0, 0);
 
         this.keys = InitKeyDefs(this);
         this.dialogue_mgr = new DialogueManager(this);
@@ -34,12 +35,14 @@ class Dialogue extends Phaser.Scene {
     }
 
     transitionToGame() {
-        // Stop the Dialogue scene
-        this.scene.stop('Dialogue');
+        // Start fade-out effect over 1000 milliseconds
+        this.cameras.main.fadeOut(1000, 0, 0, 0);
 
-        // Transition to the Game scene or previous scene as needed
-        // Adjust this logic according to your game's needs
-        this.scene.start('Game');
+        // Set up a callback for when the fade-out is complete
+        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, (camera) => {
+            // Transition to the Game scene
+            this.scene.start('Game');
+        });
     }
 }
 

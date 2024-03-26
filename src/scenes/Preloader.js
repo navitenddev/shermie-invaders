@@ -44,15 +44,13 @@ export class Preloader extends Scene {
 
         this.load.image("BG4", "backgrounds/BG4.png");
 
-        this.load.image("BG5", "backgrounds/leveloneTilemap.png");
+        this.load.image("BG5", "backgrounds/BG5.png");
 
         this.load.image("BG6", "backgrounds/BG6.png");
 
         this.load.image("BG7", "backgrounds/BG7.png");
 
         this.load.image("Dialogue", "backgrounds/Dialouge.png");
-
-        this.load.image("upgradeTilemap", "backgrounds/leveloneTilemap.png");
 
         this.load.image("losescreen", "backgrounds/losescreen.png");
 

@@ -28,7 +28,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
     delay_timer = 0.5;
 
-    constructor(scene, x = 320, y = 40) {
+    constructor(scene, x = 310, y = 30) {
         super(scene, x, y);
         scene.add.existing(this);
         scene.events.on('update', this.update, this);
@@ -98,29 +98,40 @@ class DialogueManager extends Phaser.GameObjects.Container {
     }
 
     loadNextLine() {
-        this.line = this.lines[this.line_index];
-        this.char_index = 0; // Prepare to show new line
-        this.text.setText(this.line); // Display the entire line immediately
+        if (this.line_index < this.lines.length) {
+            this.line = this.lines[this.line_index];
+            this.char_index = 0;
+            this.isLineComplete = false;
+            this.text.setText("");
+            this.typeNextChar();
+        } else {
+            // Dialogue is complete
+            this.emitter.emit('dialogue_complete');
+            this.deactivateDialogue();
+        }
+    }
+
+    typeNextChar() {
+        if (this.char_index < this.line.length) {
+            this.text.text += this.line.charAt(this.char_index);
+            this.char_index++;
+            this.scene.time.delayedCall(DialogueManager.text_delay, this.typeNextChar, [], this);
+        } else {
+            this.isLineComplete = true; // The line is now fully displayed.
+        }
     }
 
     advanceDialogue() {
-        if (!this.is_active) return;
-        console.error(`Advance Dialogue call`);
-
-        // Advance character index or line index based on current state
-        if (this.char_index < this.line.length - 1) {
-            // If not at the end of the current line, immediately display the full line
-            this.char_index = this.line.length - 1;
-            this.text.setText(this.line);
-        } else {
-            // If at the end, move to the next line
-            if (this.line_index < this.lines.length - 1) {
+        if (this.is_active) {
+            if (!this.isLineComplete) {
+                // If the line is not fully displayed, immediately display it all
+                this.char_index = this.line.length;
+                this.text.setText(this.line);
+                this.isLineComplete = true;
+            } else {
+                // If the line is complete, move to the next one
                 this.line_index++;
                 this.loadNextLine();
-            } else {
-                // If no more lines, complete the dialogue
-                this.emitter.emit('dialogue_complete');
-                this.deactivateDialogue();
             }
         }
     }

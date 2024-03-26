@@ -222,7 +222,7 @@ export class Store extends Scene {
     create() {
         this.player_vars = this.registry.get('player_vars')
         //Background
-        this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'upgradeTilemap')
+        this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'BG5')
             .setOrigin(0.5, 0.5);
 
         const startY = 250;
