@@ -48,14 +48,19 @@ export class MainMenu extends Scene {
         this.start_btn = this.add.text(512, menuY, 'PLAY', fonts.medium)
             .setOrigin(0.5)
             .setInteractive()
-            .on('pointerdown', () => {
-                this.sound.get('start').stop();
-                this.sounds.bank.sfx.win.play();
-                this.cameras.main.fadeOut(200, 0, 0, 0);
-                this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-                    this.scene.start('Story');
-                });
+        this.isTransitioning = false;
+
+        this.start_btn.on('pointerdown', () => {
+            if (this.isTransitioning) return;
+            this.isTransitioning = true;
+
+            this.sound.get('start').stop();
+            this.sounds.bank.sfx.win.play();
+            this.cameras.main.fadeOut(200, 0, 0, 0);
+            this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                this.scene.start('Story');
             });
+        });
 
         // Controls Button
         menuY += menuSpacing;

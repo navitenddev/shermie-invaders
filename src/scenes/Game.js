@@ -41,15 +41,20 @@ export class Game extends Scene {
         this.level_text = this.add.text(this.sys.game.config.width * (2.9 / 4), 16, `LEVEL:${this.level}`, fonts.medium);
 
         // create/scale BG image 
-        let bgKey = `BG${this.level}`;
-        if (this.level === 3 || this.level === 5) {
+        let bgKey;
+        if (this.level > 7) {
+            bgKey = 'BG5'; // Default to BG5 for levels above 7
+        } else {
+            bgKey = `BG${this.level}`; // Use the dynamic background key for levels 7 and below
+        }
 
+        if (this.level === 3 || this.level === 5) {
+            // If the level is 3 or 5, create a TileSprite instead of a static image
             let bg = this.add.tileSprite(0, 0, this.sys.game.config.width, this.sys.game.config.height, bgKey);
             bg.setOrigin(0, 0);
-            bg.setScrollFactor(0); 
-            this.bgScrollSpeed = 0.5; 
+            bg.setScrollFactor(0); // This makes sure it doesn't scroll with the camera
+            this.bgScrollSpeed = 0.5; // Adjust scroll speed as needed
         } else {
-
             // For other levels, just add the image normally
             let bg = this.add.image(0, 0, bgKey).setAlpha(1);
             bg.setOrigin(0, 0);
