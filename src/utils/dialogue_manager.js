@@ -28,7 +28,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
     delay_timer = 0.5;
 
-    constructor(scene, x = 310, y = 30) {
+    constructor(scene, x = 310, y = 20) {
         super(scene, x, y);
         scene.add.existing(this);
         scene.events.on('update', this.update, this);

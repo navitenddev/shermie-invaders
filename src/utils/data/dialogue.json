@@ -34,57 +34,73 @@
   {
     "key": "level1",
     "lines": [
-      "The adventure begins. Remember, every click can change your fate.",
-      "These malware are tricky! Keep your firewall up and your scanner running.",
-      "Victory lies in preparation. Upgrade often."
+      "Shermie's adventure begins at the peaceful Navitend Farm.",
+      "A place of harmony, soon to be disturbed by the shadow of The Nexus.",
+      "Little did Shermie know, his world was about to change forever.",
+      "As the sun sets, a strange silence falls over the farm, heralding the onset of chaos.",
+      "Shermie looks up, sensing the impending threat, ready to protect his home."
     ]
   },
   {
     "key": "level2",
     "lines": [
-      "You've passed the first test, but beware, the challenges get harder.",
-      "Remember, some malware can hide. Stay vigilant.",
-      "Upgrades are essential for survival. Don't forget to visit the store."
+      "The city is under siege! Buildings crumble under the digital assault of The Nexus.",
+      "Shermie must navigate through the chaos to save his friends.",
+      "Streets once filled with joy are now battlegrounds of despair.",
+      "The Nexus's cyber minions swarm, exploiting every vulnerability.",
+      "With each step, Shermie vows to restore peace to the city's heart."
     ]
   },
   {
     "key": "level3",
     "lines": [
-      "Well done so far. Your skills are improving, but so are the malware.",
-      "Teamwork is key. Sometimes, a direct attack isn't the best option.",
-      "Keep an eye on your resources. Efficiency is crucial."
+      "Ascending beyond the city's turmoil, Shermie finds himself amidst the clouds,",
+      "determined to halt the invaders' advance before they reach space.",
+      "Surrounded by the vastness of the sky, he faces the enemy's aerial fleet,",
+      "Each cloud a witness to the fierce battle between hope and despair.",
+      "With the wind as his ally, Shermie maneuvers through this ethereal battlefield,",
+      "His resolve as strong as the thunder, striking fear into the heart of the enemy.",
+      "This skyward clash is but a prelude to the greater war looming in the stars."
     ]
   },
   {
     "key": "level4",
     "lines": [
-      "You're halfway there. But don't let your guard down.",
-      "The malware is evolving. Be ready to adapt your strategies.",
-      "Balance is important. Upgrade your attack and defense equally."
+      "Now in orbit, Shermie defends Earth from a relentless barrage,",
+      "shielding his home from the debris of war and cyber threats.",
+      "Each missile intercepted, each enemy vanquished, brings hope.",
+      "Earth hangs in the balance, its fate tied to Shermie's bravery.",
+      "The orbit becomes a dance of danger and defiance, Shermie leading the way."
     ]
   },
   {
     "key": "level5",
     "lines": [
-      "The battle intensifies. Your courage and skills are commendable.",
-      "Beware of overconfidence. The biggest threats await.",
-      "Diversity in your tactics will be your strength. Explore all possibilities."
+      "The chase continues back to the enemy's lair, the boss spaceship.",
+      "Shermie's resolve hardens against the cold backdrop of space.",
+      "The enemy's stronghold looms large, a dark fortress of digital doom.",
+      "Inside, The Nexus concocts its final plans for galaxy-wide domination.",
+      "Shermie prepares for the onslaught, a beacon of hope against the darkness."
     ]
   },
   {
     "key": "level6",
     "lines": [
-      "You've come a long way, but the end is not yet in sight.",
-      "In the digital world, the strongest shield and the sharpest sword is knowledge.",
-      "Prepare for the final stretch. Your greatest challenge is coming."
+      "Facing the ultimate defense outside the boss enemy spaceship,",
+      "Shermie prepares for the final confrontation with The Nexus.",
+      "The silence of space is shattered by the clash of wills.",
+      "Shermie's determination lights up the void, a challenge to the darkness.",
+      "This is more than a battle; it's a fight for the soul of the galaxy."
     ]
   },
   {
     "key": "level7",
     "lines": [
-      "The final level. All your skills will be tested.",
-      "Remember, in the world of cybersecurity, there's no end. Stay vigilant.",
-      "Congratulations on making it this far. The last battle will be your hardest."
+      "Inside the heart of darkness, Shermie faces The Nexus,",
+      "a vile entity hacking planets across the galaxy. This is the final battle.",
+      "With every fiber of his being, Shermie stands defiant against the looming threat.",
+      "The Nexus, a network of malice, meets its match in the heart of a hero.",
+      "This battle will decide the fate of countless worlds, Shermie's courage their last hope."
     ]
   }
 ]
