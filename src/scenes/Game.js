@@ -27,10 +27,6 @@ export class Game extends Scene {
         super('Game');
     }
 
-    init() {
-        this.debugMode = false;
-    }
-
     create() {
         this.inGameDialogueManager = new InGameDialogueManager(this);
         // fade in from black
@@ -107,22 +103,6 @@ export class Game extends Scene {
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
-
-        // Toggle debug mode when 'X' key is pressed
-        this.keys.x.on('down', () => {
-            this.toggleDebug();
-        });
-
-        this.physics.world.drawDebug = this.debugMode;
-    }
-    
-    toggleDebug() {
-        this.debugMode = !this.debugMode;
-        this.physics.world.drawDebug = this.debugMode;
-        // Clear debug graphics when debug mode is turned off
-        if (!this.debugMode) {
-            this.physics.world.debugGraphic.clear();
-        }
 
     }
 
@@ -210,18 +190,11 @@ export class Game extends Scene {
             this.registry.set({ 'level': this.level + 1 });
             this.level_transition_flag = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
-            this.objs.player.changePower("");
-            
-            // Store the maximum level reached in localStorage
-            const maxLevelReached = localStorage.getItem('maxLevelReached') || 1;
-            if (this.level + 1 > maxLevelReached) {
-                localStorage.setItem('maxLevelReached', this.level + 1);
-            }
-            
+            this.player_vars.power = "";
             this.goto_scene("Player Win");
         } else if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
-            this.objs.player.changePower("");
+            this.player_vars.power = "";
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.goto_scene("Player Lose");
         }
