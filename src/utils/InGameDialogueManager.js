@@ -1,5 +1,5 @@
 import { EventDispatcher } from "../utils/event_dispatcher";
-import dialogue_data from './data/dialogue.json'; // Ensure correct path
+import dialogue_data from './data/dialogue.json';
 import { fonts } from '../utils/fontStyle.js';
 
 class InGameDialogueManager {
@@ -16,7 +16,7 @@ initDialogueBox() {
     this.dialogueBox = this.scene.add.text(0, 0, '', {
         ...fonts.small,
         align: 'center'
-    }).setVisible(false).setDepth(101); // Ensure it's above the character
+    }).setVisible(false).setDepth(101); 
 }
 
     displayDialogue(key, duration = 3000) {

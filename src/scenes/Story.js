@@ -27,11 +27,4 @@ export class Story extends Scene {
             this.scene.start('Game');
         });
     }
-
-    setBackgroundForLevel() {
-        // Set the background image based on the current level, adjusting for game scale
-        const backgroundKey = `level${this.level}Background`;
-        let bg = this.add.image(0, 0, backgroundKey).setOrigin(0, 0);
-        bg.setScale(this.scale.width / bg.width, this.scale.height / bg.height);
-    }
 }

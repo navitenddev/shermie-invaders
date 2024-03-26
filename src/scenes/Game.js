@@ -39,12 +39,13 @@ export class Game extends Scene {
         // create/scale BG image 
         let bgKey = `BG${this.level}`;
         if (this.level === 3 || this.level === 5) {
-            // If the level is 3 or 5, create a TileSprite instead of a static image
+
             let bg = this.add.tileSprite(0, 0, this.sys.game.config.width, this.sys.game.config.height, bgKey);
             bg.setOrigin(0, 0);
-            bg.setScrollFactor(0); // This makes sure it doesn't scroll with the camera
-            this.bgScrollSpeed = 0.5; // Adjust scroll speed as needed
+            bg.setScrollFactor(0); 
+            this.bgScrollSpeed = 0.5; 
         } else {
+
             // For other levels, just add the image normally
             let bg = this.add.image(0, 0, bgKey).setAlpha(.90);
             bg.setOrigin(0, 0);
@@ -153,13 +154,14 @@ export class Game extends Scene {
     }
 
     update(time, delta) {
+        //Move dialogue with player
         if (this.inGameDialogueManager.isActive) {
-            // Update dialogue position to follow the player
             this.inGameDialogueManager.updateDialoguePosition(
                 this.objs.player.x -130,
                 this.objs.player.y - 50 
             );
         }
+
         if (this.objs.player)
             this.objs.player.update(time, delta, this.keys)
         // Update lives text and sprites
@@ -170,10 +172,10 @@ export class Game extends Scene {
         this.objs.ai_grid_enemies(time);
         this.check_gameover();
 
+        //background scroller affect for scroller levels
         if (this.level === 3 || this.level === 5) {
             this.children.list.forEach((child) => {
                 if (child instanceof Phaser.GameObjects.TileSprite) {
-                    // Move the background for a scrolling effect
                     child.tilePositionY -= this.bgScrollSpeed * delta/2;
                 }
             });

@@ -14,7 +14,7 @@ class Dialogue extends Phaser.Scene {
 
     create(data) {
         this.background = this.add.image(0, 0, 'Dialogue').setOrigin(0, 0);
-        this.background.setDisplaySize(this.cameras.main.width, this.cameras.main.height); // Adjust the size to fit the screen
+        this.background.setDisplaySize(this.cameras.main.width, this.cameras.main.height); 
         this.background.setDepth(-1);
         this.cameras.main.fadeIn(1000, 0, 0, 0);
 
