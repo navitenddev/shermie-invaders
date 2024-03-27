@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { fonts } from '../utils/fontStyle.js';
+import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 
 /**
  * @classdesc A button that, when clicked, brings the player to that level.
@@ -17,7 +17,7 @@ class LevelButton {
     constructor(scene, x, y, level) {
         this.scene = scene;
         console.log(level);
-        this.scene.add.text(x, y, level, fonts.small)
+        this.scene.add.bitmapText(x, y, bitmapFonts.PressStart2P, level, fonts.small.sizes[bitmapFonts.PressStart2P])
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
@@ -57,7 +57,7 @@ export class LevelSelect extends Scene {
             }
         }
         
-        this.backButton = this.add.text(this.game.config.width / 2, this.game.config.height - 100, 'Back', fonts.medium)
+        this.backButton = this.add.bitmapText(this.game.config.width / 2, this.game.config.height - 100, bitmapFonts.PressStart2P_Stroke, 'Back', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {

@@ -1,4 +1,3 @@
-import { fonts } from "../utils/fontStyle";
 import { Powerups, PowerupsConstDefs } from "../objects/powerup";
 
 /**

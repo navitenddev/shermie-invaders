@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../keyboard_input';
-import { fonts } from '../utils/fontStyle.js';
+import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { Barrier } from '../objects/barrier.js';
 import ScoreManager from '../utils/ScoreManager.js';
 import { GridEnemy } from '../objects/enemy_grid';
@@ -33,7 +33,7 @@ export class Game extends Scene {
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
         // For now, the level dialogues will repeat after it exceeds the final level dialogue.
-        this.start_dialogue(`level${(this.level % 7) + 1}`, true, 30);
+        this.start_dialogue(`level${(this.level % 7) + 1}`, true, 23);
         // create/scale BG image 
         let bg = this.add.image(0, 0, 'background')
             .setAlpha(0.85)
@@ -67,21 +67,23 @@ export class Game extends Scene {
         // Note: this.level is pass by value!
         this.level = this.registry.get('level');
         this.level_transition_flag = false;
-        this.level_text = this.add.text(this.sys.game.config.width * (2.9 / 4), 16, `LEVEL:${this.level}`, fonts.medium);
+        this.level_text = this.add.bitmapText(0, 16, bitmapFonts.PressStart2P, `LEVEL:${this.level}`, fonts.medium.sizes[bitmapFonts.PressStart2P])
+            .setOrigin(1, 0)
+            .setPosition(this.sys.game.config.width - 16, 16);
 
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
         this.player_vars.power = "";
 
         // Player lives text and sprites
-        this.livesText = this.add.text(16, this.sys.game.config.height - 48, '3', fonts.medium);
+        this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, bitmapFonts.PressStart2P, '3', fonts.medium.sizes[bitmapFonts.PressStart2P]);
         this.livesSprites = this.add.group({
             key: 'lives',
             repeat: this.player_vars.lives - 2
         });
 
         // Player shields text and sprites
-        this.shieldsText = this.add.text(970, this.sys.game.config.height - 48, '0', fonts.medium);
+        this.shieldsText = this.add.bitmapText(970, this.sys.game.config.height - 48, bitmapFonts.PressStart2P, '0', fonts.medium.sizes[bitmapFonts.PressStart2P]);
         this.shieldsSprites = this.add.group({
             key: 'shields',
             repeat: this.player_stats.shield - 1

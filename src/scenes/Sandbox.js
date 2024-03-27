@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../keyboard_input';
-import { fonts } from '../utils/fontStyle.js';
+import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { Barrier } from '../objects/barrier.js';
 import ScoreManager from '../utils/ScoreManager.js';
 import { GridEnemy } from '../objects/enemy_grid';
@@ -17,28 +17,28 @@ class LevelSelector extends Phaser.GameObjects.Container {
         super(scene, x, y);
 
         scene.add.existing(this);
-        this.btn_down5 = scene.add.text(x, y, '-5', fonts.small)
+        this.btn_down5 = scene.add.bitmapText(x, y, bitmapFonts.PressStart2P_Stroke,'-5', fonts.small.sizes[bitmapFonts.PressStart2P])
             .setInteractive()
             .on('pointerup', function () {
                 scene.registry.set({ 'level': Math.max(1, scene.registry.get('level') - 5) });
                 lvl_text_obj.setText(`LEVEL:${scene.registry.get('level')}`)
             });
 
-        this.btn_down1 = scene.add.text(x + 40, y, '-1', fonts.small)
+        this.btn_down1 = scene.add.bitmapText(x + 40, y, bitmapFonts.PressStart2P_Stroke,'-1', fonts.small.sizes[bitmapFonts.PressStart2P])
             .setInteractive()
             .on('pointerup', function () {
                 scene.registry.set({ 'level': Math.max(1, scene.registry.get('level') - 1) });
                 lvl_text_obj.setText(`LEVEL:${scene.registry.get('level')}`)
             });
 
-        this.btn_up1 = scene.add.text(x + 80, y, '+1', fonts.small)
+        this.btn_up1 = scene.add.bitmapText(x + 80, y, bitmapFonts.PressStart2P_Stroke, '+1', fonts.small.sizes[bitmapFonts.PressStart2P])
             .setInteractive()
             .on('pointerup', function () {
                 scene.registry.set({ 'level': scene.registry.get('level') + 1 });
                 lvl_text_obj.setText(`LEVEL:${scene.registry.get('level')}`)
             });
 
-        this.btn_up5 = scene.add.text(x + 120, y, '+5', fonts.small)
+        this.btn_up5 = scene.add.bitmapText(x + 120, y, bitmapFonts.PressStart2P_Stroke,'+5', fonts.small.sizes[bitmapFonts.PressStart2P])
             .setInteractive()
             .on('pointerup', function () {
                 scene.registry.set({ 'level': scene.registry.get('level') + 5 });
@@ -165,13 +165,13 @@ export class Sandbox extends Scene {
         // Note: this.level is pass by value!
         this.level = this.registry.get('level');
         this.level_transition_flag = false;
-        this.level_text = this.add.text(this.sys.game.config.width * (2.9 / 4), 16, `LEVEL:${this.level}`, fonts.medium);
+        this.level_text = this.add.bitmapText(this.sys.game.config.width * (2.9 / 4), 16, bitmapFonts.PressStart2P_Stroke, `LEVEL:${this.level}`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]);
 
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
 
         // Player lives text and sprites
-        this.livesText = this.add.text(16, this.sys.game.config.height - 48, '---', fonts.medium);
+        this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, bitmapFonts.PressStart2P_Stroke, '---', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]);
         this.livesSprites = this.add.group({
             key: 'lives',
             repeat: 2
@@ -188,8 +188,8 @@ export class Sandbox extends Scene {
         this.keys.p.on('down', () => this.pause());
         this.keys.esc.on('down', () => this.pause());
 
-        this.mouse_pos_text = this.add.text(750, 75, `(0,0)`, fonts.small);
-        this.legend_text = this.add.text(this.game.config.width - 64, 300, "Click to Spawn", fonts.small);
+        this.mouse_pos_text = this.add.bitmapText(750, 75, bitmapFonts.PressStart2P_Stroke, `(0,0)`, fonts.small.sizes[bitmapFonts.PressStart2P]);
+        this.legend_text = this.add.bitmapText(this.game.config.width - 64, 300, bitmapFonts.PressStart2P_Stroke, "Click to Spawn", fonts.small.sizes[bitmapFonts.PressStart2P]);
         this.legend_text.setAngle(-90);
 
         this.lvl_select = new LevelSelector(this, this.game.config.width * (3 / 4), 48, this.level_text);

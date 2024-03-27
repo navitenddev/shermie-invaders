@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs } from '../keyboard_input';
-import { fonts } from '../utils/fontStyle.js';
+import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 
 export class PauseMenu extends Scene {
@@ -45,7 +45,7 @@ export class PauseMenu extends Scene {
 
         let menuY = boxY + 40;
         menuItems.forEach((item) => {
-            const menuItem = this.add.text(0, 0, item.text, fonts.medium)
+            const menuItem = this.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, item.text, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
                 .setOrigin(0.5)
                 .setInteractive()
                 .on('pointerdown', () => {

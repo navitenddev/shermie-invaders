@@ -1,14 +1,16 @@
 import { EventDispatcher } from "../utils/event_dispatcher"
+import { bitmapFonts, fonts } from './fontStyle.js';
+
 const dialogue_data = require('./data/dialogue.json');
 
 const DIALOGUE_MODE = {
     SLOW: 150,
-    MED: 75,
+    MED: 45,
     FAST: 25,
 };
 
 class DialogueManager extends Phaser.GameObjects.Container {
-    static text_delay = DIALOGUE_MODE.FAST;
+    static text_delay = DIALOGUE_MODE.MED;
     emitter = EventDispatcher.getInstance();
     text_data;
     bg;
@@ -33,7 +35,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
     constructor(scene, is_story_dialogue = false, font_size = 16, data = dialogue_data, x = 310, y = 120) {
         super(scene, x, y);
         scene.add.existing(this);
-        this.border_w = 25;
+        this.border_w = 20;
 
         let w = 600;
         let h = (scene.game.config.height / 5);
@@ -48,15 +50,12 @@ class DialogueManager extends Phaser.GameObjects.Container {
         if (this.is_story_dialogue)
             this.follow_player = false;
 
-        this.font = {
-            fontFamily: 'Arial Black', fontSize: font_size, color: '#ffffff',
-            stroke: '#000000', strokeThickness: 4,
-            align: 'left',
-            wordWrap: { width: this.w - this.border_w * 2, useAdvancedWrap: true }
-        }
-
-        this.text = scene.add.text(25, 25, "", this.font);
+        this.text = scene.add.bitmapText(25, 25, bitmapFonts.PressStart2P, '', font_size).setMaxWidth(this.w - 10);;
+        this.text.setLineSpacing(14)
+            .setTint(0xFFFFFF);
+        // .setTint(0x00FF00);
         this.add([this.text]);
+
         this.emitter.once('dialogue_start', (key) => {
             this.#activate(key)
         })
@@ -121,7 +120,10 @@ class DialogueManager extends Phaser.GameObjects.Container {
     }
 
     #add_next_char() {
-        this.text.text += this.line[this.char_index++];
+        const currentText = this.text.text;
+        const newText = currentText + this.line[this.char_index++];
+        this.text.setText(newText);
+
         if (this.char_index === this.line.length) {
             // console.log("Line is done, waiting on player to click again")
             this.auto_emit_flag = true;
@@ -133,7 +135,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
             }, this.scene.scene)
 
             this.scene.input.once('pointerdown', () => {
-                this.text.setText(""); // 4 hours to fix this FML
+                this.text.setText(""); // 4 hours to fix this bug :)
                 this.auto_emit_flag = false;
                 this.#load_next_line();
             });
