@@ -72,9 +72,12 @@ export class PauseMenu extends Scene {
         this.sounds.bank.music.ff7_fighting.stop();
         this.sounds.bank.sfx.click.play();
         this.sounds.bank.music.start.play();
+        this.scene.stop('PauseMenu');
+        this.scene.stop(this.prev_scene);
+        this.scene.start('MainMenu');
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-            this.scene.stop('PauseMenu');
-            this.scene.stop(this.prev_scene);
+            // this.scene.stop('PauseMenu');
+            // this.scene.stop(this.prev_scene);
             this.scene.start('MainMenu');
         });
     }
