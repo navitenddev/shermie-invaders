@@ -68,9 +68,7 @@ export class PauseMenu extends Scene {
     }
 
     quitGame() {
-        this.emitter.removeAllListeners(); // Clean up loose event listeners
-        this.cameras.main.fadeOut(200, 0, 0, 0);
-        this.sounds.bank.music.bg.stop();
+        this.emitter.removeAllListeners();
         this.sounds.bank.music.ff7_fighting.stop();
         this.sounds.bank.sfx.click.play();
         this.sounds.bank.music.start.play();

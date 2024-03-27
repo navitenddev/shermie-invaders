@@ -106,10 +106,6 @@ export class Game extends Scene {
         this.physics.world.drawDebug = this.debugMode;
     }
 
-    init_scene() {
-
-    }
-
     toggleDebug() {
         this.debugMode = !this.debugMode;
         this.physics.world.drawDebug = this.debugMode;
