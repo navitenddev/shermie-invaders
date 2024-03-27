@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { fonts } from '../utils/fontStyle.js';
+import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 
 export class HowToPlay extends Scene {
     constructor() {
@@ -10,22 +10,37 @@ export class HowToPlay extends Scene {
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg');
         this.animatedBg.setOrigin(0.5, 0.5);
         this.sounds = this.registry.get('sound_bank');
-        this.add.image(512, 300, 'howToPlayLogo');
+        this.add.image(512, 150, 'howToPlayLogo').setScale(0.8);
 
         let width = this.game.config.width
-        this.add.text(width / 3, 400,
-            'Movement:    A D or ← → \n\
-Shoot:       W or Space \n\
-Pause:       P or ESC \n\
-Mute Sounds: M \n\n\
-Good luck, have fun! \n\
-',
-            {
-                ...fonts.small,
-                align: 'left',
-            })
 
-        this.backButton = this.add.text(512, 600, 'Back', fonts.medium)
+        const instructionsText = 
+`Movement:
+  - A/D or Left Arrow/Right Arrow
+
+Shoot:
+  - W or Space
+        
+Pause:
+  - P or Esc
+        
+Mute Sounds:
+  - M
+        
+Goal:
+  - Eliminate all the enemies 
+    before they reach your base
+  - Avoid enemy attacks and
+    collect power-ups
+  - Advance to the next level
+    and earn Shermie Coins
+        
+Good luck and have fun!`;
+
+
+        this.add.bitmapText(width / 4, 250, bitmapFonts.PressStart2P_Stroke, instructionsText, fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
+
+        this.backButton = this.add.bitmapText(512, 600, bitmapFonts.PressStart2P_Stroke, 'Back', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {

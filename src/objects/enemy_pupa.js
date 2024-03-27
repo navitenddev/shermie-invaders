@@ -1,4 +1,4 @@
-import { fonts } from "../utils/fontStyle";
+import { bitmapFonts, fonts } from "../utils/fontStyle";
 
 class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     scoreValue = 200;
@@ -42,9 +42,9 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
         console.log("PUPA_PATHS");
         console.log(this.scene.PUPA_PATHS);
 
-        this.state_text = this.scene.add.text(this.x, this.y, this.ai_state, fonts.tiny);
-        this.hp_text = this.scene.add.text(this.x, this.y - 16, this.hp, fonts.tiny);
-        this.t_text = this.scene.add.text(this.follower.vec.x, this.follower.vec.y - 32, this.follower.t.toFixed(2), fonts.tiny);
+        this.state_text = this.scene.add.bitmapText(this.x, this.y, bitmapFonts.PressStart2P, this.ai_state, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
+        this.hp_text = this.scene.add.bitmapText(this.x, this.y - 16, bitmapFonts.PressStart2P, this.hp, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
+        this.t_text = this.scene.add.bitmapText(this.follower.vec.x, this.follower.vec.y - 32, bitmapFonts.PressStart2P, this.follower.t.toFixed(2), fonts.tiny.sizes[bitmapFonts.PressStart2P]);
         this.#change_state("ROAMING"); // do the sweep
     }
 

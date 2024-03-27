@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs } from '../keyboard_input';
-import { fonts } from '../utils/fontStyle.js';
+import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { SHOP_PRICES } from './Store.js';
 
@@ -23,32 +23,33 @@ class MenuSpinner {
      */
     constructor(scene, x, y, w, text, obj, key) {
         // - button
-        this.minus = scene.add.text(x, y, '-', fonts.small)
+        this.minus = scene.add.bitmapText(x, y, bitmapFonts.PressStart2P_Stroke, '-', fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
             .setInteractive()
             .on('pointerdown', function () {
                 obj[key] = Math.max(obj[key] - 1, STAT_MIN);
-                this.setStyle({ color: '#ff0000' });
+                this.setTint(0xff0000); 
             })
             .on('pointerup', function () {
-                this.setStyle(fonts.small);
+                this.setTint(0xffffff);
                 console.log(`Modified ${text} to ${obj[key]}`);
             });
+
         // + button
-        scene.add.text(x + w, y, '+', fonts.small)
+        scene.add.bitmapText(x + w, y, bitmapFonts.PressStart2P_Stroke, '+', fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
             .setInteractive()
             .on('pointerdown', function () {
                 if (key === 'lives') // LOL
                     obj[key] = Math.min(obj[key] + 1, 10);
                 else
                     obj[key] = Math.min(obj[key] + 1, SHOP_PRICES[key].length);
-                this.setStyle({ color: '#ff0000' });
+                this.setTint(0xff0000); 
             })
             .on('pointerup', function () {
-                this.setStyle(fonts.small);
+                this.setTint(0xffffff); 
                 console.log(`Modified ${text} to ${obj[key]}`);
             });
-
-        scene.add.text(x + 50, y, text, fonts.small);
+            
+        scene.add.bitmapText(x + 50, y, bitmapFonts.PressStart2P_Stroke, text, fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]);
     }
 }
 
@@ -138,19 +139,18 @@ export class StatsMenu extends Scene {
             new MenuSpinner(this, x, y + (y_gap * i++), w,
                 sd[1], this.player_vars.stats, sd[0]);
 
-        this.levelSkipButton = this.add.text(x, y + (y_gap * i), 'KILL ALL ENEMIES', fonts.small)
+            this.levelSkipButton = this.add.bitmapText(x, y + (y_gap * i), bitmapFonts.PressStart2P_Stroke, 'KILL ALL ENEMIES', fonts.small.sizes[bitmapFonts.PressStart2P])
             .setInteractive()
             .on('pointerdown', () => {
                 this.emitter.emit('kill_all_enemies');
             })
-            .setStyle({ fill: '#ff0000' });
-
-        i++;
-
-        this.backButton = this.add.text(boxX + 260, y + (y_gap * i), 'Back', fonts.small)
-            .setInteractive()
-            .on('pointerdown', () => { this.sounds.bank.sfx.click.play(); this.go_back(); });
-
+            .setTint(0xff0000); // Set the tint color to red
+            
+            i++;
+            
+            this.backButton = this.add.bitmapText(boxX + 260, y + (y_gap * i), bitmapFonts.PressStart2P_Stroke, 'Back', fonts.small.sizes[bitmapFonts.PressStart2P])
+                .setInteractive()
+                .on('pointerdown', () => { this.sounds.bank.sfx.click.play(); this.go_back(); });
 
         // Note: This is a quick example on how the IconButton should be used. Feel free to uncomment it and play around with it first if you need to add a new powerup to the game.
         // new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
