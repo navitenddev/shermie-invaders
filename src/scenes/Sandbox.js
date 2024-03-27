@@ -121,11 +121,6 @@ export class Sandbox extends Scene {
             url: "assets/paths/pupa.json",
             dataKey: "SPLINE1",
         });
-        this.load.json({
-            key: "PUPA_ILLUMINATI",
-            url: "assets/paths/pupa.json",
-            dataKey: "ILLUMINATI",
-        });
     }
 
     create() {
