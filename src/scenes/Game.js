@@ -51,7 +51,7 @@ export class Game extends Scene {
         } else {
 
             // For other levels, just add the image normally
-            let bg = this.add.image(0, 0, bgKey).setAlpha(1);
+            let bg = this.add.image(0, 0, 'BG5').setAlpha(1);
             bg.setOrigin(0, 0);
         }
 
