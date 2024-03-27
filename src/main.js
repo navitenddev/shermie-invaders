@@ -11,7 +11,6 @@ import { StatsMenu } from './scenes/StatsMenu';
 import { Store } from './scenes/Store';
 import { Dialogue } from './scenes/Dialogue';
 import { Sandbox } from './scenes/Sandbox';
-import { Story } from './scenes/Story';
 
 
 //  Find out more information about the Game Config at:
@@ -47,7 +46,6 @@ const config = {
         StatsMenu,
         Store,
         Dialogue,
-        Story,
     ]
 };
 export default new Phaser.Game(config);

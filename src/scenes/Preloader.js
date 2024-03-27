@@ -36,21 +36,9 @@ export class Preloader extends Scene {
 
         this.load.image('howToPlayLogo', 'ui/How_to_play.png');
 
-        this.load.image("BG1", "backgrounds/BG1.png");
+        this.load.image("background", "backgrounds/leveloneBG.png");
 
-        this.load.image("BG2", "backgrounds/BG2.png");
-
-        this.load.image("BG3", "backgrounds/BG3Scroller.png");
-
-        this.load.image("BG4", "backgrounds/BG4.png");
-
-        this.load.image("BG5", "backgrounds/BG5.png");
-
-        this.load.image("BG6", "backgrounds/BG6.png");
-
-        this.load.image("BG7", "backgrounds/BG7.png");
-
-        this.load.image("Dialogue", "backgrounds/Dialouge.png");
+        this.load.image("upgradeTilemap", "backgrounds/leveloneTilemap.png");
 
         this.load.image("losescreen", "backgrounds/losescreen.png");
 
