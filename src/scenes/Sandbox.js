@@ -6,7 +6,6 @@ import { Barrier } from '../objects/barrier.js';
 import ScoreManager from '../utils/ScoreManager.js';
 import { GridEnemy } from '../objects/enemy_grid';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
-import InGameDialogueManager from '../utils/InGameDialogueManager.js';
 
 /**
  * @classdesc UI to select levels for grid ai
@@ -129,9 +128,9 @@ export class Sandbox extends Scene {
     }
 
     create() {
-        this.inGameDialogueManager = new InGameDialogueManager(this);
+
         // create/scale BG image 
-        let bg = this.add.image(0, 0, 'BG5').setAlpha(0.85);
+        let bg = this.add.image(0, 0, 'background').setAlpha(0.85);
         bg.setOrigin(0, 0);
         bg.displayWidth = this.sys.game.config.width;
         bg.setScale(bg.scaleX, bg.scaleX);
@@ -148,7 +147,7 @@ export class Sandbox extends Scene {
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
             () => {
-                this.inGameDialogueManager.displayDialogue('sandbox_tips', 2500);
+                this.start_dialogue("sandbox_tips", false);
             }
         );
 
@@ -267,13 +266,6 @@ export class Sandbox extends Scene {
         this.update_mouse_pos_text();
 
         this.objs.ai_grid_enemies(time);
-
-        if (this.inGameDialogueManager.isActive) {
-            this.inGameDialogueManager.updateDialoguePosition(
-                this.objs.player.x - 160,
-                this.objs.player.y - 50
-            );
-        }
     }
 
     goto_scene(targetScene) {
@@ -322,7 +314,7 @@ export class Sandbox extends Scene {
                     player.shieldParticles.explode(10, player.x, this.sys.game.config.height - 135);
                     player.stats.shield--;
                     if (player.stats.shield < currShield) {
-                        this.inGameDialogueManager.displayDialogue('shermie_shieldgone', 3000);
+                        this.start_dialogue('shermie_shieldgone', false);
                         currShield = player.stats.shield;
                     }
                     player.updateHitbox();
@@ -331,9 +323,9 @@ export class Sandbox extends Scene {
                     player.die();
                     this.player_vars.lives = 3; // disable lives in sandbox mode
                     if (this.player_vars.lives === 0)
-                        this.inGameDialogueManager.displayDialogue('shermie_dead', 3000);
+                        this.start_dialogue('shermie_dead', false);
                     else
-                        this.inGameDialogueManager.displayDialogue('shermie_hurt', 2000);
+                        this.start_dialogue('shermie_hurt', false);
                 }
             }
         });
