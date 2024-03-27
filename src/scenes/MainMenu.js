@@ -5,6 +5,7 @@ import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { Game as game_scene } from './Game';
 import { Dialogue as dialogue_scene } from './Dialogue.js';
 import { PauseMenu as pause_scene } from './PauseMenu.js';
+import { StatsMenu as stats_scene } from './StatsMenu.js';
 
 export class MainMenu extends Scene {
     emitter = EventDispatcher.getInstance();
@@ -39,6 +40,10 @@ export class MainMenu extends Scene {
         this.scene.remove('PauseMenu');
         this.scene.add('PauseMenu', pause_scene);
         this.scene.bringToTop('PauseMenu');
+
+        this.scene.remove('StatsMenu');
+        this.scene.add('StatsMenu', stats_scene);
+        this.scene.bringToTop('StatsMenu');
 
         // reset level back to 1
         this.registry.set('level', 1);
