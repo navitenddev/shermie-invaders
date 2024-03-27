@@ -22,7 +22,7 @@ class LevelButton {
             .setInteractive()
             .on('pointerdown', () => {
                 this.scene.registry.set({ level: level });
-                this.scene.scene.start('Story');
+                this.scene.scene.start('Game');
             });
     }
 }
