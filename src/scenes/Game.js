@@ -33,7 +33,7 @@ export class Game extends Scene {
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
         // For now, the level dialogues will repeat after it exceeds the final level dialogue.
-        this.start_dialogue(`level${this.level % 7}`, true, 30);
+        this.start_dialogue(`level${(this.level % 7) + 1}`, true, 30);
         // create/scale BG image 
         let bg = this.add.image(0, 0, 'background')
             .setAlpha(0.85)
