@@ -50,18 +50,15 @@ class AnimationFactory {
             }),
         });
 
-        for (let i = 1; i <= 18; i++) {
+        for (let i = 1; i <= 22; i++) {
             this.scene.anims.create({
                 key: `enemy${i}_idle`,
                 frames: this.scene.anims.generateFrameNumbers(`enemy${i}`, {
-                    start: (i - 1) * 2,
-                    end: (i - 1) * 2 + 1,
-                }),
-                frameRate: 1.5,
-                repeat: -1 
+                    start: 0,
+                    end: 0,
+                })
             });
         }
-        
         this.scene.anims.create({
             key: "cottonball_explode",
             frames: this.scene.anims.generateFrameNumbers("cottonball_explosion_sheet", {
