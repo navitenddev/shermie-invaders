@@ -52,7 +52,6 @@ export class Preloader extends Scene {
 
         this.load.image("BG7", "backgrounds/BG7.png");
 
-
         this.load.image("upgradeTilemap", "backgrounds/leveloneTilemap.png");
 
         this.load.image("losescreen", "backgrounds/losescreen.png");
