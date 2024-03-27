@@ -178,7 +178,7 @@ export class Sandbox extends Scene {
         });
 
         this.livesSprites.create(84, this.sys.game.config.height - 32, 'lives', 0);
-
+        this.sounds.bank.music.start.stop();
         this.sounds.bank.music.ff7_fighting.play();
 
         this.init_collision_events();
