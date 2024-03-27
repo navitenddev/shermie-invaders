@@ -30,7 +30,7 @@ export class Preloader extends Scene {
 
         this.load.image("logo", "ui/logo.png");
 
-        this.load.image('titlelogo', 'ui/SHERMIE INVADERS.png');
+        this.load.image('titlelogo', 'ui/logo_main.png');
 
         this.load.image('levelSelectlogo', 'ui/Level_Select.png');
 
@@ -62,7 +62,7 @@ export class Preloader extends Scene {
 
         this.load.image("placeholder", "placeholder.png");
 
-        this.load.image("shermie_bux", "ui/Shermie-coin.png")
+        this.load.image("shermie_bux", "ui/coin.png")
 
         this.load.image("reaper_icon", "characters/Nexus-icon.png");
 
@@ -144,7 +144,7 @@ export class Preloader extends Scene {
         });
 
         for (let i = 1; i <= 22; i++) {
-            this.load.spritesheet(`enemy${i}`, `characters/enemies/enemy${i}.png`, {
+            this.load.spritesheet(`enemy${i}`, `characters/enemies/enemyspritesheet.png`, {
                 frameWidth: 60,
                 frameHeight: 60,
             });
