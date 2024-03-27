@@ -64,6 +64,8 @@ export class Preloader extends Scene {
 
         this.load.image("nuke_icon", "ui/nuke-icon.png");
 
+        this.load.image("story_bg", "backgrounds/Dialouge.png")
+
         //this.load.audio(['bgmusic','shoot','explosion'], ['SFX/spacebg.wav','SFX/shoot.wav', 'SFX/explosion.wav']);
 
         this.load.audio('bgmusic', 'SFX/bgmusic.mp3');
@@ -175,7 +177,7 @@ export class Preloader extends Scene {
     }
     create() {
         //  When all the assets have loaded, it's often worth creating global
-        //  objects here that the rest of the game can use.  For example, you
+        //  objects here that the rest of the game can use.  For example, yo
         //  can define global animations here, so we can use them in other
         //  scenes.
         this.anim_factory = new AnimationFactory(this);

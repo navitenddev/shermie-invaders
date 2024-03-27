@@ -28,32 +28,35 @@ class DialogueManager extends Phaser.GameObjects.Container {
     auto_emit_flag = false;
 
     delay_timer = 0;
-    constructor(scene, data = dialogue_data, x = 700, y = 490) {
+    follow_player = true;
+    is_story_dialogue = false;
+    constructor(scene, is_story_dialogue = false, font_size = 16, data = dialogue_data, x = 310, y = 120) {
         super(scene, x, y);
         scene.add.existing(this);
         this.border_w = 25;
 
-        let w = 325;
+        let w = 600;
         let h = (scene.game.config.height / 5);
 
         this.text_data = data;
-        this.bg = scene.add.graphics()
-            .fillStyle(0xb2b2b2, 0.8)
-            .fillRoundedRect(10, 10, w - this.border_w, h, 10);
 
         this.w = w - this.border_w;
         this.h = h;
         this.start = { x: x, y: y, w: this.w, h: this.h };
+        this.player_vars = scene.registry.get('player_vars');
+        this.is_story_dialogue = is_story_dialogue;
+        if (this.is_story_dialogue)
+            this.follow_player = false;
 
         this.font = {
-            fontFamily: 'Arial Black', fontSize: 16, color: '#ffffff',
+            fontFamily: 'Arial Black', fontSize: font_size, color: '#ffffff',
             stroke: '#000000', strokeThickness: 4,
             align: 'left',
             wordWrap: { width: this.w - this.border_w * 2, useAdvancedWrap: true }
         }
 
         this.text = scene.add.text(25, 25, "", this.font);
-        this.add([this.bg, this.text]);
+        this.add([this.text]);
         this.emitter.once('dialogue_start', (key) => {
             this.#activate(key)
         })
@@ -67,6 +70,10 @@ class DialogueManager extends Phaser.GameObjects.Container {
     }
 
     update(time, delta) {
+        if (this.follow_player) {
+            this.x = this.player_vars.x;
+            this.y = this.player_vars.y;
+        }
         if (this.is_active &&
             time > this.delay_timer &&
             this.line && this.char_index !== this.line.length) {

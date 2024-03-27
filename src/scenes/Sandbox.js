@@ -424,13 +424,18 @@ export class Sandbox extends Scene {
 
     /**
      * @param {*} key Start the dialogue sequence with this key
-     * @param {*} blocking If true, will stop all actions in the current scene
-     * until dialogue completes
+     * @param {boolean} is_story_dialogue If true, will stop all actions and display the story bg
+     * @param {number} font_size The size of the font to display
      */
-    start_dialogue(key, blocking = true) {
+    start_dialogue(key, is_story_dialogue = false, font_size = 16) {
         this.emitter.emit('force_dialogue_stop'); // never have more than one dialogue manager at once
-        this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Sandbox' });
-        if (blocking)
+        this.scene.launch('Dialogue', {
+            dialogue_key: key,
+            is_story_dialogue: is_story_dialogue,
+            caller_scene: 'Game',
+            font_size: font_size,
+        });
+        if (is_story_dialogue)
             this.scene.pause();
     }
 }

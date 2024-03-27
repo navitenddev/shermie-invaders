@@ -79,6 +79,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             rot: 0.2, // rotation velocity
         };
 
+        this.dialogue_offset = { x: -128, y: -80 };
+
         this.keys = InitKeyDefs(scene);
     }
 
@@ -88,11 +90,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(time, delta, keys) {
+        this.player_vars.x = this.x + this.dialogue_offset.x;
+        this.player_vars.y = this.y + this.dialogue_offset.y;
+
         let x, y;
         if (this.scene) {
             x = this.scene.game.input.mousePointer.x.toFixed(1);
             y = this.scene.game.input.mousePointer.y.toFixed(1);
         }
+
         this.#mouse_pos = { x: x, y: y };
         // respawn the player
         if (this.is_dead) {
@@ -271,9 +277,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                     }
                 }
                 this.sounds.bank.sfx.shoot.play();
-                if(this.player_vars.power!="" && Player.timers.powerup_timer>0) {
-                    Player.timers.powerup_timer--;}
-                if(this.player_vars.power!="" && Player.timers.powerup_timer<=0) this.changePower("");
+                if (this.player_vars.power != "" && Player.timers.powerup_timer > 0) {
+                    Player.timers.powerup_timer--;
+                }
+                if (this.player_vars.power != "" && Player.timers.powerup_timer <= 0) this.changePower("");
             }
             else {
                 this.sounds.bank.sfx.reload.play();

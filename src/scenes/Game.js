@@ -29,22 +29,32 @@ export class Game extends Scene {
     }
 
     create() {
+        this.level = this.registry.get('level');
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
-
+        // For now, the level dialogues will repeat after it exceeds the final level dialogue.
+        this.start_dialogue(`level${this.level % 7}`, true, 30);
         // create/scale BG image 
-        let bg = this.add.image(0, 0, 'background').setAlpha(0.85);
-        bg.setOrigin(0, 0);
-        bg.displayWidth = this.sys.game.config.width;
-        bg.scaleY = bg.scaleX;
+        let bg = this.add.image(0, 0, 'background')
+            .setAlpha(0.85)
+            .setOrigin(0, 0)
+        bg.displayWidth = this.sys.game.config.width
+        bg.scaleY = bg.scaleX
         bg.y = -250;
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
         this.powerup_stats = this.registry.get('powerup_stats');
-        this.objs.init_all();
         this.sounds = this.registry.get('sound_bank');
         this.keys = InitKeyDefs(this);
+        this.objs.init_all();
+
+        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
+            () => {
+                this.keys.p.on('down', () => this.pause());
+                this.keys.esc.on('down', () => this.pause());
+            }
+        );
 
         // Score and high score
         this.scoreManager = new ScoreManager(this);
@@ -62,14 +72,6 @@ export class Game extends Scene {
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
         this.player_vars.power = "";
-        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
-            () => {
-                if (this.level === 1)
-                    this.start_dialogue('shermie_start', true)
-                this.keys.p.on('down', () => this.pause());
-                this.keys.esc.on('down', () => this.pause());
-            }
-        );
 
         // Player lives text and sprites
         this.livesText = this.add.text(16, this.sys.game.config.height - 48, '3', fonts.medium);
@@ -103,7 +105,11 @@ export class Game extends Scene {
 
         this.physics.world.drawDebug = this.debugMode;
     }
-    
+
+    init_scene() {
+
+    }
+
     toggleDebug() {
         this.debugMode = !this.debugMode;
         this.physics.world.drawDebug = this.debugMode;
@@ -181,13 +187,13 @@ export class Game extends Scene {
             this.level_transition_flag = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.objs.player.changePower("");
-            
+
             // Store the maximum level reached in localStorage
             const maxLevelReached = localStorage.getItem('maxLevelReached') || 1;
             if (this.level + 1 > maxLevelReached) {
                 localStorage.setItem('maxLevelReached', this.level + 1);
             }
-            
+
             this.goto_scene("Player Win");
         } else if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
@@ -286,7 +292,7 @@ export class Game extends Scene {
         this.physics.add.overlap(this.objs.enemies.special, this.objs.barrier_chunks, (enemy, barr_chunk) => {
             barr_chunk.parent.update_flame_size();
             console.log(barr_chunk);
-            // barr_chunk.destroy(); // OM NOM NOM
+            barr_chunk.destroy();
         });
 
         // player bullet collides with barrier
@@ -301,12 +307,18 @@ export class Game extends Scene {
     }
     /**
      * @param {*} key Start the dialogue sequence with this key
-     * @param {*} blocking If true, will stop all actions in the current scene. Until dialogue complete
+     * @param {boolean} is_story_dialogue If true, will stop all actions and display the story bg
+     * @param {number} font_size The size of the font to display
      */
-    start_dialogue(key, blocking = true) {
+    start_dialogue(key, is_story_dialogue = false, font_size = 16) {
         this.emitter.emit('force_dialogue_stop'); // never have more than one dialogue manager at once
-        this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Game' });
-        if (blocking)
+        this.scene.launch('Dialogue', {
+            dialogue_key: key,
+            is_story_dialogue: is_story_dialogue,
+            caller_scene: 'Game',
+            font_size: font_size,
+        });
+        if (is_story_dialogue)
             this.scene.pause();
     }
 }

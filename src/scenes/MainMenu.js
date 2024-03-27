@@ -91,7 +91,7 @@ export class MainMenu extends Scene {
                         this.scene.start('Sandbox');
                     });
                 });
-                
+
             // Disable Cheats Button
             menuY += menuSpacing;
             this.disable_cheats_btn = this.add.text(512, menuY, 'EXIT', fonts.medium)
@@ -122,13 +122,13 @@ export class MainMenu extends Scene {
         localStorage.setItem('cheatCodesActivated', 'true'); // store cheat code activation in localStorage
         this.sounds.bank.sfx.click.play();
         this.scene.start('MainMenu');
-      }
+    }
 
-      #disable_cheats() {
+    #disable_cheats() {
         console.log(`Cheat codes disabled!`);
         this.registry.set('debug_mode', false);
         localStorage.removeItem('cheatCodesActivated');
         this.sounds.bank.sfx.click.play();
         this.scene.start('MainMenu');
-      }
     }
+}
