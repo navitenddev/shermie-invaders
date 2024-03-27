@@ -33,7 +33,10 @@ export class Game extends Scene {
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
         // For now, the level dialogues will repeat after it exceeds the final level dialogue.
-        this.start_dialogue(`level${(this.level % 7) + 1}`, true, 23);
+
+        if (this.level <= 7) {
+        this.start_dialogue(`level${(this.level)}`, true, 23);
+        } 
 
         let bgKey;
         if (this.level > 7) {
