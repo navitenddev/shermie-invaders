@@ -65,7 +65,6 @@ export class MainMenu extends Scene {
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
-                this.sound.get('start').stop();
                 this.sounds.bank.sfx.win.play();
                 this.cameras.main.fadeOut(200, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
@@ -100,7 +99,6 @@ export class MainMenu extends Scene {
                 .setOrigin(0.5)
                 .setInteractive()
                 .on('pointerdown', () => {
-                    this.sound.get('start').stop();
                     this.sounds.bank.sfx.win.play();
                     this.cameras.main.fadeOut(200, 0, 0, 0);
                     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {

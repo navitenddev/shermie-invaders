@@ -176,7 +176,7 @@ export class Sandbox extends Scene {
             key: 'lives',
             repeat: 2
         });
-
+        this.sounds.bank.music.start.stop();
         this.livesSprites.create(84, this.sys.game.config.height - 32, 'lives', 0);
 
         this.sounds.bank.music.ff7_fighting.play();
