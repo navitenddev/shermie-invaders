@@ -165,7 +165,7 @@ export class Preloader extends Scene {
             frameHeight: 64,
         });
 
-        this.load.spritesheet("placeholder", "placeholder.png", {
+        this.load.spritesheet("placeholder_anim", "placeholder.png", {
             frameWidth: 32,
             frameHeight: 32,
         });
