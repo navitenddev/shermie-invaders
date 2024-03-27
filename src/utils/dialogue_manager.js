@@ -1,6 +1,5 @@
-import { EventDispatcher } from "../utils/event_dispatcher";
+import { EventDispatcher } from "../utils/event_dispatcher"
 const dialogue_data = require('./data/dialogue.json');
-import { fonts } from '../utils/fontStyle.js';
 
 const DIALOGUE_MODE = {
     SLOW: 150,
@@ -20,124 +19,119 @@ class DialogueManager extends Phaser.GameObjects.Container {
     text;
 
     key;
-    is_active = true;
+    is_active = false;
     line;
     lines;
     line_index;
     char_index;
 
-    delay_timer = 0.5;
+    auto_emit_flag = false;
 
-    constructor(scene, x = 310, y = 20) {
+    delay_timer = 0;
+    constructor(scene, data = dialogue_data, x = 700, y = 490) {
         super(scene, x, y);
         scene.add.existing(this);
-        scene.events.on('update', this.update, this);
+        this.border_w = 25;
 
-        this.border_w = 80;
-        this.w = 700;
-        this.h = scene.game.config.height / 5;
+        let w = 325;
+        let h = (scene.game.config.height / 5);
 
+        this.text_data = data;
+        this.bg = scene.add.graphics()
+            .fillStyle(0xb2b2b2, 0.8)
+            .fillRoundedRect(10, 10, w - this.border_w, h, 10);
 
-        // Initialize text style
+        this.w = w - this.border_w;
+        this.h = h;
+        this.start = { x: x, y: y, w: this.w, h: this.h };
+
         this.font = {
-            fontFamily: '"Press Start 2P", system-ui',
-            fontSize: '30px', 
-            color: '#000000', 
-            align: 'left', 
-            lineSpacing: 7,
-            wordWrap: { width: this.w - (this.border_w * 2), useAdvancedWrap: true }
-        };
+            fontFamily: 'Arial Black', fontSize: 16, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 4,
+            align: 'left',
+            wordWrap: { width: this.w - this.border_w * 2, useAdvancedWrap: true }
+        }
 
-        // Initialize text object
-        this.text = scene.add.text(this.border_w, this.border_w, "", this.font).setDepth(1);
-        this.add([this.text]);
+        this.text = scene.add.text(25, 25, "", this.font);
+        this.add([this.bg, this.text]);
+        this.emitter.once('dialogue_start', (key) => {
+            this.#activate(key)
+        })
 
-        // Set text data to the imported dialogue data
-        this.text_data = dialogue_data; // This line is added to fix the issue
+        this.emitter.once('force_dialogue_stop', () => {
+            this.#deactivate();
+        })
 
-        // Register event listeners
-        this.emitter.on('dialogue_start', (key) => this.activateDialogue(key));
-        this.scene.input.keyboard.on('keydown-SPACE', () => {
-            console.error(`KeydownPress`);
-            if (this.is_active) {
-                this.advanceDialogue();
-            }
-        });
-
-        // Initially not visible
-        this.setVisible(true);
+        this.setPosition(42069, 42069);
+        this.is_active = false;
     }
 
     update(time, delta) {
-        // Automatic character appending has been removed from update for simplicity
+        if (this.is_active &&
+            time > this.delay_timer &&
+            this.line && this.char_index !== this.line.length) {
+
+            this.delay_timer = time + DialogueManager.text_delay;
+            this.#add_next_char();
+        }
     }
 
-    activateDialogue(key) {
-        // Find the dialogue lines for the given key
-        this.lines = this.text_data.find(d => d.key === key)?.lines;
-
-        if (!this.lines) {
-            console.error(`Error: did not find dialogue key: ${key}`);
+    #activate(key) {
+        this.key = key;
+        this.is_active = true;
+        this.setPosition(this.start.x, this.start.y);
+        this.lines = this.text_data.find(({ key }) => this.key === key).lines;
+        if (this.lines === undefined) {
+            console.error(`Error: did not find dialogue key: ${key}`)
+            this.#deactivate();
             return;
         }
-
-        // Activate dialogue
-        this.is_active = true;
-        this.setVisible(true);
+        console.log(`started dialogue: "${key}"`)
+        // console.log(this.lines)
         this.line_index = 0;
         this.char_index = 0;
-        this.text.setText(this.line);
-        this.loadNextLine();
+        this.#load_next_line();
     }
 
-    deactivateDialogue() {
-        // Deactivate and hide dialogue
+    #deactivate() {
+        // console.log("Deactivating dialogue")
+        this.setPosition(42069, 42069);
+        // this.setPosition(400, 400);
         this.is_active = false;
-        this.setVisible(false);
-        this.emitter.emit('dialogue_stop');
+        this.emitter.emit('dialogue_stop', [])
+        this.emitter.off('dialogue_start');
+
     }
 
-    loadNextLine() {
-        if (this.line_index < this.lines.length) {
-            this.line = this.lines[this.line_index];
-            this.char_index = 0;
-            this.isLineComplete = false;
-            this.text.setText("");
-            this.typeNextChar();
-        } else {
-            // Dialogue is complete
-            this.emitter.emit('dialogue_complete');
-            this.deactivateDialogue();
+    #load_next_line() {
+        if (this.line_index === this.lines.length) {
+            this.#deactivate();
+            return;
         }
+        // console.log(`Loaded line ${this.line_index}`)
+        this.line = this.lines[this.line_index++];
+        this.char_index = 0;
     }
 
-    typeNextChar() {
-        if (this.char_index < this.line.length) {
-            this.text.text += this.line.charAt(this.char_index);
-            this.char_index++;
-            this.scene.time.delayedCall(DialogueManager.text_delay, this.typeNextChar, [], this);
-        } else {
-            this.isLineComplete = true; // The line is now fully displayed.
-        }
-    }
+    #add_next_char() {
+        this.text.text += this.line[this.char_index++];
+        if (this.char_index === this.line.length) {
+            // console.log("Line is done, waiting on player to click again")
+            this.auto_emit_flag = true;
 
-    advanceDialogue() {
-        if (this.is_active) {
-            if (!this.isLineComplete) {
-                // If the line is not fully displayed, immediately display it all
-                this.char_index = this.line.length;
-                this.text.setText(this.line);
-                this.isLineComplete = true;
-            } else {
-                // If the line is complete, move to the next one
-                this.line_index++;
-                this.loadNextLine();
-            }
+            const cont_dialogue_in = 1.5; // # continue dialogue in # of seconds
+            this.scene.time.delayedCall(cont_dialogue_in * 1000, () => {
+                if (this.auto_emit_flag)
+                    this.scene.input.emit('pointerdown');
+            }, this.scene.scene)
+
+            this.scene.input.once('pointerdown', () => {
+                this.text.setText(""); // 4 hours to fix this FML
+                this.auto_emit_flag = false;
+                this.#load_next_line();
+            });
         }
-    }
-    isActive() {
-        return this.is_active; // Assuming is_active is a boolean flag in your class indicating active status
     }
 }
 
-export { DialogueManager };
+export { DialogueManager }
