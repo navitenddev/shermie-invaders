@@ -33,14 +33,29 @@ export class Game extends Scene {
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
         // For now, the level dialogues will repeat after it exceeds the final level dialogue.
-        this.start_dialogue(`level${(this.level % 7) + 1}`, true, 23);
-        // create/scale BG image 
-        let bg = this.add.image(0, 0, 'background')
-            .setAlpha(0.85)
-            .setOrigin(0, 0)
-        bg.displayWidth = this.sys.game.config.width
-        bg.scaleY = bg.scaleX
-        bg.y = -250;
+
+        if (this.level <= 7) {
+        this.start_dialogue(`level${(this.level)}`, true, 23);
+        } 
+
+        let bgKey;
+        if (this.level > 7) {
+            bgKey = 'BG5'; // Default to BG5 for levels above 7
+        } else {
+            bgKey = `BG${this.level}`; // Use the dynamic background key for levels 7 and below
+        }
+
+        if (this.level === 3 || this.level === 5) {
+            // If the level is 3 or 5, create a TileSprite instead of a static image
+            let bg = this.add.tileSprite(0, 0, this.sys.game.config.width, this.sys.game.config.height, bgKey);
+            bg.setOrigin(0, 0);
+            bg.setScrollFactor(0); // This makes sure it doesn't scroll with the camera
+            this.bgScrollSpeed = 0.5; // Adjust scroll speed as needed
+        } else {
+            // For other levels, just add the image normally
+            let bg = this.add.image(0, 0, bgKey).setAlpha(1);
+            bg.setOrigin(0, 0);
+        }
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
@@ -174,6 +189,14 @@ export class Game extends Scene {
         this.updateShieldSprites();
         this.objs.ai_grid_enemies(time);
         this.check_gameover();
+
+        if (this.level === 3 || this.level === 5) {
+            this.children.list.forEach((child) => {
+                if (child instanceof Phaser.GameObjects.TileSprite) {
+                    child.tilePositionY -= this.bgScrollSpeed * delta / 2;
+                }
+            });
+        }
     }
 
 
