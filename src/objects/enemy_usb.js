@@ -10,6 +10,7 @@ import { Powerups, PowerupsConstDefs } from "../objects/powerup";
 class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
     scoreValue = 500;
     moneyValue = 200;
+    dead = false;
     /**
      * @param {Phaser.Scene} scene The scene to spawn the enemy in
      * @param {boolean} spawn_right If true, USB spawns on right side. Else, left side
@@ -62,14 +63,17 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
     }
 
     die() {
-        let power = this.scene.objs.powers.getFirstNth(Phaser.Math.Between(0, this.scene.objs.powers.countActive(false)), false, false, 0, 0, "powerup");
-        if (power !== null) {
-            let fall_speed = PowerupsConstDefs.speed.y;
-            power.activate(this.x, this.y, -fall_speed);
-            this.scene.powerup_stats.active_powerups++;
+        if (!this.dead) {
+            this.dead = true;
+            let power = this.scene.objs.powers.getFirstNth(Phaser.Math.Between(0, this.scene.objs.powers.countActive(false)), false, false, 0, 0, "powerup");
+            if (power !== null) {
+                let fall_speed = PowerupsConstDefs.speed.y;
+                power.activate(this.x, this.y, -fall_speed);
+                this.scene.powerup_stats.active_powerups++;
+            }
+            this.play("usb_explode")
+                .on('animationcomplete', this.destroy)
         }
-        this.play("usb_explode")
-            .on('animationcomplete', this.destroy)
     }
 }
 
