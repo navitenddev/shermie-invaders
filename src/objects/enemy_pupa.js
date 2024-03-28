@@ -1,4 +1,4 @@
-import { fonts } from "../utils/fontStyle";
+import { bitmapFonts, fonts } from "../utils/fontStyle";
 
 class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     scoreValue = 200;
@@ -14,6 +14,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     follower = { t: 0, vec: new Phaser.Math.Vector2() };
     path = new Phaser.Curves.Path();
     graphics;
+    graphics_follower;
     ai_state;
     state_text;
     hp_text;
@@ -41,9 +42,9 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
         console.log("PUPA_PATHS");
         console.log(this.scene.PUPA_PATHS);
 
-        this.state_text = this.scene.add.text(this.x, this.y, this.ai_state, fonts.tiny);
-        this.hp_text = this.scene.add.text(this.x, this.y - 16, this.hp, fonts.tiny);
-        this.t_text = this.scene.add.text(this.follower.vec.x, this.follower.vec.y - 32, this.follower.t.toFixed(2), fonts.tiny);
+        this.state_text = this.scene.add.bitmapText(this.x, this.y, bitmapFonts.PressStart2P, this.ai_state, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
+        this.hp_text = this.scene.add.bitmapText(this.x, this.y - 16, bitmapFonts.PressStart2P, this.hp, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
+        this.t_text = this.scene.add.bitmapText(this.follower.vec.x, this.follower.vec.y - 32, bitmapFonts.PressStart2P, this.follower.t.toFixed(2), fonts.tiny.sizes[bitmapFonts.PressStart2P]);
         this.#change_state("ROAMING"); // do the sweep
     }
 
@@ -226,7 +227,9 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
         if (this.hp <= 1) {
             this.state_text.destroy();
             this.hp_text.destroy();
+            this.t_text.destroy();
             this.graphics.destroy();
+            this.graphics_follower.destroy();
             this.destroy();
             this.is_dead = true;
             return;

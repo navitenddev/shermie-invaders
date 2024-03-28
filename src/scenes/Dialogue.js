@@ -13,14 +13,22 @@ class Dialogue extends Phaser.Scene {
     }
 
     create(data) {
+        // show story dialogue background if this is for story dialogue 
+        if (data.is_story_dialogue) {
+            let bg = this.add.image(0, 0, 'story_bg')
+                .setAlpha(1)
+                .setOrigin(0, 0)
+                .displayWidth = this.sys.game.config.width;
+        }
+
+        this.dialogue_mgr = new DialogueManager(this, data.is_story_dialogue, data.font_size);
+
         this.keys = InitKeyDefs(this);
         // console.log("Initialized Dialogue Scene")
-        this.dialogue_mgr = new DialogueManager(this);
         this.prev_scene = data.caller_scene;
 
         this.emitter.emit('dialogue_start', data.dialogue_key);
         this.emitter.once('dialogue_stop', () => { this.return_to_caller_scene() });
-
 
         this.keys.esc.on('down', () => {
             console.log('Player skipped the dialogue');

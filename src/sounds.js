@@ -25,12 +25,18 @@ class SoundBank {
                 lose: null,
                 shoot: null,
                 explosion: [],
+                hurt: null,
+                click: null,
+                reload: null,
             },
             music: {
                 bg: null,
+                start: null,
+                ff7_fighting: null,
             }
         }
         this.init_sounds();
+        this.load_mute_preference();
     }
     /** 
      * @private
@@ -66,7 +72,19 @@ class SoundBank {
      */
     toggle_mute = () => {
         this.scene.game.sound.mute = !this.scene.game.sound.mute;
+        this.save_mute_preference();
     }
+
+    save_mute_preference() {
+        localStorage.setItem('mute', this.scene.game.sound.mute);
+      }
+    
+      load_mute_preference() {
+        const mute = localStorage.getItem('mute');
+        if (mute !== null) {
+          this.scene.game.sound.mute = mute === 'true';
+        }
+      }
 }
 
 export { SoundBank };

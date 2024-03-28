@@ -1,4 +1,4 @@
-import { fonts } from './fontStyle.js';
+import { bitmapFonts, fonts } from './fontStyle.js';
 
 /**
  * @classdesc Manages the score (go figure) but also the money that shermie earns
@@ -10,14 +10,16 @@ export default class ScoreManager {
         this.score = this.player_vars.score;
         this.highScore = this.loadHighScore();
         this.initText();
-        this.scene.add.image(40, 75, "shermie_bux") // shermie coin image
-            .setScale(0.075, 0.075);
+        this.scene.add.image(36, 89, "shermie_bux") // shermie coin image
+            .setScale(0.24, 0.24);
     }
 
     initText() {
-        this.scoreText = this.scene.add.text(16, 16, `SCORE:${this.score}`, fonts.medium);
-        this.highScoreText = this.scene.add.text(620, 16, `HI-SCORE:${this.highScore}`, fonts.medium);
-        this.walletText = this.scene.add.text(64, 60, `${this.player_vars.wallet}`, fonts.medium);
+        this.highScoreText = this.scene.add.bitmapText(16, 16, bitmapFonts.PressStart2P_Stroke, `HI-SCORE:${this.highScore}`, fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]);
+
+        this.scoreText = this.scene.add.bitmapText(16, 40, bitmapFonts.PressStart2P_Stroke, `SCORE:${this.score}`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]);
+
+        this.walletText = this.scene.add.bitmapText(64, 76, bitmapFonts.PressStart2P_Stroke, `${this.player_vars.wallet}`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]);
     }
 
     addScore(points) {

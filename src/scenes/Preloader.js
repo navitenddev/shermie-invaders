@@ -30,13 +30,27 @@ export class Preloader extends Scene {
 
         this.load.image("logo", "ui/logo.png");
 
-        this.load.image('titlelogo', 'ui/SHERMIE INVADERS.png');
+        this.load.image('titlelogo', 'ui/logo_main.png');
 
         this.load.image('levelSelectlogo', 'ui/Level_Select.png');
 
         this.load.image('howToPlayLogo', 'ui/How_to_play.png');
 
         this.load.image("background", "backgrounds/leveloneBG.png");
+
+        this.load.image("BG1", "backgrounds/BG1.png");
+
+        this.load.image("BG2", "backgrounds/BG2.png");
+
+        this.load.image("BG3", "backgrounds/BG3Scroller.png");
+
+        this.load.image("BG4", "backgrounds/BG4.png");
+
+        this.load.image("BG5", "backgrounds/BG5.png");
+
+        this.load.image("BG6", "backgrounds/BG6.png");
+
+        this.load.image("BG7", "backgrounds/BG7.png");
 
         this.load.image("upgradeTilemap", "backgrounds/leveloneTilemap.png");
 
@@ -50,7 +64,7 @@ export class Preloader extends Scene {
 
         this.load.image("placeholder", "placeholder.png");
 
-        this.load.image("shermie_bux", "ui/Shermie-coin.png")
+        this.load.image("shermie_bux", "ui/coin.png")
 
         this.load.image("reaper_icon", "characters/Nexus-icon.png");
 
@@ -61,6 +75,10 @@ export class Preloader extends Scene {
         this.load.image("pupa_icon", "characters/pupa-icon.png");
 
         this.load.image("zupa_icon", "characters/zupa-icon.png");
+
+        this.load.image("nuke_icon", "ui/nuke-icon.png");
+
+        this.load.image("story_bg", "backgrounds/Dialouge.png")
 
         //this.load.audio(['bgmusic','shoot','explosion'], ['SFX/spacebg.wav','SFX/shoot.wav', 'SFX/explosion.wav']);
 
@@ -93,13 +111,29 @@ export class Preloader extends Scene {
             frameHeight: 128,
         });
 
-        this.load.spritesheet("bullet", "projectiles/bullet-shoot.png", {
+        // this.load.spritesheet("bullet", "projectiles/bullet-shoot.png", {
+        //     frameWidth: 32,
+        //     frameHeight: 16,
+        // });
+
+        this.load.spritesheet("bullet", "projectiles/bullet-laser.png", {
             frameWidth: 32,
             frameHeight: 16,
         });
 
+
         this.load.spritesheet("cottonBullet", "projectiles/cottonBullet.png", {
             frameWidth: 14,
+            frameHeight: 32,
+        });
+
+        this.load.spritesheet("spreadshot", "projectiles/spreadshot.png", {
+            frameWidth: 32,
+            frameHeight: 32,
+        });
+
+        this.load.spritesheet("piercingshot", "projectiles/Wool-Rocket.png", {
+            frameWidth: 32,
             frameHeight: 32,
         });
 
@@ -113,20 +147,14 @@ export class Preloader extends Scene {
             frameHeight: 32,
         });
 
-        this.load.spritesheet("enemy_l1_top", "characters/enemy_l1_lock.png", {
-            frameWidth: 80,
-            frameHeight: 80,
-        });
+        for (let i = 1; i <= 22; i++) {
+            this.load.spritesheet(`enemy${i}`, `characters/enemies/enemyspritesheet.png`, {
+                frameWidth: 60,
+                frameHeight: 60,
+            });
+        }
 
-        this.load.spritesheet("enemy_l1_bottom", "characters/enemy_l1_virus.png", {
-            frameWidth: 80,
-            frameHeight: 80,
-        });
-
-        this.load.spritesheet("enemy_l1_middle", "characters/enemy_l1_worm.png", {
-            frameWidth: 80,
-            frameHeight: 80,
-        });
+        this.load.image('enemy_icon', 'characters/enemies/enemy-icon.png');
 
         this.load.spritesheet("shermie", "characters/shermie.png", {
             frameWidth: 80,
@@ -153,22 +181,28 @@ export class Preloader extends Scene {
             frameHeight: 64,
         });
 
-        this.load.spritesheet("enemy_zupa", "characters/zupa.png", {
-            frameWidth: 64,
-            frameHeight: 64,
+        this.load.spritesheet("placeholder_anim", "placeholder.png", {
+            frameWidth: 32,
+            frameHeight: 32,
         });
 
-
         this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');
+
+        this.load.bitmapFont('GlassTTY', 'fonts/GlassTTY.png', 'fonts/GlassTTY.xml');
+        this.load.bitmapFont('PressStart2P', 'fonts/PressStart2P.png', 'fonts/PressStart2P.xml');
+        this.load.bitmapFont('PressStart2P-Stroke', 'fonts/PressStart2P-Stroke.png', 'fonts/PressStart2P-Stroke.xml');
 
     }
     create() {
         //  When all the assets have loaded, it's often worth creating global
-        //  objects here that the rest of the game can use.  For example, you
+        //  objects here that the rest of the game can use.  For example, yo
         //  can define global animations here, so we can use them in other
         //  scenes.
         this.anim_factory = new AnimationFactory(this);
-
+        this.registry.set('powerup_stats', {
+            power_bank: ['spread', 'pierce'],// list of powerups
+            active_powerups: 0, // active # of powerups on field
+        })
         this.registry.set('level', 1);
         this.registry.set('score', 0);
         this.registry.set('sound_bank', new SoundBank(this));
@@ -189,6 +223,7 @@ export class Preloader extends Scene {
             wallet: 0, // holds shermie bux
             active_bullets: 0, // the number of bullets that the player currently has on screen
             score: 0, // player score
+            power: "None", //powerup
         });
         this.sounds.bank.music.start.play();
         //  Move to the MainMenu. You could also swap this for a Scene

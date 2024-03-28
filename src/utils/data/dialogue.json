@@ -62,5 +62,65 @@
       "Welcome to Sandbox Mode!",
       "Click the buttons on the top right to spawn enemies!"
     ]
+  },
+  {
+    "key": "level1",
+    "lines": [
+      "My adventure begins at the peaceful Navitend Farm.",
+      "A place of harmony,",
+      "Little did I know, This world was about to change forever.",
+      "As the sun sets, a strange silence falls over the farm.",
+      "As I look up, sensing the impending threat, I was ready to protect my home."
+    ]
+  },
+  {
+    "key": "level2",
+    "lines": [
+      "After defending my home,",
+      "I must navigate To the city.",
+      "Streets once filled with joy are now battlegrounds.",
+      "The Nexus's cyber minions attack, Hacking everything.",
+      "With each step, I vow to restore peace to the city's heart."
+    ]
+  },
+  {
+    "key": "level3",
+    "lines": [
+      "After defeating the minions attacking the city.",
+      "determined to halt the invaders, I advance before they reach space.",
+      "Surrounded by the vastness of the sky, I face the aerial fleet",
+      "Each cloud a witness to the fierce battle between hope and despair.",
+      "With the wind as a ally, I maneuvers through this wild battlefield,",
+      "This skyward clash is but a prelude to the greater war looming in the stars."
+    ]
+  },
+  {
+    "key": "level4",
+    "lines": [
+      "Now in orbit, I defend Earth from a relentless barrage,",
+      "shielding my home from the debris of war and cyber threats.",
+      "Each attack is intercepted, each enemy vanquished, brings hope.",
+      "Earth hangs in the balance, its fate tied to Shermie's bravery.",
+      "The orbit becomes a dance of danger and defiance, Shermie leading the way."
+    ]
+  },
+  {
+    "key": "level5",
+    "lines": [
+      "The chase continues back to the enemy's lair, the boss spaceship.",
+      "Level 5 filler"
+    ]
+  },
+  {
+    "key": "level6",
+    "lines": [
+      "Level 6 filler"
+    ]
+  },
+  {
+    "key": "level7",
+    "lines": [
+      "Level 7 filler"
+    ]
   }
 ]

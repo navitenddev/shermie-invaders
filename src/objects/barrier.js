@@ -66,6 +66,37 @@ class Barrier {
         this.chunk_particle_emitter();
     }
 
+    static explode_at_bullet_hit(scene, bullet, barr_chunk, baseExplosionRadius = 20) {
+        const maxDamage = 100;
+
+        // randomn explosion radius
+        const randomRadiusFactor = Phaser.Math.FloatBetween(1.0, 1.6);
+        const explosionRadius = baseExplosionRadius * randomRadiusFactor;
+
+        // loop through all barrier chunks to apply damage
+        scene.objs.barrier_chunks.children.each(chunk => {
+            const distance = Phaser.Math.Distance.Between(bullet.x, bullet.y, chunk.x, chunk.y);
+
+            if (chunk.active && distance < explosionRadius) {
+                // calculate damage based on distance
+                let damage = maxDamage * (1 - distance / explosionRadius);
+                let randomDamageFactor = Phaser.Math.FloatBetween(0.1, 1.2);
+                damage *= randomDamageFactor;
+
+                chunk.applyDamage(damage);
+
+                // destruction particles
+                if (chunk.health <= 0) {
+                    barr_chunk.parent.destructionEmitter.explode(1, chunk.x, chunk.y);
+                }
+            }
+        });
+
+        // update the flame size based on remaining barrier chunks
+        barr_chunk.parent.update_flame_size();
+        bullet.deactivate();
+    }
+
     init_chunks() {
         let c = this.chunk_defs;
         for (let j = this.rect.y; j < this.rect.y + c.n.rows * c.dims.h; j += c.dims.h) {
@@ -159,6 +190,7 @@ class Barrier {
             emitting: false
         });
     }
+
 }
 
 export { BarrierChunk, Barrier };

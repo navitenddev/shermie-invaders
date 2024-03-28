@@ -1,13 +1,13 @@
 const PlayerBulletConstDefs = {
     dims: { w: 14, h: 32 },
-    speed: { x: 0, y: 3.5 }, // base speed (before upgrade calculations)
+    speed: { x: 0, y: 7 }, // base speed (before upgrade calculations)
     offset: { x: 0, y: 0 },
     rotation_speed: 0.1,
 };
 
 const EnemyBulletConstDefs = {
     max_bullets: 50, // max bullets that the enemies can have on the screen at once
-    dims: { w: 8, h: 16 },
+    dims: { w: 4, h: 24 },
     speed: { x: 0, y: +3.5 },
     offset: { x: 0, y: 0 },
 };
@@ -38,15 +38,18 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         scene.add.existing(this);
         //this.setScale(.25); 
+        this.health = 3;
         this.play('cottonBullet')
             .setSize(PlayerBulletConstDefs.dims.w, PlayerBulletConstDefs.dims.h)
             .setScale(0.75)
             .setVisible(false)
-            .setActive(false);
+            .setActive(false)
+
 
         this.player_vars = scene.registry.get('player_vars');
         this.body.onOverlap = true;
-        this.speed = PlayerBulletConstDefs.speed.y;
+        this.speedy = PlayerBulletConstDefs.speed.y;
+        this.speedx = PlayerBulletConstDefs.speed.x;
     }
 
     /* It's important to add this to every subclass that extends a phaser object.
@@ -70,9 +73,17 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
      * @description The bullet movement per `update()`
      */
     move() {
-        this.y -= this.speed;
+        this.y -= this.speedy;
+        if (this.player_vars.power == "spread") this.x -= this.speedx;
     }
 
+    hurt_bullet() {
+        this.health--;
+        if (this.health == 0) {
+            this.health = 3
+            this.deactivate();
+        }
+    }
     /**
      * @public
      * @description Checks if the bullet is offscreen. If so, then the bullet is deactivated.
@@ -92,10 +103,10 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
      * @param {number} y The y-coord in which the bullet should appear at
      * @param {number} speed The movement speed of the bullet
      */
-    activate(x, y, vx = 0, vy = 3.5) {
-        this.setVelocity(vx, -vy*100)
+    activate(x, y, vx = 0, vy = 500) {
+        this.setVelocity(vx, -vy)
             .setPosition(x, y)
-            .setAngle(Math.atan2(-vy*100, vx) * (180 / Math.PI)+90)
+            .setAngle(Math.atan2(-vy, vx) * (180 / Math.PI) + 90)
             .setVisible(true)
             .setActive(true);
     }
@@ -109,6 +120,7 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         this.setPosition(-1024, -1024);
         this.setVisible(false);
         this.setActive(false);
+        this.setVelocity(0, 0);
     }
 
 }
@@ -134,6 +146,7 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
     constructor(scene) {
         super(scene, -1024, -1024, "enemy_bullet");
         this.scene.physics.add.existing(this);
+
         this.scene.add.existing(this);
         this.play("bullet")
             .setSize(EnemyBulletConstDefs.dims.w, EnemyBulletConstDefs.dims.h)
@@ -179,7 +192,7 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
      * @param {number} vx The velocity in the x-direction
      * @param {number} vy The velocity in the y-direction
      */
-    activate(x, y, vx = 0, vy = 600) {
+    activate(x, y, vx = 0, vy = 300) {
         this.setVelocity(vx, vy)
             .setPosition(x, y)
             .setAngle(Math.atan2(vy, vx) * (180 / Math.PI))

@@ -45,43 +45,23 @@ class AnimationFactory {
         this.scene.anims.create({
             key: "bullet",
             frames: this.scene.anims.generateFrameNumbers("bullet", {
-                start: 1,
-                end: 4,
-            }),
-            frameRate: 8,
-            repeat: -1,
-        });
-
-        this.scene.anims.create({
-            key: "enemy_l1_top_idle",
-            frames: this.scene.anims.generateFrameNumbers("enemy_l1_top", {
                 start: 0,
-                end: 3,
+                end: 0,
             }),
-            frameRate: 4,
-            repeat: -1,
         });
 
-        this.scene.anims.create({
-            key: "enemy_l1_middle_idle",
-            frames: this.scene.anims.generateFrameNumbers("enemy_l1_middle", {
-                start: 0,
-                end: 3,
-            }),
-            frameRate: 4,
-            repeat: -1,
-        });
-
-        this.scene.anims.create({
-            key: "enemy_l1_bottom_idle",
-            frames: this.scene.anims.generateFrameNumbers("enemy_l1_bottom", {
-                start: 0,
-                end: 3,
-            }),
-            frameRate: 4,
-            repeat: -1,
-        });
-
+        for (let i = 1; i <= 18; i++) {
+            this.scene.anims.create({
+                key: `enemy${i}_idle`,
+                frames: this.scene.anims.generateFrameNumbers(`enemy${i}`, {
+                    start: (i - 1) * 2,
+                    end: (i - 1) * 2 + 1,
+                }),
+                frameRate: 1.5,
+                repeat: -1 
+            });
+        }
+        
         this.scene.anims.create({
             key: "cottonball_explode",
             frames: this.scene.anims.generateFrameNumbers("cottonball_explosion_sheet", {
@@ -155,15 +135,6 @@ class AnimationFactory {
         this.scene.anims.create({
             key: "pupa_idle",
             frames: this.scene.anims.generateFrameNumbers("enemy_pupa", {
-                start: 0, end: 5,
-            }),
-            frameRate: 8,
-            repeat: -1,
-        });
-
-        this.scene.anims.create({
-            key: "zupa_idle",
-            frames: this.scene.anims.generateFrameNumbers("enemy_zupa", {
                 start: 0, end: 5,
             }),
             frameRate: 8,

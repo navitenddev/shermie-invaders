@@ -1,5 +1,4 @@
-import { fonts } from "../utils/fontStyle";
-
+import { Powerups, PowerupsConstDefs } from "../objects/powerup";
 
 /**
  * @classdesc USB enemy implementation
@@ -19,6 +18,7 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
         super(scene, 0, 0);
         this.scene = scene;
         this.anim_key = "usb";
+        this.hp = 1;
 
         scene.physics.add.existing(this);
         scene.add.existing(this);
@@ -62,6 +62,12 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
     }
 
     die() {
+        let power = this.scene.objs.powers.getFirstNth(Phaser.Math.Between(0, this.scene.objs.powers.countActive(false)), false, false, 0, 0, "powerup");
+        if (power !== null) {
+            let fall_speed = PowerupsConstDefs.speed.y;
+            power.activate(this.x, this.y, -fall_speed);
+            this.scene.powerup_stats.active_powerups++;
+        }
         this.play("usb_explode")
             .on('animationcomplete', this.destroy)
     }

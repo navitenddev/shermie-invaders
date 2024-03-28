@@ -1,4 +1,4 @@
-import { fonts } from "../utils/fontStyle";
+import { bitmapFonts, fonts } from "../utils/fontStyle";
 
 class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     scoreValue = 200;
@@ -40,8 +40,8 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         this.path = new Phaser.Curves.Path();
 
         this.#change_state("BARRIER_SWEEP"); // do the sweep
-        this.state_text = this.scene.add.text(this.x, this.y, this.ai_state, fonts.tiny);
-        this.hp_text = this.scene.add.text(this.x, this.y - 16, this.hp, fonts.tiny);
+        this.state_text = this.scene.add.bitmapText(this.x, this.y, bitmapFonts.PressStart2P, this.ai_state, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
+        this.hp_text = this.scene.add.bitmapText(this.x, this.y - 16, bitmapFonts.PressStart2P, this.hp, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
     }
 
     #clear_path() {

@@ -1,4 +1,4 @@
-import { fonts } from "../utils/fontStyle";
+import { bitmapFonts, fonts } from "../utils/fontStyle";
 
 class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     scoreValue; // defined by constructor
@@ -51,8 +51,8 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
             this.scene.time.delayedCall(clone_delay * 1000, this.#clone_self, [], this);
         }
         this.scene = scene;
-        this.state_text = this.scene.add.text(this.x, this.y, this.ai_state, fonts.tiny);
-        this.hp_text = this.scene.add.text(this.x, this.y, this.hp_text, fonts.tiny);
+        this.state_text = this.scene.add.bitmapText(this.x, this.y, bitmapFonts.PressStart2P, this.ai_state, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
+        this.hp_text = this.scene.add.bitmapText(this.x, this.y, bitmapFonts.PressStart2P, this.hp_text, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
 
         // console.log(`Spawned Reaper with ${this.hp} HP, Cloning: ${should_clone}`)
     }
@@ -248,7 +248,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
         // if condition
         let bullet = this.scene.objs.bullets.enemy.getFirstDead(false, 0, 0, "enemy_bullet");
         if (bullet !== null) {
-            bullet.activate(this.x, this.y);
+            bullet.activate(this.x, this.y, 0, 600);
             this.anims.play("reaper_shoot");
             this.anims.nextAnim = "reaper_idle";
         }
