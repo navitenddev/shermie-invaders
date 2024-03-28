@@ -290,7 +290,7 @@ class ObjectSpawner {
     ai_grid_enemies(time) {
         let enemies = this.enemies.grid.children.entries;
         GridEnemy.timers.shoot_cd = Phaser.Math.Clamp(1000 - (this.scene.registry.get('level') * 25), 300, 1000);
-        GridEnemy.timers.move_cd = (enemies.length * 10) - (this.scene.registry.get('level') * 2);
+        GridEnemy.timers.move_cd = (enemies.length * 10) - (Phaser.Math.Clamp(this.scene.registry.get('level'), 1, 100) * 2);
         // Move all enemies down if we hit the x boundaries
         for (let enemy of enemies) {
             if (!enemy.is_x_inbounds()) {
