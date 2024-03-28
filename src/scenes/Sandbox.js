@@ -68,7 +68,7 @@ class IconButton extends Phaser.GameObjects.Container {
      * @param {Array<any>} args A variadic number of arguments to pass into cb when it's called
      * @example new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
      */
-    constructor(scene, icon, x, y, cb, args = [], ctx) {
+    constructor(scene, icon, x, y, cb, args = []) {
         super(scene, x, y);
         scene.add.existing(this);
 
@@ -237,8 +237,14 @@ export class Sandbox extends Scene {
             [this, 400, 400]
         );
 
-        this.nuke_btn = new IconButton(this, "nuke_icon",
+        this.firewall_btn = new IconButton(this, "firewall_icon",
             this.game.config.width - 20, 280,
+            () => { this.objs.init_barriers() },
+            []
+        );
+
+        this.nuke_btn = new IconButton(this, "nuke_icon",
+            this.game.config.width - 20, 316,
             this.kill_all_enemies,
             []
         );

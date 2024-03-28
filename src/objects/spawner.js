@@ -122,6 +122,7 @@ class ObjectSpawner {
      */
 
     init_barriers() {
+        this.barrier_chunks.clear(true, true);
         const n = { rows: 15, cols: 22 },
             c = { w: 5, h: 5 },  // individual chunk dims
             y = 500;

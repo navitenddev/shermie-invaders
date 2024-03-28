@@ -72,7 +72,6 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
         let bullet = this.scene.objs.bullets.enemy.getFirstDead(false, 0, 0, "enemy_bullet");
         if (bullet !== null) {
             let vy = Phaser.Math.Clamp(300 + (this.scene.registry.get('level') * 10), 1, 900);
-            console.log(`vy: ${vy}`);
             bullet.activate(this.x, this.y, 0, vy);
         }
     }
@@ -113,9 +112,6 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
                 let fall_speed = PowerupsConstDefs.speed.y;
                 power.activate(this.x, this.y, -fall_speed);
                 this.scene.powerup_stats.active_powerups++;
-            }
-            else {
-                console.log("hey")
             }
         }
 
