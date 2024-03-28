@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../keyboard_input';
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { fonts } from '../utils/fontStyle.js';
 import { Barrier } from '../objects/barrier.js';
 import ScoreManager from '../utils/ScoreManager.js';
 import { GridEnemy } from '../objects/enemy_grid';
@@ -24,52 +24,23 @@ export class Game extends Scene {
         super('Game');
     }
 
-    init() {
-        this.debugMode = false;
-    }
-
     create() {
-        this.level = this.registry.get('level');
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
-        // For now, the level dialogues will repeat after it exceeds the final level dialogue.
 
-        if (this.level <= 7) {
-        this.start_dialogue(`level${(this.level)}`, true, 23);
-        } 
-
-        let bgKey;
-        if (this.level > 7) {
-            bgKey = 'BG5'; // Default to BG5 for levels above 7
-        } else {
-            bgKey = `BG${this.level}`; // Use the dynamic background key for levels 7 and below
-        }
-
-        if (this.level === 3 || this.level === 5) {
-            // If the level is 3 or 5, create a TileSprite instead of a static image
-            let bg = this.add.tileSprite(0, 0, this.sys.game.config.width, this.sys.game.config.height, bgKey);
-            bg.setOrigin(0, 0);
-            bg.setScrollFactor(0); // This makes sure it doesn't scroll with the camera
-            this.bgScrollSpeed = 0.5; // Adjust scroll speed as needed
-        } else {
-            // For other levels, just add the image normally
-            let bg = this.add.image(0, 0, bgKey).setAlpha(1);
-            bg.setOrigin(0, 0);
-        }
+        // create/scale BG image 
+        let bg = this.add.image(0, 0, 'background').setAlpha(0.85);
+        bg.setOrigin(0, 0);
+        bg.displayWidth = this.sys.game.config.width;
+        bg.scaleY = bg.scaleX;
+        bg.y = -250;
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
         this.powerup_stats = this.registry.get('powerup_stats');
+        this.objs.init_all();
         this.sounds = this.registry.get('sound_bank');
         this.keys = InitKeyDefs(this);
-        this.objs.init_all();
-
-        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
-            () => {
-                this.keys.p.on('down', () => this.pause());
-                this.keys.esc.on('down', () => this.pause());
-            }
-        );
 
         // Score and high score
         this.scoreManager = new ScoreManager(this);
@@ -82,23 +53,29 @@ export class Game extends Scene {
         // Note: this.level is pass by value!
         this.level = this.registry.get('level');
         this.level_transition_flag = false;
-        this.level_text = this.add.bitmapText(0, 16, bitmapFonts.PressStart2P, `LEVEL:${this.level}`, fonts.medium.sizes[bitmapFonts.PressStart2P])
-            .setOrigin(1, 0)
-            .setPosition(this.sys.game.config.width - 16, 16);
+        this.level_text = this.add.text(this.sys.game.config.width * (2.9 / 4), 16, `LEVEL:${this.level}`, fonts.medium);
 
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
         this.player_vars.power = "";
+        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
+            () => {
+                if (this.level === 1)
+                    this.start_dialogue('shermie_start', true)
+                this.keys.p.on('down', () => this.pause());
+                this.keys.esc.on('down', () => this.pause());
+            }
+        );
 
         // Player lives text and sprites
-        this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, bitmapFonts.PressStart2P, '3', fonts.medium.sizes[bitmapFonts.PressStart2P]);
+        this.livesText = this.add.text(16, this.sys.game.config.height - 48, '3', fonts.medium);
         this.livesSprites = this.add.group({
             key: 'lives',
             repeat: this.player_vars.lives - 2
         });
 
         // Player shields text and sprites
-        this.shieldsText = this.add.bitmapText(970, this.sys.game.config.height - 48, bitmapFonts.PressStart2P, '0', fonts.medium.sizes[bitmapFonts.PressStart2P]);
+        this.shieldsText = this.add.text(970, this.sys.game.config.height - 48, '0', fonts.medium);
         this.shieldsSprites = this.add.group({
             key: 'shields',
             repeat: this.player_stats.shield - 1
@@ -107,7 +84,7 @@ export class Game extends Scene {
         let secs = Phaser.Math.Between(15, 60);
         console.log(`Spawning enemy USB in ${secs}s`)
         this.time.delayedCall(secs * 1000, this.objs.spawn_usb_enemy, [], this.scene);
-        this.sounds.bank.music.start.stop();
+
         this.sounds.bank.music.bg.play();
 
         this.init_collision_events();
@@ -122,7 +99,7 @@ export class Game extends Scene {
 
         this.physics.world.drawDebug = this.debugMode;
     }
-
+    
     toggleDebug() {
         this.debugMode = !this.debugMode;
         this.physics.world.drawDebug = this.debugMode;
@@ -189,14 +166,6 @@ export class Game extends Scene {
         this.updateShieldSprites();
         this.objs.ai_grid_enemies(time);
         this.check_gameover();
-
-        if (this.level === 3 || this.level === 5) {
-            this.children.list.forEach((child) => {
-                if (child instanceof Phaser.GameObjects.TileSprite) {
-                    child.tilePositionY -= this.bgScrollSpeed * delta / 2;
-                }
-            });
-        }
     }
 
 
@@ -207,18 +176,11 @@ export class Game extends Scene {
             this.registry.set({ 'level': this.level + 1 });
             this.level_transition_flag = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
-            this.objs.player.changePower("");
-
-            // Store the maximum level reached in localStorage
-            const maxLevelReached = localStorage.getItem('maxLevelReached') || 1;
-            if (this.level + 1 > maxLevelReached) {
-                localStorage.setItem('maxLevelReached', this.level + 1);
-            }
-
+            this.player_vars.power = "";
             this.goto_scene("Player Win");
         } else if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
-            this.objs.player.changePower("");
+            this.player_vars.power = "";
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.goto_scene("Player Lose");
         }
@@ -313,33 +275,28 @@ export class Game extends Scene {
         this.physics.add.overlap(this.objs.enemies.special, this.objs.barrier_chunks, (enemy, barr_chunk) => {
             barr_chunk.parent.update_flame_size();
             console.log(barr_chunk);
-            barr_chunk.destroy();
+            // barr_chunk.destroy(); // OM NOM NOM
         });
 
         // player bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 25);
+            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 15);
+
         });
 
         // enemy bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 25);
+            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 15);
         });
     }
     /**
      * @param {*} key Start the dialogue sequence with this key
-     * @param {boolean} is_story_dialogue If true, will stop all actions and display the story bg
-     * @param {number} font_size The size of the font to display
+     * @param {*} blocking If true, will stop all actions in the current scene. Until dialogue complete
      */
-    start_dialogue(key, is_story_dialogue = false, font_size = 16) {
+    start_dialogue(key, blocking = true) {
         this.emitter.emit('force_dialogue_stop'); // never have more than one dialogue manager at once
-        this.scene.launch('Dialogue', {
-            dialogue_key: key,
-            is_story_dialogue: is_story_dialogue,
-            caller_scene: 'Game',
-            font_size: font_size,
-        });
-        if (is_story_dialogue)
+        this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Game' });
+        if (blocking)
             this.scene.pause();
     }
 }

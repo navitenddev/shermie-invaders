@@ -374,12 +374,12 @@ export class Sandbox extends Scene {
 
         // player bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 25);
+            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 15);
         });
 
         // enemy bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 25);
+            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 15);
         });
     }
 

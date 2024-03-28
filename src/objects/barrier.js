@@ -75,7 +75,8 @@ class Barrier {
 
         // loop through all barrier chunks to apply damage
         scene.objs.barrier_chunks.children.each(chunk => {
-            const distance = Phaser.Math.Distance.Between(bullet.x, bullet.y, chunk.x, chunk.y);
+            // const distance = Phaser.Math.Distance.Between(bullet.x, bullet.y, chunk.x, chunk.y);
+            const distance = Phaser.Math.Distance.Between(barr_chunk.x, barr_chunk.y, chunk.x, chunk.y);
 
             if (chunk.active && distance < explosionRadius) {
                 // calculate damage based on distance
