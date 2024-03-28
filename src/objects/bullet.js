@@ -164,13 +164,6 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
         this.check_bounds();
         this.debugBodyColor = this.body?.touching.none ? 0x0099ff : 0xff9900;
     }
-    /**
-     * @private
-     * @description The bullet movement per `update()`
-     */
-    move() {
-        this.y += EnemyBulletConstDefs.speed.y;
-    }
 
     /**
      * @public
