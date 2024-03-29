@@ -21,6 +21,8 @@ class Dialogue extends Phaser.Scene {
                 .displayWidth = this.sys.game.config.width;
         }
 
+        this.sounds = this.registry.get('sound_bank');
+
         this.dialogue_mgr = new DialogueManager(this, data.is_story_dialogue, data.font_size);
 
         this.keys = InitKeyDefs(this);
@@ -34,6 +36,8 @@ class Dialogue extends Phaser.Scene {
             console.log('Player skipped the dialogue');
             this.emitter.emit('force_dialogue_stop');
         });
+        this.keys.m.on('down', this.sounds.toggle_mute)
+
     }
 
     update(time, delta) {
