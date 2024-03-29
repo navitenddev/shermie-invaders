@@ -30,7 +30,6 @@ export class PlayerLose extends Scene {
         this.sounds.bank.sfx.lose.play();
 
         const finalScore = data.currentScore;
-
         this.add.bitmapText(
             16,
             16,

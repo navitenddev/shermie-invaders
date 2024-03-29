@@ -237,7 +237,7 @@ export class Game extends Scene {
             if (targetScene === "Player Lose") {
                 this.scene.start('Player Lose', { currentScore: this.player_vars.score });
             } else {
-                this.scene.start(targetScene);
+                this.scene.start(targetScene, { currentScore: this.player_vars.score });
             }
         });
     }
