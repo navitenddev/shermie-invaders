@@ -195,29 +195,50 @@ export class StatsMenu extends Scene {
         }
 
         this.levelSkipButton = this.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, 'KILL ALL ENEMIES', fonts.small.sizes[bitmapFonts.PressStart2P])
-        .setInteractive()
-        .on('pointerdown', () => {
-            this.emitter.emit('kill_all_enemies');
-        })
-        .setOrigin(0.5)
-        .setPosition(boxX + boxWidth / 2, y)
-        .setTint(0xffffff);
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.emitter.emit('kill_all_enemies');
+            })
+            .setOrigin(0.5)
+            .setPosition(boxX + boxWidth / 2, y)
+            .setTint(0xffffff)
+            .on('pointerover', () => {
+                buttonBackground.clear().fillStyle(0xFFFFFF, 1).fillRect(0, 0, buttonWidth, buttonHeight);
+            })
+            .on('pointerout', () => {
+                buttonBackground.clear().fillStyle(0xff0000, 1).fillRect(0, 0, buttonWidth, buttonHeight);
+            });
     
         // red background for the button
         const buttonWidth = this.levelSkipButton.width + 40;
         const buttonHeight = this.levelSkipButton.height + 20;
-        const buttonBackground = this.add.graphics();
+        const buttonX = boxX + (boxWidth - buttonWidth) / 2;
+        const buttonY = y - buttonHeight / 2;
+
+        const buttonBackground = this.add.graphics({ x: buttonX, y: buttonY });
         buttonBackground.fillStyle(0xff0000, 1);
         buttonBackground.fillRect(0, 0, buttonWidth, buttonHeight);
-        buttonBackground.setPosition(boxX + (boxWidth - buttonWidth) / 2, y - buttonHeight / 2);
-        
+        buttonBackground.setInteractive(new Phaser.Geom.Rectangle(0, 0, buttonWidth, buttonHeight), Phaser.Geom.Rectangle.Contains)
+            .on('pointerdown', () => {
+                this.emitter.emit('kill_all_enemies');
+            })
+            .on('pointerover', () => {
+                buttonBackground.clear().fillStyle(0xFFFFFF, 1).fillRect(0, 0, buttonWidth, buttonHeight);
+            })
+            .on('pointerout', () => {
+                buttonBackground.clear().fillStyle(0xff0000, 1).fillRect(0, 0, buttonWidth, buttonHeight);
+            });
+
         this.levelSkipButton.setDepth(1);
+        this.levelSkipButton.setPosition(buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
 
         y += menuSpacing;
-        this.backButton = this.add.bitmapText(boxX + 260, y, bitmapFonts.PressStart2P_Stroke, 'Back', fonts.small.sizes[bitmapFonts.PressStart2P])
+        const backButtonX = boxX + boxWidth / 2;
+        this.backButton = this.add.bitmapText(backButtonX, y, bitmapFonts.PressStart2P_Stroke, 'Back', fonts.small.sizes[bitmapFonts.PressStart2P])
+            .setOrigin(0.5, 0)
             .setInteractive()
             .on('pointerdown', () => { this.sounds.bank.sfx.click.play(); this.go_back(); });
-
+    
         // Note: This is a quick example on how the IconButton should be used. Feel free to uncomment it and play around with it first if you need to add a new powerup to the game.
         // new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
     }

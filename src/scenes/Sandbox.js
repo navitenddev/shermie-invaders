@@ -108,6 +108,7 @@ export class Sandbox extends Scene {
     constructor() {
         super('Sandbox');
         this.kill_all_enemies = this.kill_all_enemies.bind(this);
+        this.debugMode = false;
     }
 
     preload() {
@@ -193,6 +194,9 @@ export class Sandbox extends Scene {
         this.keys.m.on('down', this.sounds.toggle_mute);
         this.keys.p.on('down', () => this.pause());
         this.keys.esc.on('down', () => this.pause());
+        this.keys.x.on('down', () => {
+            this.toggleDebug();
+        });
 
         this.mouse_pos_text = this.add.bitmapText(750, 75, bitmapFonts.PressStart2P_Stroke, `(0,0)`, fonts.small.sizes[bitmapFonts.PressStart2P]);
         this.legend_text = this.add.bitmapText(this.game.config.width - 64, 300, bitmapFonts.PressStart2P_Stroke, "Click to Spawn", fonts.small.sizes[bitmapFonts.PressStart2P]);
@@ -271,6 +275,15 @@ export class Sandbox extends Scene {
         this.emitter.on('kill_all_enemies', this.kill_all_enemies, this);
     }
 
+    toggleDebug() {
+        this.debugMode = !this.debugMode;
+        this.physics.world.drawDebug = this.debugMode;
+
+        if (!this.debugMode) {
+            this.physics.world.debugGraphic.clear();
+        }
+    }
+
     pause() {
         this.scene.pause('Sandbox');
         this.scene.launch('PauseMenu', { prev_scene: 'Sandbox' });
@@ -284,11 +297,12 @@ export class Sandbox extends Scene {
         this.update_mouse_pos_text();
 
         this.objs.ai_grid_enemies(time);
+
+        this.physics.world.drawDebug = this.debugMode;
+
     }
 
     goto_scene(targetScene) {
-        this.scoreManager.updateHighScore();
-
         this.cameras.main.fade(500, 0, 0, 0);
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {

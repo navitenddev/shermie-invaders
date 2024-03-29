@@ -216,13 +216,20 @@ export class Game extends Scene {
     }
 
     goto_scene(targetScene) {
-        this.scoreManager.updateHighScore();
-
+        const cheatModeEnabled = this.registry.get('debug_mode') === true;
+        if (!cheatModeEnabled) {
+            this.scoreManager.checkAndUpdateHighScore();
+        }
+    
         this.cameras.main.fade(500, 0, 0, 0);
-
+    
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
             this.sounds.bank.music.bg.stop();
-            this.scene.start(targetScene);
+            if (targetScene === "Player Lose") {
+                this.scene.start('Player Lose', { currentScore: this.player_vars.score });
+            } else {
+                this.scene.start(targetScene, { currentScore: this.player_vars.score });
+            }
         });
     }
 
@@ -240,6 +247,7 @@ export class Game extends Scene {
             else player_bullet.deactivate();
             enemy.die();
             this.scoreManager.addScore(enemy.scoreValue);
+            this.scoreManager.checkAndUpdateHighScore();
             this.scoreManager.addMoney(enemy.moneyValue);
         });
 
@@ -249,7 +257,7 @@ export class Game extends Scene {
             player_bullet.deactivate();
             enemy.die();
             this.scoreManager.addScore(enemy.scoreValue);
-
+            this.scoreManager.checkAndUpdateHighScore();
         });
 
         let currShield = this.player_stats.shield;
