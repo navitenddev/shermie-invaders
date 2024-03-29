@@ -9,9 +9,10 @@ class FillBar extends Phaser.GameObjects.Rectangle {
      * @param {Phaser.Scene} scene 
      * @param {number} x 
      * @param {number} y 
-     * @param {number} total The total HP of the bar
      * @param {number} width 
      * @param {number} height 
+     * @param {number} total The total HP of the bar
+     * @param {string} color Color of the inner bar
      */
     constructor(scene, x, y, width, height, total, color = 0x33b013) {
         super(scene, x, y, width, height, 0x000000);
