@@ -225,8 +225,11 @@ export class Game extends Scene {
     }
 
     goto_scene(targetScene) {
-        this.scoreManager.updateHighScore();
-
+        const cheatModeEnabled = this.registry.get('debug_mode') === true;
+        if (!cheatModeEnabled) {
+            this.scoreManager.updateHighScore();
+        }
+    
         this.cameras.main.fade(500, 0, 0, 0);
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
