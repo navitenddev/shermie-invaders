@@ -66,7 +66,13 @@ class IconButton extends Phaser.GameObjects.Container {
      * @param {number} y top-right y-coordinate of the button
      * @callback cb Callback function that is used when button is clicked
      * @param {Array<any>} args A variadic number of arguments to pass into cb when it's called
-     * @example new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
+     * @example 
+     * new IconButton(scene, 'placeholder', 300, 500, 
+     *      () => {
+     *         console.log(`The cow goes "${arg1}" and the cat goes "${arg2}"!`);
+     *      }, 
+     *      ["mooo", "meow"]
+     * );
      */
     constructor(scene, icon, x, y, cb, args = []) {
         super(scene, x, y);
@@ -243,11 +249,11 @@ export class Sandbox extends Scene {
 
         this.firewall_btn = new IconButton(this, "firewall_icon",
             this.game.config.width - 20, 280,
-            () => { 
+            () => {
                 for (let chunk of this.objs.barrier_chunks.children.entries)
                     chunk.parent.update_flame_size(true);
                 this.objs.barrier_chunks.clear(true, true);
-                this.objs.init_barriers() 
+                this.objs.init_barriers()
             },
             []
         );
@@ -335,6 +341,7 @@ export class Sandbox extends Scene {
             player_bullet.deactivate();
             enemy.die();
             this.scoreManager.addScore(enemy.scoreValue);
+            this.scoreManager.addMoney(enemy.moneyValue);
         });
 
         let currShield = this.player_stats.shield;

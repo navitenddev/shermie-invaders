@@ -1,4 +1,5 @@
 import { bitmapFonts, fonts } from "../utils/fontStyle";
+import { FillBar } from "../ui/fill_bar";
 
 class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     scoreValue; // defined by constructor
@@ -15,7 +16,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     state_list = ["CHASING", "SHOOT1", "SHOOT2", "SHOOT3"];
     state_text;
     hp;
-    hp_text;
+    hp_bar;
     /**
      * 
      * @param {Phaser.Scene} scene   The scene to spawn the Reaper in
@@ -52,9 +53,16 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
         }
         this.scene = scene;
         this.state_text = this.scene.add.bitmapText(this.x, this.y, bitmapFonts.PressStart2P, this.ai_state, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
-        this.hp_text = this.scene.add.bitmapText(this.x, this.y, bitmapFonts.PressStart2P, this.hp_text, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
 
-        // console.log(`Spawned Reaper with ${this.hp} HP, Cloning: ${should_clone}`)
+        this.hp_bar_offset = {
+            x: -47,
+            y: -(this.height / 1.8),
+        };
+        this.hp_bar = new FillBar(scene,
+            x + this.hp_bar_offset.x, y + this.hp_bar_offset.y,
+            100, 10,
+            hp
+        );
     }
 
     #clear_path() {
@@ -177,17 +185,19 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     }
 
     #update_text() {
-        this.hp_text
-            .setPosition(this.x, this.y - 16)
-            .setText(this.hp);
-
         this.state_text
             .setPosition(this.x, this.y)
             .setText(this.ai_state);
     }
 
+    #update_bar() {
+        this.hp_bar.setPosition(this.x + this.hp_bar_offset.x, this.y + this.hp_bar_offset.y);
+        this.hp_bar.set_value(this.hp);
+    }
+
     update(time, delta) {
         this.#update_text();
+        this.#update_bar();
 
         let player = this.scene.objs.player;
 
@@ -236,7 +246,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     die() {
         if (this.hp <= 1) {
             this.state_text.destroy();
-            this.hp_text.destroy();
+            this.hp_bar.destroy();
             this.graphics.destroy();
             this.#clear_path();
             this.destroy();
