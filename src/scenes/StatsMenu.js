@@ -39,7 +39,9 @@ class MenuSpinner {
             })
             .on('pointerup', function () {
                 this.setTint(0xffffff);
-                console.log(`Modified ${text} to ${obj[key]}`);
+            })
+            .on('pointerout', function () {
+                this.setTint(0xffffff);
             });
 
         // - button
@@ -55,7 +57,9 @@ class MenuSpinner {
             })
             .on('pointerup', function () {
                 this.setTint(0xffffff);
-                console.log(`Modified ${text} to ${obj[key]}`);
+            })
+            .on('pointerout', function () {
+                this.setTint(0xffffff);
             });
 
 
@@ -73,7 +77,9 @@ class MenuSpinner {
             })
             .on('pointerup', function () {
                 this.setTint(0xffffff);
-                console.log(`Modified ${text} to ${obj[key]}`);
+            })
+            .on('pointerout', function () {
+                this.setTint(0xffffff);
             });
 
         // MAX button
@@ -89,7 +95,9 @@ class MenuSpinner {
             })
             .on('pointerup', function () {
                 this.setTint(0xffffff);
-                console.log(`Modified ${text} to ${obj[key]}`);
+            })
+            .on('pointerout', function () {
+                this.setTint(0xffffff);
             });
 
         scene.add.bitmapText(x + 50, y, bitmapFonts.PressStart2P_Stroke, text, fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]);
