@@ -288,12 +288,12 @@ class ObjectSpawner {
      */
     ai_grid_enemies(time) {
         let enemies = this.enemies.grid.children.entries;
-        GridEnemy.timers.shoot_cd = Math.max(100, 1000 - (this.scene.registry.get('level') * 10));
-        GridEnemy.timers.move_cd = (enemies.length * 10) - (this.scene.registry.get('level') * 2);
+        GridEnemy.timers.shoot_cd = Phaser.Math.Clamp(1000 - (this.scene.registry.get('level') * 25), 300, 1000);
+        GridEnemy.timers.move_cd = (enemies.length * 10) - (Phaser.Math.Clamp(this.scene.registry.get('level'), 1, 100) * 2);
         // Move all enemies down if we hit the x boundaries
         for (let enemy of enemies) {
             if (!enemy.is_x_inbounds()) {
-                console.log("Enemy1 is changing rows!")
+                // console.log("Grid enemy is changing rows!")
                 for (let enemy of enemies)
                     enemy.move_down()
                 break;
@@ -347,7 +347,7 @@ class ObjectSpawner {
                             enemies[rand_index].shoot(time);
                             break;
                         }
-
+                    // TODO: Another shooting mode would be nice to increase variance
                     default:
                         console.error(`Error: Invalid grid enemy shoot mode!`);
                         break;

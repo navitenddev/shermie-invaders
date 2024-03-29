@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { InitKeyDefs } from "../keyboard_input";
 
 export class HowToPlay extends Scene {
     constructor() {
@@ -7,10 +8,13 @@ export class HowToPlay extends Scene {
     }
 
     create() {
+        this.keys = InitKeyDefs(this);
+
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg');
         this.animatedBg.setOrigin(0.5, 0.5);
         this.sounds = this.registry.get('sound_bank');
         this.add.image(512, 150, 'howToPlayLogo').setScale(0.8);
+        this.keys.m.on('down', this.sounds.toggle_mute)
 
         let width = this.game.config.width
 

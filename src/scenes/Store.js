@@ -131,15 +131,15 @@ class MenuSpinner {
             console.warn("Catching warning on Update stat Display");
             return;
         }
-    
+
         const permanentStats = this.scene.registry.get('player_vars') || {};
         const isMaxedOut = this.stats[this.statKey] === SHOP_PRICES[this.statKey].length;
         const canAfford = this.scene.canAffordUpgrade(this.statKey, this.stats[this.statKey]);
         const nextLevelCost = isMaxedOut ? 'Max' : this.scene.getUpgradeCost(this.statKey, this.stats[this.statKey]);
         const canDowngrade = this.stats[this.statKey] > (permanentStats[this.statKey] || STAT_MIN);
-    
+
         this.fill_bar.update_bar(this.stats[this.statKey], SHOP_PRICES[this.statKey].length);
-    
+
         // this.statBoxes.forEach((box, index) => {
         //     const isPermanent = index < permanentStats[this.statKey];
         //     box.setFillStyle(isPermanent ? 0xFFD700 :
@@ -152,7 +152,7 @@ class MenuSpinner {
         this.plusButton.setTint(canAfford && !isMaxedOut ? 0x00ff00 : 0xffffff);
         this.upgradeCostText.setText(nextLevelCost).setTint(isMaxedOut ? 0xFFD700 : (canAfford ? 0x00ff00 : 0xFF0000));
         this.statText.setText(`${this.displayName}: ${isMaxedOut ? 'Max' : this.stats[this.statKey]}`);
-        }
+    }
 }
 
 class MenuButton extends Phaser.GameObjects.Container {
@@ -166,42 +166,51 @@ class MenuButton extends Phaser.GameObjects.Container {
         this.background = scene.add.rectangle(0, 0, 0, 0, 0xFFD700);
         this.background.setOrigin(0, 0);
 
-        this.btn = scene.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, text, fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
-            .setInteractive()
+        this.text = scene.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, text, fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
+            // .setInteractive()
             .setFontSize(24)
             .setOrigin(0.5, 0.5); // Set the origin to the center of the text
 
         // Update the background size based on the text dimensions
-        const textWidth = this.btn.width + 30;
-        const textHeight = this.btn.height + 20;
-        this.background.setSize(textWidth, textHeight);
+        const textWidth = this.text.width + 30;
+        const textHeight = this.text.height + 20;
+        this.background
+            .setSize(textWidth, textHeight)
+            .setInteractive()
 
         // Position the text at the center of the background rectangle
-        this.btn.setPosition(textWidth / 2, textHeight / 2);
+        this.text.setPosition(textWidth / 2, textHeight / 2);
 
         this.btn_border = scene.add.graphics();
         this.btn_border.lineStyle(2, 0xFFFF00, 1)
             .strokeRect(0, 0, textWidth, textHeight);
 
-        this.btn.on('pointerover', () => {
-            this.background.setFillStyle(0xFFEA00);
-            this.btn_border
-                .clear()
-                .lineStyle(3, 0xFFEA00, 1)
-                .strokeRect(0, 0, textWidth, textHeight);
-        })
-        .on('pointerout', () => {
-            this.background.setFillStyle(0xFFD700);
-            this.btn_border
-                .clear()
-                .lineStyle(2, 0xFFFF00, 1)
-                .strokeRect(0, 0, textWidth, textHeight);
-        })
-        .on('pointerdown', () => {
-            (args) ? cb(...args) : cb(args);
-        });
+        this.background
+            .on('pointerover', () => {
+                this.background.setFillStyle(0xFFEA00);
+                this.btn_border
+                    .clear()
+                    .lineStyle(3, 0xFFEA00, 1)
+                    .strokeRect(0, 0, textWidth, textHeight);
+            })
+            .on('pointerout', () => {
+                this.background.setFillStyle(0xFFD700);
+                this.btn_border
+                    .clear()
+                    .lineStyle(2, 0xFFFF00, 1)
+                    .strokeRect(0, 0, textWidth, textHeight);
+            })
+            .on('pointerdown', () => {
+                (args) ? cb(...args) : cb(args);
+            });
 
-        this.add([this.background, this.btn, this.btn_border]);
+        this.setInteractive(Phaser.Geom.Rectangle(x, y, textWidth, textHeight),
+            () => {
+                console.log("Yo!");
+                (args) ? cb(...args) : cb(args);
+            });
+
+        this.add([this.background, this.text, this.btn_border]);
     }
 }
 
@@ -278,7 +287,7 @@ export class Store extends Scene {
         const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_bux').setOrigin(0.5, 0.5).setScale(0.25);
         const moneyTextX = moneyIconX + moneyIcon.displayWidth / 2 + 5;
         const moneyTextY = moneyIconY;
-        this.moneyText = this.add.bitmapText(moneyTextX, moneyTextY,bitmapFonts.PressStart2P_Stroke, `${this.player_vars.wallet}`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0, 0.5);
+        this.moneyText = this.add.bitmapText(moneyTextX, moneyTextY, bitmapFonts.PressStart2P_Stroke, `${this.player_vars.wallet}`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0, 0.5);
 
         let next_level_btn = new MenuButton(this,
             this.game.config.width / 2.8, this.game.config.height - 100,
