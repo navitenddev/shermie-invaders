@@ -142,9 +142,15 @@ class Barrier {
 
         flames.setPosition(this.rect.x + this.rect.width / 2, this.rect.centerY);
     }
-
-    update_flame_size() {
-        const remainingChunks = this.chunks.filter(chunk => chunk.active).length; // count the number of active chunks
+    /**
+     * 
+     * @param {bool} clear_flames If true, clears all flames. False by default
+     */
+    update_flame_size(clear_flames = false) {
+        let remainingChunks = (clear_flames) ?
+            0 : // assume no chunks to clear the barrier
+            // count the number of active chunk
+            this.chunks.filter(chunk => chunk.active).length;
         const totalChunks = this.chunk_defs.n.rows * this.chunk_defs.n.cols;
         const percentRemaining = remainingChunks / totalChunks;
 
