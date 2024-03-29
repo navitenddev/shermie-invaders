@@ -12,7 +12,7 @@ class FillBar extends Phaser.GameObjects.Rectangle {
      * @param {number} width 
      * @param {number} height 
      * @param {number} total The total HP of the bar
-     * @param {string} color Color of the inner bar
+     * @param {string | number} color Color of the inner bar
      */
     constructor(scene, x, y, width, height, total, color = 0x33b013) {
         super(scene, x, y, width, height, 0x000000);
@@ -23,21 +23,20 @@ class FillBar extends Phaser.GameObjects.Rectangle {
             width - 2, height - 2,
             color
         )
+        this.value = total;
     }
 
     setPosition(x, y) {
         super.setPosition(x, y);
         if (this.inner)
             this.inner.setPosition(this.x + 2, this.y + 2);
-        // this.inner.setPosition(x - (this.width / 2) + (this.inner.width / 2), y - (this.height / 2) + (this.inner.height / 2));
-        // this.inner.x = x + 2 - (this.width / 2);
-        // this.inner.y = y - 13;
     }
 
     set_value(value) {
+        this.value = value;
         const ratio = value / this.total;
         this.inner.setOrigin(0, 0)
-            .setSize((this.width * ratio) - 3, this.height - 4)
+            .setSize((this.width * ratio), this.height)
     }
 
     destroy() {
