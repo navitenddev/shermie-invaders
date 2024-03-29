@@ -18,7 +18,7 @@ class LevelSelector extends Phaser.GameObjects.Container {
         this.btn_down5 = scene.add.bitmapText(x, y, bitmapFonts.PressStart2P_Stroke, '-5', fonts.small.sizes[bitmapFonts.PressStart2P])
             .setInteractive()
             .on('pointerup', function () {
-                scene.registry.set({ 'level': Math.max(0, scene.registry.get('level') - 5) });
+                scene.registry.set({ 'level': Math.max(1, scene.registry.get('level') - 5) });
                 lvl_text_obj.setText(`LEVEL:${scene.registry.get('level')}`)
                 emitter.emit('kill_all_enemies', false);
                 scene.objs.init_enemy_grid();
