@@ -11,6 +11,7 @@ const STAT_MIN = 1;
  * create a ui_components.js file in utils.  
  */
 class MenuSpinner {
+    text_value; // text object that displays the value of the current stat
     /**
      * @constructor
      * @param {Phaser.Scene} scene Scene to add spinner to
@@ -21,34 +22,76 @@ class MenuSpinner {
      * @param {Object<string, number>} obj object containing the value being modified
      * @param {string} key They key of the object to modify
      */
+
     constructor(scene, x, y, w, text, obj, key) {
-        // - button
-        this.minus = scene.add.bitmapText(x, y, bitmapFonts.PressStart2P_Stroke, '-', fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
+        let text_value = scene.add.bitmapText(x + w - 40, y, bitmapFonts.PressStart2P_Stroke, obj[key], fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]);
+
+        // MIN button
+        scene.add.bitmapText(x - 60, y, bitmapFonts.PressStart2P_Stroke, 'MIN', fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
             .setInteractive()
             .on('pointerdown', function () {
-                obj[key] = Math.max(obj[key] - 1, STAT_MIN);
-                this.setTint(0xff0000); 
+                if (key === 'lives') // LOL
+                    obj[key] = Phaser.Math.Clamp(0, 1, 10);
+                else
+                    obj[key] = Phaser.Math.Clamp(0, 1, SHOP_PRICES[key].length);
+                text_value.setText(obj[key]);
+                this.setTint(0xff0000);
             })
             .on('pointerup', function () {
                 this.setTint(0xffffff);
                 console.log(`Modified ${text} to ${obj[key]}`);
             });
 
+        // - button
+        scene.add.bitmapText(x, y, bitmapFonts.PressStart2P_Stroke, '-', fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
+            .setInteractive()
+            .on('pointerdown', function () {
+                if (key == 'lives') // LOL
+                    obj[key] = Phaser.Math.Clamp(obj[key] - 1, 1, 10);
+                else
+                    obj[key] = Phaser.Math.Clamp(obj[key] - 1, 1, SHOP_PRICES[key].length);
+                text_value.setText(obj[key]);
+                this.setTint(0xff0000);
+            })
+            .on('pointerup', function () {
+                this.setTint(0xffffff);
+                console.log(`Modified ${text} to ${obj[key]}`);
+            });
+
+
+
         // + button
         scene.add.bitmapText(x + w, y, bitmapFonts.PressStart2P_Stroke, '+', fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
             .setInteractive()
             .on('pointerdown', function () {
                 if (key === 'lives') // LOL
-                    obj[key] = Math.min(obj[key] + 1, 10);
+                    obj[key] = Phaser.Math.Clamp(obj[key] + 1, 1, 10);
                 else
-                    obj[key] = Math.min(obj[key] + 1, SHOP_PRICES[key].length);
-                this.setTint(0xff0000); 
+                    obj[key] = Phaser.Math.Clamp(obj[key] + 1, 1, SHOP_PRICES[key].length);
+                text_value.setText(obj[key]);
+                this.setTint(0xff0000);
             })
             .on('pointerup', function () {
-                this.setTint(0xffffff); 
+                this.setTint(0xffffff);
                 console.log(`Modified ${text} to ${obj[key]}`);
             });
-            
+
+        // MAX button
+        scene.add.bitmapText(x + w + 30, y, bitmapFonts.PressStart2P_Stroke, 'MAX', fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
+            .setInteractive()
+            .on('pointerdown', function () {
+                if (key === 'lives') // LOL
+                    obj[key] = Phaser.Math.Clamp(100, 1, 10);
+                else
+                    obj[key] = Phaser.Math.Clamp(100, 1, SHOP_PRICES[key].length);
+                text_value.setText(obj[key]);
+                this.setTint(0xff0000);
+            })
+            .on('pointerup', function () {
+                this.setTint(0xffffff);
+                console.log(`Modified ${text} to ${obj[key]}`);
+            });
+
         scene.add.bitmapText(x + 50, y, bitmapFonts.PressStart2P_Stroke, text, fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]);
     }
 }
@@ -139,18 +182,18 @@ export class StatsMenu extends Scene {
             new MenuSpinner(this, x, y + (y_gap * i++), w,
                 sd[1], this.player_vars.stats, sd[0]);
 
-            this.levelSkipButton = this.add.bitmapText(x, y + (y_gap * i), bitmapFonts.PressStart2P_Stroke, 'KILL ALL ENEMIES', fonts.small.sizes[bitmapFonts.PressStart2P])
+        this.levelSkipButton = this.add.bitmapText(x, y + (y_gap * i), bitmapFonts.PressStart2P_Stroke, 'KILL ALL ENEMIES', fonts.small.sizes[bitmapFonts.PressStart2P])
             .setInteractive()
             .on('pointerdown', () => {
                 this.emitter.emit('kill_all_enemies');
             })
             .setTint(0xff0000); // Set the tint color to red
-            
-            i++;
-            
-            this.backButton = this.add.bitmapText(boxX + 260, y + (y_gap * i), bitmapFonts.PressStart2P_Stroke, 'Back', fonts.small.sizes[bitmapFonts.PressStart2P])
-                .setInteractive()
-                .on('pointerdown', () => { this.sounds.bank.sfx.click.play(); this.go_back(); });
+
+        i++;
+
+        this.backButton = this.add.bitmapText(boxX + 260, y + (y_gap * i), bitmapFonts.PressStart2P_Stroke, 'Back', fonts.small.sizes[bitmapFonts.PressStart2P])
+            .setInteractive()
+            .on('pointerdown', () => { this.sounds.bank.sfx.click.play(); this.go_back(); });
 
         // Note: This is a quick example on how the IconButton should be used. Feel free to uncomment it and play around with it first if you need to add a new powerup to the game.
         // new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
