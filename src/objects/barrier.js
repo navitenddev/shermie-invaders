@@ -123,13 +123,14 @@ class Barrier {
         const flames = this.scene.add.particles(150, 550, 'flares',
             {
                 frame: 'white',
-                color: [0xfacc22, 0xf89800, 0xf83600, 0x9f0404],
+                color: [0xffd700, 0xffa500, 0xff6347, 0xdc143c],
                 colorEase: 'quad.out',
-                lifespan: 1200,
+                lifespan: {min: 500, max: 1400},
                 angle: { min: -90, max: -90 },
                 scale: { start: 0.50, end: 0, ease: 'sine.in' },
                 speed: 100,
-                blendMode: 'ADD',
+                blendMode: 'COLOR',
+                alpha: { start: 1, end: .55 },
                 emitZone: {
                     type: 'random',
                     source: new Phaser.Geom.Rectangle(-55, 0, this.rect.width, 10),
