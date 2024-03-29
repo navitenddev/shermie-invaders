@@ -227,7 +227,7 @@ export class Game extends Scene {
     goto_scene(targetScene) {
         const cheatModeEnabled = this.registry.get('debug_mode') === true;
         if (!cheatModeEnabled) {
-            this.scoreManager.updateHighScore();
+            this.scoreManager.checkAndUpdateHighScore();
         }
     
         this.cameras.main.fade(500, 0, 0, 0);
@@ -252,6 +252,7 @@ export class Game extends Scene {
             else player_bullet.deactivate();
             enemy.die();
             this.scoreManager.addScore(enemy.scoreValue);
+            this.scoreManager.checkAndUpdateHighScore();
             this.scoreManager.addMoney(enemy.moneyValue);
         });
 
@@ -261,7 +262,7 @@ export class Game extends Scene {
             player_bullet.deactivate();
             enemy.die();
             this.scoreManager.addScore(enemy.scoreValue);
-
+            this.scoreManager.checkAndUpdateHighScore();
         });
 
         let currShield = this.player_stats.shield;
