@@ -150,8 +150,22 @@ export class StatsMenu extends Scene {
 
     create() {
         this.player_vars = this.registry.get('player_vars');
+
+        const menuSpacing = 60;
         const boxWidth = 610;
-        const boxHeight = 340;
+
+        // if/when we add new stats, create a new spinner for it by defining it
+        // here. Note, this will only work in the for loop if the variable we
+        // are working with is in this.player_vars.stats
+        const spinner_defs = [
+            // [key, name_to_display]
+            ['move_speed', 'Move Speed'],
+            ['bullet_speed', 'Bullet Speed'],
+            ['fire_rate', 'Fire Rate'],
+            ['shield', 'Shield']
+        ];
+
+        const boxHeight = (spinner_defs.length + 3) * menuSpacing + 20;
         const boxX = (this.game.config.width - boxWidth) / 2;
         const boxY = (this.game.config.height - boxHeight) / 2;
 
@@ -164,42 +178,43 @@ export class StatsMenu extends Scene {
 
         this.keys.p.on('down', () => this.go_back());
         this.keys.esc.on('down', () => this.go_back());
-        this.keys.m.on('down', () => this.sounds.toggle_mute())
+        this.keys.m.on('down', () => this.sounds.toggle_mute());
 
-        let x = boxX + 145,
-            y = boxY + 50,
-            w = 300,
-            y_gap = 50;
+        let x = boxX + 145;
+        let y = boxY + 40;
+        let w = 300;
 
         // the player lives are not in stats, so we need to make this menu
         // spinner manually.
         new MenuSpinner(this, x, y, w, 'Lives', this.player_vars, 'lives');
-        // if/when we add new stats, create a new spinner for it by defining it
-        // here. Note, this will only work in the for loop if the variable we
-        // are working with is in this.player_vars.stats
-        const spinner_defs = [
-            // [key, name_to_display]
-            ['move_speed', 'Move Speed'],
-            ['bullet_speed', 'Bullet Speed'],
-            ['fire_rate', 'Fire Rate'],
-            ['shield', 'Shield']
-        ]
+        y += menuSpacing;
 
-        let i = 1;
-        for (let sd of spinner_defs)
-            new MenuSpinner(this, x, y + (y_gap * i++), w,
-                sd[1], this.player_vars.stats, sd[0]);
+        for (let sd of spinner_defs) {
+            new MenuSpinner(this, x, y, w, sd[1], this.player_vars.stats, sd[0]);
+            y += menuSpacing;
+        }
 
-        this.levelSkipButton = this.add.bitmapText(x, y + (y_gap * i), bitmapFonts.PressStart2P_Stroke, 'KILL ALL ENEMIES', fonts.small.sizes[bitmapFonts.PressStart2P])
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.emitter.emit('kill_all_enemies');
-            })
-            .setTint(0xff0000); // Set the tint color to red
+        this.levelSkipButton = this.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, 'KILL ALL ENEMIES', fonts.small.sizes[bitmapFonts.PressStart2P])
+        .setInteractive()
+        .on('pointerdown', () => {
+            this.emitter.emit('kill_all_enemies');
+        })
+        .setOrigin(0.5)
+        .setPosition(boxX + boxWidth / 2, y)
+        .setTint(0xffffff);
+    
+        // red background for the button
+        const buttonWidth = this.levelSkipButton.width + 40;
+        const buttonHeight = this.levelSkipButton.height + 20;
+        const buttonBackground = this.add.graphics();
+        buttonBackground.fillStyle(0xff0000, 1);
+        buttonBackground.fillRect(0, 0, buttonWidth, buttonHeight);
+        buttonBackground.setPosition(boxX + (boxWidth - buttonWidth) / 2, y - buttonHeight / 2);
+        
+        this.levelSkipButton.setDepth(1);
 
-        i++;
-
-        this.backButton = this.add.bitmapText(boxX + 260, y + (y_gap * i), bitmapFonts.PressStart2P_Stroke, 'Back', fonts.small.sizes[bitmapFonts.PressStart2P])
+        y += menuSpacing;
+        this.backButton = this.add.bitmapText(boxX + 260, y, bitmapFonts.PressStart2P_Stroke, 'Back', fonts.small.sizes[bitmapFonts.PressStart2P])
             .setInteractive()
             .on('pointerdown', () => { this.sounds.bank.sfx.click.play(); this.go_back(); });
 
