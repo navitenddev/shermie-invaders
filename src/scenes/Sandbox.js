@@ -239,12 +239,7 @@ export class Sandbox extends Scene {
 
         this.firewall_btn = new IconButton(this, "firewall_icon",
             this.game.config.width - 20, 280,
-            () => { 
-                for (let chunk of this.objs.barrier_chunks.children.entries)
-                    chunk.parent.update_flame_size(true);
-                this.objs.barrier_chunks.clear(true, true);
-                this.objs.init_barriers() 
-            },
+            () => { this.objs.init_barriers() },
             []
         );
 
