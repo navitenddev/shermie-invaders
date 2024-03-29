@@ -122,7 +122,6 @@ class ObjectSpawner {
      */
 
     init_barriers() {
-        this.barrier_chunks.clear(true, true);
         const n = { rows: 15, cols: 22 },
             c = { w: 5, h: 5 },  // individual chunk dims
             y = 500;
@@ -294,7 +293,7 @@ class ObjectSpawner {
         // Move all enemies down if we hit the x boundaries
         for (let enemy of enemies) {
             if (!enemy.is_x_inbounds()) {
-                console.log("Enemy1 is changing rows!")
+                // console.log("Grid enemy is changing rows!")
                 for (let enemy of enemies)
                     enemy.move_down()
                 break;
@@ -348,7 +347,7 @@ class ObjectSpawner {
                             enemies[rand_index].shoot(time);
                             break;
                         }
-
+                    // TODO: Another shooting mode would be nice to increase variance
                     default:
                         console.error(`Error: Invalid grid enemy shoot mode!`);
                         break;
