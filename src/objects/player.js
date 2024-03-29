@@ -86,7 +86,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.dialogue_offset = { x: -128, y: -80 };
 
         this.keys = InitKeyDefs(scene);
-        // this.setOrigin(0, 0);
+
         this.shield_bar_offset = {
             x: -50,
             y: -40
@@ -99,10 +99,19 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             0x00FFFF // color
         );
 
-        this.powerup_icon; // TODO: Josh
+        this.powerup_icon_offset = {
+            x: -68,
+            y: -48,
+        }
+        this.powerup_icon = scene.add.image(
+            this.x + this.powerup_icon_offset.x,
+            this.y + this.powerup_icon_offset.y,
+            "spreadshot",
+        ).setScale(0.75);
+
         this.powerup_bar_offset = {
             x: -50,
-            y: -52
+            y: -55,
         };
         this.powerup_bar = new FillBar(scene,
             this.x + this.powerup_bar_offset.x,
@@ -126,6 +135,24 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.powerup_bar.setPosition(this.x + this.powerup_bar_offset.x,
             this.y + this.powerup_bar_offset.y);
         this.powerup_bar.set_value(Player.powerup.ammo);
+    }
+
+    #update_powerup_icon() {
+        this.powerup_icon.setPosition(
+            this.x + this.powerup_icon_offset.x,
+            this.y + this.powerup_icon_offset.y
+        );
+        switch (this.player_vars.power) {
+            case "spread":
+            case "pierce": // fall through
+                this.powerup_icon
+                    .setTexture(`${this.player_vars.power}shot_icon`)
+                    .setVisible(true);
+                break;
+            default:
+                this.powerup_icon.setVisible(false);
+                break;
+        }
     }
 
     updateShield() {
@@ -163,6 +190,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.powerup_bar.setVisible(false);
 
         this.#update_bars();
+        this.#update_powerup_icon();
 
         // Update global player pos
         this.player_vars.x = this.x + this.dialogue_offset.x;
@@ -263,20 +291,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
-
-    /**
-     * @description Adds a life to the player's life count
-    */
-    addLife() {
-        this.player_vars.lives++;
-    }
-
     /**
      * @description changes powerup
     */
     changePower(pow) {
         this.player_vars.power = pow;
         Player.powerup.ammo = (pow) ? Player.powerup.max : 0;
+        if (!pow)
+            this.power
     }
 
     /**
