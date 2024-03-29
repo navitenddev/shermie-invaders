@@ -7,44 +7,51 @@ import ScoreManager from '../utils/ScoreManager.js';
 import { GridEnemy } from '../objects/enemy_grid';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 
-/**
- * @classdesc UI to select levels for grid ai
- * This is just a spinner, bu
- */
-
 class LevelSelector extends Phaser.GameObjects.Container {
-    constructor(scene, x, y, lvl_text_obj) {
+    emitter = EventDispatcher.getInstance();
+    constructor(scene, x, y, lvl_text_obj, kill_all_enemies) {
         super(scene, x, y);
-
         scene.add.existing(this);
-        this.btn_down5 = scene.add.bitmapText(x, y, bitmapFonts.PressStart2P_Stroke,'-5', fonts.small.sizes[bitmapFonts.PressStart2P])
+
+        const emitter = this.emitter;
+
+        this.btn_down5 = scene.add.bitmapText(x, y, bitmapFonts.PressStart2P_Stroke, '-5', fonts.small.sizes[bitmapFonts.PressStart2P])
             .setInteractive()
             .on('pointerup', function () {
-                scene.registry.set({ 'level': Math.max(1, scene.registry.get('level') - 5) });
+                scene.registry.set({ 'level': Math.max(0, scene.registry.get('level') - 5) });
                 lvl_text_obj.setText(`LEVEL:${scene.registry.get('level')}`)
+                emitter.emit('kill_all_enemies', false);
+                scene.objs.init_enemy_grid();
             });
 
-        this.btn_down1 = scene.add.bitmapText(x + 40, y, bitmapFonts.PressStart2P_Stroke,'-1', fonts.small.sizes[bitmapFonts.PressStart2P])
+        this.btn_down1 = scene.add.bitmapText(x + 40, y, bitmapFonts.PressStart2P_Stroke, '-1', fonts.small.sizes[bitmapFonts.PressStart2P])
             .setInteractive()
             .on('pointerup', function () {
-                scene.registry.set({ 'level': Math.max(1, scene.registry.get('level') - 1) });
+                this.scene.registry.set({ 'level': Math.max(1, scene.registry.get('level') - 1) });
                 lvl_text_obj.setText(`LEVEL:${scene.registry.get('level')}`)
+                emitter.emit('kill_all_enemies', false);
+                scene.objs.init_enemy_grid();
             });
 
         this.btn_up1 = scene.add.bitmapText(x + 80, y, bitmapFonts.PressStart2P_Stroke, '+1', fonts.small.sizes[bitmapFonts.PressStart2P])
             .setInteractive()
             .on('pointerup', function () {
-                scene.registry.set({ 'level': scene.registry.get('level') + 1 });
+                this.scene.registry.set({ 'level': scene.registry.get('level') + 1 });
                 lvl_text_obj.setText(`LEVEL:${scene.registry.get('level')}`)
+                emitter.emit('kill_all_enemies', false);
+                scene.objs.init_enemy_grid();
             });
 
-        this.btn_up5 = scene.add.bitmapText(x + 120, y, bitmapFonts.PressStart2P_Stroke,'+5', fonts.small.sizes[bitmapFonts.PressStart2P])
+        this.btn_up5 = scene.add.bitmapText(x + 120, y, bitmapFonts.PressStart2P_Stroke, '+5', fonts.small.sizes[bitmapFonts.PressStart2P])
             .setInteractive()
             .on('pointerup', function () {
                 scene.registry.set({ 'level': scene.registry.get('level') + 5 });
-                lvl_text_obj.setText(`LEVEL:${scene.registry.get('level')}`)
+                lvl_text_obj.setText(`LEVEL:${scene.registry.get('level')}`);
+                emitter.emit('kill_all_enemies', false);
+                scene.objs.init_enemy_grid();
             });
     }
+
 }
 
 /**
@@ -61,7 +68,7 @@ class IconButton extends Phaser.GameObjects.Container {
      * @param {Array<any>} args A variadic number of arguments to pass into cb when it's called
      * @example new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
      */
-    constructor(scene, icon, x, y, cb, args = [], ctx) {
+    constructor(scene, icon, x, y, cb, args = []) {
         super(scene, x, y);
         scene.add.existing(this);
 
@@ -97,7 +104,6 @@ export class Sandbox extends Scene {
     PUPA_PATHS = {};
 
     #coord_list = [];
-    #mouse_pos = { x: 0, y: 0 };
 
     constructor() {
         super('Sandbox');
@@ -192,7 +198,7 @@ export class Sandbox extends Scene {
         this.legend_text = this.add.bitmapText(this.game.config.width - 64, 300, bitmapFonts.PressStart2P_Stroke, "Click to Spawn", fonts.small.sizes[bitmapFonts.PressStart2P]);
         this.legend_text.setAngle(-90);
 
-        this.lvl_select = new LevelSelector(this, this.game.config.width * (3 / 4), 48, this.level_text);
+        this.lvl_select = new LevelSelector(this, this.game.config.width * (3 / 4), 48, this.level_text, this.kill_all_enemies);
 
         this.grid_btn = new IconButton(this, "enemy_icon",
             this.game.config.width - 20, 100,
@@ -231,8 +237,19 @@ export class Sandbox extends Scene {
             [this, 400, 400]
         );
 
-        this.nuke_btn = new IconButton(this, "nuke_icon",
+        this.firewall_btn = new IconButton(this, "firewall_icon",
             this.game.config.width - 20, 280,
+            () => { 
+                for (let chunk of this.objs.barrier_chunks.children.entries)
+                    chunk.parent.update_flame_size(true);
+                this.objs.barrier_chunks.clear(true, true);
+                this.objs.init_barriers() 
+            },
+            []
+        );
+
+        this.nuke_btn = new IconButton(this, "nuke_icon",
+            this.game.config.width - 20, 316,
             this.kill_all_enemies,
             []
         );
@@ -251,6 +268,7 @@ export class Sandbox extends Scene {
 
 
         this.emitter.on('player_lose', this.kill_all_enemies, this);
+        this.emitter.on('kill_all_enemies', this.kill_all_enemies, this);
     }
 
     pause() {
@@ -361,12 +379,12 @@ export class Sandbox extends Scene {
 
         // player bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 25);
+            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 15);
         });
 
         // enemy bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 25);
+            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 15);
         });
     }
 
@@ -400,25 +418,35 @@ export class Sandbox extends Scene {
     update_mouse_pos_text() {
         let x = this.game.input.mousePointer.x.toFixed(1);
         let y = this.game.input.mousePointer.y.toFixed(1);
-        this.#mouse_pos = { x: x, y: y };
         this.mouse_pos_text.setText(`(${x},${y})`);
     }
 
-    kill_all_enemies() {
+    /**
+     * 
+     * @param {boolean} add_rewards Add money and score if true
+     */
+    kill_all_enemies(add_rewards = true) {
+        console.log(`add rewards: ${add_rewards}`)
         // Loop through all enemies and destroy them
         if (this.objs) {
             this.objs.enemies.grid.children.each(enemy => {
                 enemy.die();
-                this.scoreManager.addMoney(enemy.moneyValue);
-                this.scoreManager.addScore(enemy.scoreValue);
-            });
+                console.log(`add rewards: ${add_rewards}`)
+                if (add_rewards) {
+                    this.scoreManager.addMoney(enemy.moneyValue);
+                    this.scoreManager.addScore(enemy.scoreValue);
+                }
+            }, this);
 
             this.objs.enemies.special.children.each(enemy => {
-                this.scoreManager.addMoney(enemy.moneyValue * enemy.hp);
-                this.scoreManager.addScore(enemy.scoreValue * enemy.hp);
+                console.log(`add rewards: ${add_rewards}`)
+                if (add_rewards) {
+                    this.scoreManager.addMoney(enemy.moneyValue * enemy.hp);
+                    this.scoreManager.addScore(enemy.scoreValue * enemy.hp);
+                }
                 enemy.hp = 1;
                 enemy.die();
-            });
+            }, this);
         }
     }
 

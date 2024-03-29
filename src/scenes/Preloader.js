@@ -78,6 +78,8 @@ export class Preloader extends Scene {
 
         this.load.image("nuke_icon", "ui/nuke-icon.png");
 
+        this.load.image("firewall_icon", "ui/firewall-icon.png")
+
         this.load.image("story_bg", "backgrounds/Dialouge.png")
 
         //this.load.audio(['bgmusic','shoot','explosion'], ['SFX/spacebg.wav','SFX/shoot.wav', 'SFX/explosion.wav']);

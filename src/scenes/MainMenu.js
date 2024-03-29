@@ -62,6 +62,12 @@ export class MainMenu extends Scene {
             this.registry.set('debug_mode', true);
         }
 
+        // check if mute is set in localStorage
+        const mute = localStorage.getItem('mute');
+        if (mute !== null) {
+            this.game.sound.mute = mute === 'false';
+        }
+
         const menuSpacing = 50; // spacing between menu items
         let menuY = 530; // starting Y position for menu items
 

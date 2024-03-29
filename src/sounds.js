@@ -72,19 +72,15 @@ class SoundBank {
      */
     toggle_mute = () => {
         this.scene.game.sound.mute = !this.scene.game.sound.mute;
-        this.save_mute_preference();
-    }
-
-    save_mute_preference() {
         localStorage.setItem('mute', this.scene.game.sound.mute);
-      }
+    }
     
-      load_mute_preference() {
-        const mute = localStorage.getItem('mute');
-        if (mute !== null) {
-          this.scene.game.sound.mute = mute === 'true';
+    load_mute_preference() {
+        const mute = localStorage.getItem('mute'); // check if mute is set in localStorage
+        if (mute !== null) { // if it is, set the mute preference
+          this.scene.game.sound.mute = mute === 'false';
         }
-      }
+    }
 }
 
 export { SoundBank };

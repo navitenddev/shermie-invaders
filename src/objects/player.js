@@ -98,7 +98,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             x = this.scene.game.input.mousePointer.x.toFixed(1);
             y = this.scene.game.input.mousePointer.y.toFixed(1);
         }
-
         this.#mouse_pos = { x: x, y: y };
         // respawn the player
         if (this.is_dead) {

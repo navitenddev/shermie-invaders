@@ -1,11 +1,11 @@
 import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../keyboard_input';
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
-import { Barrier } from '../objects/barrier.js';
-import ScoreManager from '../utils/ScoreManager.js';
+import { bitmapFonts, fonts } from '../utils/fontStyle';
+import { Barrier } from '../objects/barrier';
+import ScoreManager from '../utils/ScoreManager';
 import { GridEnemy } from '../objects/enemy_grid';
-import { EventDispatcher } from '../utils/event_dispatcher.js';
+import { EventDispatcher } from '../utils/event_dispatcher';
 
 // The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
 import { SoundBank } from '../sounds';
@@ -35,8 +35,8 @@ export class Game extends Scene {
         // For now, the level dialogues will repeat after it exceeds the final level dialogue.
 
         if (this.level <= 7) {
-        this.start_dialogue(`level${(this.level)}`, true, 23);
-        } 
+            this.start_dialogue(`level${(this.level)}`, true, 23);
+        }
 
         let bgKey;
         if (this.level > 7) {
@@ -60,8 +60,6 @@ export class Game extends Scene {
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
         this.powerup_stats = this.registry.get('powerup_stats');
-        this.sounds = this.registry.get('sound_bank');
-        this.keys = InitKeyDefs(this);
         this.objs.init_all();
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
@@ -70,6 +68,8 @@ export class Game extends Scene {
                 this.keys.esc.on('down', () => this.pause());
             }
         );
+        this.sounds = this.registry.get('sound_bank');
+        this.keys = InitKeyDefs(this);
 
         // Score and high score
         this.scoreManager = new ScoreManager(this);
@@ -89,6 +89,12 @@ export class Game extends Scene {
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
         this.player_vars.power = "";
+        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
+            () => {
+                this.keys.p.on('down', () => this.pause());
+                this.keys.esc.on('down', () => this.pause());
+            }
+        );
 
         // Player lives text and sprites
         this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, bitmapFonts.PressStart2P, '3', fonts.medium.sizes[bitmapFonts.PressStart2P]);
@@ -189,14 +195,6 @@ export class Game extends Scene {
         this.updateShieldSprites();
         this.objs.ai_grid_enemies(time);
         this.check_gameover();
-
-        if (this.level === 3 || this.level === 5) {
-            this.children.list.forEach((child) => {
-                if (child instanceof Phaser.GameObjects.TileSprite) {
-                    child.tilePositionY -= this.bgScrollSpeed * delta / 2;
-                }
-            });
-        }
     }
 
 
@@ -207,18 +205,11 @@ export class Game extends Scene {
             this.registry.set({ 'level': this.level + 1 });
             this.level_transition_flag = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
-            this.objs.player.changePower("");
-
-            // Store the maximum level reached in localStorage
-            const maxLevelReached = localStorage.getItem('maxLevelReached') || 1;
-            if (this.level + 1 > maxLevelReached) {
-                localStorage.setItem('maxLevelReached', this.level + 1);
-            }
-
+            this.player_vars.power = "";
             this.goto_scene("Player Win");
         } else if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
-            this.objs.player.changePower("");
+            this.player_vars.power = "";
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.goto_scene("Player Lose");
         }
@@ -318,12 +309,12 @@ export class Game extends Scene {
 
         // player bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 25);
+            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 15);
         });
 
         // enemy bullet collides with barrier
         this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 25);
+            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 15);
         });
     }
     /**
