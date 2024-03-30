@@ -23,7 +23,7 @@ class Dialogue extends Phaser.Scene {
 
         this.sounds = this.registry.get('sound_bank');
 
-        this.dialogue_mgr = new DialogueManager(this, data.is_story_dialogue, data.font_size);
+        this.dialogue_mgr = new DialogueManager(this, data.is_story_dialogue, data.is_store_dialogue, data.font_size, undefined, data.dialogue_x, data.dialogue_y);
 
         this.keys = InitKeyDefs(this);
         // console.log("Initialized Dialogue Scene")

@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { FillBar } from '../ui/fill_bar.js';
+import { EventDispatcher } from '../utils/event_dispatcher';
 
 const STAT_MIN = 1;
 
@@ -192,6 +193,7 @@ class MenuButton extends Phaser.GameObjects.Container {
 }
 
 export class Store extends Scene {
+    emitter = EventDispatcher.getInstance();
     constructor() {
         super('Store');
         this.menuSpinners = [];
@@ -213,9 +215,14 @@ export class Store extends Scene {
         const borderX = this.cameras.main.width / 5;
         const borderY = startY - 120;
         const borderWidth = 620;
-        const borderHeight = 450;
+        const borderHeight = 500;
         borderGraphics.fillStyle(0x808080, .9);
         borderGraphics.fillRoundedRect(borderX, borderY, borderWidth, borderHeight, 20);
+
+        let techtips = this.add.graphics();
+        techtips.lineStyle(2, 0xffffff, 1);
+        techtips.fillStyle(0x808080, 1);
+        techtips.fillRoundedRect(this.cameras.main.width / 5, startY - 620, 620, 100, 20);
 
         //Sets initial Character stats or replaces them with current player stats. 
         this.initialStats = Object.assign({}, this.stats);
@@ -278,6 +285,15 @@ export class Store extends Scene {
                 this.scene.start('Game', { playerStats: this.stats });
             }
         );
+
+        //repeat dialogue
+        this.displayRandomDialogue();
+        this.time.addEvent({
+            delay: 8500,
+            callback: this.displayRandomDialogue,
+            callbackScope: this,
+            loop: true
+        });
     }
 
     updateAllSpinners() {
@@ -323,5 +339,24 @@ export class Store extends Scene {
             this.animatedBg.tilePositionY -= 2;
             this.animatedBg.tilePositionX -= 2;
         }
+    }
+
+    start_dialogue(key, is_store_dialogue = true, font_size = 14, x = 205, y = 525) { 
+        this.emitter.emit('force_dialogue_stop'); // Ensure no overlapping dialogues
+        this.scene.launch('Dialogue', {
+            dialogue_key: key,
+            is_store_dialogue: is_store_dialogue,
+            caller_scene: 'Store',
+            font_size: font_size,
+            dialogue_x: x,
+            dialogue_y: y,
+        });
+    }
+
+    displayRandomDialogue() {
+        const randomKeyIndex = Phaser.Math.Between(1, 10); // Assuming you have techtip1 to techtip10
+        const randomKey = `techtip${randomKeyIndex}`;
+
+        this.start_dialogue(randomKey, true);
     }
 }

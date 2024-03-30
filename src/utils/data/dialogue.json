@@ -27,23 +27,23 @@
   },
   {
     "key": "test2",
-    "lines": ["Yo what's goodie", "Okay cool beans", "buh bye dood"]
+    "lines": [ "Yo what's goodie", "Okay cool beans", "buh bye dood" ]
   },
   {
     "key": "win1",
-    "lines": ["AYOOOOOO", "SHERMIE IN DA HOUSE"]
+    "lines": [ "AYOOOOOO", "SHERMIE IN DA HOUSE" ]
   },
   {
     "key": "lose1",
-    "lines": ["We may have lost the battle...", "but not the war..."]
+    "lines": [ "We may have lost the battle...", "but not the war..." ]
   },
   {
     "key": "shermie_hurt",
-    "lines": ["ouch! that hurt!"]
+    "lines": [ "ouch! that hurt!" ]
   },
   {
     "key": "shermie_shieldgone",
-    "lines": ["Ah! Blasted right through the shield!"]
+    "lines": [ "Ah! Blasted right through the shield!" ]
   },
   {
     "key": "shermie_start",
@@ -54,7 +54,7 @@
   },
   {
     "key": "shermie_dead",
-    "lines": ["NoooooOOOOoOOOoOOOO!!!"]
+    "lines": [ "NoooooOOOOoOOOoOOOO!!!" ]
   },
   {
     "key": "sandbox_tips",
@@ -67,60 +67,126 @@
     "key": "level1",
     "lines": [
       "My adventure begins at the peaceful Navitend Farm.",
-      "A place of harmony,",
-      "Little did I know, This world was about to change forever.",
-      "As the sun sets, a strange silence falls over the farm.",
-      "As I look up, sensing the impending threat, I was ready to protect my home."
+      "A place of harmony, soon to be touched by the shadow of an unseen challenge.",
+      "Little did I know, my world was about to change forever.",
+      "As the sun sets, a strange silence envelops the farm.",
+      "Looking up, sensing the impending change, I was ready to protect my home."
     ]
   },
   {
     "key": "level2",
     "lines": [
-      "After defending my home,",
-      "I must navigate To the city.",
-      "Streets once filled with joy are now battlegrounds.",
-      "The Nexus's cyber minions attack, Hacking everything.",
-      "With each step, I vow to restore peace to the city's heart."
+      "After safeguarding my home, I journeyed to the city.",
+      "Streets once filled with laughter now echo with the silence of anticipation.",
+      "The Nexus's cyber forces spread confusion, aiming to disrupt harmony.",
+      "With every step, I vowed to restore peace and order to the city's heart."
     ]
   },
   {
     "key": "level3",
     "lines": [
-      "After defeating the minions attacking the city.",
-      "determined to halt the invaders, I advance before they reach space.",
-      "Surrounded by the vastness of the sky, I face the aerial fleet",
-      "Each cloud a witness to the fierce battle between hope and despair.",
-      "With the wind as a ally, I maneuvers through this wild battlefield,",
-      "This skyward clash is but a prelude to the greater war looming in the stars."
+      "With the city's peace reclaimed, I took to the skies, determined to halt the advance.",
+      "Amidst the vastness of the sky, I encountered their aerial forces.",
+      "Each cloud bore witness to our struggle between hope and challenge.",
+      "With the wind as my guide, I navigated this formidable expanse,",
+      "A prelude to the greater challenge awaiting among the stars."
     ]
   },
   {
     "key": "level4",
     "lines": [
-      "Now in orbit, I defend Earth from a relentless barrage,",
-      "shielding my home from the debris of war and cyber threats.",
-      "Each attack is intercepted, each enemy vanquished, brings hope.",
-      "Earth hangs in the balance, its fate tied to Shermie's bravery.",
-      "The orbit becomes a dance of danger and defiance, Shermie leading the way."
+      "Now in orbit, I stand guard over Earth, deflecting the chaos of conflict.",
+      "Each challenge overcome, each adversary cleared, kindles hope anew.",
+      "Earth's destiny hangs in balance, intertwined with my resolve.",
+      "Orbit becomes a realm of vigilance and valor, with me as its guardian."
     ]
   },
   {
     "key": "level5",
     "lines": [
-      "The chase continues back to the enemy's lair, the boss spaceship.",
-      "Level 5 filler"
+      "The pursuit leads me to the foe's stronghold, a daunting spaceship.",
+      "Inside, I navigate through layers of cunning traps and challenges,",
+      "Each corridor closer to the source of the threat, the heart of their power.",
+      "Determination lights my path, as I prepare to confront the darkness."
     ]
   },
   {
     "key": "level6",
     "lines": [
-      "Level 6 filler"
+      "Outside the boss spaceship, I face the final guard, the ultimate test of my journey.",
+      "The air crackles with anticipation, every moment leading to this confrontation.",
+      "Strategies and courage are my allies, as I stand firm before the gates.",
+      "This battle will determine the fate of our worlds, the final hurdle before the nexus."
     ]
   },
   {
     "key": "level7",
     "lines": [
-      "Level 7 filler"
+      "Inside the heart of the enemy's lair, I confront The Nexus.",
+      "A maelstrom of wills clashing, the ultimate showdown for the galaxy's fate.",
+      "With every fiber of my being, I challenge the darkness, shield of the innocent.",
+      "This confrontation will decide the destiny of countless lives, our last stand."
+    ]
+  },
+  {
+    "key": "techtip1",
+    "lines": [
+      "If you find a link that looks suspicious, don’t click it, because chances are it is malicious."
+    ]
+  },
+  {
+    "key": "techtip2",
+    "lines": [
+      "Malware exploits software vulnerabilities. To avoid it, regularly update your software and applications to patch vulnerabilities."
+    ]
+  },
+  {
+    "key": "techtip3",
+    "lines": [
+      "You never know where hackers may lurk, so get antivirus software and make sure it works."
+    ]
+  },
+  {
+    "key": "techtip4",
+    "lines": [
+      "If you’re looking for a strong password, you won’t find it in the dictionary."
+    ]
+  },
+  {
+    "key": "techtip5",
+    "lines": [
+      "What’s the key to creating a strong password? You won’t find that in the dictionary."
+    ]
+  },
+  {
+    "key": "techtip6",
+    "lines": [
+      "Since you never know where hackers may lurk, make sure your antivirus and antimalware programs work."
+    ]
+  },
+  {
+    "key": "techtip7",
+    "lines": [
+      "If you see an email with a message that seems too good to be true, chances are it is. Delete it immediately."
+    ]
+  },
+  {
+    "key": "techtip8",
+    "lines": [
+      "When setting passwords for your accounts or devices, make sure they contain a random mix of letters, numbers, and special characters, since passwords with words or phrases in any language are easier for hackers to crack."
+    ]
+  },
+  {
+    "key": "techtip9",
+    "lines": [
+      "Reusing your password across multiple accounts opens doors for hackers to steal your data, so to keep your data from being compromised, make sure all your accounts’ passwords are customized."
+    ]
+  },
+  {
+    "key": "techtip10",
+    "lines": [
+      "Use 2FA/MFA as often as possible, because the more authentication factors you have, the greater protection you have against cyberattacks even if one factor is compromised."
     ]
   }
+
 ]

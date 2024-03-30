@@ -14,7 +14,7 @@ export class PlayerWin extends Scene {
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE, () => {
             // do dis when fade done
-            this.start_dialogue('win1')
+            //this.start_dialogue('win1',false)
         });
 
         this.emitter.removeAllListeners(); // clean up event listeners
@@ -56,7 +56,7 @@ export class PlayerWin extends Scene {
      * @param {*} blocking If true, will stop all actions in the current scene. Until dialogue complete
      */
     start_dialogue(key, blocking = true) {
-        this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Player Win' });
+        //this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Player Win' });
         if (blocking)
             this.scene.pause();
     }
