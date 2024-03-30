@@ -286,14 +286,14 @@ export class Store extends Scene {
             }
         );
 
-        //repeat dialogue
-        this.displayRandomDialogue();
         this.time.addEvent({
-            delay: 8500,
+            delay: 8000,
             callback: this.displayRandomDialogue,
             callbackScope: this,
             loop: true
         });
+
+        this.displayRandomDialogue();
     }
 
     updateAllSpinners() {
@@ -341,7 +341,7 @@ export class Store extends Scene {
         }
     }
 
-    start_dialogue(key, is_store_dialogue = true, font_size = 14, x = 205, y = 525) { 
+    start_dialogue(key, is_store_dialogue = true, font_size = 14, x = 205, y = 505) { 
         this.emitter.emit('force_dialogue_stop'); // Ensure no overlapping dialogues
         this.scene.launch('Dialogue', {
             dialogue_key: key,
@@ -354,7 +354,7 @@ export class Store extends Scene {
     }
 
     displayRandomDialogue() {
-        const randomKeyIndex = Phaser.Math.Between(1, 10); // Assuming you have techtip1 to techtip10
+        const randomKeyIndex = Phaser.Math.Between(1, 7); 
         const randomKey = `techtip${randomKeyIndex}`;
 
         this.start_dialogue(randomKey, true);

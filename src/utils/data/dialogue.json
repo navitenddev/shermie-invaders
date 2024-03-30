@@ -173,18 +173,6 @@
   {
     "key": "techtip8",
     "lines": [
-      "When setting passwords for your accounts or devices, make sure they contain a random mix of letters, numbers, and special characters, since passwords with words or phrases in any language are easier for hackers to crack."
-    ]
-  },
-  {
-    "key": "techtip9",
-    "lines": [
-      "Reusing your password across multiple accounts opens doors for hackers to steal your data, so to keep your data from being compromised, make sure all your accounts’ passwords are customized."
-    ]
-  },
-  {
-    "key": "techtip10",
-    "lines": [
       "Use 2FA/MFA as often as possible, because the more authentication factors you have, the greater protection you have against cyberattacks even if one factor is compromised."
     ]
   }
