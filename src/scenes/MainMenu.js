@@ -22,11 +22,42 @@ export class MainMenu extends Scene {
     }
 
     create() {
-        this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg')
-            .setOrigin(0.5, 0.5);
+        this.add.rectangle(0, 0, this.game.config.width, this.game.config.height, 0x000000)
+            .setOrigin(0, 0)
+            .setDepth(0);
+
+        this.animatedBg = this.add.group();
+
+        const numSprites = 50; // in the background
+        this.spriteWidth = 60;
+        this.spriteHeight = 60;
+    
+        for (let i = 0; i < numSprites; i++) {
+            const randomX = Phaser.Math.Between(0, this.game.config.width);
+            const randomY = Phaser.Math.Between(0, this.game.config.height);
+            const randomFrame = Phaser.Math.Between(1, 18);
+    
+            const sprite = this.add.sprite(randomX, randomY, `enemy${randomFrame}`)
+                .setOrigin(0.5, 0.5)
+                .setScale(.5)
+                .play(`enemy${randomFrame}_idle`); 
+    
+            this.animatedBg.add(sprite);
+        }
+
+        
+        // semi-transparent gray overlay
+        const overlayColor = 0x000000; 
+        const overlayAlpha = 0.6;
+        this.add.rectangle(0, 0, this.game.config.width, this.game.config.height, overlayColor, overlayAlpha)
+            .setOrigin(0, 0)
+            .setDepth(2); 
+
 
         this.add.image(512, 250, 'titlelogo')
-            .setScale(0.5, 0.5);
+            .setScale(0.5, 0.5)
+            .setDepth(3);
+
         this.sounds = this.registry.get('sound_bank');
 
         this.emitter.removeAllListeners(); // clean up event listeners
@@ -70,6 +101,7 @@ export class MainMenu extends Scene {
         this.start_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'PLAY', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
+            .setDepth(3)
             .on('pointerdown', () => {
                 this.sounds.bank.sfx.win.play();
                 this.cameras.main.fadeOut(200, 0, 0, 0);
@@ -83,6 +115,7 @@ export class MainMenu extends Scene {
         this.controls_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'CONTROLS', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
+            .setDepth(3)
             .on('pointerdown', () => {
                 this.sounds.bank.sfx.click.play();
                 this.scene.start('HowToPlay');
@@ -93,6 +126,7 @@ export class MainMenu extends Scene {
         this.level_select_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'LEVELS', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
+            .setDepth(3)
             .on('pointerdown', () => {
                 this.sounds.bank.sfx.click.play();
                 this.scene.start('LevelSelect');
@@ -104,6 +138,7 @@ export class MainMenu extends Scene {
             this.sandbox_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'SANDBOX', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
                 .setOrigin(0.5)
                 .setInteractive()
+                .setDepth(3)
                 .on('pointerdown', () => {
                     this.sounds.bank.sfx.win.play();
                     this.cameras.main.fadeOut(200, 0, 0, 0);
@@ -126,6 +161,7 @@ export class MainMenu extends Scene {
             this.disable_cheats_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'CHEATS OFF', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
                 .setOrigin(0.5)
                 .setInteractive()
+                .setDepth(3)
                 .on('pointerdown', () => {
                     this.#disable_cheats();
                 });
@@ -140,10 +176,16 @@ export class MainMenu extends Scene {
 
     update() {
         if (this.animatedBg) {
-            this.animatedBg.tilePositionY += 1;
-            this.animatedBg.tilePositionX += 1;
+            this.animatedBg.children.iterate((sprite) => {
+                sprite.y += 1; // Adjust the speed as needed
+                if (sprite.y > this.game.config.height) {
+                    sprite.y = -this.spriteHeight;
+                    sprite.setTexture(`enemy${Phaser.Math.Between(1, 22)}`); // Change the sprite texture randomly
+                }
+            });
         }
     }
+
 
     #activate_cheats() {
         console.log(`Cheat codes activated!`);
