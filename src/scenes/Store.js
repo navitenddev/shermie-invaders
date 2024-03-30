@@ -215,14 +215,9 @@ export class Store extends Scene {
         const borderX = this.cameras.main.width / 5;
         const borderY = startY - 120;
         const borderWidth = 620;
-        const borderHeight = 500;
+        const borderHeight = 460;
         borderGraphics.fillStyle(0x808080, .9);
         borderGraphics.fillRoundedRect(borderX, borderY, borderWidth, borderHeight, 20);
-
-        let techtips = this.add.graphics();
-        techtips.lineStyle(2, 0xffffff, 1);
-        techtips.fillStyle(0x808080, 1);
-        techtips.fillRoundedRect(this.cameras.main.width / 5, startY - 620, 620, 100, 20);
 
         //Sets initial Character stats or replaces them with current player stats. 
         this.initialStats = Object.assign({}, this.stats);
@@ -287,7 +282,7 @@ export class Store extends Scene {
         );
 
         this.time.addEvent({
-            delay: 8000,
+            delay: 7000,
             callback: this.displayRandomDialogue,
             callbackScope: this,
             loop: true
@@ -341,7 +336,7 @@ export class Store extends Scene {
         }
     }
 
-    start_dialogue(key, is_store_dialogue = true, font_size = 14, x = 205, y = 505) { 
+    start_dialogue(key, is_store_dialogue = true, font_size = 10, x = 205, y = 515) { 
         this.emitter.emit('force_dialogue_stop'); // Ensure no overlapping dialogues
         this.scene.launch('Dialogue', {
             dialogue_key: key,
@@ -354,7 +349,7 @@ export class Store extends Scene {
     }
 
     displayRandomDialogue() {
-        const randomKeyIndex = Phaser.Math.Between(1, 7); 
+        const randomKeyIndex = Phaser.Math.Between(1, 15); 
         const randomKey = `techtip${randomKeyIndex}`;
 
         this.start_dialogue(randomKey, true);

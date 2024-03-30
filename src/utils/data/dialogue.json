@@ -173,8 +173,49 @@
   {
     "key": "techtip8",
     "lines": [
-      "Use 2FA/MFA as often as possible, because the more authentication factors you have, the greater protection you have against cyberattacks even if one factor is compromised."
+      "Use 2FA/MFA as often as possible, the more authentication factors you have, the greater protection you have against cyberattacks."
+    ]
+  },
+  {
+    "key": "techtip9",
+    "lines": [
+      "Avoid using public Wi-Fi for sensitive transactions to protect your data from prying eyes."
+    ]
+  },
+  {
+    "key": "techtip10",
+    "lines": [
+      "Regularly back up important data. In case of a cyberattack, you won't lose everything."
+    ]
+  },
+  {
+    "key": "techtip11",
+    "lines": [
+      "Be cautious of unsolicited phone calls or messages asking for personal or financial information."
+    ]
+  },
+  {
+    "key": "techtip12",
+    "lines": [
+      "Use secure and encrypted messaging apps for private conversations to keep your data safe."
+    ]
+  },
+  {
+    "key": "techtip13",
+    "lines": [
+      "Enable privacy settings on social media to control who sees your information and posts."
+    ]
+  },
+  {
+    "key": "techtip14",
+    "lines": [
+      "Be wary of USB drives you find; they might be malware-laden traps set by hackers."
+    ]
+  },
+  {
+    "key": "techtip15",
+    "lines": [
+      "Keep your operating system and all software up to date to fend off the latest cyber threats."
     ]
   }
-
 ]
