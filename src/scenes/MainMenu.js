@@ -1,4 +1,4 @@
-import { Scene } from 'phaser';
+import { BaseMenu } from './BaseMenu.js';
 import { InitKeyDefs, CHEAT_CODE_SEQUENCE as CheatCode } from '../utils/keyboard_input';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
@@ -8,7 +8,7 @@ import { PauseMenu as pause_scene } from './PauseMenu.js';
 import { StatsMenu as stats_scene } from './StatsMenu.js';
 import { restart_scenes } from '../main.js';
 
-export class MainMenu extends Scene {
+export class MainMenu extends BaseMenu {
     emitter = EventDispatcher.getInstance();
     constructor() {
         super('MainMenu');
@@ -22,43 +22,11 @@ export class MainMenu extends Scene {
     }
 
     create() {
-        this.add.rectangle(0, 0, this.game.config.width, this.game.config.height, 0x000000)
-            .setOrigin(0, 0)
-            .setDepth(0);
-
-        this.animatedBg = this.add.group();
-
-        const numSprites = 50; // in the background
-        this.spriteWidth = 60;
-        this.spriteHeight = 60;
-    
-        for (let i = 0; i < numSprites; i++) {
-            const randomX = Phaser.Math.Between(0, this.game.config.width);
-            const randomY = Phaser.Math.Between(0, this.game.config.height);
-            const randomFrame = Phaser.Math.Between(1, 18);
-    
-            const sprite = this.add.sprite(randomX, randomY, `enemy${randomFrame}`)
-                .setOrigin(0.5, 0.5)
-                .setScale(.5)
-                .play(`enemy${randomFrame}_idle`); 
-    
-            this.animatedBg.add(sprite);
-        }
-
-        
-        // semi-transparent gray overlay
-        const overlayColor = 0x000000; 
-        const overlayAlpha = 0.6;
-        this.add.rectangle(0, 0, this.game.config.width, this.game.config.height, overlayColor, overlayAlpha)
-            .setOrigin(0, 0)
-            .setDepth(2); 
-
+        super.create();
 
         this.add.image(512, 250, 'titlelogo')
             .setScale(0.5, 0.5)
             .setDepth(3);
-
-        this.sounds = this.registry.get('sound_bank');
 
         this.emitter.removeAllListeners(); // clean up event listeners
 
@@ -80,8 +48,6 @@ export class MainMenu extends Scene {
         this.player_vars.active_bullets = 0;
         this.player_vars.wallet = 0;
         this.player_vars.power = "";
-
-        this.keys = InitKeyDefs(this);
 
         // check if cheat codes are already activated
         if (localStorage.getItem('cheatCodesActivated') === 'true') {
@@ -167,25 +133,12 @@ export class MainMenu extends Scene {
                 });
         }
 
-        this.keys.m.on('down', this.sounds.toggle_mute)
+        this.keys.m.on('down', this.sounds.toggle_mute);
         this.input.keyboard.createCombo(CheatCode, { resetOnWrongKey: true });
         this.input.keyboard.on('keycombomatch', () => {
             this.#activate_cheats();
         });
     }
-
-    update() {
-        if (this.animatedBg) {
-            this.animatedBg.children.iterate((sprite) => {
-                sprite.y += 1; // Adjust the speed as needed
-                if (sprite.y > this.game.config.height) {
-                    sprite.y = -this.spriteHeight;
-                    sprite.setTexture(`enemy${Phaser.Math.Between(1, 22)}`); // Change the sprite texture randomly
-                }
-            });
-        }
-    }
-
 
     #activate_cheats() {
         console.log(`Cheat codes activated!`);

@@ -1,4 +1,4 @@
-import { Scene } from 'phaser';
+import { BaseMenu } from './BaseMenu.js';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 
 /**
@@ -20,6 +20,7 @@ class LevelButton {
         this.scene.add.bitmapText(x, y, bitmapFonts.PressStart2P, level, fonts.small.sizes[bitmapFonts.PressStart2P])
             .setOrigin(0.5)
             .setInteractive()
+            .setDepth(3)
             .on('pointerdown', () => {
                 this.scene.registry.set({ level: level });
                 this.scene.scene.start('Game');
@@ -27,16 +28,16 @@ class LevelButton {
     }
 }
 
-export class LevelSelect extends Scene {
+export class LevelSelect extends BaseMenu {
     constructor() {
         super('LevelSelect');
     }
 
     create() {
-        this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg');
-        this.animatedBg.setOrigin(0.5, 0.5);
-        this.sounds = this.registry.get('sound_bank');
-        this.add.image(this.game.config.width / 2, 35, 'levelSelectlogo');
+        super.create();
+
+        this.add.image(this.game.config.width / 2, 35, 'levelSelectlogo')
+            .setDepth(3);
         
         const scale = { x: 50, y: 50 };
         const offset = { x: this.game.config.width / 10, y: 75 };
@@ -47,7 +48,9 @@ export class LevelSelect extends Scene {
         
         // check if cheat mode is enabled
         const cheatModeEnabled = this.registry.get('debug_mode') === true;
-        
+
+        this.keys.m.on('down', this.sounds.toggle_mute);
+
         for (let y = 1; y <= 10; y++) {
             for (let x = 1; x <= 15; x++) {
                 if (cheatModeEnabled || level <= maxLevelReached) {
@@ -57,19 +60,6 @@ export class LevelSelect extends Scene {
             }
         }
         
-        this.backButton = this.add.bitmapText(this.game.config.width / 2, this.game.config.height - 100, bitmapFonts.PressStart2P_Stroke, 'Back', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
-            .setOrigin(0.5)
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.sounds.bank.sfx.click.play();
-                this.scene.start('MainMenu');
-            });
-    }
-
-    update() {
-        if (this.animatedBg) {
-            this.animatedBg.tilePositionY += 1;
-            this.animatedBg.tilePositionX += 1;
-        }
+        this.setupBackButton();
     }
 }
