@@ -1,4 +1,5 @@
 import { bitmapFonts, fonts } from "../utils/fontStyle";
+import { FillBar } from "../ui/fill_bar";
 
 class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     scoreValue = 200;
@@ -22,7 +23,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     target_pos = new Phaser.Math.Vector2();
     reached_target = false;
     is_dead = false;
-    constructor(scene, x, y) {
+    constructor(scene, x, y, hp = 40) {
         super(scene, x, y);
         scene.physics.add.existing(this);
         scene.add.existing(this);
@@ -41,7 +42,17 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
 
         this.#change_state("BARRIER_SWEEP"); // do the sweep
         this.state_text = this.scene.add.bitmapText(this.x, this.y, bitmapFonts.PressStart2P, this.ai_state, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
-        this.hp_text = this.scene.add.bitmapText(this.x, this.y - 16, bitmapFonts.PressStart2P, this.hp, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
+
+        this.hp = hp;
+        this.hp_bar_offset = {
+            x: -47,
+            y: -(this.height / 1.8),
+        };
+        this.hp_bar = new FillBar(scene,
+            x + this.hp_bar_offset.x, y + this.hp_bar_offset.y,
+            100, 10,
+            hp
+        );
     }
 
     #clear_path() {
@@ -199,18 +210,22 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     }
 
     #update_text() {
-        this.hp_text
-            .setPosition(this.x, this.y - 16)
-            .setText(this.hp);
         this.state_text
             .setPosition(this.x, this.y)
             .setText(this.ai_state);
     }
 
+    #update_bar() {
+        this.hp_bar.setPosition(this.x + this.hp_bar_offset.x, this.y + this.hp_bar_offset.y);
+        this.hp_bar.set_value(this.hp);
+    }
+
+
     update(time, delta) {
         if (this.is_dead)
             return;
         this.#update_text();
+        this.#update_bar();
 
         // console.log(this.follower.t);
         let player = this.scene.objs.player;
@@ -296,7 +311,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     die() {
         if (this.hp <= 1) {
             this.state_text.destroy();
-            this.hp_text.destroy();
+            this.hp_bar.destroy();
             this.graphics.destroy();
             this.destroy();
             this.is_dead = true;

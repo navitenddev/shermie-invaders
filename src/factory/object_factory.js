@@ -48,15 +48,15 @@ Phaser.GameObjects.GameObjectFactory.register(
 
 Phaser.GameObjects.GameObjectFactory.register(
     "enemy_lupa",
-    function (scene, x, y) {
-        return new EnemyLupa(scene, x, y);
+    function (scene, x, y, hp = 40) {
+        return new EnemyLupa(scene, x, y, hp);
     }
 );
 
 Phaser.GameObjects.GameObjectFactory.register(
     "enemy_pupa",
-    function (scene, x, y) {
-        return new EnemyPupa(scene, x, y);
+    function (scene, x, y, hp) {
+        return new EnemyPupa(scene, x, y, hp);
     }
 );
 

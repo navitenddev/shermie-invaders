@@ -129,12 +129,12 @@ export class Preloader extends Scene {
             frameHeight: 32,
         });
 
-        this.load.spritesheet("spreadshot", "projectiles/spreadshot.png", {
+        this.load.spritesheet("spreadshot_icon", "projectiles/spreadshot.png", {
             frameWidth: 32,
             frameHeight: 32,
         });
 
-        this.load.spritesheet("piercingshot", "projectiles/Wool-Rocket.png", {
+        this.load.spritesheet("pierceshot_icon", "projectiles/Wool-Rocket.png", {
             frameWidth: 32,
             frameHeight: 32,
         });

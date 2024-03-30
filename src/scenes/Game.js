@@ -103,13 +103,6 @@ export class Game extends Scene {
             repeat: this.player_vars.lives - 2
         });
 
-        // Player shields text and sprites
-        this.shieldsText = this.add.bitmapText(970, this.sys.game.config.height - 48, bitmapFonts.PressStart2P, '0', fonts.medium.sizes[bitmapFonts.PressStart2P]);
-        this.shieldsSprites = this.add.group({
-            key: 'shields',
-            repeat: this.player_stats.shield - 1
-        });
-
         let secs = Phaser.Math.Between(15, 60);
         console.log(`Spawning enemy USB in ${secs}s`)
         this.time.delayedCall(secs * 1000, this.objs.spawn_usb_enemy, [], this.scene);
@@ -172,18 +165,6 @@ export class Game extends Scene {
         }
     }
 
-    /**
- * @description Updates the shield sprites to reflect the current number of shields
- * @param {number} shields The number of shields the player has
-*/
-    updateShieldSprites() {
-        this.shieldsSprites.clear(true, true); // Clear sprites
-        for (let i = 1; i < this.player_stats.shield; i++) {
-            // coordinates for the shield sprites
-            let shieldConsts = { x: 990 - i * 48, y: this.sys.game.config.height - 32 };
-            this.shieldsSprites.create(shieldConsts.x, shieldConsts.y, 'shields', 0)
-        }
-    }
 
     update(time, delta) {
         if (this.objs.player)
@@ -191,8 +172,6 @@ export class Game extends Scene {
         // Update lives text and sprites
         this.livesText.setText(this.player_vars.lives);
         this.updateLivesSprites();
-        this.shieldsText.setText(this.player_stats.shield - 1);
-        this.updateShieldSprites();
         this.objs.ai_grid_enemies(time);
         this.check_gameover();
     }
@@ -220,9 +199,9 @@ export class Game extends Scene {
         if (!cheatModeEnabled) {
             this.scoreManager.checkAndUpdateHighScore();
         }
-    
+
         this.cameras.main.fade(500, 0, 0, 0);
-    
+
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
             this.sounds.bank.music.bg.stop();
             if (targetScene === "Player Lose") {

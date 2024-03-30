@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { FillBar } from '../ui/fill_bar.js';
 
 const STAT_MIN = 1;
 
@@ -22,23 +23,6 @@ export const SHOP_PRICES = {
         300, 300, 300, 300, 300
     ]
 };
-
-class FillBar extends Phaser.GameObjects.Rectangle {
-    constructor(scene, x, y, width, height) {
-        super(scene, x, y, width, height, 0x000000);
-        scene.add.existing(this);
-        this.inner = scene.add.rectangle(x + 2 - (width / 2), y - 13, width - 12, height - 8, 0x33b013);
-    }
-
-    update_bar(remaining, total) {
-        this.total = total;
-        this.remaining = remaining;
-
-        const ratio = remaining / total;
-        this.inner.setOrigin(0, 0)
-            .setSize((this.width * ratio) - 3, this.height - 4)
-    }
-}
 
 class MenuSpinner {
     constructor(scene, y, statKey, stats, onUpgrade, displayName) {
@@ -75,12 +59,12 @@ class MenuSpinner {
         this.plusButton.setScale(1.5);
 
         // Stat Boxes below the stat text
-        const boxesStartX = centerX - totalBoxesWidth / 2;
+        const boxesStartX = centerX - totalBoxesWidth;
         this.fill_bar = new FillBar(scene,
-            boxesStartX + (boxWidth * 5), y + 40,
-            boxWidth * 10, boxHeight
+            boxesStartX + (boxWidth * 5), y + 25,
+            boxWidth * 10, boxHeight,
+            SHOP_PRICES[this.statKey].length
         );
-        // this.statBoxes.push(scene.add.rectangle(boxesStartX + i * (boxWidth + boxSpacing), y + 40, boxWidth, boxHeight, 0xffffff).setStrokeStyle(2, 0x000000));
 
         //Interactive minus and plus buttons
         this.minusButton
@@ -138,14 +122,7 @@ class MenuSpinner {
         const nextLevelCost = isMaxedOut ? 'Max' : this.scene.getUpgradeCost(this.statKey, this.stats[this.statKey]);
         const canDowngrade = this.stats[this.statKey] > (permanentStats[this.statKey] || STAT_MIN);
 
-        this.fill_bar.update_bar(this.stats[this.statKey], SHOP_PRICES[this.statKey].length);
-
-        // this.statBoxes.forEach((box, index) => {
-        //     const isPermanent = index < permanentStats[this.statKey];
-        //     box.setFillStyle(isPermanent ? 0xFFD700 :
-        //         (index < this.stats[this.statKey] ? 0x00ff00 : 0xffffff)
-        //     );
-        // });
+        this.fill_bar.set_value(this.stats[this.statKey]);
 
         // Update styles based on conditions
         this.minusButton.setTint(canDowngrade ? 0xFF0000 : 0xffffff);

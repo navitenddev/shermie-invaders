@@ -1,4 +1,5 @@
 import { bitmapFonts, fonts } from "../utils/fontStyle";
+import { FillBar } from "../ui/fill_bar";
 
 class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     scoreValue = 200;
@@ -22,7 +23,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
 
     is_dead = false;
     target_pos;
-    constructor(scene, x, y) {
+    constructor(scene, x, y, hp = 40) {
         super(scene, x, y);
         scene.physics.add.existing(this);
         scene.add.existing(this);
@@ -46,6 +47,16 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
         this.hp_text = this.scene.add.bitmapText(this.x, this.y - 16, bitmapFonts.PressStart2P, this.hp, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
         this.t_text = this.scene.add.bitmapText(this.follower.vec.x, this.follower.vec.y - 32, bitmapFonts.PressStart2P, this.follower.t.toFixed(2), fonts.tiny.sizes[bitmapFonts.PressStart2P]);
         this.#change_state("ROAMING"); // do the sweep
+        this.hp = hp;
+        this.hp_bar_offset = {
+            x: -47,
+            y: -(this.height / 1.8),
+        };
+        this.hp_bar = new FillBar(scene,
+            x + this.hp_bar_offset.x, y + this.hp_bar_offset.y,
+            100, 10,
+            hp
+        );
     }
 
     #clear_path() {
@@ -179,8 +190,15 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
         this.path.draw(this.graphics);
     }
 
+
+    #update_bar() {
+        this.hp_bar.setPosition(this.x + this.hp_bar_offset.x, this.y + this.hp_bar_offset.y);
+        this.hp_bar.set_value(this.hp);
+    }
+
     update(time, delta) {
         this.#update_text();
+        this.#update_bar();
         this.graphics_follower.clear()
             .fillStyle(0xff0000, 1)
             .fillCircle(this.follower.vec.x, this.follower.vec.y, 12);
@@ -226,7 +244,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     die() {
         if (this.hp <= 1) {
             this.state_text.destroy();
-            this.hp_text.destroy();
+            this.hp_bar.destroy();
             this.t_text.destroy();
             this.graphics.destroy();
             this.graphics_follower.destroy();

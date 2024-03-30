@@ -2,6 +2,7 @@ import { InitKeyDefs } from "../keyboard_input";
 import { Game } from "../scenes/Game";
 import { PlayerBulletConstDefs as player_bull_defs } from "./bullet";
 import { Powerups, PowerupsConstDefs } from "../objects/powerup";
+import { FillBar } from "../ui/fill_bar";
 
 // Index of stat array is player stat level - 1
 const STAT_MAP = {
@@ -42,9 +43,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
     static timers = {
         last_fired: 0,
-        powerup_cd: 10,
-        powerup_timer: 0
     }
+    static powerup = {
+        max: 10,
+        max_ammo: 0,
+    }
+
 
     #coord_list = [];
     #mouse_pos;
@@ -82,6 +86,40 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.dialogue_offset = { x: -128, y: -80 };
 
         this.keys = InitKeyDefs(scene);
+
+        this.shield_bar_offset = {
+            x: -50,
+            y: -40
+        }
+        this.shield_bar = new FillBar(scene,
+            this.x + this.shield_bar_offset.x,
+            this.y + this.shield_bar_offset.y,
+            100, 10, // w h
+            10 - 1,  // total
+            0x00FFFF // color
+        );
+
+        this.powerup_icon_offset = {
+            x: -68,
+            y: -48,
+        }
+        this.powerup_icon = scene.add.image(
+            this.x + this.powerup_icon_offset.x,
+            this.y + this.powerup_icon_offset.y,
+            "spreadshot",
+        ).setScale(0.75);
+
+        this.powerup_bar_offset = {
+            x: -50,
+            y: -55,
+        };
+        this.powerup_bar = new FillBar(scene,
+            this.x + this.powerup_bar_offset.x,
+            this.y + this.powerup_bar_offset.y,
+            100, 10,
+            10,
+            0xfafafa,
+        );
     }
 
 
@@ -89,7 +127,72 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         super.preUpdate(time, delta);
     }
 
+    #update_bars() {
+        this.shield_bar.setPosition(this.x + this.shield_bar_offset.x,
+            this.y + this.shield_bar_offset.y);
+        this.shield_bar.set_value(this.player_vars.stats.shield - 1);
+
+        this.powerup_bar.setPosition(this.x + this.powerup_bar_offset.x,
+            this.y + this.powerup_bar_offset.y);
+        this.powerup_bar.set_value(Player.powerup.ammo);
+    }
+
+    #update_powerup_icon() {
+        this.powerup_icon.setPosition(
+            this.x + this.powerup_icon_offset.x,
+            this.y + this.powerup_icon_offset.y
+        );
+        switch (this.player_vars.power) {
+            case "spread":
+            case "pierce": // fall through
+                this.powerup_icon
+                    .setTexture(`${this.player_vars.power}shot_icon`)
+                    .setVisible(true);
+                break;
+            default:
+                this.powerup_icon.setVisible(false);
+                break;
+        }
+    }
+
+    updateShield() {
+        // console.log(`Shields: ${this.stats.shield}`);
+        this.shieldVisuals.clear();
+        if (this.stats.shield > 1) {
+            // Create shield circle around the player
+            this.shieldVisuals.lineStyle(2, 0x00FFFF, 1);
+            this.shieldVisuals.strokeCircle(this.x, this.y + 15, 40); // Adjust the radius as needed           
+        }
+    }
+
+    /**
+     * @description Updates the player's hitbox size based on the current shield status
+     */
+    updateHitbox() {
+        if (this.stats.shield > 1) {
+            this.setCircle(40);
+            this.setOffset(Player.body_offset.x - 16, Player.body_offset.y - 21);
+        } else {
+            this.setSize(Player.dims.w - 16, Player.dims.h - 8);
+            this.setOffset(Player.body_offset.x, Player.body_offset.y);
+        }
+    }
+
     update(time, delta, keys) {
+        // Only display shield bar if we have shields
+        (this.shield_bar.value) ?
+            this.shield_bar.setVisible(true) :
+            this.shield_bar.setVisible(false);
+
+        // Only display powerup bar if we have powerups
+        (this.powerup_bar.value) ?
+            this.powerup_bar.setVisible(true) :
+            this.powerup_bar.setVisible(false);
+
+        this.#update_bars();
+        this.#update_powerup_icon();
+
+        // Update global player pos
         this.player_vars.x = this.x + this.dialogue_offset.x;
         this.player_vars.y = this.y + this.dialogue_offset.y;
 
@@ -112,7 +215,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             }
             return;
         }
-        ;
 
         this.updateShield();
         this.updateHitbox();
@@ -160,16 +262,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.changePower("");
     }
 
-    updateShield() {
-        // console.log(`Shields: ${this.stats.shield}`);
-        this.shieldVisuals.clear();
-        if (this.stats.shield > 1) {
-            // Create shield circle around the player
-            this.shieldVisuals.lineStyle(2, 0x00FFFF, 1);
-            this.shieldVisuals.strokeCircle(this.x, this.y, 40); // Adjust the radius as needed           
-        }
-    }
-
 
     /**
      * @description Resets the player's position to the center bottom of the screen
@@ -199,27 +291,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
-
-    /**
-     * @description Adds a life to the player's life count
-    */
-    addLife() {
-        this.player_vars.lives++;
-    }
-
     /**
      * @description changes powerup
     */
     changePower(pow) {
         this.player_vars.power = pow;
-        if (pow == "") {
-            console.log("end");
-            Player.timers.powerup_timer = 0;
-        }
-        else {
-            console.log("start");
-            Player.timers.powerup_timer = Player.timers.powerup_cd;
-        }
+        Player.powerup.ammo = (pow) ? Player.powerup.max : 0;
+        if (!pow)
+            this.power
     }
 
     /**
@@ -247,11 +326,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      */
     shoot(time) {
         let timer = Player.timers;
-        let bullet_cap = 10;
-        if (this.player_vars.power == "spread") bullet_cap *= 3;
-        if (this.player_vars.active_bullets < bullet_cap &&
-            time > timer.last_fired) {
-            // get the next available bullet, if one is available.
+        if (time > timer.last_fired) {
             let bullet = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
             if (bullet !== null) {
                 timer.last_fired = time + STAT_MAP.fire_rate[this.stats.fire_rate - 1];
@@ -275,18 +350,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                         }
                     }
                 }
+                if ((--Player.powerup.ammo) <= 0)
+                    this.changePower();
                 this.sounds.bank.sfx.shoot.play();
-                if (this.player_vars.power != "" && Player.timers.powerup_timer > 0) {
-                    Player.timers.powerup_timer--;
-                }
-                if (this.player_vars.power != "" && Player.timers.powerup_timer <= 0) this.changePower("");
-            }
-            else {
-                this.sounds.bank.sfx.reload.play();
             }
         }
     }
-    //summons a powerup(for testing)
 
     /**
      * @public
@@ -319,19 +388,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
-    /**
-     * @description Updates the player's hitbox size based on the current shield status
-     * @returns {void}
-     */
-    updateHitbox() {
-        if (this.stats.shield > 1) {
-            this.setCircle(40);
-            this.setOffset(Player.body_offset.x - 16, Player.body_offset.y - 36);
-        } else {
-            this.setSize(Player.dims.w - 16, Player.dims.h - 8);
-            this.setOffset(Player.body_offset.x, Player.body_offset.y);
-        }
-    }
 }
 
 export { Player }
