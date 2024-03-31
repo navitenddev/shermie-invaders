@@ -11,6 +11,7 @@ import { StatsMenu } from './scenes/StatsMenu';
 import { Store } from './scenes/Store';
 import { Dialogue } from './scenes/Dialogue';
 import { Sandbox } from './scenes/Sandbox';
+import { TechTipTest } from './scenes/TechTipTest';
 
 
 //  Find out more information about the Game Config at:
@@ -45,6 +46,7 @@ const config = {
         PauseMenu,
         StatsMenu,
         Store,
+        TechTipTest
         // Dialogue,
     ]
 };

@@ -25,7 +25,7 @@ export class MainMenu extends Scene {
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg')
             .setOrigin(0.5, 0.5);
 
-        this.add.image(512, 300, 'titlelogo')
+        this.add.image(512, 250, 'titlelogo')
             .setScale(0.5, 0.5);
         this.sounds = this.registry.get('sound_bank');
 
@@ -64,7 +64,7 @@ export class MainMenu extends Scene {
         }
 
         const menuSpacing = 50; // spacing between menu items
-        let menuY = 530; // starting Y position for menu items
+        let menuY = 480; // starting Y position for menu items
 
         // Start Button
         this.start_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'PLAY', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
@@ -111,10 +111,19 @@ export class MainMenu extends Scene {
                         this.scene.start('Sandbox');
                     });
                 });
+            // Tech tips test button
+            menuY += menuSpacing;
+            this.disable_cheats_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'TECH TIP TEST',
+                fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+                .setOrigin(0.5)
+                .setInteractive()
+                .on('pointerdown', () => {
+                    this.scene.start('Tech Tip Test')
+                });
 
             // Disable Cheats Button
             menuY += menuSpacing;
-            this.disable_cheats_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'EXIT', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+            this.disable_cheats_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'CHEATS OFF', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
                 .setOrigin(0.5)
                 .setInteractive()
                 .on('pointerdown', () => {
