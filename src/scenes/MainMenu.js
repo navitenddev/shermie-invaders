@@ -6,6 +6,7 @@ import { Game as game_scene } from './Game';
 import { Dialogue as dialogue_scene } from './Dialogue.js';
 import { PauseMenu as pause_scene } from './PauseMenu.js';
 import { StatsMenu as stats_scene } from './StatsMenu.js';
+import { restart_scenes } from '../main.js';
 
 export class MainMenu extends Scene {
     emitter = EventDispatcher.getInstance();
@@ -36,21 +37,8 @@ export class MainMenu extends Scene {
         this.player_vars.lives = 3;
 
         /* I am sorry for doing this */
-        this.scene.remove('Game');
-        this.scene.add('Game', game_scene);
-        this.scene.bringToTop('Game');
 
-        this.scene.remove('Dialogue');
-        this.scene.add('Dialogue', dialogue_scene);
-        this.scene.bringToTop('Dialogue');
-
-        this.scene.remove('PauseMenu');
-        this.scene.add('PauseMenu', pause_scene);
-        this.scene.bringToTop('PauseMenu');
-
-        this.scene.remove('StatsMenu');
-        this.scene.add('StatsMenu', stats_scene);
-        this.scene.bringToTop('StatsMenu');
+        restart_scenes(this.scene);
 
         // reset level back to 1
         this.registry.set('level', 1);

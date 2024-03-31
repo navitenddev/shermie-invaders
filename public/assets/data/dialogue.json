@@ -185,27 +185,33 @@
   },
   "techtip16": {
     "lines": [
-      "Automatic updates are all fine and dandy, but sometimes updating software yourself comes in handy. If you do not update your printers, router firmware, and scanners, they will be prone to harmful cyberattacks. This shows that you must update your software as often as possible."
+      "Automatic updates are all fine and dandy, but sometimes updating software yourself comes in handy. If you do not ",
+      "update your printers, router firmware, and scanners, they will be prone to harmful cyberattacks. This shows that ",
+      "you must update your software as often as possible."
     ]
   },
   "techtip17": {
     "lines": [
-      "If you see an email where something looks off, take a closer look at the sender, links, attachment, and message, so you can SLAM the door shut on harmful phishing attacks."
+      "If you see an email where something looks off, take a closer look at the sender, links, attachment, and message, so",
+      "you can SLAM the door shut on harmful phishing attacks."
     ]
   },
   "techtip18": {
     "lines": [
-      "The average data breach resulting from cloud misconfigurations costs $4 million, so to save money - and headaches - make sure your cloud computing platforms are configured properly."
+      "The average data breach resulting from cloud misconfigurations costs $4 million, so to save money - and headaches - ",
+      "make sure your cloud computing platforms are configured properly."
     ]
   },
   "techtip19": {
     "lines": [
-      "To keep malware from infiltrating your computers, threat detection tools like behavioral analytics, ransomware detection, and vulnerability scanning are undeniably essential."
+      "To keep malware from infiltrating your computers, threat detection tools like behavioral analytics, ransomware detection, ",
+      "and vulnerability scanning are undeniably essential."
     ]
   },
   "techtip20": {
     "lines": [
-      "Don't be blind to cybercrime - use threat detection tools for greater visibility into your network activity, so you can stop data breaches and other cyberattacks in their tracks."
+      "Don't be blind to cybercrime - use threat detection tools for greater visibility into your network activity, so you can ",
+      "stop data breaches and other cyberattacks in their tracks."
     ]
   },
   "techtip21": {

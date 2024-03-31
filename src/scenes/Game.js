@@ -206,9 +206,9 @@ export class Game extends Scene {
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
             this.sounds.bank.music.bg.stop();
             if (targetScene === "Player Lose") {
-                this.scene.start('Player Lose', { currentScore: this.player_vars.score });
+                this.scene.start('Player Lose');
             } else {
-                this.scene.start(targetScene, { currentScore: this.player_vars.score });
+                this.scene.start(targetScene);
             }
         });
     }

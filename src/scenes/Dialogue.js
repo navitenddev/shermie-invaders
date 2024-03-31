@@ -69,10 +69,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.border_w = 20;
 
         if (dialogue_type === "techtip") {
-            const bg = scene.add.graphics();
-            bg.fillStyle(0x000000, 0.95)
-                .lineStyle(1, 0x333833)
-                .strokeRect(x, y, 600, 150);
+            this.bg = this.scene.add.rectangle((w / 2), (h / 2), w, h, 0x383A40);
         }
 
         // dialogue_type should only be one of these 3!
@@ -80,8 +77,6 @@ class DialogueManager extends Phaser.GameObjects.Container {
             console.error(`Invalid dialogue_type: ${dialogue_type}. Defaulting to "game"`)
             dialogue_type === "game";
         }
-
-
 
         this.text_data = data;
 
@@ -98,7 +93,9 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.text = scene.add.bitmapText(25, 25, bitmapFonts.PressStart2P, '', font_size).setMaxWidth(this.w - 10);;
         this.text.setLineSpacing(14)
             .setTint(0xFFFFFF);
-        // .setTint(0x00FF00);
+
+        if (this.bg)
+            this.add([this.bg])
         this.add([this.text]);
 
         this.emitter.once('dialogue_start', (key) => {

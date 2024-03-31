@@ -11,24 +11,19 @@ export class PlayerWin extends Scene {
         super('Player Win');
     }
 
-    preload() {
-        this.load.json({
-            key: "dialogue",
-            url: "assets/data/dialogue.json",
-        });
-    }
-
-    create(data) {
-        this.TECHTIP_COUNT = this.cache.json.get("dialogue").num_techtips;
-        console.log(`TECHTIP COUNT: ${this.TECHTIP_COUNT}`);
+    create() {
+        const num_tips = this.cache.json.get("dialogue").techtips.quantity;
+        const rand_idx = Phaser.Math.Between(1, num_tips);
         restart_scenes(this.scene);
 
         this.cameras.main.setBackgroundColor(0x000000);
         this.cameras.main.fadeIn(1000, 0, 0, 0);
 
+        this.player_vars = this.registry.get('player_vars');
+        const score = this.player_vars.score;
+
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE, () => {
-            // do dis when fade done
-            start_dialogue(this.scene, "techtip5", "techtip");
+            start_dialogue(this.scene, `techtip${rand_idx}`, "techtip");
         });
 
         this.emitter.removeAllListeners(); // clean up event listeners
@@ -62,15 +57,14 @@ export class PlayerWin extends Scene {
             0x2B2D31, // color of button
             0x383A40, // color of hovered
             0xFEFEFE, // color of clicked
-            0x879091// color of border
+            0x879091  // color of border
         );
 
-        const currentScore = data.currentScore;
         this.add.bitmapText(
             16,
             16,
             bitmapFonts.PressStart2P_Stroke,
-            `CURRENT SCORE:${currentScore}`,
+            `CURRENT SCORE:${score}`,
             fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]
         );
     }

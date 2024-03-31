@@ -67,10 +67,6 @@ export function restart_scenes(scene) {
     scene.add('Game', Game);
     scene.bringToTop('Game');
 
-    scene.remove('Dialogue');
-    scene.add('Dialogue', Dialogue);
-    scene.bringToTop('Dialogue');
-
     scene.remove('PauseMenu');
     scene.add('PauseMenu', PauseMenu);
     scene.bringToTop('PauseMenu');
@@ -78,6 +74,10 @@ export function restart_scenes(scene) {
     scene.remove('StatsMenu');
     scene.add('StatsMenu', StatsMenu);
     scene.bringToTop('StatsMenu');
+
+    scene.remove('Dialogue');
+    scene.add('Dialogue', Dialogue);
+    scene.bringToTop('Dialogue');
 
 }
 
