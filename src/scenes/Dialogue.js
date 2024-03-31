@@ -28,7 +28,6 @@ const DIALOGUE_MODE = {
     FAST: 25,
 };
 
-
 class DialogueManager extends Phaser.GameObjects.Container {
     text_delay = DIALOGUE_MODE.FAST;
     emitter = EventDispatcher.getInstance();
@@ -54,10 +53,10 @@ class DialogueManager extends Phaser.GameObjects.Container {
     dialogue_type; /** @param {string} "story" | "game" | "techtip" */
 
     constructor(scene, data, dialogue_type = "game", font_size = 16) {
-        let x = 310;
-        let y = 120;
-        let w = 600;
-        let h = (scene.game.config.height / 4.5);
+        let x = 310,
+            y = 120,
+            w = 600,
+            h = (scene.game.config.height / 4.5);
 
         if (dialogue_type === "techtip") {
             x = (scene.game.config.width / 2) - (w / 2);
@@ -69,7 +68,14 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.border_w = 20;
 
         if (dialogue_type === "techtip") {
-            this.bg = this.scene.add.rectangle((w / 2), (h / 2), w, h, 0x383A40);
+            const color = 0x2B2D31,
+                color_border = 0x879091;
+
+            this.bg = this.scene.add.rectangle((w / 2), (h / 2), w, h, color);
+            this.bg_border = scene.add.graphics();
+            this.bg_border
+                .lineStyle(2, color_border, 1)
+                .strokeRect(0, 0, w, h);
         }
 
         // dialogue_type should only be one of these 3!
@@ -95,7 +101,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
             .setTint(0xFFFFFF);
 
         if (this.bg)
-            this.add([this.bg])
+            this.add([this.bg, this.bg_border])
         this.add([this.text]);
 
         this.emitter.once('dialogue_start', (key) => {
@@ -129,12 +135,12 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.is_active = true;
         this.setPosition(this.start.x, this.start.y);
         if (!this.text_data[key]) {
-            console.error(`Error: did not find dialogue key: ${key}`)
+            console.error(`Error: did not find dialogue key: ${key}`);
             this.#deactivate();
             return;
         }
         this.lines = this.text_data[key].lines;
-        console.log(`started dialogue: "${key}"`)
+        // console.log(`started dialogue: "${key}"`)
         this.line_index = 0;
         this.char_index = 0;
 

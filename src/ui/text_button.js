@@ -25,7 +25,7 @@ export class TextButton extends Phaser.GameObjects.Container {
     * @example // This example has all parameters specified
     * const continue_btn = new TextButton(this, this.game.config.width / 2, 600, 200, 100, 'Continue',
     * () => { 
-    *    this.scene.start("Store")
+    *    this.scene.start("Store") // parameters can be passed here too
     * },
     *     [], // callback function's arguments
     *     bitmapFonts.PressStart2P,                    // font type
@@ -65,9 +65,9 @@ export class TextButton extends Phaser.GameObjects.Container {
         this.h = h;
         this.bg = this.scene.add.rectangle(0, 0, w, h, color);
 
-        this.btn_border = scene.add.graphics();
+        this.bg_border = scene.add.graphics();
 
-        this.btn_border
+        this.bg_border
             .lineStyle(2, color_border, 1)
             .strokeRect(-(w / 2), -(h / 2), w, h);
 
@@ -78,24 +78,24 @@ export class TextButton extends Phaser.GameObjects.Container {
         this.bg.setInteractive()
             .on('pointerover', () => {
                 this.bg.setFillStyle(color_hover, opacity);
-                this.btn_border
+                this.bg_border
                     .clear()
                     .lineStyle(3, color_border, 1)
                     .strokeRect(-(w / 2), -(h / 2), w, h);
             })
             .on('pointerout', () => {
                 this.bg.setFillStyle(color, opacity);
-                this.btn_border
+                this.bg_border
                     .clear()
                     .lineStyle(2, color_border, 1)
                     .strokeRect(-(w / 2), -(h / 2), w, h);
             })
             .on('pointerdown', () => {
-                this.bg.setFillStyle(color_clicked);
+                this.bg.setFillStyle(color_clicked, opacity);
                 sounds.bank.sfx.click.play();
                 (args) ? callback(...args) : callback();
             });
-        this.add([this.bg, this.btn_border, this.text]);
+        this.add([this.bg, this.bg_border, this.text]);
         this.setPosition(x, y);
     }
 }
