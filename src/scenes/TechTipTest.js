@@ -58,10 +58,6 @@ export class TechTipTest extends Scene {
                 i.toString(),
                 () => { start_dialogue(this.scene, `techtip${i}`, "techtip"); }
             );
-
-            if (i % num_cols === 0) {
-                col++;
-            }
         }
 
 
