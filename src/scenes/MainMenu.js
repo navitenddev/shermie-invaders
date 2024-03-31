@@ -13,6 +13,13 @@ export class MainMenu extends Scene {
         super('MainMenu');
     }
 
+    preload() {
+        this.load.json({
+            key: "dialogue",
+            url: "assets/data/dialogue.json"
+        })
+    }
+
     create() {
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg')
             .setOrigin(0.5, 0.5);

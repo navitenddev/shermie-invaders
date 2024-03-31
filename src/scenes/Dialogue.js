@@ -1,27 +1,24 @@
 import { EventDispatcher } from "../utils/event_dispatcher";
 import { InitKeyDefs } from "../utils/keyboard_input.js";
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
-const dialogue_data = require('../../public/assets/data/dialogue.json');
 
 /**
  * @param {Phaser.Scene} scene The scene that is calling the dialogue
  * @param {string} key Start the dialogue sequence with this key
- * @param {string} dialogue_type "story" | "game" | "store"
+ * @param {string} dialogue_type "story" | "game" | "techtip"
  * @param {boolean} dialogue_type If true, will stop all actions and display the story bg
  * @param {number} font_size The size of the font to display
  */
 function start_dialogue(scene, key, dialogue_type = "game", font_size = 16) {
     const emitter = EventDispatcher.getInstance();
-    // scene.remove('Dialogue');
-    // scene.add('Dialogue', Dialogue);
-    scene.bringToTop('Dialogue');
+    emitter.emit('force_dialogue_stop');
     scene.launch('Dialogue', {
         dialogue_key: key,
         dialogue_type: dialogue_type,
         caller_scene: 'Game',
         font_size: font_size,
     });
-    if (dialogue_type === "story" || dialogue_type === "store")
+    if (dialogue_type === "story")
         scene.pause();
 }
 
@@ -31,8 +28,9 @@ const DIALOGUE_MODE = {
     FAST: 25,
 };
 
+
 class DialogueManager extends Phaser.GameObjects.Container {
-    static text_delay = DIALOGUE_MODE.MED;
+    text_delay = DIALOGUE_MODE.FAST;
     emitter = EventDispatcher.getInstance();
     text_data;
     bg;
@@ -53,12 +51,31 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
     delay_timer = 0;
     follow_player = true;
-    dialogue_type; /** @param {string} "story" | "game" | "dialogue" */
+    dialogue_type; /** @param {string} "story" | "game" | "techtip" */
 
-    constructor(scene, dialogue_type = "game", font_size = 16, data = dialogue_data, x = 310, y = 120) {
+    constructor(scene, data, dialogue_type = "game", font_size = 16) {
+        let x = 310;
+        let y = 120;
+        if (dialogue_type === "techtip")
+            x = scene.game.config.width / 4, y = scene.game.config.height / 2;
         super(scene, x, y);
         scene.add.existing(this);
+        this.scene = scene;
         this.border_w = 20;
+
+        if (dialogue_type === "techtip") {
+            const bg = scene.add.graphics();
+            bg.fillStyle(0x000000, 0.8)
+                .lineStyle(1, 0x333833)
+                .strokeRect(x, y, 600, 150);
+        }
+
+        // dialogue_type should only be one of these 3!
+        if ((["story", "game", "techtip"].includes(dialogue_type)) === false) {
+            console.error(`Invalid dialogue_type: ${dialogue_type}. Defaulting to "game"`)
+            dialogue_type === "game";
+        }
+
 
         let w = 600;
         let h = (scene.game.config.height / 5);
@@ -72,7 +89,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.dialogue_type = dialogue_type;
 
         if (this.dialogue_type === "story" ||
-            this.dialogue_type === "store")
+            this.dialogue_type === "techtip")
             this.follow_player = false;
 
         this.text = scene.add.bitmapText(25, 25, bitmapFonts.PressStart2P, '', font_size).setMaxWidth(this.w - 10);;
@@ -102,7 +119,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
             time > this.delay_timer &&
             this.line && this.char_index !== this.line.length) {
 
-            this.delay_timer = time + DialogueManager.text_delay;
+            this.delay_timer = time + this.text_delay;
             this.#add_next_char();
         }
     }
@@ -111,23 +128,27 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.key = key;
         this.is_active = true;
         this.setPosition(this.start.x, this.start.y);
-        this.lines = this.text_data.find(({ key }) => this.key === key).lines;
-        if (this.lines === undefined) {
+        if (!this.text_data[key]) {
             console.error(`Error: did not find dialogue key: ${key}`)
             this.#deactivate();
             return;
         }
+        this.lines = this.text_data[key].lines;
         console.log(`started dialogue: "${key}"`)
-        // console.log(this.lines)
         this.line_index = 0;
         this.char_index = 0;
+
+        if (this.dialogue_type === "techtip"
+            // don't ask, but this is needed to stop this from very rarely appearing twice
+            && !this.lines[0].startsWith("Shermie's tech tips:"))
+            this.lines[0] = "Shermie's tech tips:\n" + this.lines[0]; // prepend string
+
         this.#load_next_line();
     }
 
     #deactivate() {
         // console.log("Deactivating dialogue")
         this.setPosition(42069, 42069);
-        // this.setPosition(400, 400);
         this.is_active = false;
         this.emitter.emit('dialogue_stop', [])
         this.emitter.off('dialogue_start');
@@ -145,9 +166,9 @@ class DialogueManager extends Phaser.GameObjects.Container {
     }
 
     #add_next_char() {
-        const currentText = this.text.text;
-        const newText = currentText + this.line[this.char_index++];
-        this.text.setText(newText);
+        const curr_text = this.text.text;
+        const new_text = curr_text + this.line[this.char_index++];
+        this.text.setText(new_text);
 
         if (this.char_index === this.line.length) {
             // console.log("Line is done, waiting on player to click again")
@@ -168,30 +189,33 @@ class DialogueManager extends Phaser.GameObjects.Container {
     }
 }
 
-export { DialogueManager }
-
 class Dialogue extends Phaser.Scene {
     emitter = EventDispatcher.getInstance();
     dialogue_mgr;
-
+    dialogue_data;
     prev_scene;
     keys;
     constructor() {
         super('Dialogue');
     }
 
+    preload() {
+        this.dialogue_data = this.cache.json.get("dialogue");
+    }
+
     create(data) {
         // show story dialogue background if this is for story dialogue 
         if (data.dialogue_type === "story") {
-            let bg = this.add.image(0, 0, 'story_bg')
+            this.add.image(0, 0, 'story_bg')
                 .setAlpha(1)
                 .setOrigin(0, 0)
                 .displayWidth = this.sys.game.config.width;
+            this.add.bitmapText(460, 310, bitmapFonts.PressStart2P, `Press ESC to skip`, fonts.small.sizes[bitmapFonts.PressStart2P])
         }
 
         this.sounds = this.registry.get('sound_bank');
 
-        this.dialogue_mgr = new DialogueManager(this, data.dialogue_type, data.font_size);
+        this.dialogue_mgr = new DialogueManager(this, this.dialogue_data, data.dialogue_type, data.font_size);
 
         this.keys = InitKeyDefs(this);
         // console.log("Initialized Dialogue Scene")
@@ -220,4 +244,5 @@ class Dialogue extends Phaser.Scene {
     }
 }
 
-export { Dialogue, start_dialogue };
+
+export { Dialogue, DialogueManager, start_dialogue };

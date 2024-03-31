@@ -1,7 +1,10 @@
 import { Scene } from 'phaser';
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
-import { FillBar } from '../ui/fill_bar.js';
-import { EventDispatcher } from '../utils/event_dispatcher.js';
+import { bitmapFonts, fonts } from '../utils/fontStyle';
+import { FillBar } from '../ui/fill_bar';
+import { EventDispatcher } from '../utils/event_dispatcher';
+import { Game } from './Game'
+import { restart_scenes } from '../main';
+import { start_dialogue } from './Dialogue';
 
 const STAT_MIN = 1;
 
@@ -212,9 +215,11 @@ export class Store extends Scene {
 
     create() {
         this.techtips = this.cache.json.get("techtips");
-        console.log(`${this.techtips}`);
-        this.TECHTIP_COUNT = this.techtips.quantity;
+        console.log(this.techtips);
+        this.TECHTIP_COUNT = this.techtips.num_techtips;
         console.log(`TECHTIP COUNT: ${this.TECHTIP_COUNT}`);
+        this.scene.remove('Game'); // I am sorry for my sins
+
         this.player_vars = this.registry.get('player_vars');
         //Background
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'upgradeTilemap')
@@ -282,7 +287,7 @@ export class Store extends Scene {
         const moneyTextY = moneyIconY;
         this.moneyText = this.add.bitmapText(moneyTextX, moneyTextY, bitmapFonts.PressStart2P_Stroke, `${this.player_vars.wallet}`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0, 0.5);
 
-        let next_level_btn = new MenuButton(this,
+        new MenuButton(this,
             this.game.config.width / 2.8, this.game.config.height - 100,
             'Next Level',
             () => {
@@ -291,9 +296,17 @@ export class Store extends Scene {
                 let playerVars = this.registry.get('player_vars');
                 playerVars.stats = this.stats;
                 this.registry.set('player_vars', playerVars);
+                restart_scenes(this.scene);
                 this.scene.start('Game', { playerStats: this.stats });
             }
         );
+    }
+
+    update() {
+        if (this.animatedBg) {
+            this.animatedBg.tilePositionY -= 2;
+            this.animatedBg.tilePositionX -= 2;
+        }
     }
 
     updateAllSpinners() {
@@ -334,10 +347,4 @@ export class Store extends Scene {
         return this.getUpgradeCost(statKey, level - 1);
     }
 
-    update() {
-        if (this.animatedBg) {
-            this.animatedBg.tilePositionY -= 2;
-            this.animatedBg.tilePositionX -= 2;
-        }
-    }
 }
