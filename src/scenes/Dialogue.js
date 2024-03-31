@@ -55,7 +55,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
     constructor(scene, data, dialogue_type = "game", font_size = 16) {
         let x = 310,
             y = 120,
-            w = 600,
+            w = 620,
             h = (scene.game.config.height / 4.5);
 
         if (dialogue_type === "techtip") {
