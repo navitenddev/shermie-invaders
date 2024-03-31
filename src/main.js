@@ -45,7 +45,7 @@ const config = {
         PauseMenu,
         StatsMenu,
         Store,
-        Dialogue,
+        // Dialogue,
     ]
 };
 export default new Phaser.Game(config);

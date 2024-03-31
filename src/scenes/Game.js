@@ -1,14 +1,15 @@
 import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
-import { InitKeyDefs } from '../keyboard_input';
+import { InitKeyDefs } from '../utils/keyboard_input';
 import { bitmapFonts, fonts } from '../utils/fontStyle';
 import { Barrier } from '../objects/barrier';
 import ScoreManager from '../utils/ScoreManager';
 import { GridEnemy } from '../objects/enemy_grid';
 import { EventDispatcher } from '../utils/event_dispatcher';
+import { start_dialogue } from './Dialogue';
 
 // The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
-import { SoundBank } from '../sounds';
+import { SoundBank } from '../utils/sounds';
 
 /**
  * @description The scene in which gameplay will occur.
@@ -35,7 +36,7 @@ export class Game extends Scene {
         // For now, the level dialogues will repeat after it exceeds the final level dialogue.
 
         if (this.level <= 7) {
-            this.start_dialogue(`level${(this.level)}`, true, 23);
+            start_dialogue(this.scene, `level${(this.level)}`, "story", 23);
         }
 
         let bgKey;
@@ -127,7 +128,7 @@ export class Game extends Scene {
         this.physics.world.drawDebug = this.debugMode;
         // Clear debug graphics when debug mode is turned off
         if (!this.debugMode) {
-            this.physics.world.debugGraphic.clear();
+            this.physics.world.debugGraphic.clear()
         }
     }
 
@@ -249,7 +250,7 @@ export class Game extends Scene {
                     // console.log('Shield particle emitter explode called');
                     player.stats.shield--;
                     if (player.stats.shield < currShield) {
-                        this.start_dialogue('shermie_shieldgone', false);
+                        start_dialogue(this.scene, 'shermie_shieldgone', "game");
                         currShield = player.stats.shield;
                     }
                     player.updateHitbox();
@@ -257,9 +258,9 @@ export class Game extends Scene {
                     this.objs.explode_at(player.x, player.y);
                     player.die();
                     if (this.player_vars.lives === 0)
-                        this.start_dialogue('shermie_dead', false);
+                        start_dialogue(this.scene, 'shermie_dead', "game");
                     else
-                        this.start_dialogue('shermie_hurt', false);
+                        start_dialogue(this.scene, 'shermie_hurt', "game");
                 }
             }
         });
@@ -303,21 +304,5 @@ export class Game extends Scene {
         this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
             Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 15);
         });
-    }
-    /**
-     * @param {*} key Start the dialogue sequence with this key
-     * @param {boolean} is_story_dialogue If true, will stop all actions and display the story bg
-     * @param {number} font_size The size of the font to display
-     */
-    start_dialogue(key, is_story_dialogue = false, font_size = 16) {
-        this.emitter.emit('force_dialogue_stop'); // never have more than one dialogue manager at once
-        this.scene.launch('Dialogue', {
-            dialogue_key: key,
-            is_story_dialogue: is_story_dialogue,
-            caller_scene: 'Game',
-            font_size: font_size,
-        });
-        if (is_story_dialogue)
-            this.scene.pause();
     }
 }

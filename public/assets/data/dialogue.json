@@ -1,0 +1,258 @@
+[
+  {
+    "key": "prof_oak_intro_speech",
+    "lines": [
+      "Hello there! Welcome to the world of Pokémon!",
+      "My name is Oak! People call me the Pokémon Prof!",
+      "This world is inhabited by creatures called Pokémon!",
+      "For some people, Pokémon are pets. Other use them for fights.",
+      "Myself... I study Pokémon as a profession.",
+      "First, what is your name?",
+      "Right! So your name is PLAYER",
+      "This is my grandson. He's been your rival since you were a baby.",
+      "...Erm, what is his name again?",
+      "That's right! I remember now! His name is RIVAL.",
+      "Your very own Pokémon legend is about to unfold!",
+      "A world of dreams and adventures with Pokémon awaits! Let's go!"
+    ]
+  },
+  {
+    "key": "test1",
+    "lines": [
+      "Hello, this is the first thing I'm gonna say.",
+      "And then I'm gonna say this too. Oh boy isn't this exciting",
+      "Then by some freak of a miracle, I am ALSO going to say this too. Isn't life wild?",
+      "Okay im done bye"
+    ]
+  },
+  {
+    "key": "test2",
+    "lines": ["Yo what's goodie", "Okay cool beans", "buh bye dood"]
+  },
+  {
+    "key": "win1",
+    "lines": ["AYOOOOOO", "SHERMIE IN DA HOUSE"]
+  },
+  {
+    "key": "lose1",
+    "lines": ["We may have lost the battle...", "but not the war..."]
+  },
+  {
+    "key": "shermie_hurt",
+    "lines": ["ouch! that hurt!"]
+  },
+  {
+    "key": "shermie_shieldgone",
+    "lines": ["Ah! Blasted right through the shield!"]
+  },
+  {
+    "key": "shermie_start",
+    "lines": [
+      "Player, we're being invaded by malware!",
+      "Help me take them out so we don't lose our jobs!"
+    ]
+  },
+  {
+    "key": "shermie_dead",
+    "lines": ["NoooooOOOOoOOOoOOOO!!!"]
+  },
+  {
+    "key": "sandbox_tips",
+    "lines": [
+      "Welcome to Sandbox Mode!",
+      "Click the buttons on the top right to spawn enemies!"
+    ]
+  },
+  {
+    "key": "level1",
+    "lines": [
+      "My adventure begins at the peaceful Navitend Farm.",
+      "A place of harmony,",
+      "Little did I know, This world was about to change forever.",
+      "As the sun sets, a strange silence falls over the farm.",
+      "As I look up, sensing the impending threat, I was ready to protect my home."
+    ]
+  },
+  {
+    "key": "level2",
+    "lines": [
+      "After defending my home,",
+      "I must navigate To the city.",
+      "Streets once filled with joy are now battlegrounds.",
+      "The Nexus's cyber minions attack, Hacking everything.",
+      "With each step, I vow to restore peace to the city's heart."
+    ]
+  },
+  {
+    "key": "level3",
+    "lines": [
+      "After defeating the minions attacking the city.",
+      "determined to halt the invaders, I advance before they reach space.",
+      "Surrounded by the vastness of the sky, I face the aerial fleet",
+      "Each cloud a witness to the fierce battle between hope and despair.",
+      "With the wind as a ally, I maneuvers through this wild battlefield,",
+      "This skyward clash is but a prelude to the greater war looming in the stars."
+    ]
+  },
+  {
+    "key": "level4",
+    "lines": [
+      "Now in orbit, I defend Earth from a relentless barrage,",
+      "shielding my home from the debris of war and cyber threats.",
+      "Each attack is intercepted, each enemy vanquished, brings hope.",
+      "Earth hangs in the balance, its fate tied to Shermie's bravery.",
+      "The orbit becomes a dance of danger and defiance, Shermie leading the way."
+    ]
+  },
+  {
+    "key": "level5",
+    "lines": [
+      "The chase continues back to the enemy's lair, the boss spaceship.",
+      "Level 5 filler"
+    ]
+  },
+  {
+    "key": "level6",
+    "lines": ["Level 6 filler"]
+  },
+  {
+    "key": "level7",
+    "lines": ["Level 7 filler"]
+  },
+  {
+    "key": "techtip1",
+    "lines:": [
+      "You never know where hackers may lurk, so get antivirus software and make sure it works."
+    ]
+  },
+  {
+    "key": "techtip2",
+    "lines:": [
+      "If you're looking for a strong password, you won't find it in the dictionary."
+    ]
+  },
+  {
+    "key": "techtip3",
+    "lines:": [
+      "What's the key to creating a strong password? You won't find that in the dictionary."
+    ]
+  },
+  {
+    "key": "techtip4",
+    "lines:": [
+      "Since you never know where hackers may lurk, make sure your antivirus and antimalware programs work."
+    ]
+  },
+  {
+    "key": "techtip5",
+    "lines:": [
+      "If you see an email with a message that seems too good to be true, chances are it is. Delete it immediately."
+    ]
+  },
+  {
+    "key": "techtip6",
+    "lines:": [
+      "When setting passwords for your accounts or devices, make sure they contain a random mix of letters, numbers, and special characters, since passwords with words or phrases in any language are easier for hackers to crack."
+    ]
+  },
+  {
+    "key": "techtip7",
+    "lines:": [
+      "Reusing your password across multiple accounts opens doors for hackers to steal your data, so to keep your data from being compromised, make sure all your accounts' passwords are customized."
+    ]
+  },
+  {
+    "key": "techtip8",
+    "lines:": [
+      "Use 2FA/MFA as often as possible, because the more authentication factors you have, the greater protection you have against cyberattacks even if one factor is compromised."
+    ]
+  },
+  {
+    "key": "techtip9",
+    "lines:": [
+      "To keep your data from being lost or stolen in a security breach, you always need a little DLP."
+    ]
+  },
+  {
+    "key": "techtip10",
+    "lines:": [
+      "Preventing your data from falling into malicious hands is not difficult. It is easy as DLP."
+    ]
+  },
+  {
+    "key": "techtip11",
+    "lines:": [
+      "Malware exploits your software's vulnerabilities, so don't wait until it's too late to install the required updates."
+    ]
+  },
+  {
+    "key": "techtip12",
+    "lines:": [
+      "Software vulnerabilities can leave gaping holes in your overall cybersecurity, so patch up your software as early and as often as possible."
+    ]
+  },
+  {
+    "key": "techtip13",
+    "lines:": [
+      "Older computers are more vulnerable to threats like phishing, ransomware, and spyware attacks. Therefore, once your devices can't support essential updates anymore, replace them with newer models."
+    ]
+  },
+  {
+    "key": "techtip14",
+    "lines:": [
+      "Whether you are working from home, in the office, or on the road, all signs point to VPN. When you use a VPN - or virtual private network, it encrypts your data to keep it from falling into malicious hands."
+    ]
+  },
+  {
+    "key": "techtip15",
+    "lines:": [
+      "Use a VPN as often as you can, because it keeps your data from falling into malicious hands."
+    ]
+  },
+  {
+    "key": "techtip16",
+    "lines:": [
+      "Automatic updates are all fine and dandy, but sometimes updating software yourself comes in handy. If you do not update your printers, router firmware, and scanners, they will be prone to harmful cyberattacks. This shows that you must update your software as often as possible."
+    ]
+  },
+  {
+    "key": "techtip17",
+    "lines:": [
+      "If you see an email where something looks off, take a closer look at the sender, links, attachment, and message, so you can SLAM the door shut on harmful phishing attacks."
+    ]
+  },
+  {
+    "key": "techtip18",
+    "lines:": [
+      "The average data breach resulting from cloud misconfigurations costs $4 million, so to save money - and headaches - make sure your cloud computing platforms are configured properly."
+    ]
+  },
+  {
+    "key": "techtip19",
+    "lines:": [
+      "To keep malware from infiltrating your computers, threat detection tools like behavioral analytics, ransomware detection, and vulnerability scanning are undeniably essential."
+    ]
+  },
+  {
+    "key": "techtip20",
+    "lines:": [
+      "Don't be blind to cybercrime - use threat detection tools for greater visibility into your network activity, so you can stop data breaches and other cyberattacks in their tracks."
+    ]
+  },
+  {
+    "key": "techtip21",
+    "lines:": [
+      "If you find a link that looks suspicious, don't click it, because chances are it is malicious."
+    ]
+  },
+  {
+    "key": "techtip22",
+    "lines:": [
+      "Malware exploits software vulnerabilities. To avoid it, regularly update your software and applications to patch vulnerabilities."
+    ]
+  },
+  {
+    "key": "techtips",
+    "quantity": 22
+  }
+]

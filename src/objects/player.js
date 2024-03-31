@@ -1,4 +1,4 @@
-import { InitKeyDefs } from "../keyboard_input";
+import { InitKeyDefs } from "../utils/keyboard_input";
 import { Game } from "../scenes/Game";
 import { PlayerBulletConstDefs as player_bull_defs } from "./bullet";
 import { Powerups, PowerupsConstDefs } from "../objects/powerup";

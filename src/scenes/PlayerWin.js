@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import { EventDispatcher } from '../utils/event_dispatcher';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { start_dialogue } from './Dialogue.js';
 
 export class PlayerWin extends Scene {
     emitter = EventDispatcher.getInstance();
@@ -14,7 +15,7 @@ export class PlayerWin extends Scene {
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE, () => {
             // do dis when fade done
-            this.start_dialogue('win1')
+            start_dialogue(this.scene, "win1", "techtips")
         });
 
         this.emitter.removeAllListeners(); // clean up event listeners
@@ -49,15 +50,5 @@ export class PlayerWin extends Scene {
         this.input.once('pointerdown', () => {
             this.scene.start("Store")
         });
-    }
-
-/**
-     * @param {*} key Start the dialogue sequence with this key
-     * @param {*} blocking If true, will stop all actions in the current scene. Until dialogue complete
-     */
-    start_dialogue(key, blocking = true) {
-        this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Player Win' });
-        if (blocking)
-            this.scene.pause();
     }
 }

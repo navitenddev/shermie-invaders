@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
-import { InitKeyDefs } from '../keyboard_input';
+import { InitKeyDefs } from '../utils/keyboard_input.js';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { Barrier } from '../objects/barrier.js';
 import ScoreManager from '../utils/ScoreManager.js';
@@ -10,7 +10,7 @@ import { FillBar } from '../ui/fill_bar.js';
 
 class LevelSelector extends Phaser.GameObjects.Container {
     emitter = EventDispatcher.getInstance();
-    constructor(scene, x, y, lvl_text_obj, kill_all_enemies) {
+    constructor(scene, x, y, lvl_text_obj) {
         super(scene, x, y);
         scene.add.existing(this);
 

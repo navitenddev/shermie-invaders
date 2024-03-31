@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { InitKeyDefs } from '../keyboard_input';
+import { InitKeyDefs } from '../utils/keyboard_input.js';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { SHOP_PRICES } from './Store.js';
@@ -208,7 +208,7 @@ export class StatsMenu extends Scene {
             .on('pointerout', () => {
                 buttonBackground.clear().fillStyle(0xff0000, 1).fillRect(0, 0, buttonWidth, buttonHeight);
             });
-    
+
         // red background for the button
         const buttonWidth = this.levelSkipButton.width + 40;
         const buttonHeight = this.levelSkipButton.height + 20;
@@ -238,7 +238,7 @@ export class StatsMenu extends Scene {
             .setOrigin(0.5, 0)
             .setInteractive()
             .on('pointerdown', () => { this.sounds.bank.sfx.click.play(); this.go_back(); });
-    
+
         // Note: This is a quick example on how the IconButton should be used. Feel free to uncomment it and play around with it first if you need to add a new powerup to the game.
         // new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
     }

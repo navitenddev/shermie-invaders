@@ -1,6 +1,7 @@
 import { Scene } from 'phaser';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { FillBar } from '../ui/fill_bar.js';
+import { EventDispatcher } from '../utils/event_dispatcher.js';
 
 const STAT_MIN = 1;
 
@@ -25,6 +26,7 @@ export const SHOP_PRICES = {
 };
 
 class MenuSpinner {
+    emitter = EventDispatcher.getInstance();
     constructor(scene, y, statKey, stats, onUpgrade, displayName) {
         this.displayName = displayName;
         this.scene = scene;
@@ -192,6 +194,7 @@ class MenuButton extends Phaser.GameObjects.Container {
 }
 
 export class Store extends Scene {
+    TECHTIP_COUNT; // number of techtips defined in the JSON.
     constructor() {
         super('Store');
         this.menuSpinners = [];
@@ -199,11 +202,24 @@ export class Store extends Scene {
         this.initialStats = {};
     }
 
+    preload() {
+        this.load.json({
+            key: "techtips",
+            url: "assets/data/dialogue.json",
+            dataKey: "techtips",
+        });
+    }
+
     create() {
-        this.player_vars = this.registry.get('player_vars')
+        this.techtips = this.cache.json.get("techtips");
+        console.log(`${this.techtips}`);
+        this.TECHTIP_COUNT = this.techtips.quantity;
+        console.log(`TECHTIP COUNT: ${this.TECHTIP_COUNT}`);
+        this.player_vars = this.registry.get('player_vars');
         //Background
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'upgradeTilemap')
             .setOrigin(0.5, 0.5);
+
 
         const startY = 250;
         const spinnerGap = 70;

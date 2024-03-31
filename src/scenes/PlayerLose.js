@@ -1,5 +1,4 @@
 import { Scene } from 'phaser';
-import { SoundBank } from '../sounds';
 import { EventDispatcher } from '../utils/event_dispatcher';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 

@@ -31,8 +31,9 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
     delay_timer = 0;
     follow_player = true;
-    is_story_dialogue = false;
-    constructor(scene, is_story_dialogue = false, font_size = 16, data = dialogue_data, x = 310, y = 120) {
+    dialogue_type; /** @param {string} "story" | "game" | "dialogue" */
+
+    constructor(scene, dialogue_type = "game", font_size = 16, data = dialogue_data, x = 310, y = 120) {
         super(scene, x, y);
         scene.add.existing(this);
         this.border_w = 20;
@@ -46,8 +47,10 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.h = h;
         this.start = { x: x, y: y, w: this.w, h: this.h };
         this.player_vars = scene.registry.get('player_vars');
-        this.is_story_dialogue = is_story_dialogue;
-        if (this.is_story_dialogue)
+        this.dialogue_type = dialogue_type;
+
+        if (this.dialogue_type === "story" ||
+            this.dialogue_type === "store")
             this.follow_player = false;
 
         this.text = scene.add.bitmapText(25, 25, bitmapFonts.PressStart2P, '', font_size).setMaxWidth(this.w - 10);;
