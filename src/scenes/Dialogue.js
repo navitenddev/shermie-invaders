@@ -81,7 +81,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
         // dialogue_type should only be one of these 3!
         if ((["story", "game", "techtip"].includes(dialogue_type)) === false) {
             console.error(`Invalid dialogue_type: ${dialogue_type}. Defaulting to "game"`)
-            dialogue_type === "game";
+            dialogue_type = "game";
         }
 
         this.text_data = data;

@@ -44,12 +44,11 @@ export class TechTipTest extends Scene {
             num_cols = 10,
             btn_w = 35, btn_h = 35;
 
-        let col = 0;
         for (let i = 1; i <= this.num_tips; i++) {
             const row = Math.floor((i - 1) / num_cols);
-            const col_index = (i - 1) % num_cols;
+            const col = (i - 1) % num_cols;
 
-            const btn_x = start_x + col_index * (btn_w + x_gap);
+            const btn_x = start_x + col * (btn_w + x_gap);
             const btn_y = start_y + row * (btn_h + y_gap);
 
             new TextButton(
