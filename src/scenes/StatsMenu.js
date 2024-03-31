@@ -9,6 +9,21 @@ const STAT_MIN = 1;
  * @description A UI component which has a - + around some text to change a numerical value
  * Note: If we end up creating components that we wish to reuse, we should
  * create a ui_components.js file in utils.  
+ * @example 
+ * this.continue_btn = new TextButton(this, this.game.config.width / 2, 600, 200, 100, 'Continue',  
+ * () => { 
+ *    this.scene.start("Store")
+ * },
+ *     [], // callback function's arguments
+ *     bitmapFonts.PressStart2P,                    // font type
+ *     fonts.small.sizes[bitmapFonts.PressStart2P], // font size
+ *     0x2B2D31, // color of button
+ *     0x383A40, // color of hovered
+ *     0xFEFEFE, // color of clicked
+ *     0x879091  // color of border
+ * );
+ ** 
+ * 
  */
 class MenuSpinner {
     text_value; // text object that displays the value of the current stat
