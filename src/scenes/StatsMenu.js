@@ -2,28 +2,15 @@ import { Scene } from 'phaser';
 import { InitKeyDefs } from '../utils/keyboard_input.js';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
+import { TextButton } from '../ui/text_button.js';
 import { SHOP_PRICES } from './Store.js';
 
 const STAT_MIN = 1;
+
 /**
  * @description A UI component which has a - + around some text to change a numerical value
  * Note: If we end up creating components that we wish to reuse, we should
  * create a ui_components.js file in utils.  
- * @example 
- * this.continue_btn = new TextButton(this, this.game.config.width / 2, 600, 200, 100, 'Continue',  
- * () => { 
- *    this.scene.start("Store")
- * },
- *     [], // callback function's arguments
- *     bitmapFonts.PressStart2P,                    // font type
- *     fonts.small.sizes[bitmapFonts.PressStart2P], // font size
- *     0x2B2D31, // color of button
- *     0x383A40, // color of hovered
- *     0xFEFEFE, // color of clicked
- *     0x879091  // color of border
- * );
- ** 
- * 
  */
 class MenuSpinner {
     text_value; // text object that displays the value of the current stat
@@ -40,121 +27,65 @@ class MenuSpinner {
 
     constructor(scene, x, y, w, text, obj, key) {
         let text_value = scene.add.bitmapText(x + w - 40, y, bitmapFonts.PressStart2P_Stroke, obj[key], fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]);
-
         // MIN button
-        scene.add.bitmapText(x - 60, y, bitmapFonts.PressStart2P_Stroke, 'MIN', fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
-            .setInteractive()
-            .on('pointerdown', function () {
-                if (key === 'lives') // LOL
-                    obj[key] = Phaser.Math.Clamp(0, 1, 10);
-                else
+        new TextButton(scene, x - 45, y + 10,
+            55, 25,
+            'MIN',
+            () => {
+                (key === 'lives') ?
+                    obj[key] = Phaser.Math.Clamp(0, 1, 10) :
                     obj[key] = Phaser.Math.Clamp(0, 1, SHOP_PRICES[key].length);
                 text_value.setText(obj[key]);
-                this.setTint(0xff0000);
-            })
-            .on('pointerup', function () {
-                this.setTint(0xffffff);
-            })
-            .on('pointerout', function () {
-                this.setTint(0xffffff);
-            });
+            }, [],
+            bitmapFonts.PressStart2P,
+            fonts.tiny.sizes[bitmapFonts.PressStart2P],
+        );
 
         // - button
-        scene.add.bitmapText(x, y, bitmapFonts.PressStart2P_Stroke, '-', fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
-            .setInteractive()
-            .on('pointerdown', function () {
-                if (key == 'lives') // LOL
-                    obj[key] = Phaser.Math.Clamp(obj[key] - 1, 1, 10);
-                else
+        new TextButton(scene, x + 15, y + 10,
+            25, 25,
+            '-',
+            () => {
+                (key == 'lives') ?
+                    obj[key] = Phaser.Math.Clamp(obj[key] - 1, 1, 10) :
                     obj[key] = Phaser.Math.Clamp(obj[key] - 1, 1, SHOP_PRICES[key].length);
                 text_value.setText(obj[key]);
-                this.setTint(0xff0000);
-            })
-            .on('pointerup', function () {
-                this.setTint(0xffffff);
-            })
-            .on('pointerout', function () {
-                this.setTint(0xffffff);
-            });
-
-
+            }, [],
+            bitmapFonts.PressStart2P,                    // font type
+            fonts.tiny.sizes[bitmapFonts.PressStart2P], // font size
+        );
 
         // + button
-        scene.add.bitmapText(x + w, y, bitmapFonts.PressStart2P_Stroke, '+', fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
-            .setInteractive()
-            .on('pointerdown', function () {
-                if (key === 'lives') // LOL
-                    obj[key] = Phaser.Math.Clamp(obj[key] + 1, 1, 10);
-                else
+        new TextButton(scene, x + w + 5, y + 10,
+            25, 25,
+            '+',
+            () => {
+                (key === 'lives') ?
+                    obj[key] = Phaser.Math.Clamp(obj[key] + 1, 1, 10) :
                     obj[key] = Phaser.Math.Clamp(obj[key] + 1, 1, SHOP_PRICES[key].length);
                 text_value.setText(obj[key]);
-                this.setTint(0xff0000);
-            })
-            .on('pointerup', function () {
-                this.setTint(0xffffff);
-            })
-            .on('pointerout', function () {
-                this.setTint(0xffffff);
-            });
+            }, [],
+            bitmapFonts.PressStart2P,                    // font type
+            fonts.tiny.sizes[bitmapFonts.PressStart2P], // font size
+        );
 
-        // MAX button
-        scene.add.bitmapText(x + w + 30, y, bitmapFonts.PressStart2P_Stroke, 'MAX', fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
-            .setInteractive()
-            .on('pointerdown', function () {
-                if (key === 'lives') // LOL
-                    obj[key] = Phaser.Math.Clamp(100, 1, 10);
-                else
+        // max button
+        new TextButton(scene, x + w + 65, y + 10,
+            55, 25,
+            'MAX',
+            () => {
+                (key === 'lives') ?
+                    obj[key] = Phaser.Math.Clamp(100, 1, 10) :
                     obj[key] = Phaser.Math.Clamp(100, 1, SHOP_PRICES[key].length);
                 text_value.setText(obj[key]);
-                this.setTint(0xff0000);
-            })
-            .on('pointerup', function () {
-                this.setTint(0xffffff);
-            })
-            .on('pointerout', function () {
-                this.setTint(0xffffff);
-            });
+            }, [],
+            bitmapFonts.PressStart2P,                    // font type
+            fonts.tiny.sizes[bitmapFonts.PressStart2P], // font size
+        );
 
         scene.add.bitmapText(x + 50, y, bitmapFonts.PressStart2P_Stroke, text, fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]);
     }
 }
-
-/** 
- * @description A test callback function to demonstrate how IconButton is used.
- */
-function test_cb(arg1, arg2) {
-    console.log(`test_cb operational, my args are "${arg1}" and "${arg2}"!`);
-}
-
-/**
- * @classdesc A button with an icon as its surface that calls cb with args when
- * clicked.
- */
-class IconButton extends Phaser.GameObjects.Image {
-    /**
-     * @param {Phaser.scene} scene The scene to add the button into
-     * @param {string} icon The asset key of the image defined in Preloader.js
-     * @param {number} x top-left x-coordinate of the button
-     * @param {number} y top-right y-coordinate of the button
-     * @callback cb Callback function that is used when button is clicked
-     * @param {Array<any>} args A variadic number of arguments to pass into cb when it's called
-     * @example new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
-     */
-    constructor(scene, icon, x, y, cb, args = []) {
-        console.log(icon)
-        super(scene, x, y, icon);
-        scene.add.existing(this);
-        this.setOrigin(0.5)
-            .setInteractive()
-            .on('pointerdown', () => {
-                // do visual indicator that button was clicked
-            })
-            .on('pointerup', () => {
-                // call the callback with the given arguments
-                cb(...args);
-            })
-    }
-};
 
 
 export class StatsMenu extends Scene {
@@ -209,53 +140,34 @@ export class StatsMenu extends Scene {
             y += menuSpacing;
         }
 
-        this.levelSkipButton = this.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, 'KILL ALL ENEMIES', fonts.small.sizes[bitmapFonts.PressStart2P])
-            .setInteractive()
-            .on('pointerdown', () => {
+        const ls = { w: 350, h: 50 }; // level_skip_btn dimensions
+
+        this.level_skip_btn = new TextButton(this,
+            this.game.config.width / 2, this.game.config.height / 1.525,
+            ls.w, ls.h,
+            'Kill All Enemies',
+            () => {
                 this.emitter.emit('kill_all_enemies');
-            })
-            .setOrigin(0.5)
-            .setPosition(boxX + boxWidth / 2, y)
-            .setTint(0xffffff)
-            .on('pointerover', () => {
-                buttonBackground.clear().fillStyle(0xFFFFFF, 1).fillRect(0, 0, buttonWidth, buttonHeight);
-            })
-            .on('pointerout', () => {
-                buttonBackground.clear().fillStyle(0xff0000, 1).fillRect(0, 0, buttonWidth, buttonHeight);
-            });
-
-        // red background for the button
-        const buttonWidth = this.levelSkipButton.width + 40;
-        const buttonHeight = this.levelSkipButton.height + 20;
-        const buttonX = boxX + (boxWidth - buttonWidth) / 2;
-        const buttonY = y - buttonHeight / 2;
-
-        const buttonBackground = this.add.graphics({ x: buttonX, y: buttonY });
-        buttonBackground.fillStyle(0xff0000, 1);
-        buttonBackground.fillRect(0, 0, buttonWidth, buttonHeight);
-        buttonBackground.setInteractive(new Phaser.Geom.Rectangle(0, 0, buttonWidth, buttonHeight), Phaser.Geom.Rectangle.Contains)
-            .on('pointerdown', () => {
-                this.emitter.emit('kill_all_enemies');
-            })
-            .on('pointerover', () => {
-                buttonBackground.clear().fillStyle(0xFFFFFF, 1).fillRect(0, 0, buttonWidth, buttonHeight);
-            })
-            .on('pointerout', () => {
-                buttonBackground.clear().fillStyle(0xff0000, 1).fillRect(0, 0, buttonWidth, buttonHeight);
-            });
-
-        this.levelSkipButton.setDepth(1);
-        this.levelSkipButton.setPosition(buttonX + buttonWidth / 2, buttonY + buttonHeight / 2);
+                this.scene.start('Player Win')
+            },
+            [], // callback function's arguments
+            bitmapFonts.PressStart2P,                    // font type
+            fonts.small.sizes[bitmapFonts.PressStart2P], // font size
+            0xFF0000, // color of button
+            0xB02A07, // color of hovered
+            0xFFFFFF, // color of clicked
+            0x879091, // color of border
+            1         // opacity value 0 through 1
+        );
 
         y += menuSpacing;
-        const backButtonX = boxX + boxWidth / 2;
-        this.backButton = this.add.bitmapText(backButtonX, y, bitmapFonts.PressStart2P_Stroke, 'Back', fonts.small.sizes[bitmapFonts.PressStart2P])
-            .setOrigin(0.5, 0)
-            .setInteractive()
-            .on('pointerdown', () => { this.sounds.bank.sfx.click.play(); this.go_back(); });
 
-        // Note: This is a quick example on how the IconButton should be used. Feel free to uncomment it and play around with it first if you need to add a new powerup to the game.
-        // new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
+        this.back_btn = new TextButton(this,
+            boxX + boxWidth / 2, y,
+            100, 50,
+            'Back',
+            () => { this.go_back(); }
+        );
     }
 
     go_back() {

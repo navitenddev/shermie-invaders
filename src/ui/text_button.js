@@ -5,7 +5,7 @@ import { bitmapFonts, fonts } from "../utils/fontStyle";
  * the user to ensure that the text actually fits within the button.
  * 
  * The button uses Discord's color scheme by default.
- * @example
+ * @example // This example has all parameters specified
  * const continue_btn = new TextButton(this, this.game.config.width / 2, 600, 200, 100, 'Continue',
  * () => { 
  *    this.scene.start("Store")
@@ -16,7 +16,14 @@ import { bitmapFonts, fonts } from "../utils/fontStyle";
  *     0x2B2D31, // color of button
  *     0x383A40, // color of hovered
  *     0xFEFEFE, // color of clicked
- *     0x879091  // color of border
+ *     0x879091, // color of border
+ *     1         // opacity value 0 through 1
+ * );
+ * @example // This example will produce the same result as above.
+ * const continue_btn = new TextButton(this, this.game.config.width / 2, 600, 200, 100, 'Continue',
+ * () => { 
+ *    this.scene.start("Store")
+ * }, []
  * );
  */
 export class TextButton extends Phaser.GameObjects.Container {
@@ -54,6 +61,7 @@ export class TextButton extends Phaser.GameObjects.Container {
 
         super(scene, x, y);
         scene.add.existing(this);
+        const sounds = scene.registry.get('sound_bank');
         this.w = w;
         this.h = h;
         this.bg = this.scene.add.rectangle(0, 0, w, h, color);
@@ -85,11 +93,10 @@ export class TextButton extends Phaser.GameObjects.Container {
             })
             .on('pointerdown', () => {
                 this.bg.setFillStyle(color_clicked);
+                sounds.bank.sfx.click.play();
                 (args) ? callback(...args) : callback();
             });
         this.add([this.bg, this.btn_border, this.text]);
-        console.log(`(${x},${y})`)
         this.setPosition(x, y);
-        console.log(this);
     }
 }

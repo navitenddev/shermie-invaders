@@ -56,8 +56,13 @@ class DialogueManager extends Phaser.GameObjects.Container {
     constructor(scene, data, dialogue_type = "game", font_size = 16) {
         let x = 310;
         let y = 120;
-        if (dialogue_type === "techtip")
-            x = scene.game.config.width / 4, y = scene.game.config.height / 2;
+        let w = 600;
+        let h = (scene.game.config.height / 5);
+
+        if (dialogue_type === "techtip") {
+            x = (scene.game.config.width / 2) - (w / 2);
+            y = scene.game.config.height / 2;
+        }
         super(scene, x, y);
         scene.add.existing(this);
         this.scene = scene;
@@ -65,7 +70,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
         if (dialogue_type === "techtip") {
             const bg = scene.add.graphics();
-            bg.fillStyle(0x000000, 0.8)
+            bg.fillStyle(0x000000, 0.95)
                 .lineStyle(1, 0x333833)
                 .strokeRect(x, y, 600, 150);
         }
@@ -77,8 +82,6 @@ class DialogueManager extends Phaser.GameObjects.Container {
         }
 
 
-        let w = 600;
-        let h = (scene.game.config.height / 5);
 
         this.text_data = data;
 

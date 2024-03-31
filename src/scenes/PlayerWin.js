@@ -53,6 +53,7 @@ export class PlayerWin extends Scene {
 
         this.continue_btn = new TextButton(this, this.game.config.width / 2, 600, 150, 50, 'Continue',
             () => { // callback function
+                this.emitter.emit('force_dialogue_stop');
                 this.scene.start("Store")
             },
             [], // callback function's arguments
