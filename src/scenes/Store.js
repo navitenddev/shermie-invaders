@@ -239,6 +239,7 @@ export class Store extends Scene {
                 let playerVars = this.registry.get('player_vars');
                 playerVars.stats = this.stats;
                 this.registry.set('player_vars', playerVars);
+                this.registry.set('level', this.registry.get('level') + 1);
                 restart_scenes(this.scene);
                 this.scene.start('Game', { playerStats: this.stats });
             }, []

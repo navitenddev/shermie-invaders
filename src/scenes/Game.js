@@ -182,7 +182,6 @@ export class Game extends Scene {
         if (this.objs.enemies.grid.children.entries.length == 0 &&
             !this.level_transition_flag) {
             this.player_vars.active_bullets = 0;
-            this.registry.set({ 'level': this.level + 1 });
             this.level_transition_flag = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.player_vars.power = "";
