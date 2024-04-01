@@ -60,7 +60,8 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
         if (dialogue_type === "techtip") {
             x = (scene.game.config.width / 2) - (w / 2);
-            y = scene.game.config.height / 2;
+            y = scene.game.config.height / 2.5;
+            h = (scene.game.config.height / 4)
         }
         super(scene, x, y);
         scene.add.existing(this);
@@ -96,7 +97,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
             this.dialogue_type === "techtip")
             this.follow_player = false;
 
-        this.text = scene.add.bitmapText(25, 25, bitmapFonts.PressStart2P, '', font_size).setMaxWidth(this.w - (2 * this.border_w))
+        this.text = scene.add.bitmapText(25, 15, bitmapFonts.PressStart2P, '', font_size).setMaxWidth(this.w - (2 * this.border_w))
             .setLineSpacing(14)
             .setTint(0xFFFFFF);
 
@@ -158,6 +159,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.is_active = false;
         this.emitter.emit('dialogue_stop', [])
         this.emitter.off('dialogue_start');
+        this.emitter.off('dialogue_complete_line');
 
     }
 
@@ -166,9 +168,10 @@ class DialogueManager extends Phaser.GameObjects.Container {
             this.#deactivate();
             return;
         }
-        // console.log(`Loaded line ${this.line_index}`)
+        console.log(`Loaded line ${this.line_index}`)
         this.line = this.lines[this.line_index++];
         this.char_index = 0;
+
     }
 
     #add_next_char() {
@@ -179,14 +182,16 @@ class DialogueManager extends Phaser.GameObjects.Container {
         if (this.char_index === this.line.length) {
             // console.log("Line is done, waiting on player to click again")
             this.auto_emit_flag = true;
+            // Do not auto continue techtip dialogue
+            if (this.dialogue_type !== "techtip") {
+                const cont_dialogue_in = 1.5; // # seconds
+                this.scene.time.delayedCall(cont_dialogue_in * 1000, () => {
+                    if (this.auto_emit_flag)
+                        this.scene.input.emit('pointerdown');
+                }, this.scene.scene)
+            }
 
-            const cont_dialogue_in = 1.5; // # continue dialogue in # of seconds
-            this.scene.time.delayedCall(cont_dialogue_in * 1000, () => {
-                if (this.auto_emit_flag)
-                    this.scene.input.emit('pointerdown');
-            }, this.scene.scene)
-
-            this.scene.input.once('pointerdown', () => {
+            this.scene.input.on('pointerdown', () => {
                 this.text.setText(""); // 4 hours to fix this bug :)
                 this.auto_emit_flag = false;
                 this.#load_next_line();
@@ -234,6 +239,7 @@ class Dialogue extends Phaser.Scene {
             console.log('Player skipped the dialogue');
             this.emitter.emit('force_dialogue_stop');
         });
+
         this.keys.m.on('down', this.sounds.toggle_mute)
 
     }

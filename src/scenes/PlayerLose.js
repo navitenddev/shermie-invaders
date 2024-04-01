@@ -50,16 +50,19 @@ export class PlayerLose extends Scene {
             0x879091// color of border
         );
 
-        this.add.bitmapText(
-            16,
-            16,
+        this.final_score = this.add.bitmapText(
+            0,
+            0,
             bitmapFonts.PressStart2P_Stroke,
             `FINAL SCORE:${score}`,
-            fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
+            fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]
         );
+        this.final_score.setPosition((this.game.config.width / 2) - (this.final_score.width / 2), this.game.config.height / 3.35);
+        this.game.config.width / 2.5,
+            this.game.config.height / 4,
 
-        this.input.once('pointerdown', () => {
-            this.scene.start('MainMenu');
-        });
+            this.input.once('pointerdown', () => {
+                this.scene.start('MainMenu');
+            });
     }
 }

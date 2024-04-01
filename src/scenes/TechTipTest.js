@@ -25,7 +25,7 @@ export class TechTipTest extends Scene {
 
         this.sounds.bank.sfx.win.play();
 
-        this.add.text(512, 100,
+        this.add.text(512, 50,
             "Click on the buttons to show their tips.", {
             fontFamily: 'Arial Black',
             fontSize: 32,
@@ -39,7 +39,7 @@ export class TechTipTest extends Scene {
             }
         }).setOrigin(0.5);
 
-        const start_x = this.game.config.width / 3.25, start_y = 200,
+        const start_x = this.game.config.width / 3.25, start_y = 100,
             x_gap = 10, y_gap = 10,
             num_cols = 10,
             btn_w = 35, btn_h = 35;

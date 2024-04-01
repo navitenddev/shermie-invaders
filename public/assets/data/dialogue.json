@@ -129,20 +129,17 @@
   },
   "techtip6": {
     "lines": [
-      "When setting passwords for your accounts or devices, make sure they contain a random mix of letters, numbers, ",
-      "and special characters, since passwords with words or phrases in any language are easier for hackers to crack."
+      "When setting passwords for your accounts or devices, make sure they contain a random mix of letters, numbers, and special characters, since passwords with words or phrases in any language are easier for hackers to crack."
     ]
   },
   "techtip7": {
     "lines": [
-      "Reusing your password across multiple accounts opens doors for hackers to steal your data, so to keep your data",
-      "from being compromised, make sure all your accounts' passwords are customized."
+      "Reusing your password across multiple accounts opens doors for hackers to steal your data, so to keep your data from being compromised, make sure all your accounts' passwords are customized."
     ]
   },
   "techtip8": {
     "lines": [
-      "Use 2FA/MFA as often as possible, because the more authentication factors you have, the greater protection you",
-      "have against cyberattacks even if one factor is compromised."
+      "Use 2FA/MFA as often as possible, because the more authentication factors you have, the greater protection you have against cyberattacks even if one factor is compromised."
     ]
   },
   "techtip9": {
@@ -162,20 +159,17 @@
   },
   "techtip12": {
     "lines": [
-      "Software vulnerabilities can leave gaping holes in your overall cybersecurity, so patch up your software as early",
-      "and as often as possible."
+      "Software vulnerabilities can leave gaping holes in your overall cybersecurity, so patch up your software as early and as often as possible."
     ]
   },
   "techtip13": {
     "lines": [
-      "Older computers are more vulnerable to threats like phishing, ransomware, and spyware attacks. Therefore, once your",
-      "devices can't support essential updates anymore, replace them with newer models."
+      "Older computers are more vulnerable to threats like phishing, ransomware, and spyware attacks. Therefore, once your devices can't support essential updates anymore, replace them with newer models."
     ]
   },
   "techtip14": {
     "lines": [
-      "Whether you are working from home, in the office, or on the road, all signs point to VPN. When you use a VPN - or",
-      "virtual private network, it encrypts your data to keep it from falling into malicious hands."
+      "Whether you are working from home, in the office, or on the road, all signs point to VPN. When you use a VPN - or virtual private network, it encrypts your data to keep it from falling into malicious hands."
     ]
   },
   "techtip15": {
@@ -185,27 +179,23 @@
   },
   "techtip16": {
     "lines": [
-      "Automatic updates are all fine and dandy, but sometimes updating software yourself comes in handy. If you do not ",
-      "update your printers, router firmware, and scanners, they will be prone to harmful cyberattacks. This shows that ",
-      "you must update your software as often as possible."
+      "Automatic updates are all fine and dandy, but sometimes updating software yourself comes in handy. If you do not update your printers, router firmware, and scanners, they will be prone to harmful",
+      "cyberattacks. This shows that you must update your software as often as possible."
     ]
   },
   "techtip17": {
     "lines": [
-      "If you see an email where something looks off, take a closer look at the sender, links, attachment, and message, so",
-      "you can SLAM the door shut on harmful phishing attacks."
+      "If you see an email where something looks off, take a closer look at the sender, links, attachment, and message, so you can SLAM the door shut on harmful phishing attacks."
     ]
   },
   "techtip18": {
     "lines": [
-      "The average data breach resulting from cloud misconfigurations costs $4 million, so to save money - and headaches - ",
-      "make sure your cloud computing platforms are configured properly."
+      "The average data breach resulting from cloud misconfigurations costs $4 million, so to save money - and headaches - make sure your cloud computing platforms are configured properly."
     ]
   },
   "techtip19": {
     "lines": [
-      "To keep malware from infiltrating your computers, threat detection tools like behavioral analytics, ransomware detection, ",
-      "and vulnerability scanning are undeniably essential."
+      "To keep malware from infiltrating your computers, threat detection tools like behavioral analytics, ransomware detection, and vulnerability scanning are undeniably essential."
     ]
   },
   "techtip20": {
