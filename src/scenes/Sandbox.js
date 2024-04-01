@@ -143,6 +143,8 @@ export class Sandbox extends Scene {
 
     create() {
 
+        this.registry.set({ 'sandbox_mode': true });
+
         // create/scale BG image 
         let bg = this.add.image(0, 0, 'background').setAlpha(0.85);
         bg.setOrigin(0, 0);

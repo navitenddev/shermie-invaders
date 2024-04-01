@@ -148,7 +148,9 @@ export class StatsMenu extends Scene {
             'Kill All Enemies',
             () => {
                 this.emitter.emit('kill_all_enemies');
-                this.scene.start('Player Win')
+                // transition should not occur in sandbox
+                if (!this.registry.get('sandbox_mode'))
+                    this.scene.start('Player Win')
             },
             [], // callback function's arguments
             bitmapFonts.PressStart2P,                    // font type

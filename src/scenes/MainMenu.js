@@ -28,6 +28,8 @@ export class MainMenu extends BaseMenu {
             .setScale(0.5, 0.5)
             .setDepth(3);
 
+        this.registry.set({ 'sandbox_mode': false });
+
         this.emitter.removeAllListeners(); // clean up event listeners
 
         // reset global vars 
@@ -118,6 +120,7 @@ export class MainMenu extends BaseMenu {
                 fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
                 .setOrigin(0.5)
                 .setInteractive()
+                .setDepth(3)
                 .on('pointerdown', () => {
                     this.scene.start('Tech Tip Test')
                 });

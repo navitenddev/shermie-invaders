@@ -23,7 +23,7 @@ export class BaseMenu extends Scene {
         const numSprites = 50;
         this.spriteWidth = 60;
         this.spriteHeight = 60;
-        
+
         for (let i = 0; i < numSprites; i++) {
             const randomX = Phaser.Math.Between(0, this.game.config.width);
             const randomY = Phaser.Math.Between(0, this.game.config.height);
@@ -32,16 +32,16 @@ export class BaseMenu extends Scene {
             const sprite = this.add.sprite(randomX, randomY, `enemy${randomFrame}`)
                 .setOrigin(0.5, 0.5)
                 .setScale(.5)
-                .play(`enemy${randomFrame}_idle`); 
+                .play(`enemy${randomFrame}_idle`);
 
             this.animatedBg.add(sprite);
         }
 
-        const overlayColor = 0x000000; 
+        const overlayColor = 0x000000;
         const overlayAlpha = 0.6;
         this.add.rectangle(0, 0, this.game.config.width, this.game.config.height, overlayColor, overlayAlpha)
             .setOrigin(0, 0)
-            .setDepth(2); 
+            .setDepth(2);
     }
 
     setupKeys() {
@@ -53,13 +53,13 @@ export class BaseMenu extends Scene {
     }
 
     setupBackButton() {
-        this.backButton = this.add.bitmapText(512, 650, bitmapFonts.PressStart2P_Stroke, 'Back', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+        this.backButton = this.add.bitmapText(512, 660, bitmapFonts.PressStart2P_Stroke, 'Back', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
             .setDepth(3)
             .on('pointerdown', () => {
                 this.sounds.bank.sfx.click.play();
-                this.scene.start('MainMenu');
+                this.scene.start('Main Menu');
             });
     }
 
