@@ -200,6 +200,10 @@ export class Game extends Scene {
             this.scoreManager.checkAndUpdateHighScore();
         }
 
+        this.player_vars.totalShotsFired = this.objs.player.totalShotsFired;
+        this.player_vars.totalHits = this.objs.player.totalHits;
+
+
         this.cameras.main.fade(500, 0, 0, 0);
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
@@ -221,6 +225,8 @@ export class Game extends Scene {
 
         // player bullet hits grid enemy
         this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies.grid, (player_bullet, enemy) => {
+            this.objs.player.totalHits++;
+
             this.objs.explode_at(enemy.x, enemy.y);
             if (this.player_vars.power == "pierce") player_bullet.hurt_bullet();
             else player_bullet.deactivate();
@@ -232,6 +238,8 @@ export class Game extends Scene {
 
         // player bullet hits special enemy
         this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies.special, (player_bullet, enemy) => {
+            this.objs.player.totalHits++;
+            
             this.objs.explode_at(enemy.x, enemy.y);
             player_bullet.deactivate();
             enemy.die();

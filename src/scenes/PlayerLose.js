@@ -58,5 +58,37 @@ export class PlayerLose extends Scene {
             fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]
         );
         this.final_score.setPosition((this.game.config.width / 2) - (this.final_score.width / 2), this.game.config.height / 3.35);
+
+        const { totalShotsFired, totalHits } = this.player_vars;
+        const hitMissRatio = totalHits / (totalShotsFired || 1);
+        
+        const statsX = 16;
+        const statsY = 120;
+        const statsSpacing = 30;
+        
+        this.add.bitmapText(
+            statsX,
+            statsY,
+            bitmapFonts.PressStart2P_Stroke,
+            `SHOTS FIRED: ${totalShotsFired}`,
+            fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
+        );
+        
+        this.add.bitmapText(
+            statsX,
+            statsY + statsSpacing,
+            bitmapFonts.PressStart2P_Stroke,
+            `HITS: ${totalHits}`,
+            fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
+        );
+        
+        this.add.bitmapText(
+            statsX,
+            statsY + statsSpacing * 2,
+            bitmapFonts.PressStart2P_Stroke,
+            `HIT/MISS RATIO: ${hitMissRatio.toFixed(2)}`,
+            fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
+        );
+
     }
 }
