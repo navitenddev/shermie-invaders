@@ -159,7 +159,6 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.is_active = false;
         this.emitter.emit('dialogue_stop', [])
         this.emitter.off('dialogue_start');
-        this.emitter.off('dialogue_complete_line');
 
     }
 
