@@ -35,16 +35,15 @@ export class LevelSelect extends BaseMenu {
                         offset.y + y * scale.y + y * gap.y,
                         40, 40,
                         level.toString(),
-                        (scene) => {
+                        (scene, level) => {
                             scene.registry.set({ level: level });
                             scene.scene.start('Game');
                         },
-                        [this],
+                        [this, level++],
                         bitmapFonts.PressStart2P,
                         12)
                         .setDepth(3);
                 }
-                level++;
             }
         }
 
