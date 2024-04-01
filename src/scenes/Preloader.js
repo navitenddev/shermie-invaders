@@ -230,6 +230,6 @@ export class Preloader extends Scene {
         this.sounds.bank.music.start.play();
         //  Move to the MainMenu. You could also swap this for a Scene
         //  Transition, such as a camera fade.
-        this.scene.start('MainMenu');
+        this.scene.start('Main Menu');
     }
 }

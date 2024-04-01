@@ -49,7 +49,7 @@ Good luck and have fun!`;
       .setInteractive()
       .on('pointerdown', () => {
         this.sounds.bank.sfx.click.play();
-        this.scene.start('MainMenu');
+        this.scene.start('Main Menu');
       });
   }
   update() {

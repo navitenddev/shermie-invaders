@@ -73,13 +73,11 @@ export class PauseMenu extends Scene {
         this.sounds.bank.music.bg.stop();
         this.sounds.bank.sfx.click.play();
         this.sounds.bank.music.start.play();
-        this.scene.stop('PauseMenu');
-        this.scene.stop(this.prev_scene);
-        this.scene.start('MainMenu');
+        this.cameras.main.fadeOut(200, 0, 0, 0);
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-            // this.scene.stop('PauseMenu');
-            // this.scene.stop(this.prev_scene);
-            this.scene.start('MainMenu');
+            this.scene.stop('PauseMenu');
+            this.scene.stop(this.prev_scene);
+            this.scene.start('Main Menu');
         });
     }
 }

@@ -37,17 +37,17 @@ export class LevelSelect extends Scene {
         this.animatedBg.setOrigin(0.5, 0.5);
         this.sounds = this.registry.get('sound_bank');
         this.add.image(this.game.config.width / 2, 35, 'levelSelectlogo');
-        
+
         const scale = { x: 50, y: 50 };
         const offset = { x: this.game.config.width / 10, y: 75 };
         let level = 1;
-        
+
         // get max level reached from localStorage
         const maxLevelReached = localStorage.getItem('maxLevelReached') || 1;
-        
+
         // check if cheat mode is enabled
         const cheatModeEnabled = this.registry.get('debug_mode') === true;
-        
+
         for (let y = 1; y <= 10; y++) {
             for (let x = 1; x <= 15; x++) {
                 if (cheatModeEnabled || level <= maxLevelReached) {
@@ -56,13 +56,13 @@ export class LevelSelect extends Scene {
                 level++;
             }
         }
-        
+
         this.backButton = this.add.bitmapText(this.game.config.width / 2, this.game.config.height - 100, bitmapFonts.PressStart2P_Stroke, 'Back', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
                 this.sounds.bank.sfx.click.play();
-                this.scene.start('MainMenu');
+                this.scene.start('Main Menu');
             });
     }
 

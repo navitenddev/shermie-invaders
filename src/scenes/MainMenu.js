@@ -11,7 +11,7 @@ import { restart_scenes } from '../main.js';
 export class MainMenu extends Scene {
     emitter = EventDispatcher.getInstance();
     constructor() {
-        super('MainMenu');
+        super('Main Menu');
     }
 
     preload() {
@@ -150,7 +150,7 @@ export class MainMenu extends Scene {
         this.registry.set('debug_mode', true);
         localStorage.setItem('cheatCodesActivated', 'true'); // store cheat code activation in localStorage
         this.sounds.bank.sfx.click.play();
-        this.scene.start('MainMenu');
+        this.scene.start('Main Menu');
     }
 
     #disable_cheats() {
@@ -158,6 +158,6 @@ export class MainMenu extends Scene {
         this.registry.set('debug_mode', false);
         localStorage.removeItem('cheatCodesActivated');
         this.sounds.bank.sfx.click.play();
-        this.scene.start('MainMenu');
+        this.scene.start('Main Menu');
     }
 }

@@ -64,7 +64,7 @@ export class TechTipTest extends Scene {
         this.back_btn = new TextButton(this, this.game.config.width / 2, 600, 150, 50, 'Back',
             () => { // callback function
                 this.emitter.emit('force_dialogue_stop');
-                this.scene.start("MainMenu");
+                this.scene.start("Main Menu");
             },
             [], // callback function's arguments
             bitmapFonts.PressStart2P,                    // font type
