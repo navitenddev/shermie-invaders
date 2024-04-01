@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { SoundBank } from '../sounds';
+import { SoundBank } from '../utils/sounds';
 import { AnimationFactory } from '../factory/animation_factory';
 
 export class Preloader extends Scene {

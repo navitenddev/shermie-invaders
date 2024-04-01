@@ -1,11 +1,12 @@
 import { Scene } from 'phaser';
-import { InitKeyDefs, CHEAT_CODE_SEQUENCE as CheatCode } from '../keyboard_input';
+import { InitKeyDefs, CHEAT_CODE_SEQUENCE as CheatCode } from '../utils/keyboard_input';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { Game as game_scene } from './Game';
 import { Dialogue as dialogue_scene } from './Dialogue.js';
 import { PauseMenu as pause_scene } from './PauseMenu.js';
 import { StatsMenu as stats_scene } from './StatsMenu.js';
+import { restart_scenes } from '../main.js';
 
 export class MainMenu extends Scene {
     emitter = EventDispatcher.getInstance();
@@ -13,11 +14,18 @@ export class MainMenu extends Scene {
         super('MainMenu');
     }
 
+    preload() {
+        this.load.json({
+            key: "dialogue",
+            url: "assets/data/dialogue.json"
+        })
+    }
+
     create() {
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg')
             .setOrigin(0.5, 0.5);
 
-        this.add.image(512, 300, 'titlelogo')
+        this.add.image(512, 250, 'titlelogo')
             .setScale(0.5, 0.5);
         this.sounds = this.registry.get('sound_bank');
 
@@ -29,21 +37,8 @@ export class MainMenu extends Scene {
         this.player_vars.lives = 3;
 
         /* I am sorry for doing this */
-        this.scene.remove('Game');
-        this.scene.add('Game', game_scene);
-        this.scene.bringToTop('Game');
 
-        this.scene.remove('Dialogue');
-        this.scene.add('Dialogue', dialogue_scene);
-        this.scene.bringToTop('Dialogue');
-
-        this.scene.remove('PauseMenu');
-        this.scene.add('PauseMenu', pause_scene);
-        this.scene.bringToTop('PauseMenu');
-
-        this.scene.remove('StatsMenu');
-        this.scene.add('StatsMenu', stats_scene);
-        this.scene.bringToTop('StatsMenu');
+        restart_scenes(this.scene);
 
         // reset level back to 1
         this.registry.set('level', 1);
@@ -69,7 +64,7 @@ export class MainMenu extends Scene {
         }
 
         const menuSpacing = 50; // spacing between menu items
-        let menuY = 530; // starting Y position for menu items
+        let menuY = 480; // starting Y position for menu items
 
         // Start Button
         this.start_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'PLAY', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
@@ -85,7 +80,7 @@ export class MainMenu extends Scene {
 
         // Controls Button
         menuY += menuSpacing;
-        this.controls_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke,'CONTROLS', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+        this.controls_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'CONTROLS', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
@@ -95,7 +90,7 @@ export class MainMenu extends Scene {
 
         // Level Select Button
         menuY += menuSpacing;
-        this.level_select_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke,'LEVELS', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+        this.level_select_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'LEVELS', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
             .on('pointerdown', () => {
@@ -106,7 +101,7 @@ export class MainMenu extends Scene {
         if (this.registry.get('debug_mode') === true) {
             // Sandbox Button
             menuY += menuSpacing;
-            this.sandbox_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke,'SANDBOX', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+            this.sandbox_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'SANDBOX', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
                 .setOrigin(0.5)
                 .setInteractive()
                 .on('pointerdown', () => {
@@ -116,10 +111,19 @@ export class MainMenu extends Scene {
                         this.scene.start('Sandbox');
                     });
                 });
+            // Tech tips test button
+            menuY += menuSpacing;
+            this.disable_cheats_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'TECH TIP TEST',
+                fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+                .setOrigin(0.5)
+                .setInteractive()
+                .on('pointerdown', () => {
+                    this.scene.start('Tech Tip Test')
+                });
 
             // Disable Cheats Button
             menuY += menuSpacing;
-            this.disable_cheats_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke,'EXIT', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+            this.disable_cheats_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'CHEATS OFF', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
                 .setOrigin(0.5)
                 .setInteractive()
                 .on('pointerdown', () => {

@@ -1,6 +1,11 @@
 import { Scene } from 'phaser';
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
-import { FillBar } from '../ui/fill_bar.js';
+import { bitmapFonts, fonts } from '../utils/fontStyle';
+import { FillBar } from '../ui/fill_bar';
+import { EventDispatcher } from '../utils/event_dispatcher';
+import { Game } from './Game'
+import { restart_scenes } from '../main';
+import { start_dialogue } from './Dialogue';
+import { TextButton } from '../ui/text_button';
 
 const STAT_MIN = 1;
 
@@ -25,6 +30,7 @@ export const SHOP_PRICES = {
 };
 
 class MenuSpinner {
+    emitter = EventDispatcher.getInstance();
     constructor(scene, y, statKey, stats, onUpgrade, displayName) {
         this.displayName = displayName;
         this.scene = scene;
@@ -132,66 +138,8 @@ class MenuSpinner {
     }
 }
 
-class MenuButton extends Phaser.GameObjects.Container {
-    constructor(scene, x, y, text, cb, args) {
-        super(scene, x, y);
-        scene.add.existing(this);
-
-        this.border_w = 4;
-
-        // Create the background rectangle
-        this.background = scene.add.rectangle(0, 0, 0, 0, 0xFFD700);
-        this.background.setOrigin(0, 0);
-
-        this.text = scene.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, text, fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
-            // .setInteractive()
-            .setFontSize(24)
-            .setOrigin(0.5, 0.5); // Set the origin to the center of the text
-
-        // Update the background size based on the text dimensions
-        const textWidth = this.text.width + 30;
-        const textHeight = this.text.height + 20;
-        this.background
-            .setSize(textWidth, textHeight)
-            .setInteractive()
-
-        // Position the text at the center of the background rectangle
-        this.text.setPosition(textWidth / 2, textHeight / 2);
-
-        this.btn_border = scene.add.graphics();
-        this.btn_border.lineStyle(2, 0xFFFF00, 1)
-            .strokeRect(0, 0, textWidth, textHeight);
-
-        this.background
-            .on('pointerover', () => {
-                this.background.setFillStyle(0xFFEA00);
-                this.btn_border
-                    .clear()
-                    .lineStyle(3, 0xFFEA00, 1)
-                    .strokeRect(0, 0, textWidth, textHeight);
-            })
-            .on('pointerout', () => {
-                this.background.setFillStyle(0xFFD700);
-                this.btn_border
-                    .clear()
-                    .lineStyle(2, 0xFFFF00, 1)
-                    .strokeRect(0, 0, textWidth, textHeight);
-            })
-            .on('pointerdown', () => {
-                (args) ? cb(...args) : cb(args);
-            });
-
-        this.setInteractive(Phaser.Geom.Rectangle(x, y, textWidth, textHeight),
-            () => {
-                console.log("Yo!");
-                (args) ? cb(...args) : cb(args);
-            });
-
-        this.add([this.background, this.text, this.btn_border]);
-    }
-}
-
 export class Store extends Scene {
+    TECHTIP_COUNT; // number of techtips defined in the JSON.
     constructor() {
         super('Store');
         this.menuSpinners = [];
@@ -199,11 +147,26 @@ export class Store extends Scene {
         this.initialStats = {};
     }
 
+    preload() {
+        this.load.json({
+            key: "techtips",
+            url: "assets/data/dialogue.json",
+            dataKey: "techtips",
+        });
+    }
+
     create() {
-        this.player_vars = this.registry.get('player_vars')
+        this.techtips = this.cache.json.get("techtips");
+        console.log(this.techtips);
+        this.TECHTIP_COUNT = this.techtips.num_techtips;
+        console.log(`TECHTIP COUNT: ${this.TECHTIP_COUNT}`);
+        this.scene.remove('Game'); // I am sorry for my sins
+
+        this.player_vars = this.registry.get('player_vars');
         //Background
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'upgradeTilemap')
             .setOrigin(0.5, 0.5);
+
 
         const startY = 250;
         const spinnerGap = 70;
@@ -266,18 +229,28 @@ export class Store extends Scene {
         const moneyTextY = moneyIconY;
         this.moneyText = this.add.bitmapText(moneyTextX, moneyTextY, bitmapFonts.PressStart2P_Stroke, `${this.player_vars.wallet}`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0, 0.5);
 
-        let next_level_btn = new MenuButton(this,
-            this.game.config.width / 2.8, this.game.config.height - 100,
+        this.next_level_btn = new TextButton(this,
+            this.game.config.width / 2, 700,
+            180, 50,
             'Next Level',
-            () => {
+            () => { // callback function
                 this.initialStats = Object.assign({}, this.stats);
                 this.registry.set('playerPermanentStats', Object.assign({}, this.stats));
                 let playerVars = this.registry.get('player_vars');
                 playerVars.stats = this.stats;
                 this.registry.set('player_vars', playerVars);
+                this.registry.set('level', this.registry.get('level') + 1);
+                restart_scenes(this.scene);
                 this.scene.start('Game', { playerStats: this.stats });
-            }
+            }, []
         );
+    }
+
+    update() {
+        if (this.animatedBg) {
+            this.animatedBg.tilePositionY -= 2;
+            this.animatedBg.tilePositionX -= 2;
+        }
     }
 
     updateAllSpinners() {
@@ -318,10 +291,4 @@ export class Store extends Scene {
         return this.getUpgradeCost(statKey, level - 1);
     }
 
-    update() {
-        if (this.animatedBg) {
-            this.animatedBg.tilePositionY -= 2;
-            this.animatedBg.tilePositionX -= 2;
-        }
-    }
 }
