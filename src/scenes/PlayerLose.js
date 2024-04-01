@@ -58,11 +58,5 @@ export class PlayerLose extends Scene {
             fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]
         );
         this.final_score.setPosition((this.game.config.width / 2) - (this.final_score.width / 2), this.game.config.height / 3.35);
-        this.game.config.width / 2.5,
-            this.game.config.height / 4,
-
-            this.input.once('pointerdown', () => {
-                this.scene.start('MainMenu');
-            });
     }
 }
