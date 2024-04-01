@@ -188,6 +188,11 @@ export class Preloader extends Scene {
             frameHeight: 32,
         });
 
+        this.load.spritesheet("shermie_bg", "misc/shermie_bg.png", {
+            frameWidth: 60,
+            frameHeight: 60,
+        });
+
         this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');
 
         this.load.bitmapFont('GlassTTY', 'fonts/GlassTTY.png', 'fonts/GlassTTY.xml');
@@ -209,6 +214,7 @@ export class Preloader extends Scene {
         this.registry.set('score', 0);
         this.registry.set('sound_bank', new SoundBank(this));
         this.registry.set('debug_mode', false);
+        this.registry.set('sandbox_mode', false);
         this.sounds = this.registry.get('sound_bank');
         this.registry.set('player_vars', {
             lives: 3,

@@ -140,6 +140,13 @@ class AnimationFactory {
             frameRate: 8,
             repeat: -1,
         });
+        
+        this.scene.anims.create({
+            key: "shermie_bg_idle",
+            frames: this.scene.anims.generateFrameNumbers("shermie_bg", {
+                start: 0, end: 0,
+            }),
+        });
     }
 }
 

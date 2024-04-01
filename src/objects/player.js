@@ -170,8 +170,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      */
     updateHitbox() {
         if (this.stats.shield > 1) {
-            this.setCircle(40);
-            this.setOffset(Player.body_offset.x - 16, Player.body_offset.y - 21);
+            this.setCircle(30);
+            this.setOffset(Player.body_offset.x - 8, Player.body_offset.y - 12);
         } else {
             this.setSize(Player.dims.w - 16, Player.dims.h - 8);
             this.setOffset(Player.body_offset.x, Player.body_offset.y);

@@ -46,7 +46,7 @@ const config = {
         PauseMenu,
         StatsMenu,
         Store,
-        TechTipTest
+        TechTipTest,
         // Dialogue,
     ]
 };

@@ -1,4 +1,4 @@
-import { Scene } from 'phaser';
+import { BaseMenu } from './BaseMenu.js';
 import { InitKeyDefs, CHEAT_CODE_SEQUENCE as CheatCode } from '../utils/keyboard_input';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
@@ -8,7 +8,7 @@ import { PauseMenu as pause_scene } from './PauseMenu.js';
 import { StatsMenu as stats_scene } from './StatsMenu.js';
 import { restart_scenes } from '../main.js';
 
-export class MainMenu extends Scene {
+export class MainMenu extends BaseMenu {
     emitter = EventDispatcher.getInstance();
     constructor() {
         super('Main Menu');
@@ -22,12 +22,13 @@ export class MainMenu extends Scene {
     }
 
     create() {
-        this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg')
-            .setOrigin(0.5, 0.5);
+        super.create();
 
         this.add.image(512, 250, 'titlelogo')
-            .setScale(0.5, 0.5);
-        this.sounds = this.registry.get('sound_bank');
+            .setScale(0.5, 0.5)
+            .setDepth(3);
+
+        this.registry.set({ 'sandbox_mode': false });
 
         this.emitter.removeAllListeners(); // clean up event listeners
 
@@ -50,8 +51,6 @@ export class MainMenu extends Scene {
         this.player_vars.wallet = 0;
         this.player_vars.power = "";
 
-        this.keys = InitKeyDefs(this);
-
         // check if cheat codes are already activated
         if (localStorage.getItem('cheatCodesActivated') === 'true') {
             this.registry.set('debug_mode', true);
@@ -70,6 +69,7 @@ export class MainMenu extends Scene {
         this.start_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'PLAY', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
+            .setDepth(3)
             .on('pointerdown', () => {
                 this.sounds.bank.sfx.win.play();
                 this.cameras.main.fadeOut(200, 0, 0, 0);
@@ -83,6 +83,7 @@ export class MainMenu extends Scene {
         this.controls_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'CONTROLS', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
+            .setDepth(3)
             .on('pointerdown', () => {
                 this.sounds.bank.sfx.click.play();
                 this.scene.start('HowToPlay');
@@ -93,6 +94,7 @@ export class MainMenu extends Scene {
         this.level_select_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'LEVELS', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
+            .setDepth(3)
             .on('pointerdown', () => {
                 this.sounds.bank.sfx.click.play();
                 this.scene.start('LevelSelect');
@@ -104,6 +106,7 @@ export class MainMenu extends Scene {
             this.sandbox_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'SANDBOX', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
                 .setOrigin(0.5)
                 .setInteractive()
+                .setDepth(3)
                 .on('pointerdown', () => {
                     this.sounds.bank.sfx.win.play();
                     this.cameras.main.fadeOut(200, 0, 0, 0);
@@ -117,6 +120,7 @@ export class MainMenu extends Scene {
                 fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
                 .setOrigin(0.5)
                 .setInteractive()
+                .setDepth(3)
                 .on('pointerdown', () => {
                     this.scene.start('Tech Tip Test')
                 });
@@ -126,23 +130,17 @@ export class MainMenu extends Scene {
             this.disable_cheats_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'CHEATS OFF', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
                 .setOrigin(0.5)
                 .setInteractive()
+                .setDepth(3)
                 .on('pointerdown', () => {
                     this.#disable_cheats();
                 });
         }
 
-        this.keys.m.on('down', this.sounds.toggle_mute)
+        this.keys.m.on('down', this.sounds.toggle_mute);
         this.input.keyboard.createCombo(CheatCode, { resetOnWrongKey: true });
         this.input.keyboard.on('keycombomatch', () => {
             this.#activate_cheats();
         });
-    }
-
-    update() {
-        if (this.animatedBg) {
-            this.animatedBg.tilePositionY += 1;
-            this.animatedBg.tilePositionX += 1;
-        }
     }
 
     #activate_cheats() {

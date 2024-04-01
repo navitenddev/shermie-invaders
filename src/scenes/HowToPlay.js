@@ -1,25 +1,21 @@
-import { Scene } from 'phaser';
+import { BaseMenu } from "./BaseMenu";
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
-import { InitKeyDefs } from "../utils/keyboard_input";
 
-export class HowToPlay extends Scene {
-  constructor() {
-    super('HowToPlay');
-  }
+export class HowToPlay extends BaseMenu {
+    constructor() {
+        super('HowToPlay');
+    }
 
-  create() {
-    this.keys = InitKeyDefs(this);
+    create() {
+      super.create();
 
-    this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg');
-    this.animatedBg.setOrigin(0.5, 0.5);
-    this.sounds = this.registry.get('sound_bank');
-    this.add.image(512, 150, 'howToPlayLogo').setScale(0.8);
-    this.keys.m.on('down', this.sounds.toggle_mute)
+      this.add.image(512, 150, "howToPlayLogo").setScale(0.8).setDepth(3);
 
-    let width = this.game.config.width
+      let width = this.game.config.width;
 
-    const instructionsText =
-      `Movement:
+      this.keys.m.on("down", this.sounds.toggle_mute);
+
+      const instructionsText = `Movement:
   - A/D or Left Arrow/Right Arrow
 
 Shoot:
@@ -41,21 +37,16 @@ Goal:
         
 Good luck and have fun!`;
 
+      this.add
+        .bitmapText(
+          width / 4,
+          250,
+          bitmapFonts.PressStart2P_Stroke,
+          instructionsText,
+          fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
+        )
+        .setDepth(3);
 
-    this.add.bitmapText(width / 4, 250, bitmapFonts.PressStart2P_Stroke, instructionsText, fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
-
-    this.backButton = this.add.bitmapText(512, 600, bitmapFonts.PressStart2P_Stroke, 'Back', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
-      .setOrigin(0.5)
-      .setInteractive()
-      .on('pointerdown', () => {
-        this.sounds.bank.sfx.click.play();
-        this.scene.start('Main Menu');
-      });
-  }
-  update() {
-    if (this.animatedBg) {
-      this.animatedBg.tilePositionY += 1;
-      this.animatedBg.tilePositionX += 1;
+      this.setupBackButton();
     }
-  }
 }
