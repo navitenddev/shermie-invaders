@@ -96,8 +96,8 @@ class DialogueManager extends Phaser.GameObjects.Container {
             this.dialogue_type === "techtip")
             this.follow_player = false;
 
-        this.text = scene.add.bitmapText(25, 25, bitmapFonts.PressStart2P, '', font_size).setMaxWidth(this.w - 10);;
-        this.text.setLineSpacing(14)
+        this.text = scene.add.bitmapText(25, 25, bitmapFonts.PressStart2P, '', font_size).setMaxWidth(this.w - (2 * this.border_w))
+            .setLineSpacing(14)
             .setTint(0xFFFFFF);
 
         if (this.bg)
