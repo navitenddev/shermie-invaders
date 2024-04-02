@@ -75,6 +75,7 @@ class Barrier {
         this.chunk_particle_emitter();
     }
 
+    // Adds rectangular brick
     #add_brick(x, y) {
         /* Dunno a better way to do this without hard coding, sorry for the stinky code */
         let chunks = [
@@ -92,6 +93,23 @@ class Barrier {
                 x + 10, y + 5, "br")
         ];
 
+        chunks.forEach((c) => {
+            c.parent = this;
+            this.chunks.push(c);
+        });
+    }
+
+    #add_square_brick(x, y) {
+        let chunks = [
+            this.scene.add.barrier_chunk(this.scene,
+                x, y, "tl"),
+            this.scene.add.barrier_chunk(this.scene,
+                x + 5, y, "tr"),
+            this.scene.add.barrier_chunk(this.scene,
+                x, y + 5, "bl"),
+            this.scene.add.barrier_chunk(this.scene,
+                x + 5, y + 5, "br"),
+        ];
         chunks.forEach((c) => {
             c.parent = this;
             this.chunks.push(c);
@@ -138,18 +156,18 @@ class Barrier {
 
         let k = 0;
         for (let j = 0; j < rows * BRICK_H; j += BRICK_H, k++) {
-            for (let i = 0; i < cols * BRICK_W; i += BRICK_W) {
+            for (let i = 0; i < cols * BRICK_W; i += BRICK_W - 1) {
+                // this.#add_brick(this.rect.x + i, this.rect.y + j);
                 (k % 2 === 0) ?
                     this.#add_brick(this.rect.x + i, this.rect.y + j) :
-                    this.#add_brick(this.rect.x + i - (BRICK_W / 2), this.rect.y + j);
+                    this.#add_brick(this.rect.x + i - ((BRICK_W) / 2), this.rect.y + j);
             }
             if (k % 2 === 0) {
-                this.#add_brick(this.rect.x - BRICK_W, this.rect.y + j)
+                // add left square
+                this.#add_square_brick(this.rect.x - (BRICK_W / 2), this.rect.y + j)
             } else {
-                // add left end
-                this.#add_brick(this.rect.x - (BRICK_W * 1.5), this.rect.y + j)
-                // add right end
-                this.#add_brick(this.rect.x + (BRICK_W * cols) - (BRICK_W / 2), this.rect.y + j)
+                // add right square
+                this.#add_square_brick(this.rect.x + ((BRICK_W) * cols) - 2, this.rect.y + j)
             }
         }
     }
