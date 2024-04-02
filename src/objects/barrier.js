@@ -1,15 +1,25 @@
-let chunk_size = { w: 5, h: 5 };
+
+const TILE_KEYMAP = {
+    "tl": 0, // top left
+    "tr": 1, // top right
+    "bl": 2, // bottom left
+    "br": 3, // bottom right
+    "l": 4, // left
+    "m": 5, // mid
+    "r": 6, // mid
+    "bm": 7, // bottom mid
+    "tm": 8, // top mid
+};
 
 /**
  * @description an individual chunk within a Barrier object
  */
 
-class BarrierChunk extends Phaser.GameObjects.Rectangle {
-    constructor(scene, x, y, width, height, color, health = 10) {
-        super(scene, x, y, width, height);
+class BarrierChunk extends Phaser.GameObjects.Sprite {
+    constructor(scene, x, y, key, health = 10) {
+        super(scene, x, y, "brick_tileset", TILE_KEYMAP[key]);
         scene.physics.add.existing(this, true);
         scene.add.existing(this);
-        this.setFillStyle(color);
         this.body.debugShowBody = false;
         this.health = health;
     }
@@ -46,7 +56,6 @@ class Barrier {
         color = 0x000000, // hex color code for barrier chunk fill color
     ) {
         this.scene = scene;
-
         let w = n_cols * cw;
         let h = n_rows * ch;
 
@@ -64,6 +73,29 @@ class Barrier {
         this.init_particles();
         this.init_chunks();
         this.chunk_particle_emitter();
+    }
+
+    #add_brick(x, y) {
+        /* Dunno a better way to do this without hard coding, sorry for the stinky code */
+        let chunks = [
+            this.scene.add.barrier_chunk(this.scene,
+                x, y, "tl"),
+            this.scene.add.barrier_chunk(this.scene,
+                x + 5, y, "tm"),
+            this.scene.add.barrier_chunk(this.scene,
+                x + 10, y, "tr"),
+            this.scene.add.barrier_chunk(this.scene,
+                x, y + 5, "bl"),
+            this.scene.add.barrier_chunk(this.scene,
+                x + 5, y + 5, "bm"),
+            this.scene.add.barrier_chunk(this.scene,
+                x + 10, y + 5, "br")
+        ];
+
+        chunks.forEach((c) => {
+            c.parent = this;
+            this.chunks.push(c);
+        });
     }
 
     static explode_at_bullet_hit(scene, bullet, barr_chunk, baseExplosionRadius = 20) {
@@ -99,16 +131,25 @@ class Barrier {
     }
 
     init_chunks() {
-        let c = this.chunk_defs;
-        for (let j = this.rect.y; j < this.rect.y + c.n.rows * c.dims.h; j += c.dims.h) {
-            for (let i = this.rect.x; i < this.rect.x + c.n.cols * c.dims.w; i += c.dims.w) {
-                let chunk = this.scene.add.barrier_chunk(this.scene,
-                    i, j,
-                    c.dims.w, c.dims.h,
-                    c.color
-                );
-                chunk.parent = this; // reference to the parent barrier because we need to update the flame size based on chunks remaining
-                this.chunks.push(chunk);
+        const BRICK_W = 3 * 5;
+        const BRICK_H = 2 * 5;
+
+        const rows = 7, cols = 7;
+
+        let k = 0;
+        for (let j = 0; j < rows * BRICK_H; j += BRICK_H, k++) {
+            for (let i = 0; i < cols * BRICK_W; i += BRICK_W) {
+                (k % 2 === 0) ?
+                    this.#add_brick(this.rect.x + i, this.rect.y + j) :
+                    this.#add_brick(this.rect.x + i - (BRICK_W / 2), this.rect.y + j);
+            }
+            if (k % 2 === 0) {
+                this.#add_brick(this.rect.x - BRICK_W, this.rect.y + j)
+            } else {
+                // add left end
+                this.#add_brick(this.rect.x - (BRICK_W * 1.5), this.rect.y + j)
+                // add right end
+                this.#add_brick(this.rect.x + (BRICK_W * cols) - (BRICK_W / 2), this.rect.y + j)
             }
         }
     }
@@ -126,7 +167,7 @@ class Barrier {
                 frame: 'white',
                 color: [0xffd700, 0xffa500, 0xff6347, 0xdc143c],
                 colorEase: 'quad.out',
-                lifespan: {min: 500, max: 1400},
+                lifespan: { min: 500, max: 1400 },
                 angle: { min: -90, max: -90 },
                 scale: { start: 0.50, end: 0, ease: 'sine.in' },
                 speed: 100,

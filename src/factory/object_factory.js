@@ -20,8 +20,8 @@ console.log("Loading Phaser Factories...")
 
 Phaser.GameObjects.GameObjectFactory.register(
     "barrier_chunk",
-    function (scene, x, y, width, height, fill_color) {
-        return new BarrierChunk(scene, x, y, width, height, fill_color);
+    function (scene, x, y, key, health) {
+        return new BarrierChunk(scene, x, y, key, health);
     }
 );
 
