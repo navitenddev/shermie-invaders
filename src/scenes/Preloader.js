@@ -78,9 +78,21 @@ export class Preloader extends Scene {
 
         this.load.image("nuke_icon", "ui/nuke-icon.png");
 
-        this.load.image("firewall_icon", "ui/firewall-icon.png")
+        this.load.image("firewall_icon", "ui/firewall-icon.png");
 
-        this.load.image("story_bg", "backgrounds/Dialouge.png")
+        this.load.image("story_bg", "backgrounds/Dialouge.png");
+
+        this.load.image("brick_tileset", "misc/brick-tileset.png");
+
+        // process tilemap after load is complete
+        this.load.on('complete', () => {
+            const brick_tiles = this.textures.get('brick_tileset');
+            const base = brick_tiles.get();
+            Phaser.Textures.Parsers.SpriteSheet(brick_tiles, base.sourceIndex, base.x, base.y, base.width, base.height, {
+                frameWidth: 5,
+                frameHeight: 5
+            });
+        })
 
         //this.load.audio(['bgmusic','shoot','explosion'], ['SFX/spacebg.wav','SFX/shoot.wav', 'SFX/explosion.wav']);
 

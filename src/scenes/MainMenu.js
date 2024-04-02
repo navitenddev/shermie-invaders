@@ -141,6 +141,7 @@ export class MainMenu extends BaseMenu {
         this.input.keyboard.on('keycombomatch', () => {
             this.#activate_cheats();
         });
+
     }
 
     #activate_cheats() {

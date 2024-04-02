@@ -127,7 +127,7 @@ class ObjectSpawner {
             y = 500;
 
         const w = n.cols * c.w,
-            x_start = 125,
+            x_start = 135,
             x_gap = w;
 
         for (let i = 0; i < 4; i++) {
