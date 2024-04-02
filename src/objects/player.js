@@ -44,7 +44,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     static timers = {
         last_fired: 0,
     }
-    static powerup = {
+    powerup = {
         max: 10,
         max_ammo: 0,
     }
@@ -134,7 +134,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.powerup_bar.setPosition(this.x + this.powerup_bar_offset.x,
             this.y + this.powerup_bar_offset.y);
-        this.powerup_bar.set_value(Player.powerup.ammo);
+        this.powerup_bar.set_value(this.powerup.ammo);
     }
 
     #update_powerup_icon() {
@@ -296,7 +296,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     */
     changePower(pow) {
         this.player_vars.power = pow;
-        Player.powerup.ammo = (pow) ? Player.powerup.max : 0;
+        this.powerup.ammo = (pow) ? this.powerup.max : 0;
         if (!pow)
             this.power
     }
@@ -350,7 +350,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                         }
                     }
                 }
-                if ((--Player.powerup.ammo) <= 0)
+                if ((--this.powerup.ammo) <= 0)
                     this.changePower();
                 this.sounds.bank.sfx.shoot.play();
             }
