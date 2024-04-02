@@ -193,7 +193,7 @@ class Barrier {
                 alpha: { start: 1, end: .55 },
                 emitZone: {
                     type: 'random',
-                    source: new Phaser.Geom.Rectangle(-55, 0, this.rect.width, 10),
+                    source: new Phaser.Geom.Rectangle(-65, 0, this.rect.width+10, 10),
                     quantity: 50,
                 }
             });
