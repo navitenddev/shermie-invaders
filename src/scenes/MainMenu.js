@@ -142,16 +142,6 @@ export class MainMenu extends BaseMenu {
             this.#activate_cheats();
         });
 
-        // JOSH, REMOVE THIS LATER PLS
-        this.load.image("brick_tileset", "misc/brick-tileset.png");
-        const brick_tiles = this.textures.get('brick_tileset');
-        const base = brick_tiles.get();
-        Phaser.Textures.Parsers.SpriteSheet(brick_tiles, base.sourceIndex, base.x, base.y, base.width, base.height, {
-            frameWidth: 5,
-            frameHeight: 5
-        });
-
-        this.add.sprite(400, 400, 'brick_tileset', 0);
     }
 
     #activate_cheats() {
