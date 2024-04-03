@@ -232,7 +232,7 @@ class Dialogue extends Phaser.Scene {
         this.prev_scene = data.caller_scene;
 
         this.emitter.emit('dialogue_start', data.dialogue_key);
-        this.emitter.once('dialogue_stop', () => { this.return_to_caller_scene() });
+        this.emitter.once('dialogue_stop', () => { this.return_to_caller_scene(data.dialogue_type) });
 
         this.keys.esc.on('down', () => {
             console.log('Player skipped the dialogue');
@@ -247,13 +247,16 @@ class Dialogue extends Phaser.Scene {
         this.dialogue_mgr.update(time, delta);
     }
 
-    return_to_caller_scene() {
-         if (this.escPrompt) {
+    return_to_caller_scene(data) {
+        if (data === "story") {
+            this.startPrompt = this.add.bitmapText(450, 180, bitmapFonts.PressStart2P, `Press spacebar to start!`, fonts.small.sizes[bitmapFonts.PressStart2P])
+        }
+        
+        if (this.escPrompt) {
             this.escPrompt.destroy();
             this.escPrompt = null;
         }
-        this.startPrompt = this.add.bitmapText(450, 180, bitmapFonts.PressStart2P, `Press spacebar to start!`, fonts.small.sizes[bitmapFonts.PressStart2P])
-    
+        
         this.keys.space.on('down', () => {
             this.startPrompt.destroy();
             this.startPrompt = null;
