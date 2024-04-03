@@ -137,6 +137,7 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
  * This way we don't have to waste resources on constantly creating and destroying objects.
  */
 class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
+    parried = false;
     /**
      * @constructor
      * @param {Phaser.Scene} scene - The scene in which the bullet exists.
@@ -202,6 +203,7 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
             .setVelocity(0, 0)
             .setVisible(false)
             .setActive(false);
+        this.parried = false;
     }
 
 }

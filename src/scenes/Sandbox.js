@@ -350,8 +350,19 @@ export class Sandbox extends Scene {
         let currShield = this.player_stats.shield;
         // enemy bullet hits player
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player, (player, enemy_bullet) => {
+            if (enemy_bullet.parried)
+                return;
+
             if (!player.is_dead) {
+                if (this.objs.player.parrying) {
+                    console.log("Parried");
+                    enemy_bullet.setVelocity(-enemy_bullet.body.velocity.x, -enemy_bullet.body.velocity.y);
+                    enemy_bullet.parried = true;
+                    return;
+                }
+
                 enemy_bullet.deactivate();
+
                 if (player.stats.shield > 1) {
                     player.shieldParticles.explode(10, player.x, this.sys.game.config.height - 135);
                     player.stats.shield--;
@@ -383,6 +394,20 @@ export class Sandbox extends Scene {
             if (player_bullet.active && enemy_bullet.active) {
                 this.objs.explode_at(player_bullet.x, player_bullet.y);
                 player_bullet.deactivate();
+                enemy_bullet.deactivate();
+            }
+        });
+
+        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.enemies.grid, (enemy_bullet, enemy) => {
+            if (enemy_bullet.parried) {
+                enemy.die();
+                enemy_bullet.deactivate();
+            }
+        });
+
+        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.enemies.special, (enemy_bullet, enemy) => {
+            if (enemy_bullet.parried) {
+                enemy.die();
                 enemy_bullet.deactivate();
             }
         });

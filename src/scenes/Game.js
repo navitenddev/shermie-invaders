@@ -244,6 +244,12 @@ export class Game extends Scene {
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player, (player, enemy_bullet) => {
             if (!player.is_dead) {
                 enemy_bullet.deactivate();
+                if (this.objs.player.parrying) {
+                    console.log("Parried");
+                    nemy_bullet.setVelocity(-enemy_bullet.body.velocity.x, -enemy_bullet.body.velocity.y);
+                    return;
+                }
+
                 if (player.stats.shield > 1) {
                     player.shieldParticles.explode(10, player.x, this.sys.game.config.height - 135);
                     // console.log('Shield particle emitter explode called');

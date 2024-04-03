@@ -68,6 +68,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.initShieldParticles();
         this.updateHitbox();
 
+        this.parry_graphics = scene.add.graphics();
+
         this.setCollideWorldBounds(true)
             .setSize(Player.dims.w - 16, Player.dims.h - 8)
             .setOffset(Player.body_offset.x, Player.body_offset.y)
@@ -120,6 +122,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             10,
             0xfafafa,
         );
+
+        this.parry_cd = 2000;
+        this.parry_timer = 0;
+        this.parry_timeout = 50;
     }
 
 
@@ -218,6 +224,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.updateShield();
         this.updateHitbox();
+        this.#update_parry_graphics();
 
         if (keys.d.isDown || keys.right.isDown) {
             this.move(true);
@@ -231,10 +238,33 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         )
             this.play("shermie_idle");
 
-        if (keys.space.isDown || keys.w.isDown) this.shoot(time);
+        if (keys.space.isDown) this.shoot(time);
+
         if (!keys.d.isDown && !keys.right.isDown &&
             !keys.a.isDown && !keys.left.isDown)
             this.setVelocity(0);
+
+        if (this.player_vars.power_permanent.parry &&
+            (keys.w.isDown || keys.up.isDown) &&
+            this.parry_timer <= 0) {
+            this.#parry();
+        } else {
+            this.parrying = false;
+        }
+    }
+
+    #update_parry_graphics() {
+        this.parry_graphics.clear();
+    }
+
+    #parry() {
+        // console.log("parrying")
+        this.parrying = true;
+        this.parry_graphics
+            .lineStyle(2, 0xb32dc1, 1)
+            .beginPath()
+            .arc(this.x, this.y, 45, Phaser.Math.DegToRad(-30), Phaser.Math.DegToRad(210), true)
+            .strokePath();
     }
 
     /**
