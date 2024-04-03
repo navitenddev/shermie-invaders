@@ -43,17 +43,15 @@ class Barrier {
      * @param {Phaser.Scene} scene The scene to initialize the barrier in
      * @param {number} x Top-left x coordinate of barrier 
      * @param {number} y Top-left y coordinate of barrier 
-     * @param {number} cw individuial chunk width
+     * @param {number} cw individual chunk width
      * @param {number} ch individual chunk height
      * @param {number} n_cols number of columns of chunks
      * @param {number} n_rows number of rows of chunks
-     * @param {number} color color of each chunk
      */
     constructor(scene,
         x, y,             // barrier top-left corner coordinate
         cw, ch,           // chunk width/height
         n_cols, n_rows,   // number of chunks for each row/col
-        color = 0x000000, // hex color code for barrier chunk fill color
     ) {
         this.scene = scene;
         let w = n_cols * cw;
@@ -63,7 +61,6 @@ class Barrier {
         this.chunk_defs = {
             dims: { w: cw, h: ch },
             n: { rows: n_rows, cols: n_cols },
-            color: color,
             health: 10
         };
         this.chunks = [];
@@ -73,6 +70,38 @@ class Barrier {
         this.init_particles();
         this.init_chunks();
         this.chunk_particle_emitter();
+    }
+
+    static explode_at_bullet_hit(scene, bullet, barr_chunk, baseExplosionRadius = 20) {
+        const maxDamage = 100;
+
+        // random explosion radius
+        const randomRadiusFactor = Phaser.Math.FloatBetween(1.0, 1.6);
+        const explosionRadius = baseExplosionRadius * randomRadiusFactor;
+
+        // loop through all barrier chunks to apply damage
+        scene.objs.barrier_chunks.children.each(chunk => {
+            // const distance = Phaser.Math.Distance.Between(bullet.x, bullet.y, chunk.x, chunk.y);
+            const distance = Phaser.Math.Distance.Between(barr_chunk.x, barr_chunk.y, chunk.x, chunk.y);
+
+            if (chunk.active && distance < explosionRadius) {
+                // calculate damage based on distance
+                let damage = maxDamage * (1 - distance / explosionRadius);
+                let randomDamageFactor = Phaser.Math.FloatBetween(0.1, 1.2);
+                damage *= randomDamageFactor;
+
+                chunk.applyDamage(damage);
+
+                // destruction particles
+                if (chunk.health <= 0) {
+                    barr_chunk.parent.destructionEmitter.explode(1, chunk.x, chunk.y);
+                }
+            }
+        });
+
+        // update the flame size based on remaining barrier chunks
+        barr_chunk.parent.update_flame_size();
+        bullet.deactivate();
     }
 
     // Adds rectangular brick
@@ -116,59 +145,29 @@ class Barrier {
         });
     }
 
-    static explode_at_bullet_hit(scene, bullet, barr_chunk, baseExplosionRadius = 20) {
-        const maxDamage = 100;
-
-        // randomn explosion radius
-        const randomRadiusFactor = Phaser.Math.FloatBetween(1.0, 1.6);
-        const explosionRadius = baseExplosionRadius * randomRadiusFactor;
-
-        // loop through all barrier chunks to apply damage
-        scene.objs.barrier_chunks.children.each(chunk => {
-            // const distance = Phaser.Math.Distance.Between(bullet.x, bullet.y, chunk.x, chunk.y);
-            const distance = Phaser.Math.Distance.Between(barr_chunk.x, barr_chunk.y, chunk.x, chunk.y);
-
-            if (chunk.active && distance < explosionRadius) {
-                // calculate damage based on distance
-                let damage = maxDamage * (1 - distance / explosionRadius);
-                let randomDamageFactor = Phaser.Math.FloatBetween(0.1, 1.2);
-                damage *= randomDamageFactor;
-
-                chunk.applyDamage(damage);
-
-                // destruction particles
-                if (chunk.health <= 0) {
-                    barr_chunk.parent.destructionEmitter.explode(1, chunk.x, chunk.y);
-                }
-            }
-        });
-
-        // update the flame size based on remaining barrier chunks
-        barr_chunk.parent.update_flame_size();
-        bullet.deactivate();
-    }
-
     init_chunks() {
         const BRICK_W = 3 * 5;
-        const BRICK_H = 2 * 5;
+        const BRICK_H = (2 * 5) - 1;
 
         const rows = 7, cols = 7;
 
         let k = 0;
         for (let j = 0; j < rows * BRICK_H; j += BRICK_H, k++) {
             for (let i = 0; i < cols * BRICK_W; i += BRICK_W - 1) {
-                // this.#add_brick(this.rect.x + i, this.rect.y + j);
-                (k % 2 === 0) ?
-                    this.#add_brick(this.rect.x + i, this.rect.y + j) :
+                if (k === 0)
+                    this.#add_brick(this.rect.x + i, this.rect.y + j + 1)
+                else if (k % 2 === 0)
+                    this.#add_brick(this.rect.x + i, this.rect.y + j)
+                else
                     this.#add_brick(this.rect.x + i - ((BRICK_W) / 2), this.rect.y + j);
             }
-            if (k % 2 === 0) {
-                // add left square
-                this.#add_square_brick(this.rect.x - (BRICK_W / 2), this.rect.y + j)
-            } else {
-                // add right square
-                this.#add_square_brick(this.rect.x + ((BRICK_W) * cols) - 2, this.rect.y + j)
-            }
+
+            if (k === 0) // add left square and shift down one
+                this.#add_square_brick(this.rect.x - (BRICK_W / 2), this.rect.y + j + 1);
+            else if (k % 2 === 0) // add left square
+                this.#add_square_brick(this.rect.x - (BRICK_W / 2), this.rect.y + j);
+            else // add right square
+                this.#add_square_brick(this.rect.x + (BRICK_W * cols) - 2, this.rect.y + j);
         }
     }
 
@@ -193,7 +192,7 @@ class Barrier {
                 alpha: { start: 1, end: .55 },
                 emitZone: {
                     type: 'random',
-                    source: new Phaser.Geom.Rectangle(-65, 0, this.rect.width+10, 10),
+                    source: new Phaser.Geom.Rectangle(-58.5, -10, this.rect.width, 10),
                     quantity: 50,
                 }
             });
