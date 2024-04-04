@@ -12,9 +12,6 @@ export class TechTipTest extends Scene {
     }
 
     create(data) {
-        this.sounds = this.registry.get('sound_bank');
-        this.sounds.stop_all_music();
-        this.sounds.bank.music.shop.play();
         this.num_tips = this.cache.json.get("dialogue").techtips.quantity;
         restart_scenes(this.scene);
 

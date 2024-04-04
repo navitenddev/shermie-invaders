@@ -9,10 +9,8 @@ export class LevelSelect extends BaseMenu {
     }
 
     create() {
-        this.sounds = this.registry.get('sound_bank');
-        this.sounds.stop_all_music();
-        this.sounds.bank.music.shop.play();
         super.create();
+
         this.add.image(this.game.config.width / 2, 35, 'levelSelectlogo')
             .setDepth(3);
 
