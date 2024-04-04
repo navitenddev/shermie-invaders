@@ -230,7 +230,7 @@ export class Game extends Scene {
                 console.log()
                 if (!this.boss_spawned) {
                     this.boss_spawned = true;
-                    const boss_hp = (100 * (Math.floor((this.registry.get('level') / 7)) + 1));
+                    const boss_hp = (100 * (Math.floor((this.level / 7)) + 1));
                     // spawn boss type based on different multiples of 7
                     if (this.level % 21 === 0)
                         this.add.enemy_pupa(this, 0, 0, boss_hp);

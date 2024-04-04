@@ -191,8 +191,8 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                 console.error(`Invalid Enemy state: ${this.ai_state}`);
                 break;
         }
-        if (this.scene.debugMode)
-            this.path.draw(this.graphics);
+
+        this.path.draw(this.graphics);
     }
 
     #shoot() {
