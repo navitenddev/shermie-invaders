@@ -18,7 +18,6 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     graphics_follower;
     ai_state;
     state_text;
-    hp_text;
     t_text;
 
     is_dead = false;
@@ -40,11 +39,8 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
         this.graphics_follower = this.scene.add.graphics();
 
         this.path = new Phaser.Curves.Path();
-        console.log("PUPA_PATHS");
-        console.log(this.scene.PUPA_PATHS);
 
         this.state_text = this.scene.add.bitmapText(this.x, this.y, bitmapFonts.PressStart2P, this.ai_state, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
-        this.hp_text = this.scene.add.bitmapText(this.x, this.y - 16, bitmapFonts.PressStart2P, this.hp, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
         this.t_text = this.scene.add.bitmapText(this.follower.vec.x, this.follower.vec.y - 32, bitmapFonts.PressStart2P, this.follower.t.toFixed(2), fonts.tiny.sizes[bitmapFonts.PressStart2P]);
         this.#change_state("ROAMING"); // do the sweep
         this.hp = hp;
@@ -126,18 +122,12 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
                     this.setAngle(0)
                         .setAngularVelocity(EnemyPupa.ANGLE_VEL);
                     this.path = new Phaser.Curves.Path(this.scene.PUPA_PATHS.ILLUMINATI);
-                    console.log("ILLUMINATI PATH")
-                    console.log(this.path)
-                    console.log(this.scene.PUPA_PATHS)
                     // choose random point in illuminati path to start
                     this.illum_count = 0; // when we finish visiting all 3 points in triangle, stop
                     this.illum_idx = Phaser.Math.Between(0, 2);
-                    console.log(`illum_idx: ${this.illum_idx}`)
                     this.illum_t = this.scene.PUPA_PATHS.ILLUMINATI.t_vals[this.illum_idx];
-                    console.log(`illum_t: ${this.illum_t}`);
 
                     this.target_pos = this.path.getPoint(this.illum_t);
-                    // console.log(`target_pos: (${this.target_pos.x},${this.target_pos.y})`)
                     this.scene.physics.moveTo(this, this.target_pos.x, this.target_pos.y, 350)
                 }
             case "ILLUM_NEXT": // pick next point in ILLUM triangle and traverse while shooting
@@ -146,7 +136,6 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
                     this.illum_count++;
                     this.illum_idx = (this.illum_idx + 1) % 3;
                     this.illum_t = this.scene.PUPA_PATHS.ILLUMINATI.t_vals[this.illum_idx];
-                    console.log(`illum_t: ${this.illum_t}`);
 
                     this.target_pos = this.path.getPoint(this.illum_t);
                     this.scene.physics.moveTo(this, this.target_pos.x, this.target_pos.y, 350);
@@ -165,8 +154,8 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
                 console.error(`Invalid Enemy state: ${this.ai_state}`);
                 break;
         }
-
-        this.path.draw(this.graphics);
+        if (this.scene.debugMode)
+            this.path.draw(this.graphics);
     }
 
 
@@ -178,9 +167,14 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     update(time, delta) {
         this.#update_text();
         this.#update_bar();
-        this.graphics_follower.clear()
-            .fillStyle(0xff0000, 1)
-            .fillCircle(this.follower.vec.x, this.follower.vec.y, 12);
+
+        if (this.scene.debugMode) {
+            this.graphics_follower.clear()
+                .fillStyle(0xff0000, 1)
+                .fillCircle(this.follower.vec.x, this.follower.vec.y, 12);
+        } else {
+            this.graphics_follower.setPosition(-42069, -42069)
+        }
 
         this.path.getPoint(this.follower.t, this.follower.vec);
 
@@ -193,7 +187,6 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
                 this.#shoot(time);
             case "ILLUM_START": // FALL THROUGH
                 {
-                    // console.log(`dist from target_pos, ${this.#dist_from_target_pos()}`);
                     if (this.#dist_from_target_pos() < 5) {
                         this.tween.remove();
                         this.setVelocity(0, 0).setAngle(0);
@@ -221,7 +214,6 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
         if (this.hp <= 1) {
             this.state_text.destroy();
             this.hp_bar.destroy();
-            this.hp_text.destroy();
             this.t_text.destroy();
             this.graphics.destroy();
             this.graphics_follower.destroy();
@@ -233,14 +225,16 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     }
 
     #update_text() {
-        this.state_text
-            .setPosition(this.x, this.y)
-            .setText(this.ai_state);
-        this.hp_text
-            .setPosition(this.x, this.y - 16)
-            .setText(this.hp);
-        this.t_text.setPosition(this.follower.vec.x, this.follower.vec.y - 32)
-            .setText(this.follower.t.toFixed(2));
+        if (this.scene.debugMode) {
+            this.state_text
+                .setPosition(this.x, this.y)
+                .setText(this.ai_state);
+            this.t_text.setPosition(this.follower.vec.x, this.follower.vec.y - 32)
+                .setText(this.follower.t.toFixed(2));
+        } else {
+            this.t_text.setPosition(-42069, -42069);
+            this.state_text.setPosition(-42069, -42069);
+        }
     }
 
     #shoot(time) {
