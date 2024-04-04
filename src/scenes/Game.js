@@ -193,8 +193,9 @@ export class Game extends Scene {
                 console.log()
                 if (!this.boss_spawned) {
                     this.boss_spawned = true;
-                    this.add.enemy_reaper(this, 0, 0, 100);
-                    // start boss music here
+                    this.add.enemy_reaper(this, 0, 0, 40);
+                    // start boss music
+                    // dialogue, perhaps?
                     start_dialogue(this.scene, "shermie_boss", "game_blocking");
                 }
 
