@@ -116,8 +116,6 @@ export class Preloader extends Scene {
 
         this.load.audio('start', ['SFX/start_screen.mp3']);
 
-        this.load.audio('ff7_fighting', 'SFX/ff7_fighting.mp3');
-
         this.load.audio('boss_music', 'SFX/Retro Platforming - David Fesliyan.mp3');
 
         this.load.audio('click', ['SFX/click.wav']);
@@ -125,6 +123,8 @@ export class Preloader extends Scene {
         this.load.audio('story_music', 'SFX/8 Bit Presentation - David Fesliyan.mp3');
 
         this.load.audio('shop_music', 'SFX/Retro Forest - David Fesliyan.mp3');
+
+        this.load.audio('sandbox_music', 'SFX/8 Bit Adventure - David Fesliyan.mp3');
 
         this.load.spritesheet("necromancer", "characters/necromancer.png", {
             frameWidth: 160,
