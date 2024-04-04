@@ -18,6 +18,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     graphics;
     ai_state;
     state_text;
+    hp_text;
 
     target_pos = new Phaser.Math.Vector2();
     reached_target = false;
@@ -82,7 +83,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
             new_state = states;
         }
 
-        console.log(`LUPA: ${new_state}`);
+        console.log(`LUPA: ${new_state}`)
         this.reached_target = false;
         this.ai_state = new_state;
         this.#clear_path(); // the path should be cleared for every state transition
@@ -128,8 +129,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                         yoyo: true,
                         repeat: -1
                     });
-                    if (this.scene.debugMode)
-                        this.path.draw(this.graphics);
+                    this.path.draw(this.graphics);
 
                     // Hacky workaround that stops events from stacking. This shouldn't be needed but idk
                     this.scene.time.removeAllEvents();
@@ -210,14 +210,9 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     }
 
     #update_text() {
-        if (this.scene.debugMode) {
-            this.state_text
-                .setPosition(this.x, this.y)
-                .setText(this.ai_state);
-        } else {
-            this.state_text
-                .setPosition(-42069, -42069);
-        }
+        this.state_text
+            .setPosition(this.x, this.y)
+            .setText(this.ai_state);
     }
 
     #update_bar() {
