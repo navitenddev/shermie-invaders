@@ -23,8 +23,6 @@ export class MainMenu extends BaseMenu {
 
     create() {
         super.create();
-        this.sounds.stop_all_music();
-        this.sounds.bank.music.start.play();
 
         this.add.image(512, 250, 'titlelogo')
             .setScale(0.5, 0.5)
@@ -73,7 +71,7 @@ export class MainMenu extends BaseMenu {
             .setInteractive()
             .setDepth(3)
             .on('pointerdown', () => {
-                this.sounds.bank.sfx.click.play();
+                this.sounds.bank.sfx.win.play();
                 this.cameras.main.fadeOut(200, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                     this.scene.start('Game');

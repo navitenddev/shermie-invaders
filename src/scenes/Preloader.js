@@ -118,8 +118,6 @@ export class Preloader extends Scene {
 
         this.load.audio('ff7_fighting', 'SFX/ff7_fighting.mp3');
 
-        this.load.audio('boss_music', 'SFX/Retro Platforming - David Fesliyan.mp3');
-
         this.load.audio('click', ['SFX/click.wav']);
 
         this.load.spritesheet("necromancer", "characters/necromancer.png", {
@@ -247,6 +245,7 @@ export class Preloader extends Scene {
             score: 0, // player score
             power: "None", //powerup
         });
+        this.sounds.bank.music.start.play();
         //  Move to the MainMenu. You could also swap this for a Scene
         //  Transition, such as a camera fade.
         this.scene.start('Main Menu');

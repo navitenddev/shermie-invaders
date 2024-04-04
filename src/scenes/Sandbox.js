@@ -194,8 +194,9 @@ export class Sandbox extends Scene {
             key: 'lives',
             repeat: 2
         });
+        this.sounds.bank.music.start.stop();
         this.livesSprites.create(84, this.sys.game.config.height - 32, 'lives', 0);
-        this.sounds.stop_all_music();
+
         this.sounds.bank.music.ff7_fighting.play();
 
         init_collision_events(this);
@@ -316,7 +317,8 @@ export class Sandbox extends Scene {
         this.cameras.main.fade(500, 0, 0, 0);
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-            this.sounds.stop_all_music();
+            this.sounds.bank.music.bg.stop();
+            this.sounds.bank.music.ff7_fighting.stop();
             this.scene.start(targetScene);
         });
     }
@@ -360,6 +362,7 @@ export class Sandbox extends Scene {
      * @param {boolean} add_rewards Add money and score if true
      */
     kill_all_enemies(add_rewards = true) {
+        console.log(`add rewards: ${add_rewards}`)
         // Loop through all enemies and destroy them
         if (this.objs) {
             this.objs.enemies.grid.children.each(enemy => {
