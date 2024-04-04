@@ -141,7 +141,7 @@ export class Game extends Scene {
         let secs = Phaser.Math.Between(15, 60);
         console.log(`Spawning enemy USB in ${secs}s`)
         this.time.delayedCall(secs * 1000, this.objs.spawn_usb_enemy, [], this.scene);
-        this.sounds.bank.music.start.stop();
+        this.sounds.stop_all_music();
         this.sounds.bank.music.bg.play();
 
         init_collision_events(this);
@@ -240,6 +240,8 @@ export class Game extends Scene {
                     else
                         this.add.enemy_reaper(this, 0, 0, boss_hp);
                     // TODO: start boss music here
+                    this.sounds.stop_all_music();
+                    this.sounds.bank.music.boss.play();
                     start_dialogue(this.scene, "shermie_boss", "game_blocking");
                 }
 
@@ -267,7 +269,7 @@ export class Game extends Scene {
         this.cameras.main.fade(500, 0, 0, 0);
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-            this.sounds.bank.music.bg.stop();
+            this.sounds.stop_all_music();
             if (targetScene === "Player Lose") {
                 this.scene.start('Player Lose');
             } else {
