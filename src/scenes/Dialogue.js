@@ -9,16 +9,22 @@ import { bitmapFonts, fonts } from '../utils/fontStyle.js';
  * @param {number} font_size The size of the font to display
  */
 function start_dialogue(scene, key, dialogue_type = "game", font_size = 16) {
+    // dialogue_type should only be one of these
+    if ((["story", "game", "techtip", "game_blocking"].includes(dialogue_type)) === false) {
+        console.warn(`Invalid dialogue_type: ${dialogue_type}. Defaulting to "game"`);
+        dialogue_type = "game";
+    }
+
     const emitter = EventDispatcher.getInstance();
     emitter.emit('force_dialogue_stop');
+    if (["game_blocking", "story"].includes(dialogue_type))
+        scene.pause();
     scene.launch('Dialogue', {
         dialogue_key: key,
         dialogue_type: dialogue_type,
         caller_scene: 'Game',
         font_size: font_size,
     });
-    if (dialogue_type === "story")
-        scene.pause();
 }
 
 const DIALOGUE_MODE = {
@@ -52,16 +58,17 @@ class DialogueManager extends Phaser.GameObjects.Container {
     dialogue_type; /** @param {string} "story" | "game" | "techtip" | "game_blocking" */
 
     constructor(scene, data, dialogue_type = "game", font_size = 16) {
+
         let x = 310,
             y = 120,
             w = 620,
             h = (scene.game.config.height / 4.5);
 
-        if (dialogue_type === "techtip") {
+        if (["techtip", "game_blocking"].includes(dialogue_type)) {
             x = (scene.game.config.width / 2) - (w / 2);
             y = scene.game.config.height / 2.5;
             h = (scene.game.config.height / 4)
-        } else if (["game", "game_blocking"].includes(dialogue_type)) {
+        } else if (dialogue_type === "game") {
             w = 310;
         }
         super(scene, x, y);
@@ -79,11 +86,6 @@ class DialogueManager extends Phaser.GameObjects.Container {
                 .strokeRect(0, 0, w, h);
         }
 
-        // dialogue_type should only be one of these 3!
-        if ((["story", "game", "techtip"].includes(dialogue_type)) === false) {
-            console.warn(`Invalid dialogue_type: ${dialogue_type}. Defaulting to "game"`)
-            dialogue_type = "game";
-        }
 
         this.text_data = data;
 
@@ -93,8 +95,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.player_vars = scene.registry.get('player_vars');
         this.dialogue_type = dialogue_type;
 
-        if (this.dialogue_type === "story" ||
-            this.dialogue_type === "techtip")
+        if (["story", "techtip", "game_blocking"].includes(dialogue_type))
             this.follow_player = false;
 
         this.text = scene.add.bitmapText(25, 15, bitmapFonts.PressStart2P, '', font_size).setMaxWidth(this.w - (2 * this.border_w))
@@ -159,7 +160,8 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.is_active = false;
         this.emitter.emit('dialogue_stop', [])
         this.emitter.off('dialogue_start');
-
+        if (this.dialogue_type === "game_blocking" && this.scene)
+            this.scene.scene.resume();
     }
 
     #load_next_line() {
