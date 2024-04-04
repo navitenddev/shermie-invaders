@@ -15,8 +15,6 @@ import { TechTipTest } from './scenes/TechTipTest';
 import { Barrier } from './objects/barrier';
 import { start_dialogue } from './scenes/Dialogue';
 
-import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
-
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -36,15 +34,6 @@ const config = {
             gravity: { y: 0 },
             debug: true,
         },
-    },
-    plugins: {
-        global: [{
-            key: 'rexVirtualJoystick',
-            plugin: VirtualJoystickPlugin,
-            start: true
-        },
-            // ...
-        ]
     },
     scene: [
         Boot,
