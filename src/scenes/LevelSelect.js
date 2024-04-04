@@ -12,8 +12,10 @@ export class LevelSelect extends BaseMenu {
     }
 
     create() {
+        this.sounds = this.registry.get('sound_bank');
+        this.sounds.stop_all_music();
+        this.sounds.bank.music.shop.play();
         super.create();
-
         this.add.image(this.game.config.width / 2, 35, 'levelSelectlogo')
             .setDepth(3);
 
@@ -33,60 +35,120 @@ export class LevelSelect extends BaseMenu {
         for (let y = 1; y <= 10; y++) {
             for (let x = 1; x <= 15; x++) {
                 if (cheatModeEnabled || level <= maxLevelReached) {
-                    new TextButton(this,
-                        offset.x + x * scale.x + x * gap.x,
-                        offset.y + y * scale.y + y * gap.y,
-                        40, 40,
-                        level.toString(),
-                        (scene, level) => {
-                            restart_scenes(this.scene);
-                            start_dialogue(this.scene, `AskMoney`, "techtip");
-                            let emitter = EventDispatcher.getInstance();
-                            console.log(level);
-                            new TextButton(this,
-                                300, 600,
-                                100, 40,
-                                "back",
-                                (scene, level) => {
-                                    emitter.emit('force_dialogue_stop');
-                                    scene.scene.start('LevelSelect');
-                                },
-                                [this, level],
-                                bitmapFonts.PressStart2P,
-                                12)
-                                .setDepth(3);
-                            new TextButton(this,
-                                500,600,
-                                100, 40,
-                                "Poor",
-                                (scene, level) => {
-                                    emitter.emit('force_dialogue_stop');
-                                    scene.registry.set({ level: level });
-                                    scene.scene.start('Game');
-                                },
-                                [this, level],
-                                bitmapFonts.PressStart2P,
-                                12)
-                                .setDepth(3);
-                            new TextButton(this,
-                                700,600,
-                                100, 40,
-                                "Money",
-                                (scene, level) => {
-                                    emitter.emit('force_dialogue_stop');
-                                    this.scoreManager.addMoney(660*(level-1));
-                                    scene.registry.set({ level: level-1 });
-                                    scene.scene.start('Store');
-                                },
-                                [this, level],
-                                bitmapFonts.PressStart2P,
-                                12)
-                                .setDepth(3);
-                        },
-                        [this, level++],
-                        bitmapFonts.PressStart2P,
-                        12)
-                        .setDepth(3);
+                    if (level % 7) {
+                        new TextButton(this,
+                            offset.x + x * scale.x + x * gap.x,
+                            offset.y + y * scale.y + y * gap.y,
+                            40, 40,
+                            level.toString(),
+                            (scene, level) => {
+                                restart_scenes(this.scene);
+                                start_dialogue(this.scene, `AskMoney`, "techtip");
+                                let emitter = EventDispatcher.getInstance();
+                                console.log(level);
+                                new TextButton(this,
+                                    300, 600,
+                                    100, 40,
+                                    "back",
+                                    (scene, level) => {
+                                        emitter.emit('force_dialogue_stop');
+                                        scene.scene.start('LevelSelect');
+                                    },
+                                    [this, level],
+                                    bitmapFonts.PressStart2P,
+                                    12)
+                                    .setDepth(3);
+                                new TextButton(this,
+                                    500,600,
+                                    100, 40,
+                                    "Poor",
+                                    (scene, level) => {
+                                        emitter.emit('force_dialogue_stop');
+                                        scene.registry.set({ level: level });
+                                        scene.scene.start('Game');
+                                    },
+                                    [this, level],
+                                    bitmapFonts.PressStart2P,
+                                    12)
+                                    .setDepth(3);
+                                new TextButton(this,
+                                    700,600,
+                                    100, 40,
+                                    "Money",
+                                    (scene, level) => {
+                                        emitter.emit('force_dialogue_stop');
+                                        this.scoreManager.addMoney(660*(level-1));
+                                        scene.registry.set({ level: level-1 });
+                                        scene.scene.start('Store');
+                                    },
+                                    [this, level],
+                                    bitmapFonts.PressStart2P,
+                                    12)
+                                    .setDepth(3);
+                            },
+                            [this, level++],
+                            bitmapFonts.PressStart2P,
+                            12)
+                            .setDepth(3);
+                    } else {
+                        new TextButton(this,
+                            offset.x + x * scale.x + x * gap.x,
+                            offset.y + y * scale.y + y * gap.y,
+                            40, 40,
+                            level.toString(),
+                            (scene, level) => {
+                                restart_scenes(this.scene);
+                                start_dialogue(this.scene, `AskMoney`, "techtip");
+                                let emitter = EventDispatcher.getInstance();
+                                console.log(level);
+                                new TextButton(this,
+                                    300, 600,
+                                    100, 40,
+                                    "back",
+                                    (scene, level) => {
+                                        emitter.emit('force_dialogue_stop');
+                                        scene.scene.start('LevelSelect');
+                                    },
+                                    [this, level],
+                                    bitmapFonts.PressStart2P,
+                                    12)
+                                    .setDepth(3);
+                                new TextButton(this,
+                                    500,600,
+                                    100, 40,
+                                    "Poor",
+                                    (scene, level) => {
+                                        emitter.emit('force_dialogue_stop');
+                                        scene.registry.set({ level: level });
+                                        scene.scene.start('Game');
+                                    },
+                                    [this, level],
+                                    bitmapFonts.PressStart2P,
+                                    12)
+                                    .setDepth(3);
+                                new TextButton(this,
+                                    700,600,
+                                    100, 40,
+                                    "Money",
+                                    (scene, level) => {
+                                        emitter.emit('force_dialogue_stop');
+                                        this.scoreManager.addMoney(660*(level-1));
+                                        scene.registry.set({ level: level-1 });
+                                        scene.scene.start('Store');
+                                    },
+                                    [this, level],
+                                    bitmapFonts.PressStart2P,
+                                    12)
+                                    .setDepth(3);
+                            },
+                            [this, level++],
+                            bitmapFonts.PressStart2P,
+                            12,
+                            0xc80420,
+                            0x820114)
+                            .setDepth(3);
+
+                    }
                 }
             }
         }
