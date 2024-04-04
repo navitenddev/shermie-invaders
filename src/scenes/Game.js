@@ -257,7 +257,6 @@ export class Game extends Scene {
             !this.level_transition_flag) {
             // if this is a boss level
             if (this.level % 7 === 0) {
-                console.log()
                 if (!this.boss_spawned) {
                     this.boss_spawned = true;
                     const boss_hp = (100 * (Math.floor((this.registry.get('level') / 7)) + 1));
