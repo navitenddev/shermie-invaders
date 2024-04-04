@@ -71,6 +71,8 @@ export class Game extends Scene {
 
         let bgKey = `BG${this.level}`;
         if (this.level > 7)
+            let bgKey = `BG${this.level}`;
+        if (this.level > 7)
             bgKey = 'BG5'; // Default to BG5 for levels above 7
 
         // show ship before boss level for all levels after 7
