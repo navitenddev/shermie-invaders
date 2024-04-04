@@ -35,6 +35,7 @@ export class Game extends Scene {
         this.cameras.main.fadeIn(500, 0, 0, 0);
         // For now, the level dialogues will repeat after it exceeds the final level dialogue.
 
+
         if (this.level <= 7) {
             start_dialogue(this.scene, `level${(this.level)}`, "story", 23);
         }
@@ -45,6 +46,10 @@ export class Game extends Scene {
         } else {
             bgKey = `BG${this.level}`; // Use the dynamic background key for levels 7 and below
         }
+
+        // show boss bg on boss levels
+        if (this.level % 7 === 0)
+            bgKey = 'BG7';
 
         if (this.level === 3 || this.level === 5) {
             // If the level is 3 or 5, create a TileSprite instead of a static image
@@ -188,6 +193,9 @@ export class Game extends Scene {
                 if (!this.boss_spawned) {
                     this.boss_spawned = true;
                     this.add.enemy_reaper(this, 0, 0, 40);
+                    // start boss music
+
+                    // dialogue, perhaps?
                 }
 
                 // is boss dead?
@@ -252,6 +260,7 @@ export class Game extends Scene {
             enemy.die();
             this.scoreManager.addScore(enemy.scoreValue);
             this.scoreManager.checkAndUpdateHighScore();
+            this.scoreManager.addMoney(enemy.moneyValue);
         });
 
         let currShield = this.player_stats.shield;
