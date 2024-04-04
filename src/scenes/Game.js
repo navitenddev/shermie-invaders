@@ -185,7 +185,7 @@ export class Game extends Scene {
             this.level_transition_flag = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.player_vars.power = "";
-            this.player.isInvincible = true;
+            this.objs.player.setInvincible = true;
             this.goto_scene("Player Win");
         } else if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
