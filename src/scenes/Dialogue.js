@@ -5,8 +5,7 @@ import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 /**
  * @param {Phaser.Scene} scene The scene that is calling the dialogue
  * @param {string} key Start the dialogue sequence with this key
- * @param {string} dialogue_type "story" | "game" | "techtip"
- * @param {boolean} dialogue_type If true, will stop all actions and display the story bg
+ * @param {string} dialogue_type "story" | "game" | "techtip" | "game_blocking"
  * @param {number} font_size The size of the font to display
  */
 function start_dialogue(scene, key, dialogue_type = "game", font_size = 16) {
@@ -50,7 +49,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
     delay_timer = 0;
     follow_player = true;
-    dialogue_type; /** @param {string} "story" | "game" | "techtip" */
+    dialogue_type; /** @param {string} "story" | "game" | "techtip" | "game_blocking" */
 
     constructor(scene, data, dialogue_type = "game", font_size = 16) {
         let x = 310,
@@ -62,16 +61,17 @@ class DialogueManager extends Phaser.GameObjects.Container {
             x = (scene.game.config.width / 2) - (w / 2);
             y = scene.game.config.height / 2.5;
             h = (scene.game.config.height / 4)
+        } else if (["game", "game_blocking"]) {
+            w = 310;
         }
         super(scene, x, y);
         scene.add.existing(this);
         this.scene = scene;
         this.border_w = 20;
 
-        if (dialogue_type === "techtip") {
+        if (["techtip", "game_blocking"].includes(dialogue_type)) {
             const color = 0x2B2D31,
                 color_border = 0x879091;
-
             this.bg = this.scene.add.rectangle((w / 2), (h / 2), w, h, color);
             this.bg_border = scene.add.graphics();
             this.bg_border
@@ -81,7 +81,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
         // dialogue_type should only be one of these 3!
         if ((["story", "game", "techtip"].includes(dialogue_type)) === false) {
-            console.error(`Invalid dialogue_type: ${dialogue_type}. Defaulting to "game"`)
+            console.warn(`Invalid dialogue_type: ${dialogue_type}. Defaulting to "game"`)
             dialogue_type = "game";
         }
 
@@ -141,7 +141,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
             return;
         }
         this.lines = this.text_data[key].lines;
-        // console.log(`started dialogue: "${key}"`)
+        console.log(`started dialogue: "${key}"`)
         this.line_index = 0;
         this.char_index = 0;
 

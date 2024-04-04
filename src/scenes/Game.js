@@ -194,8 +194,8 @@ export class Game extends Scene {
                     this.boss_spawned = true;
                     this.add.enemy_reaper(this, 0, 0, 40);
                     // start boss music
-
                     // dialogue, perhaps?
+                    start_dialogue(this.scene, "shermie_boss", "techtip");
                 }
 
                 // is boss dead?
@@ -276,6 +276,8 @@ export class Game extends Scene {
                     if (player.stats.shield < currShield) {
                         start_dialogue(this.scene, 'shermie_shieldgone', "game");
                         currShield = player.stats.shield;
+                    } else {
+                        start_dialogue(this.scene, 'shermie_shieldhurt', "game");
                     }
                     player.updateHitbox();
                 } else {
