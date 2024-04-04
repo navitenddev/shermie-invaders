@@ -11,7 +11,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     last_fired = 0;
     shots_fired = 0;
 
-    state_list = ["ROAMING", "ROAMING1", "ILLUM_START"];
+    state_list = ["ROAMING", "ILLUM_START"];
     follower = { t: 0, vec: new Phaser.Math.Vector2() };
     path = new Phaser.Curves.Path();
     graphics;
@@ -119,27 +119,6 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
                         this.#change_state, ["ILLUM_START"], this);
                 }
                 break;
-            case "ROAMING1": // roaming with spline path
-                {
-                    this.#clear_path();
-                    this.setAngle(0)
-                        .setAngularVelocity(0);
-                    this.path = new Phaser.Curves.Path(this.scene.PUPA_PATHS.SPLINE);
-                    this.tween = this.scene.tweens.add({
-                        targets: this.follower,
-                        t: 1,
-                        // ease: 'Linear',
-                        ease: 'Sine.easeInOut',
-                        duration: 2000,
-                        yoyo: false,
-                        repeat: -1,
-                        // persist: false,
-                    });
-                    const delay_secs = Phaser.Math.FloatBetween(1.5, 3.2);
-                    this.scene.time.delayedCall(delay_secs * 1000,
-                        this.#change_state, ["ILLUM_START"], this);
-                }
-                break;
             case "ILLUM_START": // pick random point in ILLUM triangle to start at
                 {
                     this.#clear_path();
@@ -209,9 +188,6 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
             case "ROAMING":
                 this.scene.physics.moveTo(this, this.follower.vec.x, this.follower.vec.y, 400);
                 break;
-            case "ROAMING1":
-                this.scene.physics.moveTo(this, this.follower.vec.x, this.follower.vec.y, 500);
-                break;
             // IL_START -> IL_SHOOT -> IL_NEXT -> IL_SHOOT -> IL_NEXT -> IL_SHOOT -> ROAMING 
             case "ILLUM_NEXT":
                 this.#shoot(time);
@@ -231,7 +207,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
                     if (this.shots_fired >= 25) {
                         (this.illum_count < 3) ?
                             this.#change_state("ILLUM_NEXT") :
-                            this.#change_state(["ROAMING", "ROAMING1"]);
+                            this.#change_state("ROAMING");
                     }
                 }
                 break;
