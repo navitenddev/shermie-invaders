@@ -28,42 +28,12 @@ export class Game extends Scene {
         this.debugMode = false;
     }
 
-    preload() {
-        this.load.json({
-            key: "PUPA_LEMNISCATE",
-            url: "assets/paths/pupa.json",
-            dataKey: "LEMNISCATE",
-        });
-        this.load.json({
-            key: "PUPA_TRIANGLE",
-            url: "assets/paths/pupa.json",
-            dataKey: "TRIANGLE",
-        });
-        this.load.json({
-            key: "PUPA_SPLINE",
-            url: "assets/paths/pupa.json",
-            dataKey: "SPLINE1",
-        });
-        this.load.json({
-            key: "PUPA_ILLUMINATI",
-            url: "assets/paths/pupa.json",
-            dataKey: "ILLUMINATI",
-        });
-    }
-
-
     create() {
         this.level = this.registry.get('level');
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
         // For now, the level dialogues will repeat after it exceeds the final level dialogue.
 
-        this.PUPA_PATHS = {
-            LEMNISCATE: this.cache.json.get('PUPA_LEMNISCATE'),
-            TRIANGLE: this.cache.json.get('PUPA_TRIANGLE'),
-            SPLINE: this.cache.json.get('PUPA_SPLINE'),
-            ILLUMINATI: this.cache.json.get('PUPA_ILLUMINATI'),
-        }
 
         if (this.level <= 7) {
             start_dialogue(this.scene, `level${(this.level)}`, "story", 23);
@@ -218,24 +188,12 @@ export class Game extends Scene {
         if (this.objs.enemies.grid.children.entries.length == 0 &&
             !this.level_transition_flag) {
 
-            if (this.player_vars.lives <= 0 &&
-                !this.objs.player.is_inbounds()) {
-                this.player_vars.power = "";
-                this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
-                this.goto_scene("Player Lose");
-            }
             // if this is a boss level
-            else if (this.level % 7 === 0) {
+            if (this.level % 7 === 0) {
                 console.log()
                 if (!this.boss_spawned) {
                     this.boss_spawned = true;
-                    const boss_hp = (100 * (Math.floor((this.level / 7)) + 1));
-                    if (this.level % 21 === 0)
-                        this.add.enemy_pupa(this, 0, 0, boss_hp);
-                    else if (this.level % 14 === 0)
-                        this.add.enemy_lupa(this, this.game.config.width, 525, boss_hp);
-                    else
-                        this.add.enemy_reaper(this, 0, 0, boss_hp);
+                    this.add.enemy_reaper(this, 0, 0, 100);
                     // start boss music here
                     start_dialogue(this.scene, "shermie_boss", "game_blocking");
                 }
@@ -251,6 +209,11 @@ export class Game extends Scene {
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.player_vars.power = "";
             this.goto_scene("Player Win");
+        } else if (this.player_vars.lives <= 0 &&
+            !this.objs.player.is_inbounds()) {
+            this.player_vars.power = "";
+            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
+            this.goto_scene("Player Lose");
         }
     }
 
