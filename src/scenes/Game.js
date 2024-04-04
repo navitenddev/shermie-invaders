@@ -215,17 +215,16 @@ export class Game extends Scene {
 
 
     check_gameover() {
-        if (this.player_vars.lives <= 0 &&
-            !this.objs.player.is_inbounds()) {
-            console.log("PLAYER LOST")
-            this.player_vars.power = "";
-            this.gameover = true;
-            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
-            this.goto_scene("Player Lose");
-        }
-
         if (this.objs.enemies.grid.children.entries.length == 0 &&
             !this.level_transition_flag) {
+
+            if (this.player_vars.lives <= 0 &&
+                !this.objs.player.is_inbounds()) {
+                this.player_vars.power = "";
+                this.gameover = true;
+                this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
+                this.goto_scene("Player Lose");
+            }
             // if this is a boss level
             if (this.level % 7 === 0) {
                 console.log()
@@ -239,7 +238,7 @@ export class Game extends Scene {
                         this.add.enemy_lupa(this, this.game.config.width, 525, boss_hp);
                     else
                         this.add.enemy_reaper(this, 0, 0, boss_hp);
-                    // TODO: start boss music here
+                    // start boss music here
                     start_dialogue(this.scene, "shermie_boss", "game_blocking");
                 }
 
