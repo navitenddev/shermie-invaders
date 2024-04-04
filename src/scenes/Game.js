@@ -80,6 +80,10 @@ export class Game extends Scene {
         else if (this.level % 7 === 0)
             bgKey = 'BG7';
 
+        // show boss bg on boss levels
+        if (this.level % 7 === 0)
+            bgKey = 'BG7';
+
         if (this.level === 3 || this.level === 5) {
             // If the level is 3 or 5, create a TileSprite instead of a static image
             let bg = this.add.tileSprite(0, 0, this.sys.game.config.width, this.sys.game.config.height, bgKey);
