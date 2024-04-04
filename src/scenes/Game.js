@@ -139,10 +139,11 @@ export class Game extends Scene {
 
     #kill_all_enemies() {
         // Loop through all enemies and destroy them
+        const score_scaling = 1.2; // Adjust scaling as you see fit
         this.objs.enemies.grid.children.each(enemy => {
             enemy.die();
             this.scoreManager.addMoney(enemy.moneyValue);
-            this.scoreManager.addScore(enemy.scoreValue);
+            this.scoreManager.addScore(Math.round(enemy.scoreValue * Math.pow(score_scaling, this.level)));
         });
 
         this.objs.enemies.special.children.each(enemy => {
