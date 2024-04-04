@@ -61,7 +61,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
             x = (scene.game.config.width / 2) - (w / 2);
             y = scene.game.config.height / 2.5;
             h = (scene.game.config.height / 4)
-        } else if (["game", "game_blocking"].includes(dialogue_type)) {
+        } else if (["game", "game_blocking"]) {
             w = 310;
         }
         super(scene, x, y);

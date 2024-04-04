@@ -7,7 +7,8 @@ import ScoreManager from '../utils/ScoreManager';
 import { GridEnemy } from '../objects/enemy_grid';
 import { EventDispatcher } from '../utils/event_dispatcher';
 import { start_dialogue } from './Dialogue';
-import { init_collision_events } from '../main';
+
+// The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
 import { SoundBank } from '../utils/sounds';
 
 /**
@@ -114,7 +115,7 @@ export class Game extends Scene {
         this.sounds.bank.music.start.stop();
         this.sounds.bank.music.bg.play();
 
-        init_collision_events(this);
+        this.init_collision_events();
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
@@ -231,6 +232,103 @@ export class Game extends Scene {
             } else {
                 this.scene.start(targetScene);
             }
+        });
+    }
+
+    /**
+     * @description Initializes all collision and overlap events. This function
+     * should be called after objects are initialized.
+     */
+    init_collision_events() {
+        this.physics.world.setBounds(0, 0, this.sys.game.config.width, this.sys.game.config.height);
+
+        // player bullet hits grid enemy
+        this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies.grid, (player_bullet, enemy) => {
+            this.objs.explode_at(enemy.x, enemy.y);
+            if (this.player_vars.power == "pierce") player_bullet.hurt_bullet();
+            else player_bullet.deactivate();
+            enemy.die();
+            this.scoreManager.addScore(enemy.scoreValue);
+            this.scoreManager.checkAndUpdateHighScore();
+            this.scoreManager.addMoney(enemy.moneyValue);
+        });
+
+        // player bullet hits special enemy
+        this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies.special, (player_bullet, enemy) => {
+            this.objs.explode_at(enemy.x, enemy.y);
+            player_bullet.deactivate();
+            enemy.die();
+            this.scoreManager.addScore(enemy.scoreValue);
+            this.scoreManager.checkAndUpdateHighScore();
+            this.scoreManager.addMoney(enemy.moneyValue);
+        });
+
+        let currShield = this.player_stats.shield;
+        // enemy bullet hits player
+        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player, (player, enemy_bullet) => {
+            if (!player.is_dead) {
+                enemy_bullet.deactivate();
+
+                if (player.stats.shield > 1) {
+                    player.shieldParticles.explode(10, player.x, this.sys.game.config.height - 135);
+                    // console.log('Shield particle emitter explode called');
+                    player.stats.shield--;
+                    if (player.stats.shield < currShield) {
+                        start_dialogue(this.scene, 'shermie_shieldgone', "game");
+                        currShield = player.stats.shield;
+                    } else {
+                        start_dialogue(this.scene, 'shermie_shieldhurt', "game");
+                    }
+                    player.updateHitbox();
+                } else {
+                    this.objs.explode_at(player.x, player.y);
+                    player.die();
+                    if (this.player_vars.lives === 0)
+                        start_dialogue(this.scene, 'shermie_dead', "game");
+                    else
+                        start_dialogue(this.scene, 'shermie_hurt', "game");
+                }
+            }
+        });
+
+        // player catches powerup
+        this.physics.add.overlap(this.objs.powers, this.objs.player, (player, powerup) => {
+            player.changePower(powerup.buff);
+            powerup.deactivate();
+        });
+
+        // enemy bullet collides with player bullet
+        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.bullets.player, (enemy_bullet, player_bullet) => {
+            if (player_bullet.active && enemy_bullet.active) {
+                this.objs.explode_at(player_bullet.x, player_bullet.y);
+                if (this.player_vars.power == "pierce") player_bullet.hurt_bullet();
+                else player_bullet.deactivate();
+                enemy_bullet.deactivate();
+            }
+        });
+
+        // when grid enemy hits barrier, it eats it
+        this.physics.add.overlap(this.objs.enemies.grid, this.objs.barrier_chunks, (enemy, barr_chunk) => {
+            console.log(barr_chunk);
+            barr_chunk.parent.update_flame_size();
+            barr_chunk.destroy(); // OM NOM NOM
+        });
+
+        // when special enemy hits barrier, it eats it
+        this.physics.add.overlap(this.objs.enemies.special, this.objs.barrier_chunks, (enemy, barr_chunk) => {
+            barr_chunk.parent.update_flame_size();
+            console.log(barr_chunk);
+            barr_chunk.destroy();
+        });
+
+        // player bullet collides with barrier
+        this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {
+            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 15);
+        });
+
+        // enemy bullet collides with barrier
+        this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
+            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 15);
         });
     }
 }
