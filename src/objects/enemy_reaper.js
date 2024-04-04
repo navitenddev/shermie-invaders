@@ -30,8 +30,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
      */
     constructor(scene, x, y, hp = 100, shoot_cd = 500, should_clone = true, score_value = 100, money_value = 10) {
         super(scene, x, y);
-        // scale hp based on level
-        this.hp = (hp * (Math.floor((scene.registry.get('level') / 7)) + 1));
+        this.hp = hp;
         console.log(`Reaper initialized with ${this.hp} hp`);
         this.shoot_cd = shoot_cd;
         this.anim_key = "reaper_idle";
@@ -54,7 +53,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
             this.scene.time.delayedCall(clone_delay * 1000, this.#clone_self, [], this);
         }
         this.scene = scene;
-        this.state_text = this.scene.add.bitmapText(this.x, this.y, bitmapFonts.PressStart2P, this.ai_state, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
+        this.state_text = this.scene.add.bitmapText(-42069, -42069, bitmapFonts.PressStart2P, this.ai_state, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
 
         this.hp_bar_offset = {
             x: -50,
@@ -168,7 +167,8 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
                     break;
                 }
         }
-        // this.path.draw(this.graphics);
+        if (this.scene.debugMode)
+            this.path.draw(this.graphics);
     }
 
     #clone_self() { // clones thyself
@@ -187,9 +187,11 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
     }
 
     #update_text() {
-        this.state_text
-            .setPosition(this.x, this.y)
-            .setText(this.ai_state);
+        if (this.scene.debugMode)
+            this.state_text.setPosition(this.x, this.y)
+                .setText(this.ai_state);
+        else
+            this.state_text.setPosition(-42069, -42069);
     }
 
     #update_bar() {
