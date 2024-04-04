@@ -118,6 +118,8 @@ export class Preloader extends Scene {
 
         this.load.audio('boss_music', 'SFX/Retro Platforming - David Fesliyan.mp3');
 
+        this.load.audio('boss_music', 'SFX/Retro Platforming - David Fesliyan.mp3');
+
         this.load.audio('click', ['SFX/click.wav']);
 
         this.load.audio('story_music', 'SFX/8 Bit Presentation - David Fesliyan.mp3');
