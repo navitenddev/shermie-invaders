@@ -221,15 +221,17 @@ export class Game extends Scene {
             if (this.player_vars.lives <= 0 &&
                 !this.objs.player.is_inbounds()) {
                 this.player_vars.power = "";
+                this.gameover = true;
                 this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
                 this.goto_scene("Player Lose");
             }
             // if this is a boss level
-            else if (this.level % 7 === 0) {
+            if (this.level % 7 === 0) {
                 console.log()
                 if (!this.boss_spawned) {
                     this.boss_spawned = true;
                     const boss_hp = (100 * (Math.floor((this.level / 7)) + 1));
+                    // spawn boss type based on different multiples of 7
                     if (this.level % 21 === 0)
                         this.add.enemy_pupa(this, 0, 0, boss_hp);
                     else if (this.level % 14 === 0)
