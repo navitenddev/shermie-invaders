@@ -245,6 +245,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
         if (this.hp <= 1) {
             this.state_text.destroy();
             this.hp_bar.destroy();
+            this.hp_text.destroy();
             this.t_text.destroy();
             this.graphics.destroy();
             this.graphics_follower.destroy();

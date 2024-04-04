@@ -28,9 +28,11 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
      * @param {number} score_value   The number of points yielded per hit
      * @param {number} money_value   The number of Shermie Bux dropped per hit
      */
-    constructor(scene, x, y, hp = 40, shoot_cd = 500, should_clone = true, score_value = 100, money_value = 10) {
+    constructor(scene, x, y, hp = 100, shoot_cd = 500, should_clone = true, score_value = 100, money_value = 10) {
         super(scene, x, y);
-        this.hp = hp;
+        // scale hp based on level
+        this.hp = (hp * (Math.floor((scene.registry.get('level') / 7)) + 1));
+        console.log(`Reaper initialized with ${this.hp} hp`);
         this.shoot_cd = shoot_cd;
         this.anim_key = "reaper_idle";
         this.scoreValue = score_value;
@@ -55,13 +57,13 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
         this.state_text = this.scene.add.bitmapText(this.x, this.y, bitmapFonts.PressStart2P, this.ai_state, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
 
         this.hp_bar_offset = {
-            x: -47,
+            x: -50,
             y: -(this.height / 1.8),
         };
         this.hp_bar = new FillBar(scene,
             x + this.hp_bar_offset.x, y + this.hp_bar_offset.y,
             100, 10,
-            hp
+            this.hp
         );
     }
 
