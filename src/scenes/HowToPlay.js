@@ -8,8 +8,7 @@ export class HowToPlay extends BaseMenu {
 
     create() {
       super.create();
-
-      this.add.image(512, 150, "howToPlayLogo").setScale(0.8).setDepth(3);
+      
 
       let width = this.game.config.width;
 
@@ -36,6 +35,8 @@ Goal:
     and earn Shermie Coins
         
 Good luck and have fun!`;
+
+      this.add.bitmapText(this.game.config.width / 3, 125, bitmapFonts.PressStart2P_Stroke, 'HOW TO PLAY', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setDepth(3);
 
       this.add
         .bitmapText(
