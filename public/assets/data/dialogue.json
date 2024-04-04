@@ -213,6 +213,11 @@
       "Malware exploits software vulnerabilities. To avoid it, regularly update your software and applications to patch vulnerabilities."
     ]
   },
+  "AskMoney": {
+    "lines": [
+      "Would you like to receive money you would have gained form prior levels? You will also be brought to the store first"
+    ]
+  },
   "techtips": {
     "quantity": 22
   }

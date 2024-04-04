@@ -22,6 +22,8 @@ function start_dialogue(scene, key, dialogue_type = "game", font_size = 16) {
         scene.pause();
 }
 
+
+
 const DIALOGUE_MODE = {
     SLOW: 150,
     MED: 45,
@@ -256,4 +258,4 @@ class Dialogue extends Phaser.Scene {
 }
 
 
-export { Dialogue, DialogueManager, start_dialogue };
+export { Dialogue, DialogueManager, start_dialogue,};

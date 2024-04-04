@@ -161,7 +161,7 @@ export class Store extends Scene {
         this.TECHTIP_COUNT = this.techtips.num_techtips;
         console.log(`TECHTIP COUNT: ${this.TECHTIP_COUNT}`);
         this.scene.remove('Game'); // I am sorry for my sins
-
+        restart_scenes(this.scene);
         this.player_vars = this.registry.get('player_vars');
         //Background
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'upgradeTilemap')
