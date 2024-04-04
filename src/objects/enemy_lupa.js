@@ -24,6 +24,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     is_dead = false;
     constructor(scene, x, y, hp = 40) {
         super(scene, x, y);
+        console.log(`Initializing lupa with ${hp} hp`)
         scene.physics.add.existing(this);
         scene.add.existing(this);
         scene.objs.enemies.special.add(this);
