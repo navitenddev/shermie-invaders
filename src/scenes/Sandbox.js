@@ -7,6 +7,8 @@ import ScoreManager from '../utils/ScoreManager.js';
 import { GridEnemy } from '../objects/enemy_grid';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { FillBar } from '../ui/fill_bar.js';
+import { start_dialogue } from './Dialogue.js';
+import { init_collision_events } from '../main.js';
 
 class LevelSelector extends Phaser.GameObjects.Container {
     emitter = EventDispatcher.getInstance();
@@ -109,7 +111,7 @@ class IconButton extends Phaser.GameObjects.Container {
 export class Sandbox extends Scene {
     emitter = EventDispatcher.getInstance();
     PUPA_PATHS = {};
-
+    sandbox_mode = true;
     #coord_list = [];
 
     constructor() {
@@ -163,7 +165,7 @@ export class Sandbox extends Scene {
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
             () => {
-                this.start_dialogue("sandbox_tips", false);
+                start_dialogue(this.scene, "sandbox_tips", "game");
             }
         );
 
@@ -192,12 +194,11 @@ export class Sandbox extends Scene {
             key: 'lives',
             repeat: 2
         });
-        this.sounds.bank.music.start.stop();
         this.livesSprites.create(84, this.sys.game.config.height - 32, 'lives', 0);
+        this.sounds.stop_all_music();
+        this.sounds.bank.music.sandbox.play();
 
-        this.sounds.bank.music.ff7_fighting.play();
-
-        this.init_collision_events();
+        init_collision_events(this);
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
@@ -315,102 +316,11 @@ export class Sandbox extends Scene {
         this.cameras.main.fade(500, 0, 0, 0);
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-            this.sounds.bank.music.bg.stop();
-            this.sounds.bank.music.ff7_fighting.stop();
+            this.sounds.stop_all_music();
             this.scene.start(targetScene);
         });
     }
 
-    /**
-     * @description Initializes all collision and overlap events. This function
-     * should be called after objects are initialized.
-     */
-    init_collision_events() {
-        this.physics.world.setBounds(0, 0, this.sys.game.config.width, this.sys.game.config.height);
-
-        // player bullet hits grid enemy
-        this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies.grid, (player_bullet, enemy) => {
-            this.objs.explode_at(enemy.x, enemy.y);
-            if (this.player_vars.power == "pierce") player_bullet.hurt_bullet();
-            else player_bullet.deactivate();
-            enemy.die();
-            this.scoreManager.addScore(enemy.scoreValue);
-            this.scoreManager.addMoney(enemy.moneyValue);
-        });
-
-        // player bullet hits special enemy
-        this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies.special, (player_bullet, enemy) => {
-            this.objs.explode_at(enemy.x, enemy.y);
-            player_bullet.deactivate();
-            enemy.die();
-            this.scoreManager.addScore(enemy.scoreValue);
-            this.scoreManager.addMoney(enemy.moneyValue);
-        });
-
-        let currShield = this.player_stats.shield;
-        // enemy bullet hits player
-        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player, (player, enemy_bullet) => {
-            if (!player.is_dead) {
-                enemy_bullet.deactivate();
-                if (player.stats.shield > 1) {
-                    player.shieldParticles.explode(10, player.x, this.sys.game.config.height - 135);
-                    player.stats.shield--;
-                    if (player.stats.shield < currShield) {
-                        this.start_dialogue('shermie_shieldgone', false);
-                        currShield = player.stats.shield;
-                    }
-                    player.updateHitbox();
-                } else {
-                    this.objs.explode_at(player.x, player.y);
-                    player.die();
-                    this.player_vars.lives = 3; // disable lives in sandbox mode
-                    if (this.player_vars.lives === 0)
-                        this.start_dialogue('shermie_dead', false);
-                    else
-                        this.start_dialogue('shermie_hurt', false);
-                }
-            }
-        });
-
-        // player collides with powerup 
-        this.physics.add.overlap(this.objs.powers, this.objs.player, (player, powerup) => {
-            player.changePower(powerup.buff);
-            powerup.deactivate();
-        });
-
-        // enemy bullet collides with player bullet
-        this.physics.add.overlap(this.objs.bullets.enemy, this.objs.bullets.player, (enemy_bullet, player_bullet) => {
-            if (player_bullet.active && enemy_bullet.active) {
-                this.objs.explode_at(player_bullet.x, player_bullet.y);
-                player_bullet.deactivate();
-                enemy_bullet.deactivate();
-            }
-        });
-
-        // when grid enemy hits barrier, it eats it
-        this.physics.add.overlap(this.objs.enemies.grid, this.objs.barrier_chunks, (enemy, barr_chunk) => {
-            // console.log(barr_chunk);
-            barr_chunk.parent.update_flame_size();
-            barr_chunk.destroy(); // OM NOM NOM
-        });
-
-        // when special enemy hits barrier, it eats it
-        this.physics.add.overlap(this.objs.enemies.special, this.objs.barrier_chunks, (enemy, barr_chunk) => {
-            barr_chunk.parent.update_flame_size();
-            barr_chunk.destroy(); // OM NOM NOM
-        });
-
-
-        // player bullet collides with barrier
-        this.physics.add.collider(this.objs.bullets.player, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 15);
-        });
-
-        // enemy bullet collides with barrier
-        this.physics.add.collider(this.objs.bullets.enemy, this.objs.barrier_chunks, (bullet, barr_chunk) => {
-            Barrier.explode_at_bullet_hit(this, bullet, barr_chunk, 15);
-        });
-    }
 
     #add_coord() {
         const x = this.game.input.mousePointer.x;
@@ -450,7 +360,6 @@ export class Sandbox extends Scene {
      * @param {boolean} add_rewards Add money and score if true
      */
     kill_all_enemies(add_rewards = true) {
-        console.log(`add rewards: ${add_rewards}`)
         // Loop through all enemies and destroy them
         if (this.objs) {
             this.objs.enemies.grid.children.each(enemy => {
@@ -474,20 +383,4 @@ export class Sandbox extends Scene {
         }
     }
 
-    /**
-     * @param {*} key Start the dialogue sequence with this key
-     * @param {boolean} is_story_dialogue If true, will stop all actions and display the story bg
-     * @param {number} font_size The size of the font to display
-     */
-    start_dialogue(key, is_story_dialogue = false, font_size = 16) {
-        this.emitter.emit('force_dialogue_stop'); // never have more than one dialogue manager at once
-        this.scene.launch('Dialogue', {
-            dialogue_key: key,
-            is_story_dialogue: is_story_dialogue,
-            caller_scene: 'Game',
-            font_size: font_size,
-        });
-        if (is_story_dialogue)
-            this.scene.pause();
-    }
 }
