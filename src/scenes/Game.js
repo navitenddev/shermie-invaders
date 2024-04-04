@@ -52,6 +52,30 @@ export class Game extends Scene {
     }
 
 
+    preload() {
+        this.load.json({
+            key: "PUPA_LEMNISCATE",
+            url: "assets/paths/pupa.json",
+            dataKey: "LEMNISCATE",
+        });
+        this.load.json({
+            key: "PUPA_TRIANGLE",
+            url: "assets/paths/pupa.json",
+            dataKey: "TRIANGLE",
+        });
+        this.load.json({
+            key: "PUPA_SPLINE",
+            url: "assets/paths/pupa.json",
+            dataKey: "SPLINE1",
+        });
+        this.load.json({
+            key: "PUPA_ILLUMINATI",
+            url: "assets/paths/pupa.json",
+            dataKey: "ILLUMINATI",
+        });
+    }
+
+
     create() {
         this.level = this.registry.get('level');
         // fade in from black
