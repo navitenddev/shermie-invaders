@@ -90,13 +90,6 @@ export class TextButton extends Phaser.GameObjects.Container {
                     .lineStyle(2, color_border, 1)
                     .strokeRect(-(w / 2), -(h / 2), w, h);
             })
-            .on('pointerup', () => {
-                this.bg.setFillStyle(color, opacity);
-                this.bg_border
-                    .clear()
-                    .lineStyle(2, color_border, 1)
-                    .strokeRect(-(w / 2), -(h / 2), w, h);
-            })
             .on('pointerdown', () => {
                 this.bg.setFillStyle(color_clicked, opacity);
                 sounds.bank.sfx.click.play();

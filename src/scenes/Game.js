@@ -80,7 +80,7 @@ export class Game extends Scene {
         this.scoreManager = new ScoreManager(this);
 
         // Event to kill all enemies
-        this.emitter.on('kill_all_enemies', this.#kill_all_enemies, this);
+        this.emitter.once('kill_all_enemies', this.#kill_all_enemies, this);
 
         this.emitter.once('player_lose', this.goto_scene, this)
 
@@ -143,20 +143,18 @@ export class Game extends Scene {
 
     #kill_all_enemies() {
         // Loop through all enemies and destroy them
-        if (this.objs) {
-            this.objs.enemies.grid.children.each(enemy => {
-                enemy.die();
-                this.scoreManager.addMoney(enemy.moneyValue);
-                this.scoreManager.addScore(enemy.scoreValue);
-            }, this);
+        this.objs.enemies.grid.children.each(enemy => {
+            enemy.die();
+            this.scoreManager.addMoney(enemy.moneyValue);
+            this.scoreManager.addScore(enemy.scoreValue);
+        });
 
-            this.objs.enemies.special.children.each(enemy => {
-                this.scoreManager.addMoney(enemy.moneyValue * enemy.hp);
-                this.scoreManager.addScore(enemy.scoreValue * enemy.hp);
-                enemy.hp = 1;
-                enemy.die();
-            }, this);
-        }
+        this.objs.enemies.special.children.each(enemy => {
+            this.scoreManager.addMoney(enemy.moneyValue * enemy.hp);
+            this.scoreManager.addScore(enemy.scoreValue * enemy.hp);
+            enemy.hp = 1;
+            enemy.die();
+        });
     }
 
     /**
@@ -196,7 +194,7 @@ export class Game extends Scene {
                     this.add.enemy_reaper(this, 0, 0, 40);
                     // start boss music
                     // dialogue, perhaps?
-                    start_dialogue(this.scene, "shermie_boss", "game_blocking");
+                    start_dialogue(this.scene, "shermie_boss", "techtip");
                 }
 
                 // is boss dead?
@@ -219,7 +217,6 @@ export class Game extends Scene {
     }
 
     goto_scene(targetScene) {
-        this.emitter.off('kill_all_enemies');
         const cheatModeEnabled = this.registry.get('debug_mode') === true;
         if (!cheatModeEnabled) {
             this.scoreManager.checkAndUpdateHighScore();

@@ -165,7 +165,7 @@ export class Sandbox extends Scene {
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
             () => {
-                start_dialogue(this.scene, "sandbox_tips", "game");
+                start_dialogue(this.scene, "sandbox_tips", false);
             }
         );
 
