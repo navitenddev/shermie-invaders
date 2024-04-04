@@ -12,9 +12,6 @@ export class PlayerLose extends Scene {
     }
 
     create() {
-        this.sounds = this.registry.get('sound_bank');
-        this.sounds.stop_all_music();
-
         this.cameras.main.setBackgroundColor(0x000000);
         this.cameras.main.fadeIn(1000, 0, 0, 0);
 

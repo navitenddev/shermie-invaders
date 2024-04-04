@@ -61,7 +61,6 @@ class SoundBank {
             music: {
                 bg: this.scene.game.sound.add('bgmusic', { volume: 0.2, loop: true }),
                 boss: this.scene.game.sound.add('boss_music', { volume: 0.2, loop: true }),
-                story: this.scene.game.sound.add('story_music', { volume: 0.2, loop: true }),
                 start: this.scene.game.sound.add('start', { volume: 0.1, loop: true }),
                 ff7_fighting: this.scene.game.sound.add('ff7_fighting', { volume: 0.1, loop: true })
             }

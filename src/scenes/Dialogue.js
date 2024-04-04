@@ -73,7 +73,6 @@ class DialogueManager extends Phaser.GameObjects.Container {
         }
         super(scene, x, y);
         scene.add.existing(this);
-        this.sounds = scene.registry.get('sound_bank');
         this.scene = scene;
         this.border_w = 20;
 
@@ -163,10 +162,6 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.emitter.off('dialogue_start');
         if (this.dialogue_type === "game_blocking" && this.scene)
             this.scene.scene.resume();
-        if (this.dialogue_type === "story") {
-            this.sounds.stop_all_music();
-            this.sounds.bank.music.bg.play();
-        }
     }
 
     #load_next_line() {
@@ -221,11 +216,8 @@ class Dialogue extends Phaser.Scene {
     }
 
     create(data) {
-        this.sounds = this.registry.get('sound_bank');
         // show story dialogue background if this is for story dialogue 
         if (data.dialogue_type === "story") {
-            this.sounds.stop_all_music();
-            this.sounds.bank.music.story.play();
             this.add.image(0, 0, 'story_bg')
                 .setAlpha(1)
                 .setOrigin(0, 0)
