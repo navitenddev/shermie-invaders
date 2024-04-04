@@ -64,7 +64,7 @@ class SoundBank {
                 story: this.scene.game.sound.add('story_music', { volume: 0.2, loop: true }),
                 shop: this.scene.game.sound.add('shop_music', { volume: 0.2, loop: true }),
                 start: this.scene.game.sound.add('start', { volume: 0.2, loop: true }),
-                ff7_fighting: this.scene.game.sound.add('ff7_fighting', { volume: 0.1, loop: true })
+                sandbox: this.scene.game.sound.add('sandbox_music', { volume: 0.2, loop: true })
             }
         }
     }
