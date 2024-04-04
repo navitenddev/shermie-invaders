@@ -188,8 +188,8 @@ class DialogueManager extends Phaser.GameObjects.Container {
         if (this.char_index === this.line.length) {
             // console.log("Line is done, waiting on player to click again")
             this.auto_emit_flag = true;
-            // Do not auto continue techtip dialogue
-            if (this.dialogue_type !== "techtip") {
+            // Do not auto continue techtip or story dialogue
+            if (!["techtip", "story"].includes(this.dialogue_type)) {
                 const cont_dialogue_in = 1.5; // # seconds
                 this.scene.time.delayedCall(cont_dialogue_in * 1000, () => {
                     if (this.auto_emit_flag)
@@ -230,7 +230,7 @@ class Dialogue extends Phaser.Scene {
                 .setAlpha(1)
                 .setOrigin(0, 0)
                 .displayWidth = this.sys.game.config.width;
-            this.add.bitmapText(460, 310, bitmapFonts.PressStart2P, `Press ESC to skip`, fonts.small.sizes[bitmapFonts.PressStart2P])
+            this.add.bitmapText(460, 300, bitmapFonts.PressStart2P, `Click mouse to Continue\nor press ESC to skip`, fonts.small.sizes[bitmapFonts.PressStart2P])
         }
 
         this.sounds = this.registry.get('sound_bank');
