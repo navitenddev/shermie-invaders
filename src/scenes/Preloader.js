@@ -122,6 +122,8 @@ export class Preloader extends Scene {
 
         this.load.audio('click', ['SFX/click.wav']);
 
+        this.load.audio('story_music', 'SFX/8 Bit Presentation - David Fesliyan.mp3');
+
         this.load.spritesheet("necromancer", "characters/necromancer.png", {
             frameWidth: 160,
             frameHeight: 128,
