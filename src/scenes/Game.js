@@ -181,21 +181,6 @@ export class Game extends Scene {
     check_gameover() {
         if (this.objs.enemies.grid.children.entries.length == 0 &&
             !this.level_transition_flag) {
-
-            // if this is a boss level
-            if (this.level % 7 === 0) {
-                console.log()
-                if (!this.boss_spawned) {
-                    this.boss_spawned = true;
-                    this.add.enemy_reaper(this, 0, 0, 40);
-                }
-
-                // is boss dead?
-                if (this.objs.enemies.special.children.entries.length === 0) {
-                    this.goto_scene("Player Win");
-                }
-                return;
-            }
             this.player_vars.active_bullets = 0;
             this.level_transition_flag = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
@@ -259,7 +244,6 @@ export class Game extends Scene {
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player, (player, enemy_bullet) => {
             if (!player.is_dead) {
                 enemy_bullet.deactivate();
-
                 if (player.stats.shield > 1) {
                     player.shieldParticles.explode(10, player.x, this.sys.game.config.height - 135);
                     // console.log('Shield particle emitter explode called');
