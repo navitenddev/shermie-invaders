@@ -30,19 +30,38 @@ export class LevelSelect extends BaseMenu {
         for (let y = 1; y <= 10; y++) {
             for (let x = 1; x <= 15; x++) {
                 if (cheatModeEnabled || level <= maxLevelReached) {
-                    new TextButton(this,
-                        offset.x + x * scale.x + x * gap.x,
-                        offset.y + y * scale.y + y * gap.y,
-                        40, 40,
-                        level.toString(),
-                        (scene, level) => {
-                            scene.registry.set({ level: level });
-                            scene.scene.start('Game');
-                        },
-                        [this, level++],
-                        bitmapFonts.PressStart2P,
-                        12)
-                        .setDepth(3);
+                    if (level % 7) {
+                        new TextButton(this,
+                            offset.x + x * scale.x + x * gap.x,
+                            offset.y + y * scale.y + y * gap.y,
+                            40, 40,
+                            level.toString(),
+                            (scene, level) => {
+                                scene.registry.set({ level: level });
+                                scene.scene.start('Game');
+                            },
+                            [this, level++],
+                            bitmapFonts.PressStart2P,
+                            12)
+                            .setDepth(3);
+                    } else {
+                        new TextButton(this,
+                            offset.x + x * scale.x + x * gap.x,
+                            offset.y + y * scale.y + y * gap.y,
+                            40, 40,
+                            level.toString(),
+                            (scene, level) => {
+                                scene.registry.set({ level: level });
+                                scene.scene.start('Game');
+                            },
+                            [this, level++],
+                            bitmapFonts.PressStart2P,
+                            12,
+                            0xc80420,
+                            0x820114)
+                            .setDepth(3);
+
+                    }
                 }
             }
         }

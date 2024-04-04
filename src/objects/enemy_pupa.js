@@ -24,6 +24,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     target_pos;
     constructor(scene, x, y, hp = 40) {
         super(scene, x, y);
+        console.log(`Initializing pupa with ${hp} hp`)
         scene.physics.add.existing(this);
         scene.add.existing(this);
         scene.objs.enemies.special.add(this);
@@ -154,8 +155,6 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
                 console.error(`Invalid Enemy state: ${this.ai_state}`);
                 break;
         }
-        if (this.scene.debugMode)
-            this.path.draw(this.graphics);
     }
 
 
