@@ -7,7 +7,6 @@ import ScoreManager from '../utils/ScoreManager.js';
 import { GridEnemy } from '../objects/enemy_grid';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { FillBar } from '../ui/fill_bar.js';
-import { start_dialogue } from './Dialogue.js';
 
 class LevelSelector extends Phaser.GameObjects.Container {
     emitter = EventDispatcher.getInstance();
@@ -164,7 +163,7 @@ export class Sandbox extends Scene {
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
             () => {
-                start_dialogue(this.scene, "sandbox_tips", false);
+                this.start_dialogue("sandbox_tips", false);
             }
         );
 
@@ -348,23 +347,27 @@ export class Sandbox extends Scene {
             this.scoreManager.addMoney(enemy.moneyValue);
         });
 
+        let currShield = this.player_stats.shield;
         // enemy bullet hits player
         this.physics.add.overlap(this.objs.bullets.enemy, this.objs.player, (player, enemy_bullet) => {
             if (!player.is_dead) {
                 enemy_bullet.deactivate();
                 if (player.stats.shield > 1) {
                     player.shieldParticles.explode(10, player.x, this.sys.game.config.height - 135);
-                    (--player.stats.shield === 1) ?
-                        start_dialogue(this.scene, 'shermie_shieldgone', "game") :
-                        start_dialogue(this.scene, 'shermie_shieldhurt', "game");
+                    player.stats.shield--;
+                    if (player.stats.shield < currShield) {
+                        this.start_dialogue('shermie_shieldgone', false);
+                        currShield = player.stats.shield;
+                    }
                     player.updateHitbox();
                 } else {
                     this.objs.explode_at(player.x, player.y);
                     player.die();
                     this.player_vars.lives = 3; // disable lives in sandbox mode
-                    (this.player_vars.lives === 0) ?
-                        start_dialogue(this.scene, 'shermie_dead', "game") :
-                        start_dialogue(this.scene, 'shermie_hurt', "game");
+                    if (this.player_vars.lives === 0)
+                        this.start_dialogue('shermie_dead', false);
+                    else
+                        this.start_dialogue('shermie_hurt', false);
                 }
             }
         });
@@ -471,4 +474,20 @@ export class Sandbox extends Scene {
         }
     }
 
+    /**
+     * @param {*} key Start the dialogue sequence with this key
+     * @param {boolean} is_story_dialogue If true, will stop all actions and display the story bg
+     * @param {number} font_size The size of the font to display
+     */
+    start_dialogue(key, is_story_dialogue = false, font_size = 16) {
+        this.emitter.emit('force_dialogue_stop'); // never have more than one dialogue manager at once
+        this.scene.launch('Dialogue', {
+            dialogue_key: key,
+            is_story_dialogue: is_story_dialogue,
+            caller_scene: 'Game',
+            font_size: font_size,
+        });
+        if (is_story_dialogue)
+            this.scene.pause();
+    }
 }

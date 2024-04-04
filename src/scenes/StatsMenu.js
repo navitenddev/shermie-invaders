@@ -149,9 +149,7 @@ export class StatsMenu extends Scene {
             () => {
                 this.emitter.emit('kill_all_enemies');
                 // transition should not occur in sandbox
-                if (!this.registry.get('sandbox_mode')
-                    // it shouldnt happen on boss levels either
-                    && this.registry.get('level') % 7)
+                if (!this.registry.get('sandbox_mode'))
                     this.scene.start('Player Win')
             },
             [], // callback function's arguments

@@ -35,9 +35,6 @@
   "shermie_hurt": {
     "lines": ["ouch! that hurt!"]
   },
-  "shermie_shieldhurt": {
-    "lines": ["Hey, watch it! They're breaking my shield!"]
-  },
   "shermie_shieldgone": {
     "lines": ["Ah! Blasted right through the shield!"]
   },
@@ -51,7 +48,7 @@
     "lines": ["NoooooOOOOoOOOoOOOO!!!"]
   },
   "shermie_boss": {
-    "lines": ["Why do I hear boss music?"]
+    "lines": "Why do I hear boss music?"
   },
   "sandbox_tips": {
     "lines": [

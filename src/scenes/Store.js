@@ -139,6 +139,7 @@ class MenuSpinner {
 }
 
 export class Store extends Scene {
+    TECHTIP_COUNT; // number of techtips defined in the JSON.
     constructor() {
         super('Store');
         this.menuSpinners = [];
@@ -146,7 +147,19 @@ export class Store extends Scene {
         this.initialStats = {};
     }
 
+    preload() {
+        this.load.json({
+            key: "techtips",
+            url: "assets/data/dialogue.json",
+            dataKey: "techtips",
+        });
+    }
+
     create() {
+        this.techtips = this.cache.json.get("techtips");
+        console.log(this.techtips);
+        this.TECHTIP_COUNT = this.techtips.num_techtips;
+        console.log(`TECHTIP COUNT: ${this.TECHTIP_COUNT}`);
         this.scene.remove('Game'); // I am sorry for my sins
 
         this.player_vars = this.registry.get('player_vars');
