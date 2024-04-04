@@ -40,15 +40,15 @@ export class Game extends Scene {
             start_dialogue(this.scene, `level${(this.level)}`, "story", 23);
         }
 
-        let bgKey;
-        if (this.level > 7) {
+        let bgKey = `BG${this.level}`;
+        if (this.level > 7)
             bgKey = 'BG5'; // Default to BG5 for levels above 7
-        } else {
-            bgKey = `BG${this.level}`; // Use the dynamic background key for levels 7 and below
-        }
 
-        // show boss bg on boss levels
-        if (this.level % 7 === 0)
+        // show ship before boss level for all levels after 7
+        if (this.level % 6 === 0)
+            bgKey = 'BG6';
+        // show boss bg for all boss levels after 7
+        else if (this.level % 7 === 0)
             bgKey = 'BG7';
 
         if (this.level === 3 || this.level === 5) {
