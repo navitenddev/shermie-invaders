@@ -163,10 +163,6 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.emitter.off('dialogue_start');
         if (this.dialogue_type === "game_blocking" && this.scene)
             this.scene.scene.resume();
-        if (this.dialogue_type === "story") {
-            this.sounds.stop_all_music();
-            this.sounds.bank.music.bg.play();
-        }
     }
 
     #load_next_line() {
@@ -210,6 +206,7 @@ class Dialogue extends Phaser.Scene {
     emitter = EventDispatcher.getInstance();
     dialogue_mgr;
     dialogue_data;
+    dialogue_type;
     prev_scene;
     keys;
     constructor() {
@@ -221,9 +218,11 @@ class Dialogue extends Phaser.Scene {
     }
 
     create(data) {
+        this.dialogue_type = data.dialogue_type;
+
         this.sounds = this.registry.get('sound_bank');
         // show story dialogue background if this is for story dialogue 
-        if (data.dialogue_type === "story") {
+        if (this.dialogue_type === "story") {
             this.sounds.stop_all_music();
             this.sounds.bank.music.story.play();
             this.add.image(0, 0, 'story_bg')
@@ -235,14 +234,14 @@ class Dialogue extends Phaser.Scene {
 
         this.sounds = this.registry.get('sound_bank');
 
-        this.dialogue_mgr = new DialogueManager(this, this.dialogue_data, data.dialogue_type, data.font_size);
+        this.dialogue_mgr = new DialogueManager(this, this.dialogue_data, this.dialogue_type, data.font_size);
 
         this.keys = InitKeyDefs(this);
         // console.log("Initialized Dialogue Scene")
         this.prev_scene = data.caller_scene;
 
         this.emitter.emit('dialogue_start', data.dialogue_key);
-        this.emitter.once('dialogue_stop', () => { this.return_to_caller_scene(data.dialogue_type) });
+        this.emitter.once('dialogue_stop', () => { this.return_to_caller_scene(this.dialogue_type) });
 
         this.keys.esc.on('down', () => {
             console.log('Player skipped the dialogue');
@@ -257,24 +256,28 @@ class Dialogue extends Phaser.Scene {
         this.dialogue_mgr.update(time, delta);
     }
 
-    return_to_caller_scene(data) {
-        if (data === "story") {
+    return_to_caller_scene() {
+        console.log(`TYPE: ${this.dialogue_type}`)
+        if (this.dialogue_type === "story") {
             this.startPrompt = this.add.bitmapText(450, 180, bitmapFonts.PressStart2P, `Press spacebar to start!`, fonts.small.sizes[bitmapFonts.PressStart2P])
         }
-        
+
         if (this.escPrompt) {
             this.escPrompt.destroy();
             this.escPrompt = null;
         }
-        if (data === "story") {
+        if (this.dialogue_type === "story") {
             this.keys.space.on('down', () => {
+                this.sounds.stop_all_music();
+                this.sounds.bank.music.bg.play();
                 this.startPrompt.destroy();
                 this.startPrompt = null;
                 this.scene.stop('Dialogue');
                 this.scene.resume(this.prev_scene);
             });
+        } else {
+            this.scene.resume(this.prev_scene);
         }
-        this.scene.resume(this.prev_scene);
     }
 }
 
