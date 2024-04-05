@@ -256,13 +256,14 @@ class Dialogue extends Phaser.Scene {
             this.escPrompt.destroy();
             this.escPrompt = null;
         }
-        
-        this.keys.space.on('down', () => {
-            this.startPrompt.destroy();
-            this.startPrompt = null;
-            this.scene.stop('Dialogue');
-            this.scene.resume(this.prev_scene);
-        });
+        if (data === "story") {
+            this.keys.space.on('down', () => {
+                this.startPrompt.destroy();
+                this.startPrompt = null;
+                this.scene.stop('Dialogue');
+                this.scene.resume(this.prev_scene);
+            });
+        }
     }
 }
 

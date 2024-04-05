@@ -220,14 +220,14 @@ export class Game extends Scene {
      */
     init_collision_events() {
         this.physics.world.setBounds(0, 0, this.sys.game.config.width, this.sys.game.config.height);
-
+        const score_scaling = 1.2; // Adjust scaling as you see fit
         // player bullet hits grid enemy
         this.physics.add.overlap(this.objs.bullets.player, this.objs.enemies.grid, (player_bullet, enemy) => {
             this.objs.explode_at(enemy.x, enemy.y);
             if (this.player_vars.power == "pierce") player_bullet.hurt_bullet();
             else player_bullet.deactivate();
             enemy.die();
-            this.scoreManager.addScore(enemy.scoreValue);
+            this.scoreManager.addScore(Math.round(enemy.scoreValue * Math.pow(score_scaling, this.level)));
             this.scoreManager.checkAndUpdateHighScore();
             this.scoreManager.addMoney(enemy.moneyValue);
         });
@@ -237,7 +237,7 @@ export class Game extends Scene {
             this.objs.explode_at(enemy.x, enemy.y);
             player_bullet.deactivate();
             enemy.die();
-            this.scoreManager.addScore(enemy.scoreValue);
+            this.scoreManager.addScore(Math.round(enemy.scoreValue * Math.pow(score_scaling, this.level)));
             this.scoreManager.checkAndUpdateHighScore();
         });
 
