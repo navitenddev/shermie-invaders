@@ -173,12 +173,11 @@ export class Game extends Scene {
 
     #kill_all_enemies() {
         // Loop through all enemies and destroy them
-        const score_scaling = 1.2; // Adjust scaling as you see fit
         if (this.objs) {
             this.objs.enemies.grid.children.each(enemy => {
                 enemy.die();
                 this.scoreManager.addMoney(enemy.moneyValue);
-                this.scoreManager.addScore(Math.round(enemy.scoreValue * Math.pow(score_scaling, this.level)));
+                this.scoreManager.addScore(Math.round(enemy.scoreValue * this.level));
             }, this);
 
             this.objs.enemies.special.children.each(enemy => {
@@ -248,6 +247,7 @@ export class Game extends Scene {
 
                 // is boss dead?
                 if (this.objs.enemies.special.children.entries.length === 0) {
+                    this.objs.player.isInvincible = true;
                     this.goto_scene("Player Win");
                 }
                 return;
@@ -256,7 +256,6 @@ export class Game extends Scene {
             this.level_transition_flag = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.player_vars.power = "";
-            this.player.isInvincible = true;
             this.goto_scene("Player Win");
         }
     }
