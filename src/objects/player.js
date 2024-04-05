@@ -250,9 +250,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             // allow player to fly off screen
             this.setCollideWorldBounds(false);
 
-            let ang = Phaser.Math.Between(3, 10);
-            this.dead_vel.x =
-                (this.x < this.scene.game.config.width / 2) ? ang : -ang;
+            let ang = Phaser.Math.Between(300, 500);
+            const vx = Phaser.Math.Between(-750, 750);
+            const vy = -750;
+            this.setVelocity(vx, vy)
+                .setAngularVelocity(ang);
         }
         else if (this.stats.shield > 1 && !this.isInvincible) {
             this.stats.shield -= 1;
@@ -267,9 +269,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @description Resets the player's position to the center bottom of the screen
      */
     resetPlayer() {
-        this.setCollideWorldBounds(true);
-        this.setRotation(0);
-        this.setPosition(this.scene.game.config.width / 2.5, this.scene.game.config.height - 96);
+        this.setCollideWorldBounds(true)
+            .setRotation(0)
+            .setAngularVelocity(0)
+            .setVelocity(0, 0)
+            .setPosition(this.scene.game.config.width / 2.5, this.scene.game.config.height - 96);
     }
 
     /**
