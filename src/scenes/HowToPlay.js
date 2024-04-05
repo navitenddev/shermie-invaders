@@ -2,19 +2,21 @@ import { BaseMenu } from "./BaseMenu";
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 
 export class HowToPlay extends BaseMenu {
-    constructor() {
-        super('HowToPlay');
-    }
+  constructor() {
+    super('HowToPlay');
+  }
 
-    create() {
-      super.create();
-      
+  create() {
+    super.create();
+    this.sounds = this.registry.get('sound_bank');
+    this.sounds.stop_all_music();
+    this.sounds.bank.music.shop.play();
 
-      let width = this.game.config.width;
+    let width = this.game.config.width;
 
-      this.keys.m.on("down", this.sounds.toggle_mute);
+    this.keys.m.on("down", this.sounds.toggle_mute);
 
-      const instructionsText = `Movement:
+    const instructionsText = `Movement:
   - A/D or Left Arrow/Right Arrow
 
 Shoot:
@@ -48,6 +50,6 @@ Good luck and have fun!`;
         )
         .setDepth(3);
 
-      this.setupBackButton();
-    }
+    this.setupBackButton();
+  }
 }

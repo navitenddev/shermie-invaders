@@ -12,6 +12,9 @@ export class PlayerWin extends Scene {
     }
 
     create() {
+        this.sounds = this.registry.get('sound_bank');
+        this.sounds.stop_all_music();
+        this.sounds.bank.music.shop.play();
         const num_tips = this.cache.json.get("dialogue").techtips.quantity;
         const rand_idx = Phaser.Math.Between(1, num_tips);
         restart_scenes(this.scene);
