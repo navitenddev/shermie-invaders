@@ -274,6 +274,7 @@ class Dialogue extends Phaser.Scene {
                 this.scene.resume(this.prev_scene);
             });
         }
+        this.scene.resume(this.prev_scene);
     }
 }
 
