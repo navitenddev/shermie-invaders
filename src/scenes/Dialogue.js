@@ -230,7 +230,7 @@ class Dialogue extends Phaser.Scene {
                 .setAlpha(1)
                 .setOrigin(0, 0)
                 .displayWidth = this.sys.game.config.width;
-            this.add.bitmapText(460, 300, bitmapFonts.PressStart2P, `Click mouse to Continue\nor press ESC to skip`, fonts.small.sizes[bitmapFonts.PressStart2P])
+            this.escPrompt = this.add.bitmapText(460, 300, bitmapFonts.PressStart2P, `Click mouse to Continue\nor press ESC to skip`, fonts.small.sizes[bitmapFonts.PressStart2P])
         }
 
         this.sounds = this.registry.get('sound_bank');
@@ -242,7 +242,7 @@ class Dialogue extends Phaser.Scene {
         this.prev_scene = data.caller_scene;
 
         this.emitter.emit('dialogue_start', data.dialogue_key);
-        this.emitter.once('dialogue_stop', () => { this.return_to_caller_scene() });
+        this.emitter.once('dialogue_stop', () => { this.return_to_caller_scene(data.dialogue_type) });
 
         this.keys.esc.on('down', () => {
             console.log('Player skipped the dialogue');
@@ -257,11 +257,23 @@ class Dialogue extends Phaser.Scene {
         this.dialogue_mgr.update(time, delta);
     }
 
-    return_to_caller_scene() {
-        // console.log(`returning to caller scene`)
-        this.scene.stop('Dialogue')
-        // console.log(`resuming ${this.prev_scene}`)
-        this.scene.resume(this.prev_scene);
+    return_to_caller_scene(data) {
+        if (data === "story") {
+            this.startPrompt = this.add.bitmapText(450, 180, bitmapFonts.PressStart2P, `Press spacebar to start!`, fonts.small.sizes[bitmapFonts.PressStart2P])
+        }
+        
+        if (this.escPrompt) {
+            this.escPrompt.destroy();
+            this.escPrompt = null;
+        }
+        if (data === "story") {
+            this.keys.space.on('down', () => {
+                this.startPrompt.destroy();
+                this.startPrompt = null;
+                this.scene.stop('Dialogue');
+                this.scene.resume(this.prev_scene);
+            });
+        }
     }
 }
 

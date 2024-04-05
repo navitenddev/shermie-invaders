@@ -177,7 +177,7 @@ export class Game extends Scene {
             this.objs.enemies.grid.children.each(enemy => {
                 enemy.die();
                 this.scoreManager.addMoney(enemy.moneyValue);
-                this.scoreManager.addScore(enemy.scoreValue);
+                this.scoreManager.addScore(Math.round(enemy.scoreValue * this.level));
             }, this);
 
             this.objs.enemies.special.children.each(enemy => {
@@ -247,6 +247,7 @@ export class Game extends Scene {
 
                 // is boss dead?
                 if (this.objs.enemies.special.children.entries.length === 0) {
+                    this.objs.player.isInvincible = true;
                     this.goto_scene("Player Win");
                 }
                 return;

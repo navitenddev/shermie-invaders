@@ -90,14 +90,14 @@ export function restart_scenes(scene) {
  */
 export function init_collision_events(scene) {
     scene.physics.world.setBounds(0, 0, scene.sys.game.config.width, scene.sys.game.config.height);
-
+    scene.level = scene.registry.get('level');
     // player bullet hits grid enemy
     scene.physics.add.overlap(scene.objs.bullets.player, scene.objs.enemies.grid, (player_bullet, enemy) => {
         scene.objs.explode_at(enemy.x, enemy.y);
         if (scene.player_vars.power == "pierce") player_bullet.hurt_bullet();
         else player_bullet.deactivate();
         enemy.die();
-        scene.scoreManager.addScore(enemy.scoreValue);
+        scene.scoreManager.addScore(Math.round(enemy.scoreValue * scene.level));
         scene.scoreManager.addMoney(enemy.moneyValue);
     });
 
@@ -106,7 +106,7 @@ export function init_collision_events(scene) {
         scene.objs.explode_at(enemy.x, enemy.y);
         player_bullet.deactivate();
         enemy.die();
-        scene.scoreManager.addScore(enemy.scoreValue);
+        scene.scoreManager.addScore(Math.round(enemy.scoreValue * scene.level));
         scene.scoreManager.addMoney(enemy.moneyValue);
     });
 

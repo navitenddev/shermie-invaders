@@ -12,8 +12,6 @@ export class HowToPlay extends BaseMenu {
     this.sounds.stop_all_music();
     this.sounds.bank.music.shop.play();
 
-    this.add.image(512, 150, "howToPlayLogo").setScale(0.8).setDepth(3);
-
     let width = this.game.config.width;
 
     this.keys.m.on("down", this.sounds.toggle_mute);
@@ -40,15 +38,17 @@ Goal:
         
 Good luck and have fun!`;
 
-    this.add
-      .bitmapText(
-        width / 4,
-        250,
-        bitmapFonts.PressStart2P_Stroke,
-        instructionsText,
-        fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
-      )
-      .setDepth(3);
+      this.add.bitmapText(this.game.config.width / 3, 125, bitmapFonts.PressStart2P_Stroke, 'HOW TO PLAY', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setDepth(3);
+
+      this.add
+        .bitmapText(
+          width / 4,
+          250,
+          bitmapFonts.PressStart2P_Stroke,
+          instructionsText,
+          fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
+        )
+        .setDepth(3);
 
     this.setupBackButton();
   }
