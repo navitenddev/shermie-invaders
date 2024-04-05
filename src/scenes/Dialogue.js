@@ -261,7 +261,7 @@ class Dialogue extends Phaser.Scene {
         if (data === "story") {
             this.startPrompt = this.add.bitmapText(450, 180, bitmapFonts.PressStart2P, `Press spacebar to start!`, fonts.small.sizes[bitmapFonts.PressStart2P])
         }
-        
+
         if (this.escPrompt) {
             this.escPrompt.destroy();
             this.escPrompt = null;
@@ -271,7 +271,6 @@ class Dialogue extends Phaser.Scene {
                 this.startPrompt.destroy();
                 this.startPrompt = null;
                 this.scene.stop('Dialogue');
-                this.scene.resume(this.prev_scene);
             });
         }
         this.scene.resume(this.prev_scene);
