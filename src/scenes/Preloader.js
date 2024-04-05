@@ -127,7 +127,10 @@ export class Preloader extends Scene {
 
         this.load.audio('boss_music', 'SFX/Retro Platforming - David Fesliyan.mp3');
 
+        this.load.audio('boss_rush_music', 'SFX/Epic Boss Battle (Dark Action Music) - Rafael Krux.m4a');
+
         this.load.audio('sandbox_music', 'SFX/8 Bit Adventure - David Fesliyan.mp3');
+
 
         this.load.spritesheet("necromancer", "characters/necromancer.png", {
             frameWidth: 160,
