@@ -209,12 +209,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.setRotation(this.rotation + this.dead_vel.rot);
 
             if (this.player_vars.lives > 0 && !this.is_inbounds()) {
-                // Timed delaycall to respawn function
-                setTimeout(() => {
-                    this.is_dead = false;
-                    this.resetPlayer();
-                    this.flashPlayer();
-                }, 1200); // 1200 milliseconds delay (adjust if too high/low)
+                this.is_dead = false;
+                this.resetPlayer();
+                this.flashPlayer();
             }
             return;
         }
@@ -246,9 +243,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * Marks the player as dead so that phaser knows to do start the death animation.
      */
     die() {
-        if (this.isInvincible)
-            return;
-        if (this.player_vars.lives > 0 && this.stats.shield <= 1) {
+        if (this.player_vars.lives > 0 && !this.isInvincible && this.stats.shield <= 1) {
             this.player_vars.lives -= 1;
             this.sounds.bank.sfx.hurt.play();
             this.is_dead = true;
@@ -259,13 +254,14 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.dead_vel.x =
                 (this.x < this.scene.game.config.width / 2) ? ang : -ang;
         }
-        else if (this.stats.shield > 1) {
+        else if (this.stats.shield > 1 && !this.isInvincible) {
             this.stats.shield -= 1;
             this.sounds.bank.sfx.hurt.play();
             this.shieldVisuals.clear();
         }
         this.changePower("");
     }
+
 
     /**
      * @description Resets the player's position to the center bottom of the screen
