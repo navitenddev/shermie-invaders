@@ -163,10 +163,6 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.emitter.off('dialogue_start');
         if (this.dialogue_type === "game_blocking" && this.scene)
             this.scene.scene.resume();
-        if (this.dialogue_type === "story") {
-            this.sounds.stop_all_music();
-            this.sounds.bank.music.bg.play();
-        }
     }
 
     #load_next_line() {
@@ -272,6 +268,8 @@ class Dialogue extends Phaser.Scene {
         }
         if (this.dialogue_type === "story") {
             this.keys.space.on('down', () => {
+                this.sounds.stop_all_music();
+                this.sounds.bank.music.bg.play();
                 this.startPrompt.destroy();
                 this.startPrompt = null;
                 this.scene.stop('Dialogue');
