@@ -7,7 +7,7 @@ import ScoreManager from '../utils/ScoreManager';
 import { GridEnemy } from '../objects/enemy_grid';
 import { EventDispatcher } from '../utils/event_dispatcher';
 import { start_dialogue } from './Dialogue';
-import { init_collision_events } from '../main';
+import { init_collision_events, restart_scenes } from '../main';
 import { SoundBank } from '../utils/sounds';
 
 /**

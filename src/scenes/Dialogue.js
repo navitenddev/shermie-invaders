@@ -5,12 +5,12 @@ import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 /**
  * @param {Phaser.Scene} scene The scene that is calling the dialogue
  * @param {string} key Start the dialogue sequence with this key
- * @param {string} dialogue_type "story" | "game" | "techtip" | "game_blocking"
+ * @param {string} dialogue_type "story" | "game" | "techtip" | "game_blocking" | "menu"
  * @param {number} font_size The size of the font to display
  */
 function start_dialogue(scene, key, dialogue_type = "game", font_size = 16) {
     // dialogue_type should only be one of these
-    if ((["story", "game", "techtip", "game_blocking"].includes(dialogue_type)) === false) {
+    if ((["story", "game", "techtip", "game_blocking", "menu"].includes(dialogue_type)) === false) {
         console.warn(`Invalid dialogue_type: ${dialogue_type}. Defaulting to "game"`);
         dialogue_type = "game";
     }
@@ -55,7 +55,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
     delay_timer = 0;
     follow_player = true;
-    dialogue_type; /** @param {string} "story" | "game" | "techtip" | "game_blocking" */
+    dialogue_type; /** @param {string} "story" | "game" | "techtip" | "game_blocking" | "menu" */
 
     constructor(scene, data, dialogue_type = "game", font_size = 16) {
 
@@ -63,21 +63,21 @@ class DialogueManager extends Phaser.GameObjects.Container {
             y = 120,
             w = 620,
             h = (scene.game.config.height / 4.5);
-
-        if (["techtip", "game_blocking"].includes(dialogue_type)) {
+        if (["techtip", "game_blocking", "menu"].includes(dialogue_type)) {
             x = (scene.game.config.width / 2) - (w / 2);
             y = scene.game.config.height / 2.5;
-            h = (scene.game.config.height / 4)
+            h = (scene.game.config.height / 3.8)
         } else if (dialogue_type === "game") {
             w = 310;
         }
         super(scene, x, y);
         scene.add.existing(this);
+
         this.sounds = scene.registry.get('sound_bank');
         this.scene = scene;
         this.border_w = 20;
 
-        if (["techtip", "game_blocking"].includes(dialogue_type)) {
+        if (["techtip", "game_blocking", "menu"].includes(dialogue_type)) {
             const color = 0x2B2D31,
                 color_border = 0x879091;
             this.bg = this.scene.add.rectangle((w / 2), (h / 2), w, h, color);
@@ -96,8 +96,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.player_vars = scene.registry.get('player_vars');
         this.dialogue_type = dialogue_type;
 
-        if (["story", "techtip", "game_blocking"].includes(dialogue_type))
-            this.follow_player = false;
+        if (["story", "techtip", "game_blocking", "menu"].includes(dialogue_type)) this.follow_player = false;
 
         this.text = scene.add.bitmapText(25, 15, bitmapFonts.PressStart2P, '', font_size).setMaxWidth(this.w - (2 * this.border_w))
             .setLineSpacing(14)
@@ -133,16 +132,27 @@ class DialogueManager extends Phaser.GameObjects.Container {
         }
     }
 
+    /**
+     * 
+     * @param {string | Array<string>} key If string, will run dialogue in dialogue.json with that key. If array of strings, will process the array of strings as it if it were a key defined in dialogue.json.
+     * @returns 
+     */
     #activate(key) {
         this.key = key;
         this.is_active = true;
         this.setPosition(this.start.x, this.start.y);
-        if (!this.text_data[key]) {
+
+        if (Array.isArray(this.key)) {
+            this.key = "INLINE_DIALOGUE";
+            this.lines = key;
+        } else if (!this.text_data[key]) {
             console.error(`Error: did not find dialogue key: ${key}`);
             this.#deactivate();
             return;
+        } else {
+            this.lines = this.text_data[key].lines;
         }
-        this.lines = this.text_data[key].lines;
+
         console.log(`started dialogue: "${key}"`)
         this.line_index = 0;
         this.char_index = 0;
@@ -157,7 +167,9 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
     #deactivate() {
         // console.log("Deactivating dialogue")
-        this.setPosition(42069, 42069);
+        // menu dialogue will stay after its complete (until scene is closed)
+        if (this.dialogue_type !== "menu")
+            this.setPosition(42069, 42069);
         this.is_active = false;
         this.emitter.emit('dialogue_stop', [])
         this.emitter.off('dialogue_start');
@@ -185,7 +197,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
             // console.log("Line is done, waiting on player to click again")
             this.auto_emit_flag = true;
             // Do not auto continue techtip or story dialogue
-            if (!["techtip", "story"].includes(this.dialogue_type)) {
+            if (!["techtip", "story", "menu"].includes(this.dialogue_type)) {
                 const cont_dialogue_in = 1.5; // # seconds
                 this.scene.time.delayedCall(cont_dialogue_in * 1000, () => {
                     if (this.auto_emit_flag)
@@ -194,7 +206,12 @@ class DialogueManager extends Phaser.GameObjects.Container {
             }
 
             this.scene.input.on('pointerdown', () => {
-                this.text.setText(""); // 4 hours to fix this bug :)
+                if (this.dialogue_type === "menu"
+                    && this.line_index === this.lines.length) {
+                    // don't clear last line for menu and techtip
+                } else {
+                    this.text.setText(""); // 4 hours to fix this bug :)
+                }
                 this.auto_emit_flag = false;
                 this.#load_next_line();
             });
@@ -257,7 +274,7 @@ class Dialogue extends Phaser.Scene {
     }
 
     return_to_caller_scene() {
-        console.log(`TYPE: ${this.dialogue_type}`)
+        // console.log(`TYPE: ${this.dialogue_type}`)
         if (this.dialogue_type === "story") {
             this.startPrompt = this.add.bitmapText(450, 180, bitmapFonts.PressStart2P, `Press spacebar to start!`, fonts.small.sizes[bitmapFonts.PressStart2P])
         }

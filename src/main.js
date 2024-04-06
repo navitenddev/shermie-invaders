@@ -1,5 +1,8 @@
 import { Boot } from './scenes/Boot';
 import { Game } from './scenes/Game';
+import { BossRush } from './scenes/BossRush';
+import { BossRushLose } from './scenes/BossRushLose';
+import { BossRushWin } from './scenes/BossRushWin';
 import { PlayerWin } from './scenes/PlayerWin';
 import { PlayerLose } from './scenes/PlayerLose';
 import { MainMenu } from './scenes/MainMenu';
@@ -40,6 +43,7 @@ const config = {
         Preloader,
         MainMenu,
         Game,
+        BossRush,
         Sandbox,
         PlayerWin,
         PlayerLose,
@@ -49,6 +53,8 @@ const config = {
         StatsMenu,
         Store,
         TechTipTest,
+        BossRushLose,
+        BossRushWin,
         // Dialogue,
     ]
 };
@@ -70,6 +76,10 @@ export function restart_scenes(scene) {
     scene.remove('Game');
     scene.add('Game', Game);
     scene.bringToTop('Game');
+
+    scene.remove('Boss Rush');
+    scene.add('Boss Rush', BossRush);
+    scene.bringToTop('Boss Rush');
 
     scene.remove('PauseMenu');
     scene.add('PauseMenu', PauseMenu);
@@ -97,8 +107,10 @@ export function init_collision_events(scene) {
         if (scene.player_vars.power == "pierce") player_bullet.hurt_bullet();
         else player_bullet.deactivate();
         enemy.die();
-        scene.scoreManager.addScore(Math.round(enemy.scoreValue * scene.level));
-        scene.scoreManager.addMoney(enemy.moneyValue);
+        if (scene.scoreManager) {
+            scene.scoreManager.addScore(Math.round(enemy.scoreValue * scene.level));
+            scene.scoreManager.addMoney(enemy.moneyValue);
+        }
     });
 
     // player bullet hits special enemy
@@ -106,8 +118,10 @@ export function init_collision_events(scene) {
         scene.objs.explode_at(enemy.x, enemy.y);
         player_bullet.deactivate();
         enemy.die();
-        scene.scoreManager.addScore(Math.round(enemy.scoreValue * scene.level));
-        scene.scoreManager.addMoney(enemy.moneyValue);
+        if (scene.scoreManager) {
+            scene.scoreManager.addScore(Math.round(enemy.scoreValue * scene.level));
+            scene.scoreManager.addMoney(enemy.moneyValue);
+        }
     });
 
     // enemy bullet hits player
