@@ -42,7 +42,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
         this.path = new Phaser.Curves.Path();
 
-        this.#change_state("ROAM_CENTER"); // do the sweep
+        this.#change_state("BARRIER_SWEEP"); // do the sweep
         this.state_text = this.scene.add.bitmapText(this.x, this.y, bitmapFonts.PressStart2P, this.ai_state, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
 
         this.hp = hp;
