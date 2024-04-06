@@ -22,6 +22,8 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     target_pos = new Phaser.Math.Vector2();
     reached_target = false;
     is_dead = false;
+
+    #event_queue = [];
     constructor(scene, x, y, hp = 40) {
         super(scene, x, y);
         console.log(`Initializing lupa with ${hp} hp`)
@@ -40,7 +42,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         this.follower = { t: 0, vec: new Phaser.Math.Vector2() };
         this.path = new Phaser.Curves.Path();
 
-        this.#change_state("BARRIER_SWEEP"); // do the sweep
+        this.#change_state("ROAM_CENTER"); // do the sweep
         this.state_text = this.scene.add.bitmapText(this.x, this.y, bitmapFonts.PressStart2P, this.ai_state, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
 
         this.hp = hp;
@@ -110,7 +112,6 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                 {
                     this.target_pos = new Phaser.Math.Vector2(this.scene.game.config.width / 2, EnemyLupa.Y_NORMAL);
                     this.scene.physics.moveTo(this, this.target_pos.x, this.target_pos.y, 300);
-
                 }
             case "ROAMING":
                 {
@@ -132,11 +133,13 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                     if (this.scene.debugMode)
                         this.path.draw(this.graphics);
 
-                    // Hacky workaround that stops events from stacking. This shouldn't be needed but idk
-                    this.scene.time.removeAllEvents();
-                    // choose a random shoot state
-                    this.scene.time.delayedCall(Phaser.Math.FloatBetween(3, 5) * 1000,
-                        this.#change_state, [["SHOOT1", "SHOOT2"]], this);
+                    // clear event queue (if there are events)
+                    this.scene.time.removeEvent(this.#event_queue);
+                    // push the delayed call to the event queue
+                    this.#event_queue.push(
+                        this.scene.time.delayedCall(Phaser.Math.FloatBetween(3, 5) * 1000, this.#change_state, [["SHOOT1", "SHOOT2"]], this)
+                    );
+
                     break;
                 }
             case "SHOOT1": // Go to left or right side, then shoot inplace
