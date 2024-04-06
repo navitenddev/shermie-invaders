@@ -46,6 +46,7 @@ class SoundBank {
                 bg: this.scene.game.sound.add('bgmusic', { volume: 0.2, loop: true }),
                 boss: this.scene.game.sound.add('boss_music', { volume: 0.2, loop: true }),
                 boss_rush: this.scene.game.sound.add('boss_rush_music', { volume: 0.2, loop: true }),
+                champion: this.scene.game.sound.add('champion_music', { volume: 0.3, loop: false }),
                 story: this.scene.game.sound.add('story_music', { volume: 0.2, loop: true }),
                 shop: this.scene.game.sound.add('shop_music', { volume: 0.2, loop: true }),
                 start: this.scene.game.sound.add('start', { volume: 0.2, loop: true }),

@@ -167,7 +167,9 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
     #deactivate() {
         // console.log("Deactivating dialogue")
-        this.setPosition(42069, 42069);
+        // menu dialogue will stay after its complete (until scene is closed)
+        if (this.dialogue_type !== "menu")
+            this.setPosition(42069, 42069);
         this.is_active = false;
         this.emitter.emit('dialogue_stop', [])
         this.emitter.off('dialogue_start');
@@ -204,7 +206,12 @@ class DialogueManager extends Phaser.GameObjects.Container {
             }
 
             this.scene.input.on('pointerdown', () => {
-                this.text.setText(""); // 4 hours to fix this bug :)
+                if (this.dialogue_type === "menu"
+                    && this.line_index === this.lines.length) {
+
+                } else {
+                    this.text.setText(""); // 4 hours to fix this bug :)
+                }
                 this.auto_emit_flag = false;
                 this.#load_next_line();
             });
@@ -267,7 +274,7 @@ class Dialogue extends Phaser.Scene {
     }
 
     return_to_caller_scene() {
-        console.log(`TYPE: ${this.dialogue_type}`)
+        // console.log(`TYPE: ${this.dialogue_type}`)
         if (this.dialogue_type === "story") {
             this.startPrompt = this.add.bitmapText(450, 180, bitmapFonts.PressStart2P, `Press spacebar to start!`, fonts.small.sizes[bitmapFonts.PressStart2P])
         }

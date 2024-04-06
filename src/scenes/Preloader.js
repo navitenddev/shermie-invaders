@@ -126,6 +126,8 @@ export class Preloader extends Scene {
 
         this.load.audio('boss_rush_music', 'SFX/Epic Boss Battle (Dark Action Music) - Rafael Krux.m4a');
 
+        this.load.audio('champion_music', 'SFX/Youre The Champion - MaxKoMusic.mp3');
+
         this.load.audio('sandbox_music', 'SFX/8 Bit Adventure - David Fesliyan.mp3');
 
 

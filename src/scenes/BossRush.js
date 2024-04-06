@@ -64,6 +64,8 @@ export class BossRush extends Phaser.Scene {
     #boss_queue = [];
     #bosses_beaten = -1;
 
+    #BOSS_HP = 1; // The HP that each boss will spawn with
+
     #clock;
 
     constructor() {
@@ -153,15 +155,15 @@ export class BossRush extends Phaser.Scene {
         this.#boss_queue = [
             {
                 func: this.add.enemy_reaper,
-                args: [this, 0, 0, 40]
+                args: [this, 0, 0, this.#BOSS_HP]
             },
             {
                 func: this.add.enemy_lupa,
-                args: [this, this.game.config.width, 525, 40]
+                args: [this, this.game.config.width, 525, this.#BOSS_HP]
             },
             {
                 func: this.add.enemy_pupa,
-                args: [this, this.game.config.width, 525, 40]
+                args: [this, this.game.config.width, 525, this.#BOSS_HP]
             }
         ];
     }
@@ -192,11 +194,12 @@ export class BossRush extends Phaser.Scene {
         if (this.objs.enemies.special.children.entries.length === 0) {
             this.#bosses_beaten++;
             if (this.#boss_queue.length === 0) {
-                console.log("player wins");
                 // transition to win scene
+                this.goto_scene('Boss Rush Win', { time: this.#clock.dump_time(), bosses_beaten: this.#bosses_beaten });
             }
             const cb = this.#boss_queue.shift();
-            cb.func(...cb.args);
+            if (cb)
+                cb.func(...cb.args);
         }
         this.#clock.update(time, delta);
         this.check_gameover();
