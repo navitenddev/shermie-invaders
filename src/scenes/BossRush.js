@@ -189,6 +189,7 @@ export class BossRush extends Phaser.Scene {
         // this.livesText.setText('-');
         this.updateLives();
         this.physics.world.drawDebug = this.debugMode;
+        this.#clock.update(time, delta);
 
         // check if boss should spawn
         if (this.objs.enemies.special.children.entries.length === 0) {
@@ -201,11 +202,11 @@ export class BossRush extends Phaser.Scene {
             if (cb)
                 cb.func(...cb.args);
         }
-        this.#clock.update(time, delta);
         this.check_gameover();
     }
 
     check_gameover() {
+        this.player_vars.lives = 3;
         if (!this.objs.player.is_inbounds() && this.player_vars.lives <= 0) {
             this.goto_scene('Boss Rush Lose', { time: this.#clock.dump_time(), bosses_beaten: this.#bosses_beaten });
         }
