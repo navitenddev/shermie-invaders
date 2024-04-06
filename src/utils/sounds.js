@@ -19,22 +19,6 @@
 class SoundBank {
     constructor(scene) {
         this.scene = scene;
-        this.bank = {
-            sfx: {
-                win: null,
-                lose: null,
-                shoot: null,
-                explosion: [],
-                hurt: null,
-                click: null,
-                reload: null,
-            },
-            music: {
-                bg: null,
-                start: null,
-                ff7_fighting: null,
-            }
-        }
         this.init_sounds();
         this.load_mute_preference();
     }

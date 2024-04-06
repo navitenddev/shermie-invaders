@@ -14,17 +14,39 @@ class BossClock extends Phaser.GameObjects.Container {
     ms = 0;
     text;
     timer;
-    constructor(scene, x, y) {
-        super(scene, x, y);
-        this.text = scene.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, `${this.mm.padStart(2, '0')}:{this.ss`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]);
-        this.timer = this.time.addEvent({ delay: 6000000, callback: this.onClockEvent, callbackScope: this, repeat: 1 });
+    constructor(scene) {
+        super(scene, 0, 0);
+        scene.add.existing(this);
+
+        this.text = scene.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, `00:00:000`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]);
+        this.timer = scene.time.addEvent({ delay: 6000000, callback: this.onClockEvent, callbackScope: this, repeat: 1 });
+
+        this.add([this.text]);
     }
 
-    update() {
-        let elapsedTime = timedEvent.getElapsedSeconds();
-        this.mm = Math.floor(elapsedTime / (minutes * 60));
-        this.ss = Math.floor(time - minutes);
-        this.text.setText(`${this.mm.padStart(2, '0')}:${this.ss.padStart(2, '0')}:${this.ms.padStart(3, '0')}`);
+    update(time, delta) {
+        let elapsed_s = this.timer.getElapsedSeconds();
+        this.mm = Math.floor(elapsed_s / 60);
+        this.ss = Math.floor(elapsed_s - (this.mm * 60));
+        this.ms = Math.floor(this.timer.getElapsed() % 1000);
+        this.text
+            .setText(
+                `${this.mm.toString().padStart(2, '0')}:${this.ss.toString().padStart(2, '0')}:${this.ms.toString().padStart(3, '0')}`
+            );
+        this.setPosition((this.scene.game.config.width / 2) - (this.text.width / 2), 25);
+    }
+
+    dump_time() {
+        return {
+            mm: this.mm,
+            ss: this.ss,
+            ms: this.ms,
+        }
+    }
+
+    destroy() {
+        super.destroy();
+        this.timer.destroy();
     }
 }
 
@@ -71,13 +93,14 @@ export class BossRush extends Phaser.Scene {
     }
 
     create() {
-        // this.#clock = new BossClock(this, this.scene.game.config.width / 2, 25);
         // create/scale BG image 
         let bg = this.add.image(0, 0, 'background').setAlpha(0.85);
         bg.setOrigin(0, 0);
         bg.displayWidth = this.sys.game.config.width;
         bg.setScale(bg.scaleX, bg.scaleX);
         bg.y = -250;
+
+        this.#clock = new BossClock(this);
 
         this.PUPA_PATHS = {
             LEMNISCATE: this.cache.json.get('PUPA_LEMNISCATE'),
@@ -95,6 +118,7 @@ export class BossRush extends Phaser.Scene {
         );
 
         this.player_vars = this.registry.get('player_vars');
+        // player will have only level 1 stats and 1 life, except move speed = 2 just to be fair
         this.player_vars.lives = 1;
         this.player_vars.stats.move_speed = 2;
 
@@ -191,6 +215,15 @@ export class BossRush extends Phaser.Scene {
             const cb = this.#boss_queue.shift();
             cb.func(...cb.args);
         }
+
+        this.#clock.update(time, delta);
+    }
+
+    check_gameover() {
+        if (this.player_vars.lives <= 0) {
+            // u ded noob
+            this.goto_scene('Boss Rush Lose');
+        }
     }
 
     /**
@@ -209,7 +242,6 @@ export class BossRush extends Phaser.Scene {
 
     goto_scene(targetScene) {
         this.cameras.main.fade(500, 0, 0, 0);
-
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
             this.sounds.stop_all_music();
             this.scene.start(targetScene);
