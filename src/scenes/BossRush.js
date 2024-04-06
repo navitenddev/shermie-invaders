@@ -199,14 +199,12 @@ export class BossRush extends Phaser.Scene {
                 this.goto_scene('Boss Rush Win', { time: this.#clock.dump_time(), bosses_beaten: this.#bosses_beaten });
             }
             const cb = this.#boss_queue.shift();
-            if (cb)
-                cb.func(...cb.args);
+            if (cb) cb.func(...cb.args);
         }
         this.check_gameover();
     }
 
     check_gameover() {
-        this.player_vars.lives = 3;
         if (!this.objs.player.is_inbounds() && this.player_vars.lives <= 0) {
             this.goto_scene('Boss Rush Lose', { time: this.#clock.dump_time(), bosses_beaten: this.#bosses_beaten });
         }
