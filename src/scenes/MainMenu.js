@@ -67,16 +67,21 @@ export class MainMenu extends BaseMenu {
         const menuSpacing = 50; // spacing between menu items
         let menuY = 480; // starting Y position for menu items
 
+        let buttonEnable = false;   // to disable button spamming 
         // Start Button
         this.start_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'PLAY', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
             .setDepth(3)
             .on('pointerdown', () => {
+                if (buttonEnable) return;
+                buttonEnable = true;
+                console.log('Pressed');
                 this.sounds.bank.sfx.click.play();
                 this.cameras.main.fadeOut(200, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                     this.scene.start('Game');
+                    buttonEnable = false;
                 });
             });
 
@@ -87,8 +92,12 @@ export class MainMenu extends BaseMenu {
             .setInteractive()
             .setDepth(3)
             .on('pointerdown', () => {
+                if (buttonEnable) return;
+                buttonEnable = true;
+                console.log('Pressed');
                 this.sounds.bank.sfx.click.play();
                 this.scene.start('HowToPlay');
+                buttonEnable = false;
             });
 
         // Level Select Button
@@ -98,8 +107,12 @@ export class MainMenu extends BaseMenu {
             .setInteractive()
             .setDepth(3)
             .on('pointerdown', () => {
+                if (buttonEnable) return;
+                buttonEnable = true;
+                console.log('Pressed');
                 this.sounds.bank.sfx.click.play();
                 this.scene.start('LevelSelect');
+                buttonEnable = false;
             });
 
         if (this.registry.get('debug_mode') === true) {
@@ -110,10 +123,14 @@ export class MainMenu extends BaseMenu {
                 .setInteractive()
                 .setDepth(3)
                 .on('pointerdown', () => {
+                    if (buttonEnable) return;
+                    buttonEnable = true;
+                    console.log('Pressed');
                     this.sounds.bank.sfx.win.play();
                     this.cameras.main.fadeOut(200, 0, 0, 0);
                     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                         this.scene.start('Sandbox');
+                        buttonEnable = false;
                     });
                 });
             // Tech tips test button
@@ -124,7 +141,11 @@ export class MainMenu extends BaseMenu {
                 .setInteractive()
                 .setDepth(3)
                 .on('pointerdown', () => {
+                    if (buttonEnable) return;
+                    buttonEnable = true;
+                    console.log('Pressed');
                     this.scene.start('Tech Tip Test')
+                    buttonEnable = false;
                 });
 
             // Disable Cheats Button

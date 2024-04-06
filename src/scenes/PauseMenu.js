@@ -24,6 +24,7 @@ export class PauseMenu extends Scene {
                     this.sounds.bank.sfx.click.play();
                     this.scene.stop('PauseMenu');
                     this.scene.start('StatsMenu');
+                    buttonEnable = false;
                 },
             });
         }
@@ -44,13 +45,17 @@ export class PauseMenu extends Scene {
         this.keys = InitKeyDefs(this);
 
         let menuY = boxY + 40;
+        let buttonEnable = false;
         menuItems.forEach((item) => {
             const menuItem = this.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, item.text, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
                 .setOrigin(0.5)
                 .setInteractive()
                 .on('pointerdown', () => {
+                    if (buttonEnable) return;
+                    buttonEnable = true;
+                    console.log('Pressed');
                     this.sounds.bank.sfx.click.play();
-                    item.callback();
+                    item.callback(buttonEnable);
                 })
                 .setPosition(boxX + boxWidth / 2, menuY);
 
@@ -62,12 +67,13 @@ export class PauseMenu extends Scene {
         this.keys.m.on('down', () => this.sounds.toggle_mute());
     }
 
-    unpause() {
+    unpause(buttonEnable) {
         this.scene.stop('PauseMenu');
         this.scene.resume(this.prev_scene);
+        buttonEnable = false;
     }
 
-    quitGame() {
+    quitGame(buttonEnable) {
         this.emitter.removeAllListeners();
         this.sounds.stop_all_music();
         this.sounds.bank.sfx.click.play();
@@ -77,6 +83,7 @@ export class PauseMenu extends Scene {
             this.scene.stop('PauseMenu');
             this.scene.stop(this.prev_scene);
             this.scene.start('Main Menu');
+            buttonEnable = false;
         });
     }
 }
