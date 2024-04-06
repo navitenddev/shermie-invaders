@@ -62,6 +62,7 @@ export class BossRush extends Phaser.Scene {
     emitter = EventDispatcher.getInstance();
     PUPA_PATHS = {};
     #boss_queue = [];
+    #bosses_beaten = -1;
 
     #clock;
 
@@ -94,11 +95,10 @@ export class BossRush extends Phaser.Scene {
 
     create() {
         // create/scale BG image 
-        let bg = this.add.image(0, 0, 'background').setAlpha(0.85);
+        let bg = this.add.image(0, 0, 'BG7').setAlpha(0.85);
         bg.setOrigin(0, 0);
         bg.displayWidth = this.sys.game.config.width;
         bg.setScale(bg.scaleX, bg.scaleX);
-        bg.y = -250;
 
         this.#clock = new BossClock(this);
 
@@ -150,24 +150,6 @@ export class BossRush extends Phaser.Scene {
             this.toggleDebug();
         });
 
-        // this.reaper_btn = new IconButton(this, "reaper_icon",
-        //     this.game.config.width - 20, 172,
-        //     this.add.enemy_reaper,
-        //     [this, 0, 0, 40]
-        // );
-
-        // this.lupa_btn = new IconButton(this, "lupa_icon",
-        //     this.game.config.width - 20, 208,
-        //     this.add.enemy_lupa,
-        //     [this, this.game.config.width, 525]
-        // );
-
-        // this.pupa_btn = new IconButton(this, "pupa_icon",
-        //     this.game.config.width - 20, 244,
-        //     this.add.enemy_pupa,
-        //     [this, 400, 400]
-        // );
-
         this.#boss_queue = [
             {
                 func: this.add.enemy_reaper,
@@ -208,9 +190,10 @@ export class BossRush extends Phaser.Scene {
 
         // check if boss should spawn
         if (this.objs.enemies.special.children.entries.length === 0) {
+            this.#bosses_beaten++;
             if (this.#boss_queue.length === 0) {
                 console.log("player wins");
-                // add st uff to do
+                // transition to win scene
             }
             const cb = this.#boss_queue.shift();
             cb.func(...cb.args);
@@ -221,7 +204,7 @@ export class BossRush extends Phaser.Scene {
 
     check_gameover() {
         if (!this.objs.player.is_inbounds() && this.player_vars.lives <= 0) {
-            this.goto_scene('Boss Rush Lose', { time: this.#clock.dump_time() });
+            this.goto_scene('Boss Rush Lose', { time: this.#clock.dump_time(), bosses_beaten: this.#bosses_beaten });
         }
     }
 

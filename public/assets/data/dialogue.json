@@ -108,6 +108,12 @@
   "level7": {
     "lines": ["Level 7 filler"]
   },
+  "boss_rush_win": {
+    "lines": []
+  },
+  "boss_rush_lose": {
+    "lines": []
+  },
   "techtip1": {
     "lines": [
       "You never know where hackers may lurk, so get antivirus software and make sure it works."
