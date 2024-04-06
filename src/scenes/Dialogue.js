@@ -168,7 +168,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
     #deactivate() {
         // console.log("Deactivating dialogue")
         // menu dialogue will stay after its complete (until scene is closed)
-        if (!["menu", "techtip"].includes(this.dialogue_type))
+        if (this.dialogue_type !== "menu")
             this.setPosition(42069, 42069);
         this.is_active = false;
         this.emitter.emit('dialogue_stop', [])
@@ -206,7 +206,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
             }
 
             this.scene.input.on('pointerdown', () => {
-                if (["menu", "techtip"].includes(this.dialogue_type)
+                if (this.dialogue_type === "menu"
                     && this.line_index === this.lines.length) {
                     // don't clear last line for menu and techtip
                 } else {
