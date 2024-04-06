@@ -1,6 +1,7 @@
 import { Boot } from './scenes/Boot';
 import { Game } from './scenes/Game';
 import { BossRush } from './scenes/BossRush';
+import { BossRushLose } from './scenes/BossRushLose';
 import { PlayerWin } from './scenes/PlayerWin';
 import { PlayerLose } from './scenes/PlayerLose';
 import { MainMenu } from './scenes/MainMenu';
@@ -51,6 +52,7 @@ const config = {
         StatsMenu,
         Store,
         TechTipTest,
+        BossRushLose
         // Dialogue,
     ]
 };

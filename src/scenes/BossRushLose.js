@@ -4,13 +4,13 @@ import { restart_scenes } from '../main.js';
 import { start_dialogue } from './Dialogue.js';
 import { TextButton } from '../ui/text_button.js';
 
-export class PlayerWin extends Phaser.Scene {
+export class BossRushLose extends Phaser.Scene {
     emitter = EventDispatcher.getInstance();
     constructor() {
-        super('Player Win');
+        super('Boss Rush Lose');
     }
 
-    create() {
+    create(data) {
         this.sounds = this.registry.get('sound_bank');
         this.sounds.stop_all_music();
         this.sounds.bank.music.shop.play();
@@ -25,7 +25,7 @@ export class PlayerWin extends Phaser.Scene {
         const score = this.player_vars.score;
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE, () => {
-            start_dialogue(this.scene, `techtip${rand_idx}`, "techtip");
+            // start_dialogue(this.scene, `techtip${rand_idx}`, "techtip");
         });
 
         this.emitter.removeAllListeners(); // clean up event listeners
@@ -35,7 +35,9 @@ export class PlayerWin extends Phaser.Scene {
 
         this.sounds.bank.sfx.win.play();
 
-        this.add.text(512, 200, `Congratulations, you beat level ${this.registry.get("level")}!\nYou can now shop for upgrades.`, {
+        const time_str = `${data.time.mm}:${data.time.ss}:${data.time.ms}`;
+
+        this.add.text(512, 200, `Nice try, but not good enough. You survived for: ${time_str}`, {
             fontFamily: 'Arial Black',
             fontSize: 32,
             color: '#ffffff',
@@ -48,10 +50,10 @@ export class PlayerWin extends Phaser.Scene {
             }
         }).setOrigin(0.5);
 
-        this.continue_btn = new TextButton(this, this.game.config.width / 2, 600, 150, 50, 'Continue',
+        this.continue_btn = new TextButton(this, this.game.config.width / 2, 600, 150, 50, 'Main Menu',
             () => { // callback function
                 this.emitter.emit('force_dialogue_stop');
-                this.scene.start("Store")
+                this.scene.start("Main Menu")
             },
             [], // callback function's arguments
             bitmapFonts.PressStart2P,                    // font type
@@ -60,14 +62,6 @@ export class PlayerWin extends Phaser.Scene {
             0x383A40, // color of hovered
             0xFEFEFE, // color of clicked
             0x879091  // color of border
-        );
-
-        this.add.bitmapText(
-            16,
-            16,
-            bitmapFonts.PressStart2P_Stroke,
-            `CURRENT SCORE:${score}`,
-            fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]
         );
     }
 }

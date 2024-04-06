@@ -38,10 +38,10 @@ class BossClock extends Phaser.GameObjects.Container {
 
     dump_time() {
         return {
-            mm: this.mm,
-            ss: this.ss,
-            ms: this.ms,
-        }
+            mm: this.mm.toString().padStart(2, '0'),
+            ss: this.ss.toString().padStart(2, '0'),
+            ms: this.ms.toString().padStart(3, '0'),
+        };
     }
 
     destroy() {
@@ -215,14 +215,13 @@ export class BossRush extends Phaser.Scene {
             const cb = this.#boss_queue.shift();
             cb.func(...cb.args);
         }
-
         this.#clock.update(time, delta);
+        this.check_gameover();
     }
 
     check_gameover() {
-        if (this.player_vars.lives <= 0) {
-            // u ded noob
-            this.goto_scene('Boss Rush Lose');
+        if (!this.objs.player.is_inbounds() && this.player_vars.lives <= 0) {
+            this.goto_scene('Boss Rush Lose', { time: this.#clock.dump_time() });
         }
     }
 
@@ -240,11 +239,11 @@ export class BossRush extends Phaser.Scene {
         }
     }
 
-    goto_scene(targetScene) {
+    goto_scene(targetScene, data) {
         this.cameras.main.fade(500, 0, 0, 0);
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
             this.sounds.stop_all_music();
-            this.scene.start(targetScene);
+            this.scene.start(targetScene, data);
         });
     }
 }
