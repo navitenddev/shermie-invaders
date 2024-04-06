@@ -66,7 +66,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
         if (["techtip", "game_blocking", "menu"].includes(dialogue_type)) {
             x = (scene.game.config.width / 2) - (w / 2);
             y = scene.game.config.height / 2.5;
-            h = (scene.game.config.height / 4)
+            h = (scene.game.config.height / 3.8)
         } else if (dialogue_type === "game") {
             w = 310;
         }
@@ -168,7 +168,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
     #deactivate() {
         // console.log("Deactivating dialogue")
         // menu dialogue will stay after its complete (until scene is closed)
-        if (this.dialogue_type !== "menu")
+        if (!["menu", "techtip"].includes(this.dialogue_type))
             this.setPosition(42069, 42069);
         this.is_active = false;
         this.emitter.emit('dialogue_stop', [])
@@ -206,9 +206,9 @@ class DialogueManager extends Phaser.GameObjects.Container {
             }
 
             this.scene.input.on('pointerdown', () => {
-                if (this.dialogue_type === "menu"
+                if (["menu", "techtip"].includes(this.dialogue_type)
                     && this.line_index === this.lines.length) {
-
+                    // don't clear last line for menu and techtip
                 } else {
                     this.text.setText(""); // 4 hours to fix this bug :)
                 }
