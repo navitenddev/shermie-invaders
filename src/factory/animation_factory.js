@@ -168,9 +168,18 @@ class AnimationFactory {
         });
 
         this.scene.anims.create({
-            key: "BG7Sheet",
-            frames: this.scene.anims.generateFrameNumbers("BG7Sheet", {
-                start: 0, end: 2,
+            key: "BG7-SpriteSheet",
+            frames: this.scene.anims.generateFrameNumbers("BG7-SpriteSheet", {
+                start: 0, end: 7,
+            }),
+            frameRate: 5,
+            repeat: -1,
+        });
+
+        this.scene.anims.create({
+            key: "BG6-SpriteSheet",
+            frames: this.scene.anims.generateFrameNumbers("BG6-SpriteSheet", {
+                start: 0, end: 7,
             }),
             frameRate: 5,
             repeat: -1,

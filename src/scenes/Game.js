@@ -82,10 +82,11 @@ export class Game extends Scene {
         }
 
         if (this.level === 7) {
-            this.bg = this.add.sprite(0, 0, 'BG7Sheet').setOrigin(0, 0);
-            this.bg.play('BG7Sheet');
+            this.bg = this.add.sprite(0, 0, 'BG7').setOrigin(0, 0);
+            this.bg.play('BG7-SpriteSheet'); //can remove bg7 anim if annoying
         } else if (this.level % 6 === 0) {
-            bgKey = 'BG6';
+            this.bg = this.add.sprite(0, 0, 'BG6').setOrigin(0, 0);
+            this.bg.play('BG6-SpriteSheet'); //can remove bg6 anim if annoying
         }
         this.bg.setScrollFactor(0); 
 

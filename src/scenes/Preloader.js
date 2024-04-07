@@ -224,7 +224,11 @@ export class Preloader extends Scene {
             frameWidth: 1024,
             frameHeight: 768,
         });
-        this.load.spritesheet("BG7Sheet", "backgrounds/BG7Sheet.png", {
+        this.load.spritesheet("BG6-SpriteSheet", "backgrounds/BG6-SpriteSheet.png", {
+            frameWidth: 1024,
+            frameHeight: 768,
+        });
+        this.load.spritesheet("BG7-SpriteSheet", "backgrounds/BG7-SpriteSheet.png", {
             frameWidth: 1024,
             frameHeight: 768,
         });
