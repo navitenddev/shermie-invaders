@@ -24,22 +24,22 @@
     ]
   },
   "test2": {
-    "lines": ["Yo what's goodie", "Okay cool beans", "buh bye dood"]
+    "lines": [ "Yo what's goodie", "Okay cool beans", "buh bye dood" ]
   },
   "win1": {
-    "lines": ["AYOOOOOO, SHERMIE IN DA HOUSE"]
+    "lines": [ "AYOOOOOO, SHERMIE IN DA HOUSE" ]
   },
   "lose1": {
-    "lines": ["We may have lost the battle...", "but not the war..."]
+    "lines": [ "We may have lost the battle...", "but not the war..." ]
   },
   "shermie_hurt": {
-    "lines": ["ouch! that hurt!"]
+    "lines": [ "ouch! that hurt!" ]
   },
   "shermie_shieldhurt": {
-    "lines": ["Hey, watch it! They're breaking my shield!"]
+    "lines": [ "Hey, watch it! They're breaking my shield!" ]
   },
   "shermie_shieldgone": {
-    "lines": ["Ah! Blasted right through the shield!"]
+    "lines": [ "Ah! Blasted right through the shield!" ]
   },
   "shermie_start": {
     "lines": [
@@ -48,10 +48,10 @@
     ]
   },
   "shermie_dead": {
-    "lines": ["NoooooOOOOoOOOoOOOO!!!"]
+    "lines": [ "NoooooOOOOoOOOoOOOO!!!" ]
   },
   "shermie_boss": {
-    "lines": ["Why do I hear boss music?"]
+    "lines": [ "Why do I hear boss music?" ]
   },
   "sandbox_tips": {
     "lines": [
@@ -61,52 +61,61 @@
   },
   "level1": {
     "lines": [
-      "My adventure begins at the peaceful Navitend Farm.",
-      "A place of harmony,",
-      "Little did I know, This world was about to change forever.",
-      "As the sun sets, a strange silence falls over the farm.",
-      "As I look up, sensing the impending threat, I was ready to protect my home."
+      "I, Shermie, Will recall this epic tell...",
+      "My adventure begins at the Navitend headquarters, a place of innovation and growth.",
+      "Unbeknownst to me, the peace of this world was on the brink of failing.",
+      "As dusk took hold, a sudden silence fell",
+      "Looking into the night sky, a terrifying feeling washed over me. But I stood firm",
+      "ready to protect my home against any threat.",
+      "But less did they know, I was no ordinary being...",
+      "I, Shermie, I was ready for the combat to come."
     ]
   },
   "level2": {
     "lines": [
-      "After defending my home,",
-      "I must navigate To the city.",
-      "Streets once filled with joy are now battlegrounds.",
-      "The Nexus's cyber minions attack, Hacking everything.",
-      "With each step, I vow to restore peace to the city's heart."
+      "With the Navitend headquarters safe, I ventured towards Shermie Town.",
+      "The heart of our community, where streets filled with laughter and joy, now lay as silent battlegrounds.",
+      "Confronted by these cyber minions, every corner turned into a fight for survival.",
+      "With each step taken, I pledge to reclaim cities laughter."
     ]
   },
   "level3": {
     "lines": [
-      "After defeating the minions attacking the city.",
-      "determined to halt the invaders, I advance before they reach space.",
-      "Surrounded by the vastness of the sky, I face the aerial fleet",
-      "Each cloud a witness to the fierce battle between hope and despair.",
-      "With the wind as a ally, I maneuvers through this wild battlefield,",
-      "This skyward clash is but a prelude to the greater war looming in the stars."
+      "Having pushed back the initial wave, I knew  the battle was far from over...",
+      "As my strength grew, so did my hope in reclaiming the peace on earth",
+      "Ascending towards the heavens, I intercepted the invaders, vowing they would not breach the stars.",
+      "Allied with the gusting winds on upward, I danced through chaos defeating every foe."
     ]
   },
   "level4": {
     "lines": [
-      "Now in orbit, I defend Earth from a relentless barrage,",
-      "shielding my home from the debris of war and cyber threats.",
-      "Each attack is intercepted, each enemy vanquished, brings hope.",
-      "Earth hangs in the balance, its fate tied to Shermie's bravery.",
-      "The orbit becomes a dance of danger and defiance, Shermie leading the way."
+      "Dark space turned cold, Still leading the charge against our adversaries.",
+      "Now, I Shermie, stood as Earth's last bastion against the Nexsus...",
+      "With Earth's fate hanging by a thread, I drew upon every resource I could."
     ]
   },
   "level5": {
     "lines": [
-      "The chase continues back to the enemy's lair, the boss spaceship.",
-      "Level 5 filler"
+      "After fierce battle upon Earth, I detected the enemy's dark heart, looming in the cold expanse of space.",
+      "As I stealthily approached the dark stronghold, I understood that this was no mere physical battle",
+      "Realizing my fate, I gave myself for a confrontation that could change destiny.",
+      "my resolve echoed louder than ever, a stark reminder of what was at stake should I falter."
     ]
   },
   "level6": {
-    "lines": ["Level 6 filler"]
+    "lines": [
+      "Surrounded by the void of space, the enemy's elite forces formed a blockade,",
+      "Each confrontation was a test of my resolve. With every foe defeated, my spirit soared,",
+      "The battles raged on and on, a relentless dance of strength and endurance.",
+      "Allies, distant yet ever-present on earth, with raised hands, lent their strength in spirit..."
+    ]
   },
   "level7": {
-    "lines": ["Level 7 filler"]
+    "lines": [
+      "As space dust settled, a path to the dark heart opened, its presence bestowing a heavy fear",
+      "In a battle that would echo through the ages, face to face",
+      "With heart and might, I challenged darkness..."
+    ]
   },
   "techtip1": {
     "lines": [
