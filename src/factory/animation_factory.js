@@ -172,7 +172,7 @@ class AnimationFactory {
             frames: this.scene.anims.generateFrameNumbers("BG7-SpriteSheet", {
                 start: 0, end: 7,
             }),
-            frameRate: 5,
+            frameRate: 3,
             repeat: -1,
         });
 
@@ -181,7 +181,7 @@ class AnimationFactory {
             frames: this.scene.anims.generateFrameNumbers("BG6-SpriteSheet", {
                 start: 0, end: 7,
             }),
-            frameRate: 5,
+            frameRate: 4,
             repeat: -1,
         });
     }
