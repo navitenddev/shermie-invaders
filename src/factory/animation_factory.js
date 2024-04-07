@@ -37,10 +37,10 @@ class AnimationFactory {
             key: "shermie_walkshoot",
             frames: this.scene.anims.generateFrameNumbers("Shermie-runshoot", {
                 start: 0,
-                end: 5,
+                end: 5, // Adjust to use only 4 frames (0 to 3 inclusive)
             }),
             frameRate: 16,
-            repeat: -1,
+            repeat: 0, // Ensures the animation plays only once
         });
 
         this.scene.anims.create({

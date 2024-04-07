@@ -310,9 +310,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @param {boolean} moving_right True if moving right, false if left
      */
     move(moving_right) {
-        if (this.anims &&
-            this.anims.isPlaying &&
-            this.anims.currentAnim.key === "shermie_idle")
+        this.isMoving = moving_right || this.body.velocity.x !== 0; // Adjust this condition as necessary
+
+        if (this.anims && this.anims.isPlaying && this.anims.currentAnim.key === "shermie_idle")
             this.play("shermie_walk");
 
         if (moving_right) {
@@ -338,10 +338,20 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 let bullet_speed = STAT_MAP.bullet_speed[this.stats.bullet_speed - 1];
 
                 bullet.activate(this.x, this.y, 0, bullet_speed * 100);
+
                 if (this.anims) {
-                    this.anims.play("shermie_shoot");
-                    this.anims.nextAnim = "shermie_idle";
+                    if (this.isMoving && this.anims.currentAnim.key === "shermie_walk") {
+                        let currentFrameIndex = this.anims.currentFrame.index;
+                        this.anims.play("shermie_walkshoot");
+                        this.anims.setCurrentFrame(this.anims.currentAnim.frames[currentFrameIndex - 1]);
+                        this.anims.nextAnim = "shermie_walk";
+                    } else {
+                        // This block should execute if the character is not moving or if the current animation is not 'shermie_walk'.
+                        this.anims.play("shermie_shoot");
+                        this.anims.nextAnim = "shermie_idle";
+                    }
                 }
+
                 if (this.player_vars.power == "spread") {
                     let bulletr = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
                     if (bulletr !== null) {
