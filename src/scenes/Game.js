@@ -20,6 +20,7 @@ import { SoundBank } from '../utils/sounds';
 
 export class Game extends Scene {
     emitter = EventDispatcher.getInstance();
+    bgScrollSpeed = 0;
     constructor() {
         super('Game');
     }
@@ -75,20 +76,23 @@ export class Game extends Scene {
 
         if (this.level === 3 || this.level === 5) {
             this.bg = this.add.tileSprite(0, 0, this.sys.game.config.width, this.sys.game.config.height, bgKey).setOrigin(0, 0);
-            this.bgScrollSpeed = 5; 
+            this.bgScrollSpeed = 2;
         } else {
             this.bg = this.add.image(0, 0, bgKey).setOrigin(0, 0).setAlpha(1);
             this.bg.setDisplaySize(this.sys.game.config.width, this.sys.game.config.height);
         }
 
-        if (this.level === 7) {
+        if (this.level % 7 === 0) {
             this.bg = this.add.sprite(0, 0, 'BG7').setOrigin(0, 0);
             this.bg.play('BG7-SpriteSheet'); //can remove bg7 anim if annoying
-        } else if (this.level % 6 === 0) {
+        } else if ((this.level + 1) % 7 === 0) {
             this.bg = this.add.sprite(0, 0, 'BG6').setOrigin(0, 0);
             this.bg.play('BG6-SpriteSheet'); //can remove bg6 anim if annoying
+        } else if (this.level > 7) {
+            this.bg = this.add.tileSprite(0, 0, this.sys.game.config.width, this.sys.game.config.height, bgKey).setOrigin(0, 0);
+            this.bgScrollSpeed = 2;
         }
-        this.bg.setScrollFactor(0); 
+        this.bg.setScrollFactor(0);
 
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
@@ -210,9 +214,7 @@ export class Game extends Scene {
         this.objs.ai_grid_enemies(time);
         this.check_gameover();
 
-        if (this.level === 3 || this.level === 5) {
-            this.bg.tilePositionY -= this.bgScrollSpeed;
-        }
+        this.bg.tilePositionY -= this.bgScrollSpeed;
     }
 
 
