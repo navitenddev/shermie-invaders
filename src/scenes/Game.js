@@ -7,8 +7,7 @@ import ScoreManager from '../utils/ScoreManager';
 import { GridEnemy } from '../objects/enemy_grid';
 import { EventDispatcher } from '../utils/event_dispatcher';
 import { start_dialogue } from './Dialogue';
-
-// The imports below aren't necessary for functionality, but are here for the JSdoc descriptors.
+import { init_collision_events, restart_scenes } from '../main';
 import { SoundBank } from '../utils/sounds';
 
 /**
@@ -29,22 +28,57 @@ export class Game extends Scene {
         this.debugMode = false;
     }
 
+    preload() {
+        this.load.json({
+            key: "PUPA_LEMNISCATE",
+            url: "assets/paths/pupa.json",
+            dataKey: "LEMNISCATE",
+        });
+        this.load.json({
+            key: "PUPA_TRIANGLE",
+            url: "assets/paths/pupa.json",
+            dataKey: "TRIANGLE",
+        });
+        this.load.json({
+            key: "PUPA_SPLINE",
+            url: "assets/paths/pupa.json",
+            dataKey: "SPLINE1",
+        });
+        this.load.json({
+            key: "PUPA_ILLUMINATI",
+            url: "assets/paths/pupa.json",
+            dataKey: "ILLUMINATI",
+        });
+    }
+
+
     create() {
         this.level = this.registry.get('level');
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
         // For now, the level dialogues will repeat after it exceeds the final level dialogue.
 
+        this.PUPA_PATHS = {
+            LEMNISCATE: this.cache.json.get('PUPA_LEMNISCATE'),
+            TRIANGLE: this.cache.json.get('PUPA_TRIANGLE'),
+            SPLINE: this.cache.json.get('PUPA_SPLINE'),
+            ILLUMINATI: this.cache.json.get('PUPA_ILLUMINATI'),
+        }
+
         if (this.level <= 7) {
             start_dialogue(this.scene, `level${(this.level)}`, "story", 23);
         }
 
-        let bgKey;
-        if (this.level > 7) {
+        let bgKey = `BG${this.level}`;
+        if (this.level > 7)
             bgKey = 'BG5'; // Default to BG5 for levels above 7
-        } else {
-            bgKey = `BG${this.level}`; // Use the dynamic background key for levels 7 and below
-        }
+
+        // show ship before boss level for all levels after 7
+        if (this.level % 6 === 0)
+            bgKey = 'BG6';
+        // show boss bg for all boss levels after 7
+        else if (this.level % 7 === 0)
+            bgKey = 'BG7';
 
         if (this.level === 3 || this.level === 5) {
             // If the level is 3 or 5, create a TileSprite instead of a static image
@@ -76,7 +110,7 @@ export class Game extends Scene {
         this.scoreManager = new ScoreManager(this);
 
         // Event to kill all enemies
-        this.emitter.once('kill_all_enemies', this.#kill_all_enemies, this);
+        this.emitter.on('kill_all_enemies', this.#kill_all_enemies, this);
 
         this.emitter.once('player_lose', this.goto_scene, this)
 
@@ -107,10 +141,10 @@ export class Game extends Scene {
         let secs = Phaser.Math.Between(15, 60);
         console.log(`Spawning enemy USB in ${secs}s`)
         this.time.delayedCall(secs * 1000, this.objs.spawn_usb_enemy, [], this.scene);
-        this.sounds.bank.music.start.stop();
+        this.sounds.stop_all_music();
         this.sounds.bank.music.bg.play();
 
-        this.init_collision_events();
+        init_collision_events(this);
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
@@ -139,18 +173,20 @@ export class Game extends Scene {
 
     #kill_all_enemies() {
         // Loop through all enemies and destroy them
-        this.objs.enemies.grid.children.each(enemy => {
-            enemy.die();
-            this.scoreManager.addMoney(enemy.moneyValue);
-            this.scoreManager.addScore(enemy.scoreValue);
-        });
+        if (this.objs) {
+            this.objs.enemies.grid.children.each(enemy => {
+                enemy.die();
+                this.scoreManager.addMoney(enemy.moneyValue);
+                this.scoreManager.addScore(Math.round(enemy.scoreValue * this.level));
+            }, this);
 
-        this.objs.enemies.special.children.each(enemy => {
-            this.scoreManager.addMoney(enemy.moneyValue * enemy.hp);
-            this.scoreManager.addScore(enemy.scoreValue * enemy.hp);
-            enemy.hp = 1;
-            enemy.die();
-        });
+            this.objs.enemies.special.children.each(enemy => {
+                this.scoreManager.addMoney(enemy.moneyValue * enemy.hp);
+                this.scoreManager.addScore(enemy.scoreValue * enemy.hp);
+                enemy.hp = 1;
+                enemy.die();
+            }, this);
+        }
     }
 
     /**
@@ -179,22 +215,53 @@ export class Game extends Scene {
 
 
     check_gameover() {
+        if (this.player_vars.lives <= 0 &&
+            !this.objs.player.is_inbounds()) {
+            console.log("PLAYER LOST")
+            this.player_vars.power = "";
+            this.gameover = true;
+            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
+            this.goto_scene("Player Lose");
+        }
+
         if (this.objs.enemies.grid.children.entries.length == 0 &&
             !this.level_transition_flag) {
+            // if this is a boss level
+            if (this.level % 7 === 0) {
+                console.log()
+                if (!this.boss_spawned) {
+                    this.boss_spawned = true;
+                    const boss_hp = (100 * (Math.floor((this.registry.get('level') / 7)) + 1));
+                    // spawn boss type based on different multiples of 7
+                    if (this.level % 21 === 0)
+                        this.add.enemy_pupa(this, 0, 0, boss_hp);
+                    else if (this.level % 14 === 0)
+                        this.add.enemy_lupa(this, this.game.config.width, 525, boss_hp);
+                    else
+                        this.add.enemy_reaper(this, 0, 0, boss_hp);
+                    // TODO: start boss music here
+                    this.sounds.stop_all_music();
+                    this.sounds.bank.music.boss.play();
+                    start_dialogue(this.scene, "shermie_boss", "game_blocking");
+                }
+
+                // is boss dead?
+                if (this.objs.enemies.special.children.entries.length === 0) {
+                    this.objs.player.isInvincible = true;
+                    this.goto_scene("Player Win");
+                }
+                return;
+            }
             this.player_vars.active_bullets = 0;
             this.level_transition_flag = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.player_vars.power = "";
             this.goto_scene("Player Win");
-        } else if (this.player_vars.lives <= 0 &&
-            !this.objs.player.is_inbounds()) {
-            this.player_vars.power = "";
-            this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
-            this.goto_scene("Player Lose");
         }
     }
 
     goto_scene(targetScene) {
+        this.emitter.off('kill_all_enemies');
         const cheatModeEnabled = this.registry.get('debug_mode') === true;
         if (!cheatModeEnabled) {
             this.scoreManager.checkAndUpdateHighScore();
@@ -207,7 +274,7 @@ export class Game extends Scene {
         this.cameras.main.fade(500, 0, 0, 0);
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-            this.sounds.bank.music.bg.stop();
+            this.sounds.stop_all_music();
             if (targetScene === "Player Lose") {
                 this.scene.start('Player Lose');
             } else {

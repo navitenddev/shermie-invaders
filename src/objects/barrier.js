@@ -1,15 +1,25 @@
-let chunk_size = { w: 5, h: 5 };
+
+const TILE_KEYMAP = {
+    "tl": 0, // top left
+    "tr": 1, // top right
+    "bl": 2, // bottom left
+    "br": 3, // bottom right
+    "l": 4, // left
+    "m": 5, // mid
+    "r": 6, // mid
+    "bm": 7, // bottom mid
+    "tm": 8, // top mid
+};
 
 /**
  * @description an individual chunk within a Barrier object
  */
 
-class BarrierChunk extends Phaser.GameObjects.Rectangle {
-    constructor(scene, x, y, width, height, color, health = 10) {
-        super(scene, x, y, width, height);
+class BarrierChunk extends Phaser.GameObjects.Sprite {
+    constructor(scene, x, y, key, health = 10) {
+        super(scene, x, y, "brick_tileset", TILE_KEYMAP[key]);
         scene.physics.add.existing(this, true);
         scene.add.existing(this);
-        this.setFillStyle(color);
         this.body.debugShowBody = false;
         this.health = health;
     }
@@ -33,20 +43,17 @@ class Barrier {
      * @param {Phaser.Scene} scene The scene to initialize the barrier in
      * @param {number} x Top-left x coordinate of barrier 
      * @param {number} y Top-left y coordinate of barrier 
-     * @param {number} cw individuial chunk width
+     * @param {number} cw individual chunk width
      * @param {number} ch individual chunk height
      * @param {number} n_cols number of columns of chunks
      * @param {number} n_rows number of rows of chunks
-     * @param {number} color color of each chunk
      */
     constructor(scene,
         x, y,             // barrier top-left corner coordinate
         cw, ch,           // chunk width/height
         n_cols, n_rows,   // number of chunks for each row/col
-        color = 0x000000, // hex color code for barrier chunk fill color
     ) {
         this.scene = scene;
-
         let w = n_cols * cw;
         let h = n_rows * ch;
 
@@ -54,7 +61,6 @@ class Barrier {
         this.chunk_defs = {
             dims: { w: cw, h: ch },
             n: { rows: n_rows, cols: n_cols },
-            color: color,
             health: 10
         };
         this.chunks = [];
@@ -69,7 +75,7 @@ class Barrier {
     static explode_at_bullet_hit(scene, bullet, barr_chunk, baseExplosionRadius = 20) {
         const maxDamage = 100;
 
-        // randomn explosion radius
+        // random explosion radius
         const randomRadiusFactor = Phaser.Math.FloatBetween(1.0, 1.6);
         const explosionRadius = baseExplosionRadius * randomRadiusFactor;
 
@@ -98,18 +104,70 @@ class Barrier {
         bullet.deactivate();
     }
 
+    // Adds rectangular brick
+    #add_brick(x, y) {
+        /* Dunno a better way to do this without hard coding, sorry for the stinky code */
+        let chunks = [
+            this.scene.add.barrier_chunk(this.scene,
+                x, y, "tl"),
+            this.scene.add.barrier_chunk(this.scene,
+                x + 5, y, "tm"),
+            this.scene.add.barrier_chunk(this.scene,
+                x + 10, y, "tr"),
+            this.scene.add.barrier_chunk(this.scene,
+                x, y + 5, "bl"),
+            this.scene.add.barrier_chunk(this.scene,
+                x + 5, y + 5, "bm"),
+            this.scene.add.barrier_chunk(this.scene,
+                x + 10, y + 5, "br")
+        ];
+
+        chunks.forEach((c) => {
+            c.parent = this;
+            this.chunks.push(c);
+        });
+    }
+
+    #add_square_brick(x, y) {
+        let chunks = [
+            this.scene.add.barrier_chunk(this.scene,
+                x, y, "tl"),
+            this.scene.add.barrier_chunk(this.scene,
+                x + 5, y, "tr"),
+            this.scene.add.barrier_chunk(this.scene,
+                x, y + 5, "bl"),
+            this.scene.add.barrier_chunk(this.scene,
+                x + 5, y + 5, "br"),
+        ];
+        chunks.forEach((c) => {
+            c.parent = this;
+            this.chunks.push(c);
+        });
+    }
+
     init_chunks() {
-        let c = this.chunk_defs;
-        for (let j = this.rect.y; j < this.rect.y + c.n.rows * c.dims.h; j += c.dims.h) {
-            for (let i = this.rect.x; i < this.rect.x + c.n.cols * c.dims.w; i += c.dims.w) {
-                let chunk = this.scene.add.barrier_chunk(this.scene,
-                    i, j,
-                    c.dims.w, c.dims.h,
-                    c.color
-                );
-                chunk.parent = this; // reference to the parent barrier because we need to update the flame size based on chunks remaining
-                this.chunks.push(chunk);
+        const BRICK_W = 3 * 5;
+        const BRICK_H = (2 * 5) - 1;
+
+        const rows = 7, cols = 7;
+
+        let k = 0;
+        for (let j = 0; j < rows * BRICK_H; j += BRICK_H, k++) {
+            for (let i = 0; i < cols * BRICK_W; i += BRICK_W - 1) {
+                if (k === 0)
+                    this.#add_brick(this.rect.x + i, this.rect.y + j + 1)
+                else if (k % 2 === 0)
+                    this.#add_brick(this.rect.x + i, this.rect.y + j)
+                else
+                    this.#add_brick(this.rect.x + i - ((BRICK_W) / 2), this.rect.y + j);
             }
+
+            if (k === 0) // add left square and shift down one
+                this.#add_square_brick(this.rect.x - (BRICK_W / 2), this.rect.y + j + 1);
+            else if (k % 2 === 0) // add left square
+                this.#add_square_brick(this.rect.x - (BRICK_W / 2), this.rect.y + j);
+            else // add right square
+                this.#add_square_brick(this.rect.x + (BRICK_W * cols) - 2, this.rect.y + j);
         }
     }
 
@@ -126,7 +184,7 @@ class Barrier {
                 frame: 'white',
                 color: [0xffd700, 0xffa500, 0xff6347, 0xdc143c],
                 colorEase: 'quad.out',
-                lifespan: {min: 500, max: 1400},
+                lifespan: { min: 500, max: 1400 },
                 angle: { min: -90, max: -90 },
                 scale: { start: 0.50, end: 0, ease: 'sine.in' },
                 speed: 100,
@@ -134,7 +192,7 @@ class Barrier {
                 alpha: { start: 1, end: .55 },
                 emitZone: {
                     type: 'random',
-                    source: new Phaser.Geom.Rectangle(-55, 0, this.rect.width, 10),
+                    source: new Phaser.Geom.Rectangle(-58.5, -10, this.rect.width, 10),
                     quantity: 50,
                 }
             });

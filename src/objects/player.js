@@ -44,7 +44,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     static timers = {
         last_fired: 0,
     }
-    static powerup = {
+    powerup = {
         max: 10,
         max_ammo: 0,
     }
@@ -137,7 +137,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.powerup_bar.setPosition(this.x + this.powerup_bar_offset.x,
             this.y + this.powerup_bar_offset.y);
-        this.powerup_bar.set_value(Player.powerup.ammo);
+        this.powerup_bar.set_value(this.powerup.ammo);
     }
 
     #update_powerup_icon() {
@@ -253,9 +253,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             // allow player to fly off screen
             this.setCollideWorldBounds(false);
 
-            let ang = Phaser.Math.Between(3, 10);
-            this.dead_vel.x =
-                (this.x < this.scene.game.config.width / 2) ? ang : -ang;
+            let ang = Phaser.Math.Between(300, 500);
+            const vx = Phaser.Math.Between(-750, 750);
+            const vy = -750;
+            this.setVelocity(vx, vy)
+                .setAngularVelocity(ang);
         }
         else if (this.stats.shield > 1 && !this.isInvincible) {
             this.stats.shield -= 1;
@@ -270,9 +272,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @description Resets the player's position to the center bottom of the screen
      */
     resetPlayer() {
-        this.setCollideWorldBounds(true);
-        this.setRotation(0);
-        this.setPosition(this.scene.game.config.width / 2.5, this.scene.game.config.height - 96);
+        this.setCollideWorldBounds(true)
+            .setRotation(0)
+            .setAngularVelocity(0)
+            .setVelocity(0, 0)
+            .setPosition(this.scene.game.config.width / 2.5, this.scene.game.config.height - 96);
     }
 
     /**
@@ -299,7 +303,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     */
     changePower(pow) {
         this.player_vars.power = pow;
-        Player.powerup.ammo = (pow) ? Player.powerup.max : 0;
+        this.powerup.ammo = (pow) ? this.powerup.max : 0;
         if (!pow)
             this.power
     }
@@ -355,7 +359,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                         }
                     }
                 }
-                if ((--Player.powerup.ammo) <= 0)
+                if ((--this.powerup.ammo) <= 0)
                     this.changePower();
                 this.sounds.bank.sfx.shoot.play();
             }

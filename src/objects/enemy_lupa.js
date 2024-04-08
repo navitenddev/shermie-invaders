@@ -18,13 +18,15 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     graphics;
     ai_state;
     state_text;
-    hp_text;
 
     target_pos = new Phaser.Math.Vector2();
     reached_target = false;
     is_dead = false;
+
+    #event_queue = [];
     constructor(scene, x, y, hp = 40) {
         super(scene, x, y);
+        console.log(`Initializing lupa with ${hp} hp`)
         scene.physics.add.existing(this);
         scene.add.existing(this);
         scene.objs.enemies.special.add(this);
@@ -83,7 +85,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
             new_state = states;
         }
 
-        console.log(`LUPA: ${new_state}`)
+        console.log(`LUPA: ${new_state}`);
         this.reached_target = false;
         this.ai_state = new_state;
         this.#clear_path(); // the path should be cleared for every state transition
@@ -110,7 +112,6 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                 {
                     this.target_pos = new Phaser.Math.Vector2(this.scene.game.config.width / 2, EnemyLupa.Y_NORMAL);
                     this.scene.physics.moveTo(this, this.target_pos.x, this.target_pos.y, 300);
-
                 }
             case "ROAMING":
                 {
@@ -129,13 +130,16 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                         yoyo: true,
                         repeat: -1
                     });
-                    this.path.draw(this.graphics);
+                    if (this.scene.debugMode)
+                        this.path.draw(this.graphics);
 
-                    // Hacky workaround that stops events from stacking. This shouldn't be needed but idk
-                    this.scene.time.removeAllEvents();
-                    // choose a random shoot state
-                    this.scene.time.delayedCall(Phaser.Math.FloatBetween(3, 5) * 1000,
-                        this.#change_state, [["SHOOT1", "SHOOT2"]], this);
+                    // clear event queue (if there are events)
+                    this.scene.time.removeEvent(this.#event_queue);
+                    // push the delayed call to the event queue
+                    this.#event_queue.push(
+                        this.scene.time.delayedCall(Phaser.Math.FloatBetween(3, 5) * 1000, this.#change_state, [["SHOOT1", "SHOOT2"]], this)
+                    );
+
                     break;
                 }
             case "SHOOT1": // Go to left or right side, then shoot inplace
@@ -191,8 +195,8 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                 console.error(`Invalid Enemy state: ${this.ai_state}`);
                 break;
         }
-
-        this.path.draw(this.graphics);
+        if (this.scene.debugMode)
+            this.path.draw(this.graphics);
     }
 
     #shoot() {
@@ -210,9 +214,14 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     }
 
     #update_text() {
-        this.state_text
-            .setPosition(this.x, this.y)
-            .setText(this.ai_state);
+        if (this.scene.debugMode) {
+            this.state_text
+                .setPosition(this.x, this.y)
+                .setText(this.ai_state);
+        } else {
+            this.state_text
+                .setPosition(-42069, -42069);
+        }
     }
 
     #update_bar() {
