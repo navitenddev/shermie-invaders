@@ -251,11 +251,11 @@ class Dialogue extends Phaser.Scene {
         if (this.dialogue_type === "story") {
             this.sounds.stop_all_music();
             this.sounds.bank.music.story.play();
-            this.add.image(0, 0, 'story_bg')
-                .setAlpha(1)
-                .setOrigin(0, 0)
-                .displayWidth = this.sys.game.config.width;
-            this.escPrompt = this.add.bitmapText(400, 275, bitmapFonts.PressStart2P, `Tap to continue or ESC to skip`, fonts.small.sizes[bitmapFonts.PressStart2P])
+            let dialogueBg = this.add.sprite(0, 0, 'Dialouge-SpriteSheet').setOrigin(0, 0);
+
+            // Play the animation
+            dialogueBg.play('Dialouge-SpriteSheet');
+            this.escPrompt = this.add.bitmapText(460, 300, bitmapFonts.PressStart2P, `Click mouse to Continue\nor press ESC to skip`, fonts.small.sizes[bitmapFonts.PressStart2P])
         }
 
         this.sounds = this.registry.get('sound_bank');

@@ -42,7 +42,7 @@ export class Preloader extends Scene {
 
         this.load.image("BG2", "backgrounds/BG2.png");
 
-        this.load.image("BG3", "backgrounds/BG3Scroller.png");
+        this.load.image("BG3", "backgrounds/BG3.png");
 
         this.load.image("BG4", "backgrounds/BG4.png");
 
@@ -186,6 +186,11 @@ export class Preloader extends Scene {
             frameHeight: 80,
         });
 
+        this.load.spritesheet("Shermie-runshoot", "characters/Shermie-runshoot.png", {
+            frameWidth: 80,
+            frameHeight: 80,
+        });
+
         this.load.spritesheet("cottonball_explosion_sheet", "projectiles/cottonball_explode.png", {
             frameWidth: 32,
             frameHeight: 32,
@@ -214,6 +219,18 @@ export class Preloader extends Scene {
         this.load.spritesheet("shermie_bg", "misc/shermie_bg.png", {
             frameWidth: 60,
             frameHeight: 60,
+        });
+        this.load.spritesheet("Dialouge-SpriteSheet", "backgrounds/Dialouge-SpriteSheet.png", {
+            frameWidth: 1024,
+            frameHeight: 768,
+        });
+        this.load.spritesheet("BG6-SpriteSheet", "backgrounds/BG6-SpriteSheet.png", {
+            frameWidth: 1024,
+            frameHeight: 768,
+        });
+        this.load.spritesheet("BG7-SpriteSheet", "backgrounds/BG7-SpriteSheet.png", {
+            frameWidth: 1024,
+            frameHeight: 768,
         });
 
         this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');
