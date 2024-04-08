@@ -7,6 +7,7 @@ import { TextButton } from '../ui/text_button.js';
 
 export class PlayerLose extends Scene {
     emitter = EventDispatcher.getInstance();
+
     constructor() {
         super('Player Lose');
     }
@@ -33,65 +34,82 @@ export class PlayerLose extends Scene {
         this.player_vars = this.registry.get('player_vars');
         const score = this.player_vars.score;
 
-        let bg = this.add.image(0, 0, 'losescreen').setAlpha(0.85);
-        bg.setOrigin(0, 0);
-        bg.displayWidth = this.sys.game.config.width;
-        bg.scaleY = bg.scaleX;
-        bg.y = 0;
+        // let bg = this.add.image(0, 0, 'losescreen').setAlpha(0.85);
+        // bg.setOrigin(0, 0);
+        // bg.displayWidth = this.sys.game.config.width;
+        // bg.scaleY = bg.scaleX;
+        // bg.y = 0;
 
-        this.continue_btn = new TextButton(this, this.game.config.width / 2, 600, 150, 50, 'Continue',
-            () => { // callback function
-                this.emitter.emit('force_dialogue_stop');
-                this.scene.start("Main Menu")
-            },
-            [], // callback function's arguments
-            bitmapFonts.PressStart2P,                    // font type
-            fonts.small.sizes[bitmapFonts.PressStart2P], // font size
-            0x2B2D31, // color of button
-            0x383A40, // color of hovered
-            0xFEFEFE, // color of clicked
-            0x879091// color of border
+        const titleText = this.add.bitmapText(
+            this.game.config.width / 2,
+            100,
+            bitmapFonts.PressStart2P_Stroke,
+            'GAME OVER',
+            fonts.large.sizes[bitmapFonts.PressStart2P_Stroke]
         );
+        titleText.setOrigin(0.5);
 
         this.final_score = this.add.bitmapText(
-            0,
-            0,
+            this.game.config.width / 2,
+            titleText.y + titleText.height + 50,
             bitmapFonts.PressStart2P_Stroke,
-            `FINAL SCORE:${score}`,
+            `FINAL SCORE: ${score}`,
             fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]
         );
-        this.final_score.setPosition((this.game.config.width / 2) - (this.final_score.width / 2), this.game.config.height / 3.35);
+        this.final_score.setOrigin(0.5);
 
         const { totalShotsFired, totalHits } = this.player_vars;
         const hitMissRatio = totalHits / (totalShotsFired || 1);
-        
-        const statsX = 16;
-        const statsY = 120;
-        const statsSpacing = 30;
-        
-        this.add.bitmapText(
+
+        const statsX = this.game.config.width / 2;
+        const statsY = this.final_score.y + this.final_score.height + 350;
+        const statsSpacing = 35;
+
+        const shotsFiredText = this.add.bitmapText(
             statsX,
             statsY,
             bitmapFonts.PressStart2P_Stroke,
             `SHOTS FIRED: ${totalShotsFired}`,
             fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
         );
-        
-        this.add.bitmapText(
+        shotsFiredText.setOrigin(0.5);
+
+        const hitsText = this.add.bitmapText(
             statsX,
             statsY + statsSpacing,
             bitmapFonts.PressStart2P_Stroke,
             `HITS: ${totalHits}`,
             fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
         );
-        
-        this.add.bitmapText(
+        hitsText.setOrigin(0.5);
+
+        const hitMissRatioText = this.add.bitmapText(
             statsX,
             statsY + statsSpacing * 2,
             bitmapFonts.PressStart2P_Stroke,
             `HIT/MISS RATIO: ${hitMissRatio.toFixed(2)}`,
             fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
         );
+        hitMissRatioText.setOrigin(0.5);
 
+        this.continue_btn = new TextButton(
+            this,
+            this.game.config.width / 2,
+            statsY + statsSpacing * 4,
+            200,
+            50,
+            'Continue',
+            () => {
+                this.emitter.emit('force_dialogue_stop');
+                this.scene.start("Main Menu");
+            },
+            [],
+            bitmapFonts.PressStart2P,
+            fonts.small.sizes[bitmapFonts.PressStart2P],
+            0x2B2D31,
+            0x383A40,
+            0xFEFEFE,
+            0x879091
+        );
     }
 }
