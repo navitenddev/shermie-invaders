@@ -221,6 +221,7 @@ export class Preloader extends Scene {
         this.load.bitmapFont('GlassTTY', 'fonts/GlassTTY.png', 'fonts/GlassTTY.xml');
         this.load.bitmapFont('PressStart2P', 'fonts/PressStart2P.png', 'fonts/PressStart2P.xml');
         this.load.bitmapFont('PressStart2P-Stroke', 'fonts/PressStart2P-Stroke.png', 'fonts/PressStart2P-Stroke.xml');
+        this.load.image('controls', 'controls/controls.png');
 
     }
     create() {

@@ -118,6 +118,20 @@ class DialogueManager extends Phaser.GameObjects.Container {
         this.is_active = false;
     }
 
+    skipLine() {
+        if (this.line_index === this.lines.length) {
+            this.#deactivate();
+            return;
+        }
+    
+        this.text.setText(this.lines[this.line_index - 1]);
+        this.char_index = this.line.length;
+        this.auto_emit_flag = true;
+        this.scene.time.delayedCall(100, () => {
+            this.#load_next_line();
+        });
+    }
+
     update(time, delta) {
         if (this.follow_player) {
             this.x = this.player_vars.x;
@@ -206,15 +220,10 @@ class DialogueManager extends Phaser.GameObjects.Container {
             }
 
             this.scene.input.on('pointerdown', () => {
-                if (this.dialogue_type === "menu"
-                    && this.line_index === this.lines.length) {
-                    // don't clear last line for menu and techtip
-                } else {
-                    this.text.setText(""); // 4 hours to fix this bug :)
+                if (this.auto_emit_flag) {
+                    this.skipLine();
                 }
-                this.auto_emit_flag = false;
-                this.#load_next_line();
-            });
+            });      
         }
     }
 }
@@ -246,7 +255,7 @@ class Dialogue extends Phaser.Scene {
                 .setAlpha(1)
                 .setOrigin(0, 0)
                 .displayWidth = this.sys.game.config.width;
-            this.escPrompt = this.add.bitmapText(460, 300, bitmapFonts.PressStart2P, `Click mouse to Continue\nor press ESC to skip`, fonts.small.sizes[bitmapFonts.PressStart2P])
+            this.escPrompt = this.add.bitmapText(400, 275, bitmapFonts.PressStart2P, `Tap to continue or ESC to skip`, fonts.small.sizes[bitmapFonts.PressStart2P])
         }
 
         this.sounds = this.registry.get('sound_bank');
@@ -265,6 +274,12 @@ class Dialogue extends Phaser.Scene {
             this.emitter.emit('force_dialogue_stop');
         });
 
+        this.input.on('pointerdown', () => {
+            if (this.dialogue_mgr.is_active) {
+                this.dialogue_mgr.skipLine();
+            }
+        });
+
         this.keys.m.on('down', this.sounds.toggle_mute)
 
     }
@@ -276,22 +291,19 @@ class Dialogue extends Phaser.Scene {
     return_to_caller_scene() {
         // console.log(`TYPE: ${this.dialogue_type}`)
         if (this.dialogue_type === "story") {
-            this.startPrompt = this.add.bitmapText(450, 180, bitmapFonts.PressStart2P, `Press spacebar to start!`, fonts.small.sizes[bitmapFonts.PressStart2P])
-        }
-
-        if (this.escPrompt) {
-            this.escPrompt.destroy();
-            this.escPrompt = null;
-        }
-        if (this.dialogue_type === "story") {
-            this.keys.space.on('down', () => {
+            this.startPrompt = this.add.bitmapText(390, 180, bitmapFonts.PressStart2P, `Press spacebar or tap to start!`, fonts.small.sizes[bitmapFonts.PressStart2P]);
+            
+            const startGame = () => {
                 this.sounds.stop_all_music();
                 this.sounds.bank.music.bg.play();
                 this.startPrompt.destroy();
                 this.startPrompt = null;
                 this.scene.stop('Dialogue');
                 this.scene.resume(this.prev_scene);
-            });
+            };
+    
+            this.keys.space.on('down', startGame);
+            this.input.on('pointerdown', startGame);
         } else {
             this.scene.resume(this.prev_scene);
         }

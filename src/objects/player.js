@@ -178,30 +178,42 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    update(time, delta, keys) {
-        // Only display shield bar if we have shields
-        (this.shield_bar.value) ?
-            this.shield_bar.setVisible(true) :
-            this.shield_bar.setVisible(false);
+update(time, delta, keys, controls) {
+    const pointer = this.scene.input.activePointer;
+    const screenWidth = this.scene.sys.game.config.width;
+    const touchZoneWidth = screenWidth * 0.3;
 
-        // Only display powerup bar if we have powerups
-        (this.powerup_bar.value) ?
-            this.powerup_bar.setVisible(true) :
-            this.powerup_bar.setVisible(false);
-
-        this.#update_bars();
-        this.#update_powerup_icon();
-
-        // Update global player pos
-        this.player_vars.x = this.x + this.dialogue_offset.x;
-        this.player_vars.y = this.y + this.dialogue_offset.y;
-
-        let x, y;
-        if (this.scene) {
-            x = this.scene.game.input.mousePointer.x.toFixed(1);
-            y = this.scene.game.input.mousePointer.y.toFixed(1);
+    if (pointer.isDown) {
+        if (pointer.x < touchZoneWidth) {
+            this.move(false); // Move left
+        } else if (pointer.x > screenWidth - touchZoneWidth) {
+            this.move(true); // Move right
         }
-        this.#mouse_pos = { x: x, y: y };
+    }
+    
+    // Only display shield bar if we have shields
+    (this.shield_bar.value) ?
+        this.shield_bar.setVisible(true) :
+        this.shield_bar.setVisible(false);
+
+    // Only display powerup bar if we have powerups
+    (this.powerup_bar.value) ?
+        this.powerup_bar.setVisible(true) :
+        this.powerup_bar.setVisible(false);
+
+    this.#update_bars();
+    this.#update_powerup_icon();
+
+    // Update global player pos
+    this.player_vars.x = this.x + this.dialogue_offset.x;
+    this.player_vars.y = this.y + this.dialogue_offset.y;
+
+    let x, y;
+    if (this.scene) {
+        x = this.scene.game.input.mousePointer.x.toFixed(1);
+        y = this.scene.game.input.mousePointer.y.toFixed(1);
+    }
+    this.#mouse_pos = { x: x, y: y };
         // respawn the player
         if (this.is_dead) {
             this.x += this.dead_vel.x;
@@ -219,9 +231,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.updateShield();
         this.updateHitbox();
 
-        if (keys.d.isDown || keys.right.isDown) {
+        if (keys.d.isDown || keys.right.isDown || controls.right) {
             this.move(true);
-        } else if (keys.a.isDown || keys.left.isDown) {
+        } else if (keys.a.isDown || keys.left.isDown || controls.left) {
             this.move(false);
         } else if (
             this.anims &&
@@ -231,9 +243,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         )
             this.play("shermie_idle");
 
-        if (keys.space.isDown || keys.w.isDown) this.shoot(time);
+        if ((keys.space.isDown || keys.w.isDown || controls.shoot) && !this.is_dead) this.shoot(time);
         if (!keys.d.isDown && !keys.right.isDown &&
-            !keys.a.isDown && !keys.left.isDown)
+            !keys.a.isDown && !keys.left.isDown &&
+            !controls.right && !controls.left)
             this.setVelocity(0);
     }
 

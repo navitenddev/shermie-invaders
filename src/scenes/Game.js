@@ -9,6 +9,7 @@ import { EventDispatcher } from '../utils/event_dispatcher';
 import { start_dialogue } from './Dialogue';
 import { init_collision_events, restart_scenes } from '../main';
 import { SoundBank } from '../utils/sounds';
+import Controls from '../controls/controls';
 
 /**
  * @description The scene in which gameplay will occur.
@@ -154,6 +155,8 @@ export class Game extends Scene {
             this.toggleDebug();
         });
 
+        this.controls = new Controls(this);
+
         this.physics.world.drawDebug = this.debugMode;
     }
 
@@ -205,7 +208,7 @@ export class Game extends Scene {
 
     update(time, delta) {
         if (this.objs.player)
-            this.objs.player.update(time, delta, this.keys)
+            this.objs.player.update(time, delta, this.keys, this.controls);
         // Update lives text and sprites
         this.livesText.setText(this.player_vars.lives);
         this.updateLivesSprites();
