@@ -215,17 +215,10 @@ export class Sandbox extends Scene {
             repeat: 2
         });
         this.livesSprites.create(84, this.sys.game.config.height - 32, 'lives', 0);
-<<<<<<< HEAD
-        this.sounds.bank.music.start.stop();
-        this.sounds.bank.music.ff7_fighting.play();
-
-        this.init_collision_events();
-=======
         this.sounds.stop_all_music();
         this.sounds.bank.music.sandbox.play();
 
         init_collision_events(this, "Sandbox");
->>>>>>> main
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);

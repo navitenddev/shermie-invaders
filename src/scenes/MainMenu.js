@@ -65,17 +65,9 @@ export class MainMenu extends BaseMenu {
         let menuY = 480; // starting Y position for menu items
 
         // Start Button
-<<<<<<< HEAD
-        this.start_btn = this.add.text(512, menuY, 'PLAY', fonts.medium)
-            .setOrigin(0.5)
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.sounds.bank.sfx.win.play();
-=======
         this.start_btn = new TextButton(this, 512, menuY, "PLAY",
             () => {
                 console.log('Pressed');
->>>>>>> main
                 this.cameras.main.fadeOut(200, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                     this.scene.start('Game');
@@ -103,17 +95,9 @@ export class MainMenu extends BaseMenu {
         if (this.registry.get('debug_mode') === true) {
             // Sandbox Button
             menuY += menuSpacing;
-<<<<<<< HEAD
-            this.sandbox_btn = this.add.text(512, menuY, 'SANDBOX', fonts.medium)
-                .setOrigin(0.5)
-                .setInteractive()
-                .on('pointerdown', () => {
-                    this.sounds.bank.sfx.win.play();
-=======
             this.sandbox_btn = new TextButton(this, 512, menuY,
                 "SANDBOX",
                 () => {
->>>>>>> main
                     this.cameras.main.fadeOut(200, 0, 0, 0);
                     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                         this.scene.start('Sandbox');
