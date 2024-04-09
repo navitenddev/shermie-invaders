@@ -1,6 +1,6 @@
 import { BaseMenu } from './BaseMenu.js';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
-import { TextButton } from '../ui/text_button.js';
+import { TextboxButton } from '../ui/textbox_button.js';
 
 
 export class LevelSelect extends BaseMenu {
@@ -33,7 +33,7 @@ export class LevelSelect extends BaseMenu {
             for (let x = 1; x <= 15; x++) {
                 if (cheatModeEnabled || level <= maxLevelReached) {
                     if (level % 7) {
-                        new TextButton(this,
+                        new TextboxButton(this,
                             offset.x + x * scale.x + x * gap.x,
                             offset.y + y * scale.y + y * gap.y,
                             40, 40,
@@ -47,7 +47,7 @@ export class LevelSelect extends BaseMenu {
                             12)
                             .setDepth(3);
                     } else {
-                        new TextButton(this,
+                        new TextboxButton(this,
                             offset.x + x * scale.x + x * gap.x,
                             offset.y + y * scale.y + y * gap.y,
                             40, 40,

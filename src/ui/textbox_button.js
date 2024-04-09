@@ -1,6 +1,6 @@
 import { bitmapFonts, fonts } from "../utils/fontStyle";
 
-export class TextButton extends Phaser.GameObjects.Container {
+export class TextboxButton extends Phaser.GameObjects.Container {
     /**
     * @classdesc A button that contains text.  
     * Text elements will automatically center in the button. However, it is up to
@@ -23,7 +23,7 @@ export class TextButton extends Phaser.GameObjects.Container {
     * @param {string | number} color_clicked The color of the button background when clicked.
     * @param {number} opacity How opaque the button background is. Should be a value between 0 and 1.
     * @example // This example has all parameters specified
-    * const continue_btn = new TextButton(this, this.game.config.width / 2, 600, 200, 100, 'Continue',
+    * const continue_btn = new TextboxButton(this, this.game.config.width / 2, 600, 200, 100, 'Continue',
     * () => { 
     *    this.scene.start("Store") // parameters can be passed here too
     * },
@@ -37,7 +37,7 @@ export class TextButton extends Phaser.GameObjects.Container {
     *     1         // opacity value 0 through 1
     * );
     * @example // This example will produce the same result as above.
-    * const continue_btn = new TextButton(this, this.game.config.width / 2, 600, 200, 100, 'Continue',
+    * const continue_btn = new TextboxButton(this, this.game.config.width / 2, 600, 200, 100, 'Continue',
     * () => { 
     *    this.scene.start("Store")
     * }, []

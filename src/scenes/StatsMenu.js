@@ -2,7 +2,7 @@ import { Scene } from 'phaser';
 import { InitKeyDefs } from '../utils/keyboard_input.js';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
-import { TextButton } from '../ui/text_button.js';
+import { TextboxButton } from '../ui/textbox_button.js';
 import { SHOP_PRICES } from './Store.js';
 
 const STAT_MIN = 1;
@@ -28,7 +28,7 @@ class MenuSpinner {
     constructor(scene, x, y, w, text, obj, key) {
         let text_value = scene.add.bitmapText(x + w - 40, y, bitmapFonts.PressStart2P_Stroke, obj[key], fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]);
         // MIN button
-        new TextButton(scene, x - 45, y + 10,
+        new TextboxButton(scene, x - 45, y + 10,
             55, 25,
             'MIN',
             () => {
@@ -42,7 +42,7 @@ class MenuSpinner {
         );
 
         // - button
-        new TextButton(scene, x + 15, y + 10,
+        new TextboxButton(scene, x + 15, y + 10,
             25, 25,
             '-',
             () => {
@@ -56,7 +56,7 @@ class MenuSpinner {
         );
 
         // + button
-        new TextButton(scene, x + w + 5, y + 10,
+        new TextboxButton(scene, x + w + 5, y + 10,
             25, 25,
             '+',
             () => {
@@ -70,7 +70,7 @@ class MenuSpinner {
         );
 
         // max button
-        new TextButton(scene, x + w + 65, y + 10,
+        new TextboxButton(scene, x + w + 65, y + 10,
             55, 25,
             'MAX',
             () => {
@@ -141,7 +141,7 @@ export class StatsMenu extends Scene {
 
         const ls = { w: 350, h: 50 }; // level_skip_btn dimensions
 
-        this.level_skip_btn = new TextButton(this,
+        this.level_skip_btn = new TextboxButton(this,
             this.game.config.width / 2, this.game.config.height / 1.525,
             ls.w, ls.h,
             'Kill All Enemies',
@@ -165,7 +165,7 @@ export class StatsMenu extends Scene {
 
         y += menuSpacing;
 
-        this.back_btn = new TextButton(this,
+        this.back_btn = new TextboxButton(this,
             boxX + boxWidth / 2, y,
             100, 50,
             'Back',
