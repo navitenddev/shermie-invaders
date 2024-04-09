@@ -40,7 +40,8 @@ class SoundBank {
                 hurt: this.scene.game.sound.add('hurt', { volume: 0.3, loop: false }),
                 win: this.scene.game.sound.add('win', { volume: 0.1, loop: false }),
                 lose: this.scene.game.sound.add('lose', { volume: 0.1, loop: false }),
-                click: this.scene.game.sound.add('click', { volume: 0.1, loop: false })
+                click: this.scene.game.sound.add('click', { volume: 0.1, loop: false }),
+                hover: this.scene.game.sound.add('hover', { volume: 0.1, loop: false }),
             },
             music: {
                 bg: this.scene.game.sound.add('bgmusic', { volume: 0.2, loop: true }),

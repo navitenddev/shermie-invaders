@@ -9,6 +9,8 @@ import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { FillBar } from '../ui/fill_bar.js';
 import { start_dialogue } from './Dialogue.js';
 import { init_collision_events } from '../main.js';
+import { TextButton } from '../ui/text_button.js';
+import { TextboxButton } from '../ui/textbox_button.js';
 
 class LevelSelector extends Phaser.GameObjects.Container {
     emitter = EventDispatcher.getInstance();
@@ -18,41 +20,53 @@ class LevelSelector extends Phaser.GameObjects.Container {
 
         const emitter = this.emitter;
 
-        this.btn_down5 = scene.add.bitmapText(x, y, bitmapFonts.PressStart2P_Stroke, '-5', fonts.small.sizes[bitmapFonts.PressStart2P])
-            .setInteractive()
-            .on('pointerup', function () {
+        this.btn_down5 = new TextButton(scene, x + 10, y + 10,
+            "-5",
+            () => {
                 scene.registry.set({ 'level': Math.max(1, scene.registry.get('level') - 5) });
                 lvl_text_obj.setText(`LEVEL:${scene.registry.get('level')}`)
                 emitter.emit('kill_all_enemies', false);
                 scene.objs.init_enemy_grid();
-            });
+            }, [],
+            bitmapFonts.PressStart2P_Stroke,
+            fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
+        );
 
-        this.btn_down1 = scene.add.bitmapText(x + 40, y, bitmapFonts.PressStart2P_Stroke, '-1', fonts.small.sizes[bitmapFonts.PressStart2P])
-            .setInteractive()
-            .on('pointerup', function () {
+        this.btn_down1 = new TextButton(scene, x + 50, y + 10,
+            "-1",
+            () => {
                 this.scene.registry.set({ 'level': Math.max(1, scene.registry.get('level') - 1) });
                 lvl_text_obj.setText(`LEVEL:${scene.registry.get('level')}`)
                 emitter.emit('kill_all_enemies', false);
                 scene.objs.init_enemy_grid();
-            });
+            }, [],
+            bitmapFonts.PressStart2P_Stroke,
+            fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
+        );
 
-        this.btn_up1 = scene.add.bitmapText(x + 80, y, bitmapFonts.PressStart2P_Stroke, '+1', fonts.small.sizes[bitmapFonts.PressStart2P])
-            .setInteractive()
-            .on('pointerup', function () {
+        this.btn_up1 = new TextButton(scene, x + 90, y + 10,
+            "+1",
+            () => {
                 this.scene.registry.set({ 'level': scene.registry.get('level') + 1 });
                 lvl_text_obj.setText(`LEVEL:${scene.registry.get('level')}`)
                 emitter.emit('kill_all_enemies', false);
                 scene.objs.init_enemy_grid();
-            });
+            }, [],
+            bitmapFonts.PressStart2P_Stroke,
+            fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
+        );
 
-        this.btn_up5 = scene.add.bitmapText(x + 120, y, bitmapFonts.PressStart2P_Stroke, '+5', fonts.small.sizes[bitmapFonts.PressStart2P])
-            .setInteractive()
-            .on('pointerup', function () {
+        this.btn_up5 = new TextButton(scene, x + 130, y + 10,
+            "+5",
+            () => {
                 scene.registry.set({ 'level': scene.registry.get('level') + 5 });
                 lvl_text_obj.setText(`LEVEL:${scene.registry.get('level')}`);
                 emitter.emit('kill_all_enemies', false);
                 scene.objs.init_enemy_grid();
-            });
+            }, [],
+            bitmapFonts.PressStart2P_Stroke,
+            fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
+        );
     }
 
 }
@@ -84,11 +98,18 @@ class IconButton extends Phaser.GameObjects.Container {
         this.icon = icon;
         this.image = scene.add.image(0, 0, icon)
             .setInteractive()
-            .on('pointerdown', () => {
-                // do visual indicator that button was clicked
+            .on('pointerover', () => {
+                scene.sounds.bank.sfx.hover.play();
+                this.image.setTint(0x123123);
+            })
+            .on('pointerout', () => {
+                this.image.clearTint();
             })
             .on('pointerup', () => {
-                // call the callback with the given arguments
+                this.image.clearTint();
+            })
+            .on('pointerdown', () => {
+                this.image.setTint(0x000000);
                 cb(...args);
             });
         this.width = this.image.width;
@@ -180,7 +201,6 @@ export class Sandbox extends Scene {
         // Score and high score
         this.scoreManager = new ScoreManager(this);
 
-        // Note: this.level is pass by value!
         this.level = this.registry.get('level');
         this.level_transition_flag = false;
         this.level_text = this.add.bitmapText(this.sys.game.config.width * (2.9 / 4), 16, bitmapFonts.PressStart2P_Stroke, `LEVEL:${this.level}`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]);
@@ -217,7 +237,6 @@ export class Sandbox extends Scene {
         this.grid_btn = new IconButton(this, "enemy_icon",
             this.game.config.width - 20, 100,
             () => {
-                console.log(this.objs.enemies)
                 if (this.objs.enemies.grid.children.entries.length === 0)
                     this.objs.init_enemy_grid()
             }

@@ -118,6 +118,10 @@ export class Preloader extends Scene {
 
         this.load.audio('click', ['SFX/click.wav']);
 
+        this.load.audio('hover', ['SFX/hover.wav']);
+
+        this.load.audio('story_music', 'SFX/8 Bit Presentation - David Fesliyan.mp3');
+
         this.load.audio('story_music', 'SFX/8 Bit Presentation - David Fesliyan.mp3');
 
         this.load.audio('shop_music', 'SFX/Retro Forest - David Fesliyan.mp3');
