@@ -67,7 +67,7 @@ export class Game extends Scene {
         }
 
         if (this.level <= 7) {
-            start_dialogue(this.scene, `level${(this.level)}`, "story", 23);
+            start_dialogue(this.scene, `level${(this.level)}`, "story", "Game", 23);
         }
 
         let bgKey = `BG${this.level}`;
@@ -111,12 +111,6 @@ export class Game extends Scene {
         // Score and high score
         this.scoreManager = new ScoreManager(this);
 
-        // Event to kill all enemies
-        this.emitter.on('kill_all_enemies', this.#kill_all_enemies, this);
-
-        this.emitter.once('player_lose', this.goto_scene, this)
-
-        // Note: this.level is pass by value!
         this.level = this.registry.get('level');
         this.level_transition_flag = false;
         this.level_text = this.add.bitmapText(0, 16, bitmapFonts.PressStart2P, `LEVEL:${this.level}`, fonts.medium.sizes[bitmapFonts.PressStart2P])
@@ -126,12 +120,6 @@ export class Game extends Scene {
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
         this.player_vars.power = "";
-        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
-            () => {
-                this.keys.p.on('down', () => this.pause());
-                this.keys.esc.on('down', () => this.pause());
-            }
-        );
 
         // Player lives text and sprites
         this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, bitmapFonts.PressStart2P, '3', fonts.medium.sizes[bitmapFonts.PressStart2P]);
@@ -146,7 +134,7 @@ export class Game extends Scene {
         this.sounds.stop_all_music();
         this.sounds.bank.music.bg.play();
 
-        init_collision_events(this);
+        init_collision_events(this, "Game");
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
@@ -155,6 +143,10 @@ export class Game extends Scene {
         this.keys.x.on('down', () => {
             this.toggleDebug();
         });
+
+        // Event to kill all enemies
+        this.emitter.on('kill_all_enemies', this.#kill_all_enemies, this);
+        this.emitter.once('player_lose', this.goto_scene, this)
 
         this.physics.world.drawDebug = this.debugMode;
     }
@@ -206,6 +198,7 @@ export class Game extends Scene {
 
 
     update(time, delta) {
+        // console.log(`scene active: ${this.scene.isActive()}`);
         if (this.objs.player)
             this.objs.player.update(time, delta, this.keys)
         // Update lives text and sprites
@@ -221,7 +214,6 @@ export class Game extends Scene {
     check_gameover() {
         if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
-            console.log("PLAYER LOST")
             this.player_vars.power = "";
             this.gameover = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
@@ -232,7 +224,6 @@ export class Game extends Scene {
             !this.level_transition_flag) {
             // if this is a boss level
             if (this.level % 7 === 0) {
-                console.log()
                 if (!this.boss_spawned) {
                     this.boss_spawned = true;
                     const boss_hp = (100 * (Math.floor((this.registry.get('level') / 7)) + 1));
@@ -246,7 +237,7 @@ export class Game extends Scene {
                     // TODO: start boss music here
                     this.sounds.stop_all_music();
                     this.sounds.bank.music.boss.play();
-                    start_dialogue(this.scene, "shermie_boss", "game_blocking");
+                    start_dialogue(this.scene, "shermie_boss", "game_blocking", "Game");
                 }
 
                 // is boss dead?
@@ -275,11 +266,7 @@ export class Game extends Scene {
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
             this.sounds.stop_all_music();
-            if (targetScene === "Player Lose") {
-                this.scene.start('Player Lose');
-            } else {
-                this.scene.start(targetScene);
-            }
+            this.scene.start(targetScene);
         });
     }
 }

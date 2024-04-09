@@ -198,7 +198,7 @@ export class Sandbox extends Scene {
         this.sounds.stop_all_music();
         this.sounds.bank.music.sandbox.play();
 
-        init_collision_events(this);
+        init_collision_events(this, "Sandbox");
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);

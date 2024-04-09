@@ -8,7 +8,7 @@ import { bitmapFonts, fonts } from '../utils/fontStyle.js';
  * @param {string} dialogue_type "story" | "game" | "techtip" | "game_blocking" | "menu"
  * @param {number} font_size The size of the font to display
  */
-function start_dialogue(scene, key, dialogue_type = "game", font_size = 16) {
+function start_dialogue(scene, key, dialogue_type = "game", prev_scene = "Game", font_size = 16) {
     // dialogue_type should only be one of these
     if ((["story", "game", "techtip", "game_blocking", "menu"].includes(dialogue_type)) === false) {
         console.warn(`Invalid dialogue_type: ${dialogue_type}. Defaulting to "game"`);
@@ -22,7 +22,7 @@ function start_dialogue(scene, key, dialogue_type = "game", font_size = 16) {
     scene.launch('Dialogue', {
         dialogue_key: key,
         dialogue_type: dialogue_type,
-        caller_scene: 'Game',
+        prev_scene: prev_scene,
         font_size: font_size,
     });
 }
@@ -126,7 +126,6 @@ class DialogueManager extends Phaser.GameObjects.Container {
         if (this.is_active &&
             time > this.delay_timer &&
             this.line && this.char_index !== this.line.length) {
-
             this.delay_timer = time + this.text_delay;
             this.#add_next_char();
         }
@@ -254,22 +253,26 @@ class Dialogue extends Phaser.Scene {
         this.dialogue_mgr = new DialogueManager(this, this.dialogue_data, this.dialogue_type, data.font_size);
 
         this.keys = InitKeyDefs(this);
+        // console.log(`prev scene: ${data.prev_scene}`)
         // console.log("Initialized Dialogue Scene")
-        this.prev_scene = data.caller_scene;
+        this.prev_scene = data.prev_scene;
 
         this.emitter.emit('dialogue_start', data.dialogue_key);
         this.emitter.once('dialogue_stop', () => { this.return_to_caller_scene(this.dialogue_type) });
 
-        this.keys.esc.on('down', () => {
-            console.log('Player skipped the dialogue');
-            this.emitter.emit('force_dialogue_stop');
-        });
+        if (this.dialogue_type !== "game") { // ingame dialogue should not be skippable
+            this.keys.esc.once('down', () => {
+                console.log('Player skipped the dialogue');
+                this.emitter.emit('force_dialogue_stop');
+            });
+        }
 
         this.keys.m.on('down', this.sounds.toggle_mute)
 
     }
 
     update(time, delta) {
+        // console.log(`Dialogue scene is active: ${this.scene.isActive()}`)
         this.dialogue_mgr.update(time, delta);
     }
 
@@ -292,7 +295,7 @@ class Dialogue extends Phaser.Scene {
                 this.scene.stop('Dialogue');
                 this.scene.resume(this.prev_scene);
             });
-        } else {
+        } else if (this.dialogue_type === "game_blocking") {
             this.scene.resume(this.prev_scene);
         }
     }
