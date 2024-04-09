@@ -98,11 +98,18 @@ class IconButton extends Phaser.GameObjects.Container {
         this.icon = icon;
         this.image = scene.add.image(0, 0, icon)
             .setInteractive()
-            .on('pointerdown', () => {
-                // do visual indicator that button was clicked
+            .on('pointerover', () => {
+                scene.sounds.bank.sfx.hover.play();
+                this.image.setTint(0x123123);
+            })
+            .on('pointerout', () => {
+                this.image.clearTint();
             })
             .on('pointerup', () => {
-                // call the callback with the given arguments
+                this.image.clearTint();
+            })
+            .on('pointerdown', () => {
+                this.image.setTint(0x000000);
                 cb(...args);
             });
         this.width = this.image.width;
