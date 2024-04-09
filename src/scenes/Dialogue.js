@@ -245,7 +245,7 @@ class Dialogue extends Phaser.Scene {
 
             // Play the animation
             dialogueBg.play('Dialouge-SpriteSheet');
-            this.escPrompt = this.add.bitmapText(460, 300, bitmapFonts.PressStart2P, `Click mouse to Continue\nor press ESC to skip`, fonts.small.sizes[bitmapFonts.PressStart2P])
+            this.escPrompt = this.add.bitmapText(400, 275, bitmapFonts.PressStart2P, `Tap to continue or ESC to skip`, fonts.small.sizes[bitmapFonts.PressStart2P])
         }
 
         this.sounds = this.registry.get('sound_bank');
@@ -279,7 +279,7 @@ class Dialogue extends Phaser.Scene {
     return_to_caller_scene() {
         // console.log(`TYPE: ${this.dialogue_type}`)
         if (this.dialogue_type === "story") {
-            this.startPrompt = this.add.bitmapText(450, 180, bitmapFonts.PressStart2P, `Press spacebar to start!`, fonts.small.sizes[bitmapFonts.PressStart2P])
+            this.startPrompt = this.add.bitmapText(390, 180, bitmapFonts.PressStart2P, `Press spacebar or tap to start!`, fonts.small.sizes[bitmapFonts.PressStart2P]);
         }
     
         if (this.escPrompt) {
