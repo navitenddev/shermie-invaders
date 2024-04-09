@@ -204,10 +204,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.#mouse_pos = { x: x, y: y };
         // respawn the player
         if (this.is_dead) {
-            this.x += this.dead_vel.x;
-            this.y += this.dead_vel.y;
-            this.setRotation(this.rotation + this.dead_vel.rot);
-
             if (this.player_vars.lives > 0 && !this.is_inbounds()) {
                 this.is_dead = false;
                 this.resetPlayer();
@@ -250,9 +246,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             // allow player to fly off screen
             this.setCollideWorldBounds(false);
 
-            let ang = Phaser.Math.Between(300, 500);
-            const vx = Phaser.Math.Between(-750, 750);
-            const vy = -750;
+            let ang = Phaser.Math.Between(800, 1000);
+            const vx = Phaser.Math.Between(-1000, 1000);
+            const vy = -1000;
             this.setVelocity(vx, vy)
                 .setAngularVelocity(ang);
         }
