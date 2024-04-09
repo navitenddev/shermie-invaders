@@ -23,7 +23,7 @@ Shoot:
   - W or Space
         
 Pause:
-  - P
+  - P or ESC
 
 Skip Dialogue:
   - ESC
