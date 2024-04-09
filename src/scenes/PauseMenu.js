@@ -14,17 +14,17 @@ export class PauseMenu extends Scene {
 
         const menuItems = [
             { text: 'Resume', callback: () => this.unpause() },
+            { text: 'Mute', callback: () => this.toggleMute() }, 
             { text: 'Quit', callback: () => this.quitGame() },
         ];
 
-        if (this.registry.get('debug_mode') === true) { // add cheats menu item
-            menuItems.splice(1, 0, { // insert at index 1
+        if (this.registry.get('debug_mode') === true) {
+            menuItems.splice(2, 0, {
                 text: 'Cheats',
                 callback: () => {
                     this.sounds.bank.sfx.click.play();
                     this.scene.stop('PauseMenu');
                     this.scene.start('StatsMenu');
-                    buttonEnable = false;
                 },
             });
         }
@@ -45,19 +45,13 @@ export class PauseMenu extends Scene {
         this.keys = InitKeyDefs(this);
 
         let menuY = boxY + 40;
-        let buttonEnable = false;
         menuItems.forEach((item) => {
-            const menuItem = this.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, item.text, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+            const menuItem = this.add.bitmapText(boxX + boxWidth / 2, menuY, bitmapFonts.PressStart2P_Stroke, item.text, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
                 .setOrigin(0.5)
                 .setInteractive()
                 .on('pointerdown', () => {
-                    if (buttonEnable) return;
-                    buttonEnable = true;
-                    console.log('Pressed');
-                    this.sounds.bank.sfx.click.play();
-                    item.callback(buttonEnable);
-                })
-                .setPosition(boxX + boxWidth / 2, menuY);
+                    item.callback();
+                });
 
             menuY += menuSpacing;
         });
@@ -85,5 +79,10 @@ export class PauseMenu extends Scene {
             this.scene.start('Main Menu');
             buttonEnable = false;
         });
+    }
+
+    toggleMute() {
+        const isMuted = this.sounds.toggle_mute();
+        localStorage.setItem('muted', isMuted ? 'true' : 'false');
     }
 }
