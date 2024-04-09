@@ -26,7 +26,7 @@ export class PlayerWin extends Scene {
         const score = this.player_vars.score;
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE, () => {
-            start_dialogue(this.scene, `techtip${rand_idx}`, "techtip");
+            start_dialogue(this.scene, "Player Win", `techtip${rand_idx}`, "techtip");
         });
 
         this.emitter.removeAllListeners(); // clean up event listeners

@@ -98,7 +98,7 @@ export function restart_scenes(scene) {
  * @description Initializes all collision and overlap events. This function should be called after objects are initialized.
  * @param scene The scene to initialize the collision events to
  */
-export function init_collision_events(scene) {
+export function init_collision_events(scene, scene_key) {
     scene.physics.world.setBounds(0, 0, scene.sys.game.config.width, scene.sys.game.config.height);
     scene.level = scene.registry.get('level');
     // player bullet hits grid enemy
@@ -131,16 +131,14 @@ export function init_collision_events(scene) {
             if (player.stats.shield > 1) {
                 player.shieldParticles.explode(10, player.x, scene.sys.game.config.height - 135);
                 const dialogue_key = (--player.stats.shield === 1) ? 'shermie_shieldgone' : 'shermie_shieldhurt';
-                start_dialogue(scene.scene, dialogue_key, "game");
                 player.updateHitbox();
+                start_dialogue(scene.scene, dialogue_key, "game", scene_key);
             } else {
+                start_dialogue(scene.scene, "shermie_dead", "game", scene_key);
                 scene.objs.explode_at(player.x, player.y);
                 player.die();
                 if (scene.sandbox_mode)
                     scene.player_vars.lives = 3; // disable lives in sandbox mode
-                (scene.player_vars.lives === 0) ?
-                    start_dialogue(scene.scene, 'shermie_dead', "game") :
-                    start_dialogue(scene.scene, 'shermie_hurt', "game");
             }
         }
     });

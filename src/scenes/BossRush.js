@@ -142,7 +142,7 @@ export class BossRush extends Phaser.Scene {
         this.sounds.stop_all_music();
         this.sounds.bank.music.boss_rush.play();
 
-        init_collision_events(this);
+        init_collision_events(this, "Boss Rush");
 
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
@@ -178,7 +178,7 @@ export class BossRush extends Phaser.Scene {
     }
 
     pause() {
-        this.scene.pause('Boss Rush');
+        this.scene.pause();
         this.scene.launch('PauseMenu', { prev_scene: 'Boss Rush' });
     }
 
