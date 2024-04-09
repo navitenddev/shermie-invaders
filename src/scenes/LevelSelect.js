@@ -116,45 +116,34 @@ export class LevelSelect extends BaseMenu {
         const DIALOG_W = 400;
         const DIALOG_H = 150;
 
+        var color, color_hover;
         for (let y = 1; y <= 10; y++) {
             for (let x = 1; x <= 15; x++) {
                 if (cheatModeEnabled || level <= maxLevelReached) {
                     if (level % 7) {
-                        new TextboxButton(this,
-                            offset.x + x * scale.x + x * gap.x,
-                            offset.y + y * scale.y + y * gap.y,
-                            40, 40,
-                            level.toString(),
-                            (scene, level) => {
-                                new StartWithMoneyDialog(scene,
-                                    (scene.game.config.width / 2), 300,
-                                    DIALOG_W, DIALOG_H, level)
-                                    .setDepth(3);
-                            },
-                            [this, level++],
-                            bitmapFonts.PressStart2P,
-                            12)
-                            .setDepth(3);
+                        color = 0x2B2D31;
+                        color_hover = 0x383A40;
                     } else {
-                        new TextboxButton(this,
-                            offset.x + x * scale.x + x * gap.x,
-                            offset.y + y * scale.y + y * gap.y,
-                            40, 40,
-                            level.toString(),
-                            (scene, level) => {
-                                new StartWithMoneyDialog(scene,
-                                    (scene.game.config.width / 2), 300,
-                                    DIALOG_W, DIALOG_H, level)
-                                    .setDepth(3);
-                            },
-                            [this, level++],
-                            bitmapFonts.PressStart2P,
-                            12,
-                            0xc80420,
-                            0x820114)
-                            .setDepth(3);
-
+                        color = 0xc80420;
+                        color_hover = 0x820114;
                     }
+                    new TextboxButton(this,
+                        offset.x + x * scale.x + x * gap.x,
+                        offset.y + y * scale.y + y * gap.y,
+                        40, 40,
+                        level.toString(),
+                        (scene, level) => {
+                            new StartWithMoneyDialog(scene,
+                                (scene.game.config.width / 2), 300,
+                                DIALOG_W, DIALOG_H, level)
+                                .setDepth(3);
+                        },
+                        [this, level++],
+                        bitmapFonts.PressStart2P,
+                        12,
+                        color,
+                        color_hover)
+                        .setDepth(3);
                 }
             }
         }
