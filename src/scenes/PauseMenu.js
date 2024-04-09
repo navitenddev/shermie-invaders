@@ -53,6 +53,7 @@ export class PauseMenu extends Scene {
         });
 
         this.keys.p.on('down', () => this.unpause());
+        this.keys.esc.on('down', () => this.unpause());
         this.keys.m.on('down', () => this.sounds.toggle_mute());
     }
 

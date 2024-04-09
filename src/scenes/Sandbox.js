@@ -203,6 +203,7 @@ export class Sandbox extends Scene {
         // Mute when m is pressed
         this.keys.m.on('down', this.sounds.toggle_mute);
         this.keys.p.on('down', () => this.pause());
+        this.keys.esc.on('down', () => this.pause());
         this.keys.x.on('down', () => {
             this.toggleDebug();
         });
