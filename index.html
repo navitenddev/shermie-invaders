@@ -63,8 +63,12 @@
         });
       });
     }
-    var IS_MOBILE = (window.innerWidth < 640) ? true : false;
-  </script>
+    var IS_MOBILE    = false;
+    window.addEventListener('touchstart', function()
+    {            
+        IS_MOBILE    = true;
+    });  
+    </script>
 </body>
 
 </html>
