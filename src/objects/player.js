@@ -178,48 +178,51 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-update(time, delta, keys, controls) {
-    const pointer = this.scene.input.activePointer;
-    const screenWidth = this.scene.sys.game.config.width;
-    const touchZoneWidth = screenWidth * 0.3;
-
-    if (pointer.isDown) {
-        if (pointer.x < touchZoneWidth) {
-            this.move(false); // Move left
-        } else if (pointer.x > screenWidth - touchZoneWidth) {
-            this.move(true); // Move right
-        }
-    }
+    update(time, delta, keys, controls) {
+        if (window.IS_MOBILE && controls) {
+            const pointer = this.scene.input.activePointer;
+            const screenWidth = this.scene.sys.game.config.width;
+            const touchZoneWidth = screenWidth * 0.3;
     
-    // Only display shield bar if we have shields
-    (this.shield_bar.value) ?
-        this.shield_bar.setVisible(true) :
-        this.shield_bar.setVisible(false);
-
-    // Only display powerup bar if we have powerups
-    (this.powerup_bar.value) ?
-        this.powerup_bar.setVisible(true) :
-        this.powerup_bar.setVisible(false);
-
-    this.#update_bars();
-    this.#update_powerup_icon();
-
-    // Update global player pos
-    this.player_vars.x = this.x + this.dialogue_offset.x;
-    this.player_vars.y = this.y + this.dialogue_offset.y;
-
-    let x, y;
-    if (this.scene) {
-        x = this.scene.game.input.mousePointer.x.toFixed(1);
-        y = this.scene.game.input.mousePointer.y.toFixed(1);
-    }
-    this.#mouse_pos = { x: x, y: y };
+            if (pointer.isDown) {
+                if (pointer.x < touchZoneWidth) {
+                    this.move(false); // Move left
+                } else if (pointer.x > screenWidth - touchZoneWidth) {
+                    this.move(true); // Move right
+                }
+            }
+        }
+            
+        // Only display shield bar if we have shields
+        (this.shield_bar.value) ?
+            this.shield_bar.setVisible(true) :
+            this.shield_bar.setVisible(false);
+    
+        // Only display powerup bar if we have powerups
+        (this.powerup_bar.value) ?
+            this.powerup_bar.setVisible(true) :
+            this.powerup_bar.setVisible(false);
+    
+        this.#update_bars();
+        this.#update_powerup_icon();
+    
+        // Update global player pos
+        this.player_vars.x = this.x + this.dialogue_offset.x;
+        this.player_vars.y = this.y + this.dialogue_offset.y;
+    
+        let x, y;
+        if (this.scene) {
+            x = this.scene.game.input.mousePointer.x.toFixed(1);
+            y = this.scene.game.input.mousePointer.y.toFixed(1);
+        }
+        this.#mouse_pos = { x: x, y: y };
+        
         // respawn the player
         if (this.is_dead) {
             this.x += this.dead_vel.x;
             this.y += this.dead_vel.y;
             this.setRotation(this.rotation + this.dead_vel.rot);
-
+    
             if (this.player_vars.lives > 0 && !this.is_inbounds()) {
                 this.is_dead = false;
                 this.resetPlayer();
@@ -227,13 +230,14 @@ update(time, delta, keys, controls) {
             }
             return;
         }
-
+    
         this.updateShield();
         this.updateHitbox();
+    
 
-        if (keys.d.isDown || keys.right.isDown || controls.right) {
+        if (keys.d.isDown || keys.right.isDown || (controls && controls.right)) {
             this.move(true);
-        } else if (keys.a.isDown || keys.left.isDown || controls.left) {
+        } else if (keys.a.isDown || keys.left.isDown || (controls && controls.left)) {
             this.move(false);
         } else if (
             this.anims &&
@@ -242,14 +246,19 @@ update(time, delta, keys, controls) {
             this.anims.currentAnim.key !== "shermie_shoot"
         )
             this.play("shermie_idle");
-
-        if ((keys.space.isDown || keys.w.isDown || controls.shoot) && !this.is_dead) this.shoot(time);
+    
+        if (window.IS_MOBILE && controls) {
+            if ((keys.space.isDown || keys.w.isDown || controls.shoot) && !this.is_dead) this.shoot(time);
+        } else {
+            if ((keys.space.isDown || keys.w.isDown) && !this.is_dead) this.shoot(time);
+        }
+    
         if (!keys.d.isDown && !keys.right.isDown &&
             !keys.a.isDown && !keys.left.isDown &&
-            !controls.right && !controls.left)
+            (!controls || (!controls.right && !controls.left)))
             this.setVelocity(0);
     }
-
+        
     /**
      * @public
      * @description When the player should die, this is called. 
@@ -323,9 +332,9 @@ update(time, delta, keys, controls) {
      * @param {boolean} moving_right True if moving right, false if left
      */
     move(moving_right) {
-        this.isMoving = moving_right || this.body.velocity.x !== 0; // Adjust this condition as necessary
-
-        if (this.anims && this.anims.isPlaying && this.anims.currentAnim.key === "shermie_idle")
+        if (this.anims &&
+            this.anims.isPlaying &&
+            this.anims.currentAnim.key === "shermie_idle")
             this.play("shermie_walk");
 
         if (moving_right) {
@@ -351,20 +360,10 @@ update(time, delta, keys, controls) {
                 let bullet_speed = STAT_MAP.bullet_speed[this.stats.bullet_speed - 1];
 
                 bullet.activate(this.x, this.y, 0, bullet_speed * 100);
-
                 if (this.anims) {
-                    if (this.isMoving && this.anims.currentAnim.key === "shermie_walk") {
-                        let currentFrameIndex = this.anims.currentFrame.index;
-                        this.anims.play("shermie_walkshoot");
-                        this.anims.setCurrentFrame(this.anims.currentAnim.frames[currentFrameIndex - 1]);
-                        this.anims.nextAnim = "shermie_walk";
-                    } else {
-                        // This block should execute if the character is not moving or if the current animation is not 'shermie_walk'.
-                        this.anims.play("shermie_shoot");
-                        this.anims.nextAnim = "shermie_idle";
-                    }
+                    this.anims.play("shermie_shoot");
+                    this.anims.nextAnim = "shermie_idle";
                 }
-
                 if (this.player_vars.power == "spread") {
                     let bulletr = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
                     if (bulletr !== null) {

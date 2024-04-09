@@ -157,8 +157,10 @@ export class Game extends Scene {
             this.toggleDebug();
         });
 
-        this.controls = new Controls(this);
-
+        if (window.IS_MOBILE) {
+            this.controls = new Controls(this);
+          }
+        
         this.physics.world.drawDebug = this.debugMode;
     }
 
