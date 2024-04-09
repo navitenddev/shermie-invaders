@@ -7,6 +7,7 @@ import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { FillBar } from '../ui/fill_bar.js';
 import { start_dialogue } from './Dialogue.js';
 import { init_collision_events } from '../main.js';
+import Controls from "../controls/controls.js";
 
 class BossClock extends Phaser.GameObjects.Container {
     mm = 0;
@@ -166,6 +167,10 @@ export class BossRush extends Phaser.Scene {
                 args: [this, this.game.config.width, 525, this.#BOSS_HP]
             }
         ];
+
+        if (window.IS_MOBILE) {
+            this.controls = new Controls(this);
+        }
     }
 
     toggleDebug() {
@@ -184,7 +189,7 @@ export class BossRush extends Phaser.Scene {
 
     update(time, delta) {
         if (this.objs.player.update)
-            this.objs.player.update(time, delta, this.keys)
+        this.objs.player.update(time, delta, this.keys, this.controls);
         // Update lives text and sprites
         // this.livesText.setText('-');
         this.updateLives();
