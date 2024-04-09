@@ -84,7 +84,6 @@ class StartWithMoneyDialog extends Phaser.GameObjects.Container {
 
         this.add([this.bg, this.bg_border, this.text, this.yes_btn, this.no_btn, this.cancel_btn]);
         this.setPosition(x, y);
-        console.log(`Created StartWithMoneyDialog at (${x},${y})`);
     }
 }
 
