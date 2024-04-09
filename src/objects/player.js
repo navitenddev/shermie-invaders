@@ -270,9 +270,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      */
     resetPlayer() {
         this.setCollideWorldBounds(true)
-            .setRotation(0)
             .setAngularVelocity(0)
             .setVelocity(0, 0)
+            .setRotation(0)
             .setPosition(this.scene.game.config.width / 2.5, this.scene.game.config.height - 96);
     }
 
