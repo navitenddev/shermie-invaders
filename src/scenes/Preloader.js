@@ -18,10 +18,10 @@ export class Preloader extends Scene {
             this.game.config.width / 2, this.game.config.height / 2,
             "Loading...", {
             fontFamily: 'Arial Black',
-            fontSize: 16,
+            fontSize: 20,
             color: '#ffffff',
             stroke: '#000000',
-            strokeThickness: 8,
+            strokeThickness: 5,
             align: 'left',
             wordWrap: {
                 width: this.sys.game.config.width - 200,
@@ -38,18 +38,18 @@ export class Preloader extends Scene {
             bar.width = 4 + 460 * progress;
         });
 
-    }
-    /* preload all your assets here! */
-    preload() {
-
         this.load.on('fileprogress', (file) => {
             var output = `Loading asset: ${file.key}`;
             this.text
                 .setText(output)
                 .setPosition((this.game.config.width / 2) - (this.text.width / 2),
                     420);
-
+            console.log(output);
         });
+    }
+    /* preload all your assets here! */
+    preload() {
+
         //  Load the assets for the game - Replace with your own assets
         this.load.setPath("assets");
 

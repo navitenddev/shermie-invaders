@@ -36,18 +36,12 @@ export class PlayerWin extends Scene {
 
         this.sounds.bank.sfx.win.play();
 
-        this.add.text(512, 200, `Congratulations, you beat level ${this.registry.get("level")}!\nYou can now shop for upgrades.`, {
-            fontFamily: 'Arial Black',
-            fontSize: 32,
-            color: '#ffffff',
-            stroke: '#000000',
-            strokeThickness: 8,
-            align: 'left',
-            wordWrap: {
-                width: this.sys.game.config.width - 200,
-                useAdvancedWrap: true
-            }
-        }).setOrigin(0.5);
+        this.add.bitmapText(512, 200,
+            bitmapFonts.PressStart2P_Stroke,
+            `Congratulations, you beat level ${this.registry.get("level")}! You can now shop for upgrades.`,
+            fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+            .setOrigin(0.5, 0.5)
+            .setMaxWidth(this.game.config.width * 0.75);
 
         this.continue_btn = new TextboxButton(this, this.game.config.width / 2, 600, 150, 50, 'Continue',
             () => { // callback function
