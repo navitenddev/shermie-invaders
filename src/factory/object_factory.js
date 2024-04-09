@@ -91,8 +91,8 @@ Phaser.GameObjects.GameObjectFactory.register(
 Phaser.GameObjects.GameObjectFactory.register(
     "powerup",
     function (scene) {
-        let temp = this.scene.powerup_stats.power_bank[Phaser.Math.Between(0, this.scene.powerup_stats.power_bank.length - 1)];
-        console.log(temp);
-        return new Powerups(scene, temp);
+        //let temp = this.scene.powerup_stats.power_bank[Phaser.Math.Between(0, this.scene.powerup_stats.power_bank.length - 1)];
+        //console.log(temp);
+        return new Powerups(scene, "pierce");
     }
 );

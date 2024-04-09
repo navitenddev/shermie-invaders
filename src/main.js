@@ -156,7 +156,8 @@ export function init_collision_events(scene, scene_key) {
     scene.physics.add.overlap(scene.objs.bullets.enemy, scene.objs.bullets.player, (enemy_bullet, player_bullet) => {
         if (player_bullet.active && enemy_bullet.active) {
             scene.objs.explode_at(player_bullet.x, player_bullet.y);
-            player_bullet.deactivate();
+            if (scene.player_vars.power == "pierce") player_bullet.hurt_bullet();
+            else player_bullet.deactivate();
             enemy_bullet.deactivate();
         }
     });

@@ -109,6 +109,13 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
             .setAngle(Math.atan2(-vy, vx) * (180 / Math.PI) + 90)
             .setVisible(true)
             .setActive(true);
+        if(this.player_vars.power == "pierce"){
+            console.log("hey")
+            this.setTexture("pierceshot_icon");
+            this.setSize(48, 48);
+            this.anims.stop();
+            this.anims.play('pierce_bullet');
+        }
     }
 
     /** 
@@ -121,6 +128,10 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
         this.setVisible(false);
         this.setActive(false);
         this.setVelocity(0, 0);
+        this.setTexture("bullet");
+        this.setSize(PlayerBulletConstDefs.dims.w, PlayerBulletConstDefs.dims.h);
+        this.anims.stop();
+        this.anims.play('cottonBullet');
     }
 
 }
@@ -190,7 +201,7 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
             .setPosition(x, y)
             .setAngle(Math.atan2(vy, vx) * (180 / Math.PI))
             .setVisible(true)
-            .setActive(true);
+            .setActive(true);        
     }
 
     /** 

@@ -27,8 +27,7 @@ class Powerups extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         this.body.onOverlap = true;
         this.speed = PowerupsConstDefs.speed.y;
-        this.play("powerup")
-            .setActive(false)
+        this.setActive(false)
     }
 
     /* It's important to add this to every subclass that extends a phaser object.
