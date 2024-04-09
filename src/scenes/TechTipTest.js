@@ -26,8 +26,6 @@ export class TechTipTest extends Scene {
         this.add.image(512, 384, 'background').setAlpha(0.5);
         this.sounds = this.registry.get('sound_bank');
 
-        this.sounds.bank.sfx.win.play();
-
         this.add.text(512, 50,
             "Click on the buttons to show their tips.", {
             fontFamily: 'Arial Black',

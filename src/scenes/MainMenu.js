@@ -68,7 +68,6 @@ export class MainMenu extends BaseMenu {
         this.start_btn = new TextButton(this, 512, menuY, "PLAY",
             () => {
                 console.log('Pressed');
-                this.sounds.bank.sfx.click.play();
                 this.cameras.main.fadeOut(200, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                     this.scene.start('Game');
@@ -82,7 +81,6 @@ export class MainMenu extends BaseMenu {
         this.controls_btn = new TextButton(this, 512, menuY, "CONTROLS",
             () => {
                 console.log('Pressed');
-                this.sounds.bank.sfx.click.play();
                 this.scene.start('HowToPlay');
             }
         ).setDepth(3);
@@ -90,7 +88,6 @@ export class MainMenu extends BaseMenu {
         menuY += menuSpacing;
         this.level_select_btn = new TextButton(this, 512, menuY, "LEVEL SELECT",
             () => {
-                this.sounds.bank.sfx.click.play();
                 this.scene.start('LevelSelect');
             }
         ).setDepth(3);
@@ -101,7 +98,6 @@ export class MainMenu extends BaseMenu {
             this.sandbox_btn = new TextButton(this, 512, menuY,
                 "SANDBOX",
                 () => {
-                    this.sounds.bank.sfx.win.play();
                     this.cameras.main.fadeOut(200, 0, 0, 0);
                     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                         this.scene.start('Sandbox');
@@ -153,7 +149,6 @@ export class MainMenu extends BaseMenu {
         console.log(`Cheat codes activated!`);
         this.registry.set('debug_mode', true);
         localStorage.setItem('cheatCodesActivated', 'true'); // store cheat code activation in localStorage
-        this.sounds.bank.sfx.click.play();
         this.scene.start('Main Menu');
     }
 
@@ -161,7 +156,6 @@ export class MainMenu extends BaseMenu {
         console.log(`Cheat codes disabled!`);
         this.registry.set('debug_mode', false);
         localStorage.removeItem('cheatCodesActivated');
-        this.sounds.bank.sfx.click.play();
         this.scene.start('Main Menu');
     }
 }

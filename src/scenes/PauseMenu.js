@@ -22,7 +22,6 @@ export class PauseMenu extends Scene {
             menuItems.splice(1, 0, { // insert at index 1
                 text: 'Cheats',
                 callback: () => {
-                    this.sounds.bank.sfx.click.play();
                     this.scene.stop('PauseMenu');
                     this.scene.start('StatsMenu');
                 },
@@ -65,7 +64,6 @@ export class PauseMenu extends Scene {
     quitGame() {
         this.emitter.removeAllListeners();
         this.sounds.stop_all_music();
-        this.sounds.bank.sfx.click.play();
         this.sounds.bank.music.start.play();
         this.cameras.main.fadeOut(200, 0, 0, 0);
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {

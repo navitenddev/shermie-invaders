@@ -63,6 +63,7 @@ export class TextButton extends Phaser.GameObjects.Container {
             .setInteractive()
             .on('pointerover', () => {
                 this.text.setTint(color_hover);
+                sounds.bank.sfx.hover.play();
             })
             .on('pointerout', () => {
                 this.text.setTint(color);

@@ -82,6 +82,7 @@ export class TextboxButton extends Phaser.GameObjects.Container {
                     .clear()
                     .lineStyle(3, color_border, 1)
                     .strokeRect(-(w / 2), -(h / 2), w, h);
+                sounds.bank.sfx.hover.play();
             })
             .on('pointerout', () => {
                 this.bg.setFillStyle(color, opacity);
