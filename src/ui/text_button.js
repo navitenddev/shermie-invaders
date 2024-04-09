@@ -33,9 +33,9 @@ export class TextButton extends Phaser.GameObjects.Container {
     *     0x383A40, // color of text when hovered
     *     0xFEFEFE, // color of text when clicked
     * );
-    * @example // This example will produce the same result as above.
-    * const continue_btn = new TextButton(this, this.game.config.width / 2, 
-    * 100, 'Continue',
+    * @example // This example will produce the same result as above, using default parameters.
+    * const continue_btn = new TextButton(this, this.game.config.width / 2, 100, 
+    * 'Continue',
     * () => { 
     *    this.scene.start("Store")
     * }, []
@@ -62,8 +62,8 @@ export class TextButton extends Phaser.GameObjects.Container {
         this.text.setPosition(-(this.text.width / 2), -(this.text.height / 2))
             .setInteractive()
             .on('pointerover', () => {
-                this.text.setTint(color_hover);
                 sounds.bank.sfx.hover.play();
+                this.text.setTint(color_hover);
             })
             .on('pointerout', () => {
                 this.text.setTint(color);
