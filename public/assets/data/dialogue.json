@@ -1,0 +1,236 @@
+{
+  "prof_oak_intro_speech": {
+    "lines": [
+      "Hello there! Welcome to the world of Pokémon!",
+      "My name is Oak! People call me the Pokémon Prof!",
+      "This world is inhabited by creatures called Pokémon!",
+      "For some people, Pokémon are pets. Other use them for fights.",
+      "Myself... I study Pokémon as a profession.",
+      "First, what is your name?",
+      "Right! So your name is PLAYER",
+      "This is my grandson. He's been your rival since you were a baby.",
+      "...Erm, what is his name again?",
+      "That's right! I remember now! His name is RIVAL.",
+      "Your very own Pokémon legend is about to unfold!",
+      "A world of dreams and adventures with Pokémon awaits! Let's go!"
+    ]
+  },
+  "test1": {
+    "lines": [
+      "Hello, this is the first thing I'm gonna say.",
+      "And then I'm gonna say this too. Oh boy isn't this exciting",
+      "Then by some freak of a miracle, I am ALSO going to say this too. Isn't life wild?",
+      "Okay im done bye"
+    ]
+  },
+  "test2": {
+    "lines": [ "Yo what's goodie", "Okay cool beans", "buh bye dood" ]
+  },
+  "win1": {
+    "lines": [ "AYOOOOOO, SHERMIE IN DA HOUSE" ]
+  },
+  "lose1": {
+    "lines": [ "We may have lost the battle...", "but not the war..." ]
+  },
+  "shermie_hurt": {
+    "lines": [ "ouch! that hurt!" ]
+  },
+  "shermie_shieldhurt": {
+    "lines": [ "Hey, watch it! They're breaking my shield!" ]
+  },
+  "shermie_shieldgone": {
+    "lines": [ "Ah! Blasted right through the shield!" ]
+  },
+  "shermie_start": {
+    "lines": [
+      "Player, we're being invaded by malware!",
+      "Help me take them out so we don't lose our jobs!"
+    ]
+  },
+  "shermie_dead": {
+    "lines": [ "NoooooOOOOoOOOoOOOO!!!" ]
+  },
+  "shermie_boss": {
+    "lines": [ "Why do I hear boss music?" ]
+  },
+  "sandbox_tips": {
+    "lines": [
+      "Welcome to Sandbox Mode!",
+      "Click the buttons on the top right to spawn enemies!"
+    ]
+  },
+  "level1": {
+    "lines": [
+      "I, Shermie, Will recall this epic tell...",
+      "My adventure begins at the Navitend headquarters, a place of innovation and growth.",
+      "Unbeknownst to me, the peace of this world was on the brink of failing.",
+      "As dusk took hold, a sudden silence fell.",
+      "Looking into the night sky, a terrifying feeling washed over me. But I stood firm.",
+      "ready to protect my home against any threat.",
+      "But less did they know, I was no ordinary being...",
+      "I, Shermie, I was ready for the combat to come."
+    ]
+  },
+  "level2": {
+    "lines": [
+      "Luckily my creator left me upgrade capabilites before leaving...",
+      "With the Navitend headquarters now safe, I ran quickly to my home town.",
+      "The heart of our community, where streets filled with laughter, now lay in flames.",
+      "Confronted by enemy cyber minions, every corner turned into a fight for survival.",
+      "With each step I Shermie take, pledge to reclaim Shermie Towns vigor."
+    ]
+  },
+  "level3": {
+    "lines": [
+      "Having pushed back the initial wave, I knew  the battle was far from over...",
+      "As my strength grew, so did my hope in reclaiming the peace on earth.",
+      "I ascended towards the heavens, Intercepting the invaders.",
+      "Allied with the gusting winds, I danced among the hoard of choas."
+    ]
+  },
+  "level4": {
+    "lines": [
+      "Dark space turned cold, Still leading the charge against our adversaries.",
+      "Now, I Shermie, stood as Earth's last bastion against the Nexsus...",
+      "I was not sure I could do it, but my creator deemed me fit.",
+      "With Earth's fate hanging by a thread, I drew upon every resource I could."
+    ]
+  },
+  "level5": {
+    "lines": [
+      "After fierce battle upon Earth, I detected the enemy's dark heart, looming in the cold expanse of space.",
+      "As I stealthily approached the dark stronghold, I understood that this was no mere physical battle",
+      "Realizing my fate, I gave myself for a confrontation that could change destiny.",
+      "my resolve echoed louder than ever, a stark reminder of what was at stake should I fail."
+    ]
+  },
+  "level6": {
+    "lines": [
+      "Surrounded by the void of space, the enemy's elite forces formed a blockade,",
+      "Each confrontation was a test of my power. With every foe defeated, my power weakened.",
+      "The battles raged on and on, a relentless dance of strength and endurance.",
+      "Allies, distant yet ever-present on earth, with raised hands, lent me their strength..."
+    ]
+  },
+  "level7": {
+    "lines": [
+      "As space dust settled, a path to the dark heart opened, its presence bestowing a heavy fear",
+      "In a battle that would be seen beyond the galaxies, ",
+      "face to face I challenged darkness..."
+    ]
+  },
+  "techtip1": {
+    "lines": [
+      "You never know where hackers may lurk, so get antivirus software and make sure it works."
+    ]
+  },
+  "techtip2": {
+    "lines": [
+      "If you're looking for a strong password, you won't find it in the dictionary."
+    ]
+  },
+  "techtip3": {
+    "lines": [
+      "What's the key to creating a strong password? You won't find that in the dictionary."
+    ]
+  },
+  "techtip4": {
+    "lines": [
+      "Since you never know where hackers may lurk, make sure your antivirus and antimalware programs work."
+    ]
+  },
+  "techtip5": {
+    "lines": [
+      "If you see an email with a message that seems too good to be true, chances are it is. Delete it immediately."
+    ]
+  },
+  "techtip6": {
+    "lines": [
+      "When setting passwords for your accounts or devices, make sure they contain a random mix of letters, numbers, and special characters, since passwords with words or phrases in any language are easier for hackers to crack."
+    ]
+  },
+  "techtip7": {
+    "lines": [
+      "Reusing your password across multiple accounts opens doors for hackers to steal your data, so to keep your data from being compromised, make sure all your accounts' passwords are customized."
+    ]
+  },
+  "techtip8": {
+    "lines": [
+      "Use 2FA/MFA as often as possible, because the more authentication factors you have, the greater protection you have against cyberattacks even if one factor is compromised."
+    ]
+  },
+  "techtip9": {
+    "lines": [
+      "To keep your data from being lost or stolen in a security breach, you always need a little DLP."
+    ]
+  },
+  "techtip10": {
+    "lines": [
+      "Preventing your data from falling into malicious hands is not difficult. It is easy as DLP."
+    ]
+  },
+  "techtip11": {
+    "lines": [
+      "Malware exploits your software's vulnerabilities, so don't wait until it's too late to install the required updates."
+    ]
+  },
+  "techtip12": {
+    "lines": [
+      "Software vulnerabilities can leave gaping holes in your overall cybersecurity, so patch up your software as early and as often as possible."
+    ]
+  },
+  "techtip13": {
+    "lines": [
+      "Older computers are more vulnerable to threats like phishing, ransomware, and spyware attacks. Therefore, once your devices can't support essential updates anymore, replace them with newer models."
+    ]
+  },
+  "techtip14": {
+    "lines": [
+      "Whether you are working from home, in the office, or on the road, all signs point to VPN. When you use a VPN - or virtual private network, it encrypts your data to keep it from falling into malicious hands."
+    ]
+  },
+  "techtip15": {
+    "lines": [
+      "Use a VPN as often as you can, because it keeps your data from falling into malicious hands."
+    ]
+  },
+  "techtip16": {
+    "lines": [
+      "Automatic updates are all fine and dandy, but sometimes updating software yourself comes in handy. If you do not update your printers, router firmware, and scanners, they will be prone to harmful",
+      "cyberattacks. This shows that you must update your software as often as possible."
+    ]
+  },
+  "techtip17": {
+    "lines": [
+      "If you see an email where something looks off, take a closer look at the sender, links, attachment, and message, so you can SLAM the door shut on harmful phishing attacks."
+    ]
+  },
+  "techtip18": {
+    "lines": [
+      "The average data breach resulting from cloud misconfigurations costs $4 million, so to save money - and headaches - make sure your cloud computing platforms are configured properly."
+    ]
+  },
+  "techtip19": {
+    "lines": [
+      "To keep malware from infiltrating your computers, threat detection tools like behavioral analytics, ransomware detection, and vulnerability scanning are undeniably essential."
+    ]
+  },
+  "techtip20": {
+    "lines": [
+      "Don't be blind to cybercrime - use threat detection tools for greater visibility into your network activity, so you can stop data breaches and other cyberattacks in their tracks."
+    ]
+  },
+  "techtip21": {
+    "lines": [
+      "If you find a link that looks suspicious, don't click it, because chances are it is malicious."
+    ]
+  },
+  "techtip22": {
+    "lines": [
+      "Malware exploits software vulnerabilities. To avoid it, regularly update your software and applications to patch vulnerabilities."
+    ]
+  },
+  "techtips": {
+    "quantity": 22
+  }
+}

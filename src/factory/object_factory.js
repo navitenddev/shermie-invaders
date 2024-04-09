@@ -20,8 +20,8 @@ console.log("Loading Phaser Factories...")
 
 Phaser.GameObjects.GameObjectFactory.register(
     "barrier_chunk",
-    function (scene, x, y, width, height, fill_color) {
-        return new BarrierChunk(scene, x, y, width, height, fill_color);
+    function (scene, x, y, key, health) {
+        return new BarrierChunk(scene, x, y, key, health);
     }
 );
 
@@ -48,15 +48,15 @@ Phaser.GameObjects.GameObjectFactory.register(
 
 Phaser.GameObjects.GameObjectFactory.register(
     "enemy_lupa",
-    function (scene, x, y) {
-        return new EnemyLupa(scene, x, y);
+    function (scene, x, y, hp = 40) {
+        return new EnemyLupa(scene, x, y, hp);
     }
 );
 
 Phaser.GameObjects.GameObjectFactory.register(
     "enemy_pupa",
-    function (scene, x, y) {
-        return new EnemyPupa(scene, x, y);
+    function (scene, x, y, hp = 40) {
+        return new EnemyPupa(scene, x, y, hp);
     }
 );
 

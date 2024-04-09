@@ -1,6 +1,5 @@
 import { EnemyBulletConstDefs as bull_defs } from "./bullet"
 import { EventDispatcher } from "../utils/event_dispatcher";
-import { fonts } from "../utils/fontStyle";
 import { Powerups, PowerupsConstDefs } from "../objects/powerup";
 
 /**
@@ -72,8 +71,8 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
         // if condition
         let bullet = this.scene.objs.bullets.enemy.getFirstDead(false, 0, 0, "enemy_bullet");
         if (bullet !== null) {
-            bullet.activate(true);
-            bullet.setPosition(this.x, this.y);
+            let vy = Phaser.Math.Clamp(300 + (this.scene.registry.get('level') * 10), 1, 900);
+            bullet.activate(this.x, this.y, 0, vy);
         }
     }
 
@@ -99,12 +98,16 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
 
 
     die() {
+<<<<<<< HEAD
         if (Phaser.Math.Between(0,0) == 0) {
+=======
+        if (Phaser.Math.Between(0, 29) == 0) {
+>>>>>>> main
             let temp = Phaser.Math.Between(0, this.scene.objs.powers.countActive(false));
             let power = this.scene.objs.powers.getFirstNth(temp, false, false, 0, 0, "powerup");
-            while(power==null && this.scene.objs.powers.countActive(false)>0){
-                if(temp>Powerups.powerup_capacity){
-                    temp=0;
+            while (power == null && this.scene.objs.powers.countActive(false) > 0) {
+                if (temp > Powerups.powerup_capacity) {
+                    temp = 0;
                 }
                 temp++;
                 power = this.scene.objs.powers.getFirstNth(temp, false, false, 0, 0, "powerup");
@@ -114,11 +117,8 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
                 power.activate(this.x, this.y, -fall_speed);
                 this.scene.powerup_stats.active_powerups++;
             }
-            else{
-                console.log("hey")
-            }
         }
-        
+
         this.destroy();
     }
     // return true if this enemy is overlapping an x boundary

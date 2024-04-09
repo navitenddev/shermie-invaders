@@ -1,75 +1,153 @@
-import { Scene } from 'phaser';
-import { fonts } from '../utils/fontStyle.js';
+import { BaseMenu } from './BaseMenu.js';
+import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { TextboxButton } from '../ui/textbox_button.js';
 
 /**
- * @classdesc A button that, when clicked, brings the player to that level.
- * This feature will probably be limited to testing only. There is no purpose in letting a player choose a different level in a game that has infinite levels.
- * Or, maybe we can leave it in and let the player pick higher levels incase the earlier ones are boring.
+ * @classdesc Asks the user if they wish to start the level with money or not
+ * If we end up needing another yes/no dialog window, this class should be
+ * repurposed. I don't think we will, so I will just make this specifically for
+ * this purpose.
  */
-class LevelButton {
+class StartWithMoneyDialog extends Phaser.GameObjects.Container {
     /**
-     * 
-     * @param {Phaser.Scene} scene The scene to put the button in
-     * @param {number} x x-coordinate of topleft position of the button
-     * @param {number} y y-coordinate of topleft position of the button
-     * @param {number} level The level that the button will bring the player to
+     * @param {Phaser.Scene} scene The scene to create the dialog in
+     * @param {number} x x-position of dialog window
+     * @param {number} y y-position of dialog window
+     * @param {number} level The level to start on
+     * @param {number} border_sz The x distance that buttons and text will be from the border
      */
-    constructor(scene, x, y, level) {
-        this.scene = scene;
-        console.log(level);
-        this.scene.add.text(x, y, level, fonts.small)
-            .setOrigin(0.5)
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.scene.registry.set({ level: level });
-                this.scene.scene.start('Game');
-            });
+    constructor(scene, x, y, w, h, level, border_sz = 5) {
+        super(scene, x, y);
+        scene.add.existing(this);
+        const BG_COLOR = 0x2B2D31;
+        const BG_BORDER = 0x879091;
+
+        let player_vars = scene.registry.get('player_vars');
+
+        // we don't need any interactivity with bg, however, adding this here
+        // will block pointer events from registering if there exists another
+        // button below the bg.
+        this.bg = scene.add.rectangle(0, 0, w, h, BG_COLOR)
+            .setInteractive();
+        this.bg_border = scene.add.graphics();
+        this.bg_border
+            .lineStyle(2, BG_BORDER, 1)
+            .strokeRect(-(w / 2), -(h / 2), w, h);
+
+        this.text = scene.add.bitmapText(border_sz, border_sz,
+            bitmapFonts.PressStart2P_Stroke,
+            "Do you wish to start level "+level+" with money?",
+            fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
+            .setMaxWidth(w - (border_sz * 2));
+
+        this.text.setPosition(-(this.text.width / 2), -(this.text.height / 2));
+
+        const BTN_W = (w / 3) - (border_sz * 2);
+        const BTN_H = 35;
+        const X_OFFSET = -(w / 2) + (BTN_W / 2)
+
+        this.yes_btn = new TextboxButton(scene, X_OFFSET + 1 * border_sz, 50,
+            BTN_W, BTN_H,
+            "Yes",
+            () => {
+                // edge case, level 1 always starts with no money and in the game scene
+                if (level === 1) {
+                    scene.registry.set({ level: level });
+                    scene.scene.start('Game');
+                } else {
+                    // set level to level-1
+                    scene.registry.set({ level: level - 1 });
+                    // give player money based on the level
+                    player_vars.wallet = (level - 1) * 300;
+                    // go to store scene
+                    scene.scene.start('Store');
+                }
+            }
+        );
+        this.no_btn = new TextboxButton(scene, X_OFFSET + BTN_W + 2 * border_sz, 50,
+            BTN_W, BTN_H,
+            "No",
+            () => {
+                // start with no money
+                scene.registry.set({ level: level });
+                scene.scene.start('Game');
+            }
+        );
+        this.cancel_btn = new TextboxButton(scene, X_OFFSET + 2 * BTN_W + 3 * border_sz, 50,
+            BTN_W, BTN_H,
+            "Cancel",
+            () => {
+                // do cancel
+                this.destroy();
+            }
+        );
+
+        this.add([this.bg, this.bg_border, this.text, this.yes_btn, this.no_btn, this.cancel_btn]);
+        this.setPosition(x, y);
     }
 }
 
-export class LevelSelect extends Scene {
+export class LevelSelect extends BaseMenu {
     constructor() {
         super('LevelSelect');
     }
 
     create() {
-        this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'animatedbg');
-        this.animatedBg.setOrigin(0.5, 0.5);
         this.sounds = this.registry.get('sound_bank');
-        this.add.image(this.game.config.width / 2, 35, 'levelSelectlogo');
-        
+        this.sounds.stop_all_music();
+        this.sounds.bank.music.shop.play();
+        super.create();
+
+        this.add.bitmapText(this.game.config.width / 3, 35, bitmapFonts.PressStart2P_Stroke, 'LEVEL SELECT', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setDepth(3);
+
         const scale = { x: 50, y: 50 };
-        const offset = { x: this.game.config.width / 10, y: 75 };
+        const gap = { x: 5, y: 5 };
+        const offset = { x: 65, y: 57.5 };
         let level = 1;
-        
+
         // get max level reached from localStorage
         const maxLevelReached = localStorage.getItem('maxLevelReached') || 1;
-        
+
         // check if cheat mode is enabled
         const cheatModeEnabled = this.registry.get('debug_mode') === true;
-        
+
+        this.keys.m.on('down', this.sounds.toggle_mute);
+
+        const DIALOG_W = 400;
+        const DIALOG_H = 150;
+
+        var color, color_hover;
         for (let y = 1; y <= 10; y++) {
             for (let x = 1; x <= 15; x++) {
                 if (cheatModeEnabled || level <= maxLevelReached) {
-                    new LevelButton(this, offset.x + x * scale.x, offset.y + y * scale.y, level);
+                    if (level % 7) {
+                        color = 0x2B2D31;
+                        color_hover = 0x383A40;
+                    } else {
+                        color = 0xc80420;
+                        color_hover = 0x820114;
+                    }
+                    new TextboxButton(this,
+                        offset.x + x * scale.x + x * gap.x,
+                        offset.y + y * scale.y + y * gap.y,
+                        40, 40,
+                        level.toString(),
+                        (scene, level) => {
+                            new StartWithMoneyDialog(scene,
+                                (scene.game.config.width / 2), 300,
+                                DIALOG_W, DIALOG_H, level)
+                                .setDepth(3);
+                        },
+                        [this, level++],
+                        bitmapFonts.PressStart2P,
+                        12,
+                        color,
+                        color_hover)
+                        .setDepth(3);
                 }
-                level++;
             }
         }
-        
-        this.backButton = this.add.text(this.game.config.width / 2, this.game.config.height - 100, 'Back', fonts.medium)
-            .setOrigin(0.5)
-            .setInteractive()
-            .on('pointerdown', () => {
-                this.sounds.bank.sfx.click.play();
-                this.scene.start('MainMenu');
-            });
-    }
 
-    update() {
-        if (this.animatedBg) {
-            this.animatedBg.tilePositionY += 1;
-            this.animatedBg.tilePositionX += 1;
-        }
+        this.setupBackButton();
     }
 }

@@ -1,16 +1,19 @@
 import { Scene } from 'phaser';
-import { InitKeyDefs } from '../keyboard_input';
-import { fonts } from '../utils/fontStyle.js';
+import { InitKeyDefs } from '../utils/keyboard_input.js';
+import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
+import { TextboxButton } from '../ui/textbox_button.js';
 import { SHOP_PRICES } from './Store.js';
 
 const STAT_MIN = 1;
+
 /**
  * @description A UI component which has a - + around some text to change a numerical value
  * Note: If we end up creating components that we wish to reuse, we should
  * create a ui_components.js file in utils.  
  */
 class MenuSpinner {
+    text_value; // text object that displays the value of the current stat
     /**
      * @constructor
      * @param {Phaser.Scene} scene Scene to add spinner to
@@ -21,73 +24,68 @@ class MenuSpinner {
      * @param {Object<string, number>} obj object containing the value being modified
      * @param {string} key They key of the object to modify
      */
+
     constructor(scene, x, y, w, text, obj, key) {
+        let text_value = scene.add.bitmapText(x + w - 40, y, bitmapFonts.PressStart2P_Stroke, obj[key], fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]);
+        // MIN button
+        new TextboxButton(scene, x - 45, y + 10,
+            55, 25,
+            'MIN',
+            () => {
+                (key === 'lives') ?
+                    obj[key] = Phaser.Math.Clamp(0, 1, 10) :
+                    obj[key] = Phaser.Math.Clamp(0, 1, SHOP_PRICES[key].length);
+                text_value.setText(obj[key]);
+            }, [],
+            bitmapFonts.PressStart2P,
+            fonts.tiny.sizes[bitmapFonts.PressStart2P],
+        );
+
         // - button
-        this.minus = scene.add.text(x, y, '-', fonts.small)
-            .setInteractive()
-            .on('pointerdown', function () {
-                obj[key] = Math.max(obj[key] - 1, STAT_MIN);
-                this.setStyle({ color: '#ff0000' });
-            })
-            .on('pointerup', function () {
-                this.setStyle(fonts.small);
-                console.log(`Modified ${text} to ${obj[key]}`);
-            });
+        new TextboxButton(scene, x + 15, y + 10,
+            25, 25,
+            '-',
+            () => {
+                (key == 'lives') ?
+                    obj[key] = Phaser.Math.Clamp(obj[key] - 1, 1, 10) :
+                    obj[key] = Phaser.Math.Clamp(obj[key] - 1, 1, SHOP_PRICES[key].length);
+                text_value.setText(obj[key]);
+            }, [],
+            bitmapFonts.PressStart2P,                    // font type
+            fonts.tiny.sizes[bitmapFonts.PressStart2P], // font size
+        );
+
         // + button
-        scene.add.text(x + w, y, '+', fonts.small)
-            .setInteractive()
-            .on('pointerdown', function () {
-                if (key === 'lives') // LOL
-                    obj[key] = Math.min(obj[key] + 1, 10);
-                else
-                    obj[key] = Math.min(obj[key] + 1, SHOP_PRICES[key].length);
-                this.setStyle({ color: '#ff0000' });
-            })
-            .on('pointerup', function () {
-                this.setStyle(fonts.small);
-                console.log(`Modified ${text} to ${obj[key]}`);
-            });
+        new TextboxButton(scene, x + w + 5, y + 10,
+            25, 25,
+            '+',
+            () => {
+                (key === 'lives') ?
+                    obj[key] = Phaser.Math.Clamp(obj[key] + 1, 1, 10) :
+                    obj[key] = Phaser.Math.Clamp(obj[key] + 1, 1, SHOP_PRICES[key].length);
+                text_value.setText(obj[key]);
+            }, [],
+            bitmapFonts.PressStart2P,                    // font type
+            fonts.tiny.sizes[bitmapFonts.PressStart2P], // font size
+        );
 
-        scene.add.text(x + 50, y, text, fonts.small);
+        // max button
+        new TextboxButton(scene, x + w + 65, y + 10,
+            55, 25,
+            'MAX',
+            () => {
+                (key === 'lives') ?
+                    obj[key] = Phaser.Math.Clamp(100, 1, 10) :
+                    obj[key] = Phaser.Math.Clamp(100, 1, SHOP_PRICES[key].length);
+                text_value.setText(obj[key]);
+            }, [],
+            bitmapFonts.PressStart2P,                    // font type
+            fonts.tiny.sizes[bitmapFonts.PressStart2P], // font size
+        );
+
+        scene.add.bitmapText(x + 50, y, bitmapFonts.PressStart2P_Stroke, text, fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]);
     }
 }
-
-/** 
- * @description A test callback function to demonstrate how IconButton is used.
- */
-function test_cb(arg1, arg2) {
-    console.log(`test_cb operational, my args are "${arg1}" and "${arg2}"!`);
-}
-
-/**
- * @classdesc A button with an icon as its surface that calls cb with args when
- * clicked.
- */
-class IconButton extends Phaser.GameObjects.Image {
-    /**
-     * @param {Phaser.scene} scene The scene to add the button into
-     * @param {string} icon The asset key of the image defined in Preloader.js
-     * @param {number} x top-left x-coordinate of the button
-     * @param {number} y top-right y-coordinate of the button
-     * @callback cb Callback function that is used when button is clicked
-     * @param {Array<any>} args A variadic number of arguments to pass into cb when it's called
-     * @example new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
-     */
-    constructor(scene, icon, x, y, cb, args = []) {
-        console.log(icon)
-        super(scene, x, y, icon);
-        scene.add.existing(this);
-        this.setOrigin(0.5)
-            .setInteractive()
-            .on('pointerdown', () => {
-                // do visual indicator that button was clicked
-            })
-            .on('pointerup', () => {
-                // call the callback with the given arguments
-                cb(...args);
-            })
-    }
-};
 
 
 export class StatsMenu extends Scene {
@@ -98,8 +96,22 @@ export class StatsMenu extends Scene {
 
     create() {
         this.player_vars = this.registry.get('player_vars');
+
+        const menuSpacing = 60;
         const boxWidth = 610;
-        const boxHeight = 340;
+
+        // if/when we add new stats, create a new spinner for it by defining it
+        // here. Note, this will only work in the for loop if the variable we
+        // are working with is in this.player_vars.stats
+        const spinner_defs = [
+            // [key, name_to_display]
+            ['move_speed', 'Move Speed'],
+            ['bullet_speed', 'Bullet Speed'],
+            ['fire_rate', 'Fire Rate'],
+            ['shield', 'Shield']
+        ];
+
+        const boxHeight = (spinner_defs.length + 3) * menuSpacing + 20;
         const boxX = (this.game.config.width - boxWidth) / 2;
         const boxY = (this.game.config.height - boxHeight) / 2;
 
@@ -112,48 +124,54 @@ export class StatsMenu extends Scene {
 
         this.keys.p.on('down', () => this.go_back());
         this.keys.esc.on('down', () => this.go_back());
-        this.keys.m.on('down', () => this.sounds.toggle_mute())
+        this.keys.m.on('down', () => this.sounds.toggle_mute());
 
-        let x = boxX + 145,
-            y = boxY + 50,
-            w = 300,
-            y_gap = 50;
+        let x = boxX + 145;
+        let y = boxY + 40;
+        let w = 300;
 
         // the player lives are not in stats, so we need to make this menu
         // spinner manually.
         new MenuSpinner(this, x, y, w, 'Lives', this.player_vars, 'lives');
-        // if/when we add new stats, create a new spinner for it by defining it
-        // here. Note, this will only work in the for loop if the variable we
-        // are working with is in this.player_vars.stats
-        const spinner_defs = [
-            // [key, name_to_display]
-            ['move_speed', 'Move Speed'],
-            ['bullet_speed', 'Bullet Speed'],
-            ['fire_rate', 'Fire Rate'],
-            ['shield', 'Shield']
-        ]
+        y += menuSpacing;
 
-        let i = 1;
-        for (let sd of spinner_defs)
-            new MenuSpinner(this, x, y + (y_gap * i++), w,
-                sd[1], this.player_vars.stats, sd[0]);
+        for (let sd of spinner_defs) {
+            new MenuSpinner(this, x, y, w, sd[1], this.player_vars.stats, sd[0]);
+            y += menuSpacing;
+        }
 
-        this.levelSkipButton = this.add.text(x, y + (y_gap * i), 'KILL ALL ENEMIES', fonts.small)
-            .setInteractive()
-            .on('pointerdown', () => {
+        const ls = { w: 350, h: 50 }; // level_skip_btn dimensions
+
+        this.level_skip_btn = new TextboxButton(this,
+            this.game.config.width / 2, this.game.config.height / 1.525,
+            ls.w, ls.h,
+            'Kill All Enemies',
+            () => {
                 this.emitter.emit('kill_all_enemies');
-            })
-            .setStyle({ fill: '#ff0000' });
+                // transition should not occur in sandbox
+                if (!this.registry.get('sandbox_mode')
+                    // it shouldnt happen on boss levels either
+                    && this.registry.get('level') % 7)
+                    this.scene.start('Player Win')
+            },
+            [], // callback function's arguments
+            bitmapFonts.PressStart2P,                    // font type
+            fonts.small.sizes[bitmapFonts.PressStart2P], // font size
+            0xFF0000, // color of button
+            0xB02A07, // color of hovered
+            0xFFFFFF, // color of clicked
+            0x879091, // color of border
+            1         // opacity value 0 through 1
+        );
 
-        i++;
+        y += menuSpacing;
 
-        this.backButton = this.add.text(boxX + 260, y + (y_gap * i), 'Back', fonts.small)
-            .setInteractive()
-            .on('pointerdown', () => { this.sounds.bank.sfx.click.play(); this.go_back(); });
-
-
-        // Note: This is a quick example on how the IconButton should be used. Feel free to uncomment it and play around with it first if you need to add a new powerup to the game.
-        // new IconButton(this, 'placeholder', 300, 500, test_cb, ["mooo", "meow"]);
+        this.back_btn = new TextboxButton(this,
+            boxX + boxWidth / 2, y,
+            100, 50,
+            'Back',
+            () => { this.go_back(); }
+        );
     }
 
     go_back() {

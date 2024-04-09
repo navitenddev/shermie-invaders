@@ -1,6 +1,9 @@
 import { Scene } from 'phaser';
-import { SoundBank } from '../sounds';
 import { EventDispatcher } from '../utils/event_dispatcher';
+import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { start_dialogue } from './Dialogue.js';
+import { restart_scenes } from '../main.js';
+import { TextboxButton } from '../ui/textbox_button.js';
 
 export class PlayerLose extends Scene {
     emitter = EventDispatcher.getInstance();
@@ -9,27 +12,26 @@ export class PlayerLose extends Scene {
     }
 
     create() {
+        this.sounds = this.registry.get('sound_bank');
+        this.sounds.stop_all_music();
+
         this.cameras.main.setBackgroundColor(0x000000);
         this.cameras.main.fadeIn(1000, 0, 0, 0);
 
+        const num_tips = this.cache.json.get("dialogue").techtips.quantity;
+        const rand_idx = Phaser.Math.Between(1, num_tips);
+        restart_scenes(this.scene);
+
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE, () => {
-            // do dis when fade done
-            this.start_dialogue('lose1')
+            start_dialogue(this.scene, `techtip${rand_idx}`, "techtip");
         });
-        this.emitter.removeAllListeners();
 
         this.sounds = this.registry.get('sound_bank');
+        this.sounds.bank.sfx.lose.play();
+        this.emitter.removeAllListeners();
 
-        // Moved code below to main menu since losing returns to main menu and resets everything
-        // reset global vars 
-        // this.player_vars = this.registry.get('player_vars');
-        // this.registry.set({ 'score': 0 });
-        // this.player_vars.lives = 3;
-        // this.player_vars.wallet = 0; // bye bye shermie bux
-        // // reset player stats to defaults
-        // for (let [key, value] of Object.entries(this.player_vars.stats))
-        //     this.player_vars.stats[key] = 1;
-        // this.player_vars.active_bullets = 0;
+        this.player_vars = this.registry.get('player_vars');
+        const score = this.player_vars.score;
 
         let bg = this.add.image(0, 0, 'losescreen').setAlpha(0.85);
         bg.setOrigin(0, 0);
@@ -37,22 +39,27 @@ export class PlayerLose extends Scene {
         bg.scaleY = bg.scaleX;
         bg.y = 0;
 
-        this.sounds.bank.sfx.lose.play();
+        this.continue_btn = new TextboxButton(this, this.game.config.width / 2, 600, 150, 50, 'Continue',
+            () => { // callback function
+                this.emitter.emit('force_dialogue_stop');
+                this.scene.start("Main Menu")
+            },
+            [], // callback function's arguments
+            bitmapFonts.PressStart2P,                    // font type
+            fonts.small.sizes[bitmapFonts.PressStart2P], // font size
+            0x2B2D31, // color of button
+            0x383A40, // color of hovered
+            0xFEFEFE, // color of clicked
+            0x879091// color of border
+        );
 
-        this.input.once('pointerdown', () => {
-            this.scene.start('MainMenu');
-        });
-
-    }
-
-
-    /**
-     * @param {*} key Start the dialogue sequence with this key
-     * @param {*} blocking If true, will stop all actions in the current scene. Until dialogue complete
-     */
-    start_dialogue(key, blocking = true) {
-        this.scene.launch('Dialogue', { dialogue_key: key, caller_scene: 'Player Lose' });
-        if (blocking)
-            this.scene.pause();
+        this.final_score = this.add.bitmapText(
+            0,
+            0,
+            bitmapFonts.PressStart2P_Stroke,
+            `FINAL SCORE:${score}`,
+            fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]
+        );
+        this.final_score.setPosition((this.game.config.width / 2) - (this.final_score.width / 2), this.game.config.height / 3.35);
     }
 }

@@ -1,7 +1,8 @@
 import { Scene } from 'phaser';
-import { InitKeyDefs } from '../keyboard_input';
-import { fonts } from '../utils/fontStyle.js';
+import { InitKeyDefs } from '../utils/keyboard_input';
+import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
+import { TextButton } from '../ui/text_button.js';
 
 export class PauseMenu extends Scene {
     emitter = EventDispatcher.getInstance();
@@ -21,7 +22,6 @@ export class PauseMenu extends Scene {
             menuItems.splice(1, 0, { // insert at index 1
                 text: 'Cheats',
                 callback: () => {
-                    this.sounds.bank.sfx.click.play();
                     this.scene.stop('PauseMenu');
                     this.scene.start('StatsMenu');
                 },
@@ -45,15 +45,9 @@ export class PauseMenu extends Scene {
 
         let menuY = boxY + 40;
         menuItems.forEach((item) => {
-            const menuItem = this.add.text(0, 0, item.text, fonts.medium)
-                .setOrigin(0.5)
-                .setInteractive()
-                .on('pointerdown', () => {
-                    this.sounds.bank.sfx.click.play();
-                    item.callback();
-                })
-                .setPosition(boxX + boxWidth / 2, menuY);
-
+            new TextButton(this, boxX + boxWidth / 2, menuY, item.text,
+                () => { item.callback(); }
+            );
             menuY += menuSpacing;
         });
 
@@ -68,16 +62,14 @@ export class PauseMenu extends Scene {
     }
 
     quitGame() {
-        this.emitter.removeAllListeners(); // Clean up loose event listeners
-        this.cameras.main.fadeOut(200, 0, 0, 0);
-        this.sounds.bank.music.bg.stop();
-        this.sounds.bank.music.ff7_fighting.stop();
-        this.sounds.bank.sfx.click.play();
+        this.emitter.removeAllListeners();
+        this.sounds.stop_all_music();
         this.sounds.bank.music.start.play();
+        this.cameras.main.fadeOut(200, 0, 0, 0);
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
             this.scene.stop('PauseMenu');
             this.scene.stop(this.prev_scene);
-            this.scene.start('MainMenu');
+            this.scene.start('Main Menu');
         });
     }
 }

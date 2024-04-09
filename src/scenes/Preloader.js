@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { SoundBank } from '../sounds';
+import { SoundBank } from '../utils/sounds';
 import { AnimationFactory } from '../factory/animation_factory';
 
 export class Preloader extends Scene {
@@ -14,6 +14,21 @@ export class Preloader extends Scene {
         //  A simple progress bar. This is the outline of the bar.
         this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0x000000);
 
+        this.text = this.add.text(
+            this.game.config.width / 2, this.game.config.height / 2,
+            "Loading...", {
+            fontFamily: 'Arial Black',
+            fontSize: 20,
+            color: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 5,
+            align: 'left',
+            wordWrap: {
+                width: this.sys.game.config.width - 200,
+                useAdvancedWrap: true
+            }
+        });
+
         //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
         const bar = this.add.rectangle(512 - 230, 384, 4, 28, 0x000000);
 
@@ -22,9 +37,19 @@ export class Preloader extends Scene {
             //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
             bar.width = 4 + 460 * progress;
         });
+
+        this.load.on('fileprogress', (file) => {
+            var output = `Loading asset: ${file.key}`;
+            this.text
+                .setText(output)
+                .setPosition((this.game.config.width / 2) - (this.text.width / 2),
+                    420);
+            console.log(output);
+        });
     }
     /* preload all your assets here! */
     preload() {
+
         //  Load the assets for the game - Replace with your own assets
         this.load.setPath("assets");
 
@@ -37,6 +62,20 @@ export class Preloader extends Scene {
         this.load.image('howToPlayLogo', 'ui/How_to_play.png');
 
         this.load.image("background", "backgrounds/leveloneBG.png");
+
+        this.load.image("BG1", "backgrounds/BG1.png");
+
+        this.load.image("BG2", "backgrounds/BG2.png");
+
+        this.load.image("BG3", "backgrounds/BG3.png");
+
+        this.load.image("BG4", "backgrounds/BG4.png");
+
+        this.load.image("BG5", "backgrounds/BG5.png");
+
+        this.load.image("BG6", "backgrounds/BG6.png");
+
+        this.load.image("BG7", "backgrounds/BG7.png");
 
         this.load.image("upgradeTilemap", "backgrounds/leveloneTilemap.png");
 
@@ -64,6 +103,22 @@ export class Preloader extends Scene {
 
         this.load.image("nuke_icon", "ui/nuke-icon.png");
 
+        this.load.image("firewall_icon", "ui/firewall-icon.png");
+
+        this.load.image("story_bg", "backgrounds/Dialouge.png");
+
+        this.load.image("brick_tileset", "misc/brick-tileset.png");
+
+        // process tilemap after load is complete
+        this.load.on('complete', () => {
+            const brick_tiles = this.textures.get('brick_tileset');
+            const base = brick_tiles.get();
+            Phaser.Textures.Parsers.SpriteSheet(brick_tiles, base.sourceIndex, base.x, base.y, base.width, base.height, {
+                frameWidth: 5,
+                frameHeight: 5
+            });
+        })
+
         //this.load.audio(['bgmusic','shoot','explosion'], ['SFX/spacebg.wav','SFX/shoot.wav', 'SFX/explosion.wav']);
 
         this.load.audio('bgmusic', 'SFX/bgmusic.mp3');
@@ -86,9 +141,24 @@ export class Preloader extends Scene {
 
         this.load.audio('start', ['SFX/start_screen.mp3']);
 
-        this.load.audio('ff7_fighting', 'SFX/ff7_fighting.mp3');
-
         this.load.audio('click', ['SFX/click.wav']);
+
+        this.load.audio('hover', ['SFX/hover.wav']);
+
+        this.load.audio('story_music', 'SFX/8 Bit Presentation - David Fesliyan.mp3');
+
+        this.load.audio('story_music', 'SFX/8 Bit Presentation - David Fesliyan.mp3');
+
+        this.load.audio('shop_music', 'SFX/Retro Forest - David Fesliyan.mp3');
+
+        this.load.audio('boss_music', 'SFX/Retro Platforming - David Fesliyan.mp3');
+
+        this.load.audio('boss_rush_music', 'SFX/Epic Boss Battle (Dark Action Music) - Rafael Krux.m4a');
+
+        this.load.audio('champion_music', 'SFX/Youre The Champion - MaxKoMusic.mp3');
+
+        this.load.audio('sandbox_music', 'SFX/8 Bit Adventure - David Fesliyan.mp3');
+
 
         this.load.spritesheet("necromancer", "characters/necromancer.png", {
             frameWidth: 160,
@@ -111,12 +181,12 @@ export class Preloader extends Scene {
             frameHeight: 32,
         });
 
-        this.load.spritesheet("spreadshot", "projectiles/spreadshot.png", {
+        this.load.spritesheet("spreadshot_icon", "projectiles/spreadshot.png", {
             frameWidth: 32,
             frameHeight: 32,
         });
 
-        this.load.spritesheet("piercingshot", "projectiles/Wool-Rocket.png", {
+        this.load.spritesheet("pierceshot_icon", "projectiles/Wool-Rocket.png", {
             frameWidth: 32,
             frameHeight: 32,
         });
@@ -141,6 +211,11 @@ export class Preloader extends Scene {
         this.load.image('enemy_icon', 'characters/enemies/enemy-icon.png');
 
         this.load.spritesheet("shermie", "characters/shermie.png", {
+            frameWidth: 80,
+            frameHeight: 80,
+        });
+
+        this.load.spritesheet("Shermie-runshoot", "characters/Shermie-runshoot.png", {
             frameWidth: 80,
             frameHeight: 80,
         });
@@ -170,12 +245,33 @@ export class Preloader extends Scene {
             frameHeight: 32,
         });
 
+        this.load.spritesheet("shermie_bg", "misc/shermie_bg.png", {
+            frameWidth: 60,
+            frameHeight: 60,
+        });
+        this.load.spritesheet("Dialouge-SpriteSheet", "backgrounds/Dialouge-SpriteSheet.png", {
+            frameWidth: 1024,
+            frameHeight: 768,
+        });
+        this.load.spritesheet("BG6-SpriteSheet", "backgrounds/BG6-SpriteSheet.png", {
+            frameWidth: 1024,
+            frameHeight: 768,
+        });
+        this.load.spritesheet("BG7-SpriteSheet", "backgrounds/BG7-SpriteSheet.png", {
+            frameWidth: 1024,
+            frameHeight: 768,
+        });
+
         this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');
+
+        this.load.bitmapFont('GlassTTY', 'fonts/GlassTTY.png', 'fonts/GlassTTY.xml');
+        this.load.bitmapFont('PressStart2P', 'fonts/PressStart2P.png', 'fonts/PressStart2P.xml');
+        this.load.bitmapFont('PressStart2P-Stroke', 'fonts/PressStart2P-Stroke.png', 'fonts/PressStart2P-Stroke.xml');
 
     }
     create() {
         //  When all the assets have loaded, it's often worth creating global
-        //  objects here that the rest of the game can use.  For example, you
+        //  objects here that the rest of the game can use.  For example, yo
         //  can define global animations here, so we can use them in other
         //  scenes.
         this.anim_factory = new AnimationFactory(this);
@@ -187,6 +283,7 @@ export class Preloader extends Scene {
         this.registry.set('score', 0);
         this.registry.set('sound_bank', new SoundBank(this));
         this.registry.set('debug_mode', false);
+        this.registry.set('sandbox_mode', false);
         this.sounds = this.registry.get('sound_bank');
         this.registry.set('player_vars', {
             lives: 3,
@@ -205,9 +302,8 @@ export class Preloader extends Scene {
             score: 0, // player score
             power: "None", //powerup
         });
-        this.sounds.bank.music.start.play();
         //  Move to the MainMenu. You could also swap this for a Scene
         //  Transition, such as a camera fade.
-        this.scene.start('MainMenu');
+        this.scene.start('Main Menu');
     }
 }
