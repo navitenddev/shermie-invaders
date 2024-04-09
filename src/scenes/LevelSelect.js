@@ -16,8 +16,8 @@ export class LevelSelect extends BaseMenu {
         this.sounds.stop_all_music();
         this.sounds.bank.music.shop.play();
         super.create();
-        this.add.image(this.game.config.width / 2, 35, 'levelSelectlogo')
-            .setDepth(3);
+
+        this.add.bitmapText(this.game.config.width / 3, 35, bitmapFonts.PressStart2P_Stroke, 'LEVEL SELECT', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setDepth(3);
         let open=true;
         const scale = { x: 50, y: 50 };
         const gap = { x: 5, y: 5 };

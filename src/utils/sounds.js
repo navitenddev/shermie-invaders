@@ -19,22 +19,6 @@
 class SoundBank {
     constructor(scene) {
         this.scene = scene;
-        this.bank = {
-            sfx: {
-                win: null,
-                lose: null,
-                shoot: null,
-                explosion: [],
-                hurt: null,
-                click: null,
-                reload: null,
-            },
-            music: {
-                bg: null,
-                start: null,
-                ff7_fighting: null,
-            }
-        }
         this.init_sounds();
         this.load_mute_preference();
     }
@@ -61,6 +45,8 @@ class SoundBank {
             music: {
                 bg: this.scene.game.sound.add('bgmusic', { volume: 0.2, loop: true }),
                 boss: this.scene.game.sound.add('boss_music', { volume: 0.2, loop: true }),
+                boss_rush: this.scene.game.sound.add('boss_rush_music', { volume: 0.2, loop: true }),
+                champion: this.scene.game.sound.add('champion_music', { volume: 0.3, loop: false }),
                 story: this.scene.game.sound.add('story_music', { volume: 0.2, loop: true }),
                 shop: this.scene.game.sound.add('shop_music', { volume: 0.2, loop: true }),
                 start: this.scene.game.sound.add('start', { volume: 0.2, loop: true }),

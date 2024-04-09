@@ -2,10 +2,6 @@ import { BaseMenu } from './BaseMenu.js';
 import { InitKeyDefs, CHEAT_CODE_SEQUENCE as CheatCode } from '../utils/keyboard_input';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
-import { Game as game_scene } from './Game';
-import { Dialogue as dialogue_scene } from './Dialogue.js';
-import { PauseMenu as pause_scene } from './PauseMenu.js';
-import { StatsMenu as stats_scene } from './StatsMenu.js';
 import { restart_scenes } from '../main.js';
 
 export class MainMenu extends BaseMenu {
@@ -67,16 +63,21 @@ export class MainMenu extends BaseMenu {
         const menuSpacing = 50; // spacing between menu items
         let menuY = 480; // starting Y position for menu items
 
+        let buttonEnable = false;   // to disable button spamming 
         // Start Button
         this.start_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'PLAY', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
             .setOrigin(0.5)
             .setInteractive()
             .setDepth(3)
             .on('pointerdown', () => {
+                if (buttonEnable) return;
+                buttonEnable = true;
+                console.log('Pressed');
                 this.sounds.bank.sfx.click.play();
                 this.cameras.main.fadeOut(200, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                     this.scene.start('Game');
+                    buttonEnable = false;
                 });
             });
 
@@ -87,8 +88,12 @@ export class MainMenu extends BaseMenu {
             .setInteractive()
             .setDepth(3)
             .on('pointerdown', () => {
+                if (buttonEnable) return;
+                buttonEnable = true;
+                console.log('Pressed');
                 this.sounds.bank.sfx.click.play();
                 this.scene.start('HowToPlay');
+                buttonEnable = false;
             });
 
         // Level Select Button
@@ -98,8 +103,12 @@ export class MainMenu extends BaseMenu {
             .setInteractive()
             .setDepth(3)
             .on('pointerdown', () => {
+                if (buttonEnable) return;
+                buttonEnable = true;
+                console.log('Pressed');
                 this.sounds.bank.sfx.click.play();
                 this.scene.start('LevelSelect');
+                buttonEnable = false;
             });
 
         if (this.registry.get('debug_mode') === true) {
@@ -110,10 +119,14 @@ export class MainMenu extends BaseMenu {
                 .setInteractive()
                 .setDepth(3)
                 .on('pointerdown', () => {
+                    if (buttonEnable) return;
+                    buttonEnable = true;
+                    console.log('Pressed');
                     this.sounds.bank.sfx.win.play();
                     this.cameras.main.fadeOut(200, 0, 0, 0);
                     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                         this.scene.start('Sandbox');
+                        buttonEnable = false;
                     });
                 });
             // Tech tips test button
@@ -124,7 +137,11 @@ export class MainMenu extends BaseMenu {
                 .setInteractive()
                 .setDepth(3)
                 .on('pointerdown', () => {
+                    if (buttonEnable) return;
+                    buttonEnable = true;
+                    console.log('Pressed');
                     this.scene.start('Tech Tip Test')
+                    buttonEnable = false;
                 });
 
             // Disable Cheats Button
@@ -136,6 +153,16 @@ export class MainMenu extends BaseMenu {
                 .on('pointerdown', () => {
                     this.#disable_cheats();
                 });
+        } else {
+            menuY += menuSpacing;    // only show boss rush when cheats are disabled 
+            this.boss_rush_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'BOSS RUSH', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+                .setOrigin(0.5)
+                .setInteractive()
+                .setDepth(3)
+                .on('pointerdown', () => {
+                    this.scene.start('Boss Rush');
+                })
+
         }
 
         this.keys.m.on('down', this.sounds.toggle_mute);
