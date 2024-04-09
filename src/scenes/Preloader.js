@@ -14,6 +14,21 @@ export class Preloader extends Scene {
         //  A simple progress bar. This is the outline of the bar.
         this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0x000000);
 
+        this.text = this.add.text(
+            this.game.config.width / 2, this.game.config.height / 2,
+            "Loading...", {
+            fontFamily: 'Arial Black',
+            fontSize: 20,
+            color: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 5,
+            align: 'left',
+            wordWrap: {
+                width: this.sys.game.config.width - 200,
+                useAdvancedWrap: true
+            }
+        });
+
         //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
         const bar = this.add.rectangle(512 - 230, 384, 4, 28, 0x000000);
 
@@ -22,9 +37,19 @@ export class Preloader extends Scene {
             //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
             bar.width = 4 + 460 * progress;
         });
+
+        this.load.on('fileprogress', (file) => {
+            var output = `Loading asset: ${file.key}`;
+            this.text
+                .setText(output)
+                .setPosition((this.game.config.width / 2) - (this.text.width / 2),
+                    420);
+            console.log(output);
+        });
     }
     /* preload all your assets here! */
     preload() {
+
         //  Load the assets for the game - Replace with your own assets
         this.load.setPath("assets");
 
