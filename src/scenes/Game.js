@@ -134,6 +134,14 @@ export class Game extends Scene {
             }
         );
 
+        this.pauseSprite = this.add.sprite(this.sys.game.config.width / 2, 32, 'pause')
+        .setOrigin(0.5)
+        .setInteractive();
+    
+        this.pauseSprite.on('pointerdown', () => {
+            this.pause();
+        });
+
         // Player lives text and sprites
         this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, bitmapFonts.PressStart2P, '3', fonts.medium.sizes[bitmapFonts.PressStart2P]);
         this.livesSprites = this.add.group({
