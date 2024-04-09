@@ -3,6 +3,7 @@ import { InitKeyDefs, CHEAT_CODE_SEQUENCE as CheatCode } from '../utils/keyboard
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { restart_scenes } from '../main.js';
+import { TextButton } from '../ui/text_button.js';
 
 export class MainMenu extends BaseMenu {
     emitter = EventDispatcher.getInstance();
@@ -63,105 +64,80 @@ export class MainMenu extends BaseMenu {
         const menuSpacing = 50; // spacing between menu items
         let menuY = 480; // starting Y position for menu items
 
-        let buttonEnable = false;   // to disable button spamming 
         // Start Button
-        this.start_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'PLAY', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
-            .setOrigin(0.5)
-            .setInteractive()
-            .setDepth(3)
-            .on('pointerdown', () => {
-                if (buttonEnable) return;
-                buttonEnable = true;
+        this.start_btn = new TextButton(this, 512, menuY, "PLAY",
+            () => {
                 console.log('Pressed');
                 this.sounds.bank.sfx.click.play();
                 this.cameras.main.fadeOut(200, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                     this.scene.start('Game');
-                    buttonEnable = false;
                 });
-            });
+                this.start_btn.disable(); // disallow spamming
+            },
+        ).setDepth(3);
 
         // Controls Button
         menuY += menuSpacing;
-        this.controls_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'CONTROLS', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
-            .setOrigin(0.5)
-            .setInteractive()
-            .setDepth(3)
-            .on('pointerdown', () => {
-                if (buttonEnable) return;
-                buttonEnable = true;
+        this.controls_btn = new TextButton(this, 512, menuY, "CONTROLS",
+            () => {
                 console.log('Pressed');
                 this.sounds.bank.sfx.click.play();
                 this.scene.start('HowToPlay');
-                buttonEnable = false;
-            });
-
+            }
+        ).setDepth(3);
         // Level Select Button
         menuY += menuSpacing;
-        this.level_select_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'LEVELS', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
-            .setOrigin(0.5)
-            .setInteractive()
-            .setDepth(3)
-            .on('pointerdown', () => {
-                if (buttonEnable) return;
-                buttonEnable = true;
-                console.log('Pressed');
+        this.level_select_btn = new TextButton(this, 512, menuY, "LEVEL SELECT",
+            () => {
                 this.sounds.bank.sfx.click.play();
                 this.scene.start('LevelSelect');
-                buttonEnable = false;
-            });
+            }
+        ).setDepth(3);
 
         if (this.registry.get('debug_mode') === true) {
             // Sandbox Button
             menuY += menuSpacing;
-            this.sandbox_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'SANDBOX', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
-                .setOrigin(0.5)
-                .setInteractive()
-                .setDepth(3)
-                .on('pointerdown', () => {
-                    if (buttonEnable) return;
-                    buttonEnable = true;
-                    console.log('Pressed');
+            this.sandbox_btn = new TextButton(this, 512, menuY,
+                "SANDBOX",
+                () => {
                     this.sounds.bank.sfx.win.play();
                     this.cameras.main.fadeOut(200, 0, 0, 0);
                     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                         this.scene.start('Sandbox');
-                        buttonEnable = false;
                     });
-                });
+                    this.sandbox_btn.disable(); // prevent spam
+                }
+            ).setDepth(3);
             // Tech tips test button
             menuY += menuSpacing;
-            this.disable_cheats_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'TECH TIP TEST',
-                fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
-                .setOrigin(0.5)
-                .setInteractive()
-                .setDepth(3)
-                .on('pointerdown', () => {
-                    if (buttonEnable) return;
-                    buttonEnable = true;
-                    console.log('Pressed');
+            this.tech_tips_btn = new TextButton(this, 512, menuY,
+                'TECH TIPS',
+                () => {
                     this.scene.start('Tech Tip Test')
-                    buttonEnable = false;
-                });
-
+                }
+            ).setDepth(3);
             // Disable Cheats Button
             menuY += menuSpacing;
-            this.disable_cheats_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'CHEATS OFF', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
-                .setOrigin(0.5)
-                .setInteractive()
-                .setDepth(3)
-                .on('pointerdown', () => {
+            this.disable_cheats_btn = new TextButton(this, 512, menuY,
+                'DISABLE CHEATS',
+                () => {
                     this.#disable_cheats();
-                });
+                }
+            ).setDepth(3);
         } else {
-            menuY += menuSpacing;    // only show boss rush when cheats are disabled 
-            this.boss_rush_btn = this.add.bitmapText(512, menuY, bitmapFonts.PressStart2P_Stroke, 'BOSS RUSH', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
-                .setOrigin(0.5)
-                .setInteractive()
-                .setDepth(3)
-                .on('pointerdown', () => {
-                    this.scene.start('Boss Rush');
-                })
+            // all menu items here are shown when cheats are off
+            menuY += menuSpacing;
+            this.boss_rush_btn = new TextButton(this, 512, menuY,
+                "BOSS RUSH",
+                () => {
+                    this.cameras.main.fadeOut(200, 0, 0, 0);
+                    this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+                        this.scene.start('Boss Rush');
+                    });
+                    this.boss_rush_btn.disable();
+                }
+            ).setDepth(3);
 
         }
 
