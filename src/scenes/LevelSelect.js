@@ -131,8 +131,6 @@ export class LevelSelect extends BaseMenu {
                                     (scene.game.config.width / 2), 300,
                                     DIALOG_W, DIALOG_H, level)
                                     .setDepth(3);
-                                // scene.registry.set({ level: level });
-                                // scene.scene.start('Game');
                             },
                             [this, level++],
                             bitmapFonts.PressStart2P,
@@ -145,8 +143,10 @@ export class LevelSelect extends BaseMenu {
                             40, 40,
                             level.toString(),
                             (scene, level) => {
-                                scene.registry.set({ level: level });
-                                scene.scene.start('Game');
+                                new StartWithMoneyDialog(scene,
+                                    (scene.game.config.width / 2), 300,
+                                    DIALOG_W, DIALOG_H, level)
+                                    .setDepth(3);
                             },
                             [this, level++],
                             bitmapFonts.PressStart2P,
