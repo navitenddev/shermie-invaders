@@ -111,7 +111,6 @@ export class Game extends Scene {
         // Score and high score
         this.scoreManager = new ScoreManager(this);
 
-        // Note: this.level is pass by value!
         this.level = this.registry.get('level');
         this.level_transition_flag = false;
         this.level_text = this.add.bitmapText(0, 16, bitmapFonts.PressStart2P, `LEVEL:${this.level}`, fonts.medium.sizes[bitmapFonts.PressStart2P])
@@ -215,7 +214,6 @@ export class Game extends Scene {
     check_gameover() {
         if (this.player_vars.lives <= 0 &&
             !this.objs.player.is_inbounds()) {
-            console.log("PLAYER LOST")
             this.player_vars.power = "";
             this.gameover = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
@@ -226,7 +224,6 @@ export class Game extends Scene {
             !this.level_transition_flag) {
             // if this is a boss level
             if (this.level % 7 === 0) {
-                console.log()
                 if (!this.boss_spawned) {
                     this.boss_spawned = true;
                     const boss_hp = (100 * (Math.floor((this.registry.get('level') / 7)) + 1));

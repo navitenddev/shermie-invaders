@@ -126,7 +126,6 @@ class DialogueManager extends Phaser.GameObjects.Container {
         if (this.is_active &&
             time > this.delay_timer &&
             this.line && this.char_index !== this.line.length) {
-
             this.delay_timer = time + this.text_delay;
             this.#add_next_char();
         }
@@ -254,7 +253,7 @@ class Dialogue extends Phaser.Scene {
         this.dialogue_mgr = new DialogueManager(this, this.dialogue_data, this.dialogue_type, data.font_size);
 
         this.keys = InitKeyDefs(this);
-        console.log(`prev scene: ${data.prev_scene}`)
+        // console.log(`prev scene: ${data.prev_scene}`)
         // console.log("Initialized Dialogue Scene")
         this.prev_scene = data.prev_scene;
 
@@ -271,6 +270,7 @@ class Dialogue extends Phaser.Scene {
     }
 
     update(time, delta) {
+        // console.log(`Dialogue scene is active: ${this.scene.isActive()}`)
         this.dialogue_mgr.update(time, delta);
     }
 
