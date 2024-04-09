@@ -260,10 +260,12 @@ class Dialogue extends Phaser.Scene {
         this.emitter.emit('dialogue_start', data.dialogue_key);
         this.emitter.once('dialogue_stop', () => { this.return_to_caller_scene(this.dialogue_type) });
 
-        this.keys.esc.once('down', () => {
-            console.log('Player skipped the dialogue');
-            this.emitter.emit('force_dialogue_stop');
-        });
+        if (this.dialogue_type !== "game") { // ingame dialogue should not be skippable
+            this.keys.esc.once('down', () => {
+                console.log('Player skipped the dialogue');
+                this.emitter.emit('force_dialogue_stop');
+            });
+        }
 
         this.keys.m.on('down', this.sounds.toggle_mute)
 
