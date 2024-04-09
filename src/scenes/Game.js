@@ -102,6 +102,7 @@ export class Game extends Scene {
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
             () => {
                 this.keys.p.on('down', () => this.pause());
+                this.keys.esc.on('down', () => this.pause());
             }
         );
         this.sounds = this.registry.get('sound_bank');

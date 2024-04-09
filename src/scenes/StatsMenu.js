@@ -123,6 +123,7 @@ export class StatsMenu extends Scene {
         this.keys = InitKeyDefs(this);
 
         this.keys.p.on('down', () => this.go_back());
+        this.keys.esc.on('down', () => this.go_back());
         this.keys.m.on('down', () => this.sounds.toggle_mute());
 
         let x = boxX + 145;
