@@ -36,7 +36,7 @@ class StartWithMoneyDialog extends Phaser.GameObjects.Container {
 
         this.text = scene.add.bitmapText(border_sz, border_sz,
             bitmapFonts.PressStart2P_Stroke,
-            "Do you wish to start the level with money?",
+            "Do you wish to start level "+level+" with money?",
             fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
             .setMaxWidth(w - (border_sz * 2));
 
