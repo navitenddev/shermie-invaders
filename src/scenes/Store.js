@@ -5,7 +5,7 @@ import { EventDispatcher } from '../utils/event_dispatcher';
 import { Game } from './Game'
 import { restart_scenes } from '../main';
 import { start_dialogue } from './Dialogue';
-import { TextButton } from '../ui/text_button';
+import { TextboxButton } from '../ui/textbox_button';
 
 const STAT_MIN = 1;
 
@@ -216,7 +216,7 @@ export class Store extends Scene {
         const moneyTextY = moneyIconY;
         this.moneyText = this.add.bitmapText(moneyTextX, moneyTextY, bitmapFonts.PressStart2P_Stroke, `${this.player_vars.wallet}`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0, 0.5);
 
-        this.next_level_btn = new TextButton(this,
+        this.next_level_btn = new TextboxButton(this,
             this.game.config.width / 2, 700,
             180, 50,
             'Next Level',

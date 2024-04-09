@@ -23,7 +23,10 @@ Shoot:
   - W or Space
         
 Pause:
-  - P or Esc
+  - P or ESC
+
+Skip Dialogue:
+  - ESC
         
 Mute Sounds:
   - M
@@ -38,17 +41,17 @@ Goal:
         
 Good luck and have fun!`;
 
-      this.add.bitmapText(this.game.config.width / 3, 125, bitmapFonts.PressStart2P_Stroke, 'HOW TO PLAY', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setDepth(3);
+    this.add.bitmapText(this.game.config.width / 3, 125, bitmapFonts.PressStart2P_Stroke, 'HOW TO PLAY', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setDepth(3);
 
-      this.add
-        .bitmapText(
-          width / 4,
-          250,
-          bitmapFonts.PressStart2P_Stroke,
-          instructionsText,
-          fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
-        )
-        .setDepth(3);
+    this.add
+      .bitmapText(
+        width / 4,
+        250,
+        bitmapFonts.PressStart2P_Stroke,
+        instructionsText,
+        fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
+      )
+      .setDepth(3);
 
     this.setupBackButton();
   }

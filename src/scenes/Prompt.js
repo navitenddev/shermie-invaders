@@ -1,32 +1,23 @@
 import { Scene } from 'phaser';
-import { InitKeyDefs } from '../utils/keyboard_input';
+import { InitKeyDefs } from '../utils/keyboard_input.js';
+import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
-import { TextButton } from '../ui/text_button.js';
 
-export class PauseMenu extends Scene {
+export class Prompt extends Scene {
     emitter = EventDispatcher.getInstance();
     constructor() {
         super('PauseMenu');
     }
 
-    create(data) {
+    create(data,menuItems, prompt_text) {
         this.prev_scene = data.prev_scene;
 
-        const menuItems = [
-            { text: 'Resume', callback: () => this.unpause() },
-            { text: 'Mute', callback: () => this.toggleMute() }, 
-            { text: 'Quit', callback: () => this.quitGame() },
-        ];
-
-        if (this.registry.get('debug_mode') === true) {
-            menuItems.splice(2, 0, {
-                text: 'Cheats',
-                callback: () => {
-                    this.scene.stop('PauseMenu');
-                    this.scene.start('StatsMenu');
-                },
-            });
-        }
+        menuItems.splice(0, 0, { // insert at index 1
+            text: 'Back',
+            callback: () => {
+                this.unpause();
+            },
+        });
 
         const menuSpacing = 60;
         const boxWidth = 300;
@@ -42,12 +33,25 @@ export class PauseMenu extends Scene {
 
         this.sounds = this.registry.get('sound_bank');
         this.keys = InitKeyDefs(this);
-
-        let menuY = boxY + 40;
+        const menu = this.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, prompt_text , fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+                .setOrigin(0.5)
+                .setInteractive()
+                .on('pointerdown', () => {
+                    this.sounds.bank.sfx.click.play();
+                    item.callback();
+                })
+                .setPosition(boxX + boxWidth / 2, boxY+40);
+        let menuY = boxY + 80;
         menuItems.forEach((item) => {
-            new TextButton(this, boxX + boxWidth / 2, menuY, item.text,
-                () => { item.callback(); }
-            );
+            const menuItem = this.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, item.text, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+                .setOrigin(0.5)
+                .setInteractive()
+                .on('pointerdown', () => {
+                    this.sounds.bank.sfx.click.play();
+                    item.callback();
+                })
+                .setPosition(boxX + boxWidth / 2, menuY);
+
             menuY += menuSpacing;
         });
 
@@ -64,6 +68,7 @@ export class PauseMenu extends Scene {
     quitGame() {
         this.emitter.removeAllListeners();
         this.sounds.stop_all_music();
+        this.sounds.bank.sfx.click.play();
         this.sounds.bank.music.start.play();
         this.cameras.main.fadeOut(200, 0, 0, 0);
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
@@ -71,10 +76,5 @@ export class PauseMenu extends Scene {
             this.scene.stop(this.prev_scene);
             this.scene.start('Main Menu');
         });
-    }
-
-    toggleMute() {
-        const isMuted = this.sounds.toggle_mute();
-        localStorage.setItem('muted', isMuted ? 'true' : 'false');
     }
 }
