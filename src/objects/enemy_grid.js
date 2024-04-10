@@ -98,15 +98,17 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
 
 
     die() {
-        if (Phaser.Math.Between(0, 29) == 0) {
+        if (Phaser.Math.Between(0, 29) == 0 && (!this.scene.player_vars.perm_power.includes("spread") || !this.scene.player_vars.perm_power.includes("pierce"))) {
             let temp = Phaser.Math.Between(0, this.scene.objs.powers.countActive(false));
             let power = this.scene.objs.powers.getFirstNth(temp, false, false, 0, 0, "powerup");
             while (power == null && this.scene.objs.powers.countActive(false) > 0) {
+                console.log("b");
                 if (temp > Powerups.powerup_capacity) {
                     temp = 0;
                 }
                 temp++;
                 power = this.scene.objs.powers.getFirstNth(temp, false, false, 0, 0, "powerup");
+                
             }//while there is at least one inactive powerup available, finds a random inactive powerup to take
             if (power !== null) {
                 let fall_speed = PowerupsConstDefs.speed.y;

@@ -98,6 +98,9 @@ export class Game extends Scene {
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
         this.powerup_stats = this.registry.get('powerup_stats');
+        this.player_vars = this.registry.get('player_vars');
+        this.player_stats = this.player_vars.stats;
+        this.player_vars.power = "";
         this.objs.init_all();
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
@@ -118,9 +121,6 @@ export class Game extends Scene {
             .setOrigin(1, 0)
             .setPosition(this.sys.game.config.width - 16, 16);
 
-        this.player_vars = this.registry.get('player_vars');
-        this.player_stats = this.player_vars.stats;
-        this.player_vars.power = "";
 
         this.pauseSprite = this.add.sprite(this.sys.game.config.width / 2, 32, 'pause')
         .setOrigin(0.5)
