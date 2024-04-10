@@ -1,5 +1,5 @@
 import { BaseMenu } from './BaseMenu.js';
-import { InitKeyDefs, CHEAT_CODE_SEQUENCE as CheatCode } from '../utils/keyboard_input';
+import { InitKeyDefs, CHEAT_CODE_SEQUENCE as CheatCode, MOBILE_FORCE_SEQUENCE as MobileCode } from '../utils/keyboard_input';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { restart_scenes } from '../main.js';
@@ -138,9 +138,18 @@ export class MainMenu extends BaseMenu {
         }
 
         this.keys.m.on('down', this.sounds.toggle_mute);
-        this.input.keyboard.createCombo(CheatCode, { resetOnWrongKey: true });
-        this.input.keyboard.on('keycombomatch', () => {
-            this.#activate_cheats();
+        this.input.keyboard.createCombo("NAVITEND", { resetOnWrongKey: true });
+
+        this.input.keyboard.createCombo("FORCEMOBILEON", { resetOnWrongKey: true });
+        this.input.keyboard.on('keycombomatch', (e) => {
+            console.log(e);
+            // Check if FORCEMOBILEON code
+            if (JSON.stringify(e.keyCodes) ===
+                JSON.stringify([70, 79, 82, 67, 69, 77, 79, 66, 73, 76, 69, 79, 78]))
+                IS_MOBILE = true;
+            // Check if NAVITEND cheat code
+            else if (JSON.stringify(e.keyCodes) === JSON.stringify([78, 65, 86, 73, 84, 69, 78, 68]))
+                this.#activate_cheats();
         });
 
     }

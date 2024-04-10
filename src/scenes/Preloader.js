@@ -109,13 +109,23 @@ export class Preloader extends Scene {
 
         this.load.image("brick_tileset", "misc/brick-tileset.png");
 
+        this.load.image("speaker_tileset", "ui/speaker-icon-256x140.png");
+
         // process tilemap after load is complete
         this.load.on('complete', () => {
             const brick_tiles = this.textures.get('brick_tileset');
-            const base = brick_tiles.get();
-            Phaser.Textures.Parsers.SpriteSheet(brick_tiles, base.sourceIndex, base.x, base.y, base.width, base.height, {
+            const brick_base = brick_tiles.get();
+            Phaser.Textures.Parsers.SpriteSheet(brick_tiles, brick_base.sourceIndex, brick_base.x, brick_base.y, brick_base.width, brick_base.height, {
                 frameWidth: 5,
                 frameHeight: 5
+            });
+
+            const speaker_tiles = this.textures.get('speaker_tileset');
+            const speaker_base = speaker_tiles.get();
+            // muted == 
+            Phaser.Textures.Parsers.SpriteSheet(speaker_tiles, speaker_base.sourceIndex, speaker_base.x, speaker_base.y, speaker_base.width, speaker_base.height, {
+                frameWidth: 128,
+                frameHeight: 140,
             });
         })
 

@@ -33,17 +33,4 @@ function InitKeyDefs(scene) {
     return keys;
 }
 
-// Entering "navitend" on the main menu will activate debug mode
-const CHEAT_CODE_SEQUENCE = [
-    Phaser.Input.Keyboard.KeyCodes.N,
-    Phaser.Input.Keyboard.KeyCodes.A,
-    Phaser.Input.Keyboard.KeyCodes.V,
-    Phaser.Input.Keyboard.KeyCodes.I,
-    Phaser.Input.Keyboard.KeyCodes.T,
-    Phaser.Input.Keyboard.KeyCodes.E,
-    Phaser.Input.Keyboard.KeyCodes.N,
-    Phaser.Input.Keyboard.KeyCodes.D,
-];
-
-
-export { InitKeyDefs, CHEAT_CODE_SEQUENCE };
+export { InitKeyDefs };
