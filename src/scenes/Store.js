@@ -170,7 +170,7 @@ export class Store extends Scene {
         const borderX = this.cameras.main.width / 5;
         const borderY = startY - 120;
         const borderWidth = 620;
-        const borderHeight = 450;
+        const borderHeight = 490;
         borderGraphics.fillStyle(0x2B2D31);
         borderGraphics.fillRect(borderX, borderY, borderWidth, borderHeight);
         borderGraphics.lineStyle(2, 0x808888, 1);
@@ -219,8 +219,8 @@ export class Store extends Scene {
                 spinner.makePermanent();
             }
         });
-        this.PermPowerSpreadCost = this.add.bitmapText(274, 530, bitmapFonts.PressStart2P_Stroke, SHOP_PRICES["perm_spread"][0], fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0.5, 0).setScale(0.75).setTint(this.perm_buff.includes("spread") ? 0xFFD700:(this.canAffordUpgrade("perm_spread", 0) ? 0x00ff00 : 0xFF0000));
-        this.add.image(274, 575, 'spreadshot_icon').setInteractive()
+        this.PermPowerSpreadCost = this.add.bitmapText(274, 540, fonts.medium.fontName, SHOP_PRICES["perm_spread"][0], fonts.medium.size).setOrigin(0.5, 0).setScale(0.75).setTint(this.perm_buff.includes("spread") ? 0xFFD700:(this.canAffordUpgrade("perm_spread", 0) ? 0x00ff00 : 0xFF0000));
+        this.add.image(274, 585, 'spreadshot_icon').setInteractive()
         .on('pointerdown', () => {
             if (!this.perm_buff.includes("spread") && this.canAffordUpgrade("perm_spread", 0)) {
                 this.perm_buff.push("spread");
@@ -235,8 +235,8 @@ export class Store extends Scene {
         })
         .on('pointerup', () => {
         });
-        this.PermPowerPierceCost = this.add.bitmapText(750, 530, bitmapFonts.PressStart2P_Stroke, SHOP_PRICES["perm_pierce"][0], fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0.5, 0).setScale(0.75).setTint(this.perm_buff.includes("pierce") ? 0xFFD700:(this.canAffordUpgrade("perm_pierce", 0) ?  0x00ff00:0xFF0000 ));
-        this.add.image(750, 575, 'pierceshot_icon').setInteractive()
+        this.PermPowerPierceCost = this.add.bitmapText(750, 540, fonts.medium.fontName, SHOP_PRICES["perm_pierce"][0], fonts.medium.size).setOrigin(0.5, 0).setScale(0.75).setTint(this.perm_buff.includes("pierce") ? 0xFFD700:(this.canAffordUpgrade("perm_pierce", 0) ?  0x00ff00:0xFF0000 ));
+        this.add.image(750, 585, 'pierceshot_icon').setInteractive()
         .on('pointerdown', () => {
             if (!this.perm_buff.includes("pierce") && this.canAffordUpgrade("perm_pierce", 0)) {
                 this.perm_buff.push("pierce");
