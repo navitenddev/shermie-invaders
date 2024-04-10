@@ -245,7 +245,7 @@ class Dialogue extends Phaser.Scene {
 
             // Play the animation
             dialogueBg.play('Dialouge-SpriteSheet');
-            this.escPrompt = this.add.bitmapText(460, 300, fonts.small.fontName, `Click mouse to Continue\nor press ESC to skip`, fonts.small.size)
+            this.escPrompt = this.add.bitmapText(400, 275, fonts.small.fontName, `Tap to continue or ESC to skip`, fonts.small.size)
         }
 
         this.sounds = this.registry.get('sound_bank');
@@ -281,25 +281,28 @@ class Dialogue extends Phaser.Scene {
         if (this.dialogue_type === "story") {
             this.startPrompt = this.add.bitmapText(375, 180, fonts.middle.fontName, `Press spacebar to start!`, fonts.middle.size)
         }
-
+    
         if (this.escPrompt) {
             this.escPrompt.destroy();
             this.escPrompt = null;
         }
         if (this.dialogue_type === "story") {
-            this.keys.space.on('down', () => {
+            const startGame = () => {
                 this.sounds.stop_all_music();
                 this.sounds.bank.music.bg.play();
                 this.startPrompt.destroy();
                 this.startPrompt = null;
                 this.scene.stop('Dialogue');
                 this.scene.resume(this.prev_scene);
-            });
+            };
+            this.keys.space.on('down', startGame);
+    
+            this.input.on('pointerdown', startGame);
         } else if (this.dialogue_type === "game_blocking") {
             this.scene.resume(this.prev_scene);
         }
     }
-}
+}    
 
 
 export { Dialogue, DialogueManager, start_dialogue };

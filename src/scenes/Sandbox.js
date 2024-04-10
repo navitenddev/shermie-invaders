@@ -10,6 +10,8 @@ import { FillBar } from '../ui/fill_bar.js';
 import { start_dialogue } from './Dialogue.js';
 import { init_collision_events } from '../main.js';
 import { TextButton } from '../ui/text_button.js';
+import { TextboxButton } from '../ui/textbox_button.js';
+import Controls from '../controls/controls.js';
 
 class LevelSelector extends Phaser.GameObjects.Container {
     emitter = EventDispatcher.getInstance();
@@ -298,6 +300,17 @@ export class Sandbox extends Scene {
             this.#print_coord_list();
         });
 
+        if (window.IS_MOBILE) {
+            this.controls = new Controls(this);
+        }
+
+        this.pauseSprite = this.add.sprite(this.sys.game.config.width / 2, 32, 'pause')
+            .setOrigin(0.5)
+            .setInteractive();
+
+        this.pauseSprite.on('pointerdown', () => {
+            this.pause();
+        });
 
         this.emitter.on('player_lose', this.kill_all_enemies, this);
         this.emitter.on('kill_all_enemies', this.kill_all_enemies, this);
@@ -319,7 +332,8 @@ export class Sandbox extends Scene {
 
     update(time, delta) {
         if (this.objs.player.update)
-            this.objs.player.update(time, delta, this.keys)
+        this.objs.player.update(time, delta, this.keys, this.controls);
+
         // Update lives text and sprites
         this.livesText.setText('-');
         this.update_mouse_pos_text();

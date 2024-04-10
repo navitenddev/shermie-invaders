@@ -181,7 +181,21 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    update(time, delta, keys) {
+    update(time, delta, keys, controls) {
+        if (window.IS_MOBILE && controls) {
+            const pointer = this.scene.input.activePointer;
+            const screenWidth = this.scene.sys.game.config.width;
+            const touchZoneWidth = screenWidth * 0.3;
+
+            if (pointer.isDown) {
+                if (pointer.x < touchZoneWidth) {
+                    this.move(false); // Move left
+                } else if (pointer.x > screenWidth - touchZoneWidth) {
+                    this.move(true); // Move right
+                }
+            }
+        }
+
         // Only display shield bar if we have shields
         (this.shield_bar.value) ?
             this.shield_bar.setVisible(true) :
@@ -205,6 +219,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             y = this.scene.game.input.mousePointer.y.toFixed(1);
         }
         this.#mouse_pos = { x: x, y: y };
+
         // respawn the player
         if (this.is_dead) {
             if (this.player_vars.lives > 0 && !this.is_inbounds()) {
@@ -213,14 +228,17 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.flashPlayer();
             }
             return;
+        } else {
+            this.#normalize_player();
         }
 
         this.updateShield();
         this.updateHitbox();
 
-        if (keys.d.isDown || keys.right.isDown) {
+
+        if (keys.d.isDown || keys.right.isDown || (controls && controls.right)) {
             this.move(true);
-        } else if (keys.a.isDown || keys.left.isDown) {
+        } else if (keys.a.isDown || keys.left.isDown || (controls && controls.left)) {
             this.move(false);
         } else if (
             this.anims &&
@@ -230,9 +248,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         )
             this.play("shermie_idle");
 
-        if (keys.space.isDown || keys.w.isDown) this.shoot(time);
+        if (window.IS_MOBILE && controls) {
+            if ((keys.space.isDown || keys.w.isDown || controls.shoot) && !this.is_dead) this.shoot(time);
+        } else {
+            if ((keys.space.isDown || keys.w.isDown) && !this.is_dead) this.shoot(time);
+        }
+
         if (!keys.d.isDown && !keys.right.isDown &&
-            !keys.a.isDown && !keys.left.isDown)
+            !keys.a.isDown && !keys.left.isDown &&
+            (!controls || (!controls.right && !controls.left)))
             this.setVelocity(0);
     }
 
@@ -311,7 +335,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     move(moving_right) {
         this.isMoving = moving_right || this.body.velocity.x !== 0; // Adjust this condition as necessary
 
-        if (this.anims && this.anims.isPlaying && this.anims.currentAnim.key === "shermie_idle")
+        if (this.anims &&
+            this.anims.isPlaying &&
+            this.anims.currentAnim.key === "shermie_idle")
             this.play("shermie_walk");
 
         if (moving_right) {
@@ -403,6 +429,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
+    /**
+     * @description On lower refresh rates, the player's positioning and
+     * orientation seems to behave unusually. This should fix it, but there
+     * should be a better way to do this.
+     */
+    #normalize_player() {
+        this.setRotation(0)
+            .setPosition(this.x, this.scene.game.config.height - 96);
+    }
 }
 
 export { Player }
