@@ -186,7 +186,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
 
         // Only display powerup bar if we have powerups
         (this.powerup_bar.value) ?
-            this.powerup_bar.setVisible(true) :
+            this.powerup_bar.setVisible(true) && (!this.scene.player_vars.perm_power.includes("spread") || !this.scene.player_vars.perm_power.includes("pierce")) :
             this.powerup_bar.setVisible(false);
 
         this.#update_bars();
@@ -299,7 +299,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.player_vars.power = pow;
             this.powerup.ammo = (pow) ? this.powerup.max : 0;
             if (!pow)
-                this.power
+                this.power="";
     }
 
     /**
