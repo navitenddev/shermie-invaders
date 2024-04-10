@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs } from '../utils/keyboard_input.js';
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { TextboxButton } from '../ui/textbox_button.js';
 import { SHOP_PRICES } from './Store.js';
@@ -26,7 +26,7 @@ class MenuSpinner {
      */
 
     constructor(scene, x, y, w, text, obj, key) {
-        let text_value = scene.add.bitmapText(x + w - 40, y, bitmapFonts.PressStart2P_Stroke, obj[key], fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]);
+        let text_value = scene.add.bitmapText(x + w - 40, y, fonts.small.fontName, obj[key], fonts.small.size);
         // MIN button
         new TextboxButton(scene, x - 45, y + 10,
             55, 25,
@@ -37,8 +37,8 @@ class MenuSpinner {
                     obj[key] = Phaser.Math.Clamp(0, 1, SHOP_PRICES[key].length);
                 text_value.setText(obj[key]);
             }, [],
-            bitmapFonts.PressStart2P,
-            fonts.tiny.sizes[bitmapFonts.PressStart2P],
+            fonts.tiny.fontName,
+            fonts.tiny.size,
         );
 
         // - button
@@ -51,8 +51,8 @@ class MenuSpinner {
                     obj[key] = Phaser.Math.Clamp(obj[key] - 1, 1, SHOP_PRICES[key].length);
                 text_value.setText(obj[key]);
             }, [],
-            bitmapFonts.PressStart2P,                    // font type
-            fonts.tiny.sizes[bitmapFonts.PressStart2P], // font size
+            fonts.tiny.fontName,                    // font type
+            fonts.tiny.size, // font size
         );
 
         // + button
@@ -65,8 +65,8 @@ class MenuSpinner {
                     obj[key] = Phaser.Math.Clamp(obj[key] + 1, 1, SHOP_PRICES[key].length);
                 text_value.setText(obj[key]);
             }, [],
-            bitmapFonts.PressStart2P,                    // font type
-            fonts.tiny.sizes[bitmapFonts.PressStart2P], // font size
+            fonts.tiny.fontName,                   // font type
+            fonts.tiny.size, // font size
         );
 
         // max button
@@ -79,11 +79,11 @@ class MenuSpinner {
                     obj[key] = Phaser.Math.Clamp(100, 1, SHOP_PRICES[key].length);
                 text_value.setText(obj[key]);
             }, [],
-            bitmapFonts.PressStart2P,                    // font type
-            fonts.tiny.sizes[bitmapFonts.PressStart2P], // font size
+            fonts.tiny.fontName,                    // font type
+            fonts.tiny.size, // font size
         );
 
-        scene.add.bitmapText(x + 50, y, bitmapFonts.PressStart2P_Stroke, text, fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]);
+        scene.add.bitmapText(x + 50, y, fonts.small.fontName, text, fonts.small.size);
     }
 }
 
@@ -155,8 +155,8 @@ export class StatsMenu extends Scene {
                     this.scene.start('Player Win')
             },
             [], // callback function's arguments
-            bitmapFonts.PressStart2P,                    // font type
-            fonts.small.sizes[bitmapFonts.PressStart2P], // font size
+            fonts.tiny.fontName,                    // font type
+            fonts.small.size, // font size
             0xFF0000, // color of button
             0xB02A07, // color of hovered
             0xFFFFFF, // color of clicked

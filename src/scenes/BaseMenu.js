@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs } from '../utils/keyboard_input';
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
-import { TextButton } from '../ui/text_button.js';
+import { fonts } from '../utils/fontStyle.js';
+import { TextboxButton } from '../ui/textbox_button.js';
 
 export class BaseMenu extends Scene {
     constructor(sceneName) {
@@ -62,13 +62,18 @@ export class BaseMenu extends Scene {
 
     setupBackButton() {
         this.backButton =
-            new TextButton(this, 512, 660,
-                "Back",
+            new TextboxButton(this, this.game.config.width / 2, 675, 150, 50, "Back",
                 () => {
                     this.sounds.bank.sfx.click.play();
                     this.scene.start('Main Menu');
-
-                }
+                }, 
+                [],
+                fonts.small.fontName,
+                fonts.small.size, 
+                0x2B2D31, // color of button
+                0x383A40, // color of hovered
+                0xFEFEFE, // color of clicked
+                0x879091  // color of border
             ).setDepth(3);
     }
 

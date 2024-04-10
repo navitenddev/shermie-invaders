@@ -1,5 +1,5 @@
 import { BaseMenu } from './BaseMenu.js';
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { fonts } from '../utils/fontStyle.js';
 import { TextboxButton } from '../ui/textbox_button.js';
 
 /**
@@ -35,9 +35,9 @@ class StartWithMoneyDialog extends Phaser.GameObjects.Container {
             .strokeRect(-(w / 2), -(h / 2), w, h);
 
         this.text = scene.add.bitmapText(border_sz, border_sz,
-            bitmapFonts.PressStart2P_Stroke,
+            fonts.small.fontName,
             "Do you wish to start level "+level+" with money?",
-            fonts.small.sizes[bitmapFonts.PressStart2P_Stroke])
+            fonts.small.size)
             .setMaxWidth(w - (border_sz * 2));
 
         this.text.setPosition(-(this.text.width / 2), -(this.text.height / 2));
@@ -98,7 +98,7 @@ export class LevelSelect extends BaseMenu {
         this.sounds.bank.music.shop.play();
         super.create();
 
-        this.add.bitmapText(this.game.config.width / 3, 35, bitmapFonts.PressStart2P_Stroke, 'LEVEL SELECT', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setDepth(3);
+        this.add.bitmapText(this.game.config.width / 3, 35, fonts.medium.fontName, 'LEVEL SELECT', fonts.medium.size).setDepth(3);
 
         const scale = { x: 50, y: 50 };
         const gap = { x: 5, y: 5 };
@@ -139,7 +139,7 @@ export class LevelSelect extends BaseMenu {
                                 .setDepth(3);
                         },
                         [this, level++],
-                        bitmapFonts.PressStart2P,
+                        fonts.small.fontName,
                         12,
                         color,
                         color_hover)

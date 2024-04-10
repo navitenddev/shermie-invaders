@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { bitmapFonts, fonts } from '../utils/fontStyle';
+import { fonts } from '../utils/fontStyle';
 import { FillBar } from '../ui/fill_bar';
 import { EventDispatcher } from '../utils/event_dispatcher';
 import { Game } from './Game'
@@ -47,22 +47,19 @@ class MenuSpinner {
 
         // Position the buttons relative to the center
         const minusButtonX = centerX - totalBoxesWidth / 2 - 30; // 30 is an arbitrary offset for the button
-        const plusButtonX = centerX + totalBoxesWidth / 2; // 10 is an arbitrary offset for the button
+        const plusButtonX = centerX + totalBoxesWidth / 2 - 10 ; // 10 is an arbitrary offset for the button
 
         // Stat Name Text positioned above the boxes
-        this.statText = scene.add.bitmapText(firstBoxX, y - 5, bitmapFonts.PressStart2P_Stroke, `${displayName}:`, fonts.small.sizes[bitmapFonts.PressStart2P]).setOrigin(0, 0);
-        this.statText.setScale(1.2);
+        this.statText = scene.add.bitmapText(firstBoxX, y - 3, fonts.middle.fontName, `${displayName}:`, fonts.middle .size).setOrigin(0, 0);
 
         // Display the current upgrade cost
-        this.upgradeCostText = scene.add.bitmapText(plusButtonX + 100, y + 15, bitmapFonts.PressStart2P_Stroke, '', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0.5, 0);
+        this.upgradeCostText = scene.add.bitmapText(plusButtonX + 100, y + 15, fonts.medium.fontName, '', fonts.medium.size).setOrigin(0.5, 0);
 
         // Minus Button
-        this.minusButton = scene.add.bitmapText(minusButtonX, y + 25, bitmapFonts.PressStart2P_Stroke, '-', fonts.small.sizes[bitmapFonts.PressStart2P]).setOrigin(0.5, 0).setInteractive();
-        this.minusButton.setScale(1.5);
+        this.minusButton = scene.add.bitmapText(minusButtonX, y + 25, fonts.medium.fontName, '-', fonts.medium.size).setOrigin(0.5, 0).setInteractive();
 
         // Plus Button
-        this.plusButton = scene.add.bitmapText(plusButtonX, y + 25, bitmapFonts.PressStart2P_Stroke, '+', fonts.small.sizes[bitmapFonts.PressStart2P]).setOrigin(0.5, 0).setInteractive();
-        this.plusButton.setScale(1.5);
+        this.plusButton = scene.add.bitmapText(plusButtonX, y + 25, fonts.medium.fontName, '+', fonts.medium.size).setOrigin(0.5, 0).setInteractive();
 
         // Stat Boxes below the stat text
         const boxesStartX = centerX - totalBoxesWidth;
@@ -177,8 +174,8 @@ export class Store extends Scene {
             shield: 1,
         };
 
-        this.add.bitmapText(this.cameras.main.width / 2, 40, bitmapFonts.PressStart2P_Stroke, "Shermie Store", fonts.large.sizes[bitmapFonts.PressStart2P]).setOrigin(0.5, 0);
-        this.add.bitmapText(715, 190, bitmapFonts.PressStart2P_Stroke, "Cost", fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0.5, 0.5);
+        this.add.bitmapText(this.cameras.main.width / 2, 40, fonts.large.fontName, "Shermie Store", fonts.large.size).setOrigin(0.5, 0);
+        this.add.bitmapText(715, 190, fonts.medium.fontName, "Cost", fonts.medium.size).setOrigin(0.5, 0.5);
 
         //Link Player stat key to display name
         const statDefinitions = [
@@ -214,7 +211,7 @@ export class Store extends Scene {
         const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_bux').setOrigin(0.5, 0.5).setScale(0.25);
         const moneyTextX = moneyIconX + moneyIcon.displayWidth / 2 + 5;
         const moneyTextY = moneyIconY;
-        this.moneyText = this.add.bitmapText(moneyTextX, moneyTextY, bitmapFonts.PressStart2P_Stroke, `${this.player_vars.wallet}`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0, 0.5);
+        this.moneyText = this.add.bitmapText(moneyTextX, moneyTextY, fonts.medium.fontName, `${this.player_vars.wallet}`, fonts.medium.size).setOrigin(0, 0.5);
 
         this.next_level_btn = new TextboxButton(this,
             this.game.config.width / 2, 700,

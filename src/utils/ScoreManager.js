@@ -1,4 +1,4 @@
-import { bitmapFonts, fonts } from './fontStyle.js';
+import { fonts } from './fontStyle.js';
 
 /**
  * @classdesc Manages the score (go figure) but also the money that shermie earns
@@ -14,9 +14,9 @@ export default class ScoreManager {
     }
 
     initText() {
-        this.highScoreText = this.scene.add.bitmapText(16, 16, bitmapFonts.PressStart2P_Stroke, `HI-SCORE:${this.highScore}`, fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]);
-        this.scoreText = this.scene.add.bitmapText(16, 40, bitmapFonts.PressStart2P_Stroke, `SCORE:${this.player_vars.score}`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]);
-        this.walletText = this.scene.add.bitmapText(64, 76, bitmapFonts.PressStart2P_Stroke, `${this.player_vars.wallet}`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]);
+        this.highScoreText = this.scene.add.bitmapText(16, 16, fonts.small.fontName, `HI-SCORE:${this.highScore}`, fonts.small.size);
+        this.scoreText = this.scene.add.bitmapText(16, 40, fonts.medium.fontName, `SCORE:${this.player_vars.score}`, fonts.medium.size);
+        this.walletText = this.scene.add.bitmapText(64, 76, fonts.medium.fontName, `${this.player_vars.wallet}`, fonts.medium.size);
     }
 
     addScore(points) {

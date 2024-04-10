@@ -1,6 +1,6 @@
 import { EventDispatcher } from "../utils/event_dispatcher";
 import { InitKeyDefs } from "../utils/keyboard_input.js";
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { fonts } from '../utils/fontStyle.js';
 
 /**
  * @param {Phaser.Scene} scene The scene that is calling the dialogue
@@ -8,7 +8,7 @@ import { bitmapFonts, fonts } from '../utils/fontStyle.js';
  * @param {string} dialogue_type "story" | "game" | "techtip" | "game_blocking" | "menu"
  * @param {number} font_size The size of the font to display
  */
-function start_dialogue(scene, key, dialogue_type = "game", prev_scene = "Game", font_size = 16) {
+function start_dialogue(scene, key, dialogue_type = "game", prev_scene = "Game", font_size = fonts.small.size) {
     // dialogue_type should only be one of these
     if ((["story", "game", "techtip", "game_blocking", "menu"].includes(dialogue_type)) === false) {
         console.warn(`Invalid dialogue_type: ${dialogue_type}. Defaulting to "game"`);
@@ -57,7 +57,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
     follow_player = true;
     dialogue_type; /** @param {string} "story" | "game" | "techtip" | "game_blocking" | "menu" */
 
-    constructor(scene, data, dialogue_type = "game", font_size = 16) {
+    constructor(scene, data, dialogue_type = "game", font_size = fonts.small.size) {
 
         let x = 310,
             y = 120,
@@ -65,8 +65,8 @@ class DialogueManager extends Phaser.GameObjects.Container {
             h = (scene.game.config.height / 4.5);
         if (["techtip", "game_blocking", "menu"].includes(dialogue_type)) {
             x = (scene.game.config.width / 2) - (w / 2);
-            y = scene.game.config.height / 2.5;
-            h = (scene.game.config.height / 3.8)
+            y = scene.game.config.height / 2.8;
+            h = (scene.game.config.height / 3.1)
         } else if (dialogue_type === "game") {
             w = 310;
         }
@@ -98,7 +98,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
         if (["story", "techtip", "game_blocking", "menu"].includes(dialogue_type)) this.follow_player = false;
 
-        this.text = scene.add.bitmapText(25, 15, bitmapFonts.PressStart2P, '', font_size).setMaxWidth(this.w - (2 * this.border_w))
+        this.text = scene.add.bitmapText(25, 15, fonts.small.fontName, '', fonts.small.size).setMaxWidth(this.w - (2 * this.border_w))
             .setLineSpacing(14)
             .setTint(0xFFFFFF);
 
@@ -159,7 +159,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
         if (this.dialogue_type === "techtip"
             // don't ask, but this is needed to stop this from very rarely appearing twice
             && !this.lines[0].startsWith("Shermie's tech tips:"))
-            this.lines[0] = "Shermie's tech tips:\n" + this.lines[0]; // prepend string
+            this.lines[0] = "Shermie's Tech Tips:\n" + this.lines[0]; // prepend string
 
         this.#load_next_line();
     }
@@ -245,7 +245,7 @@ class Dialogue extends Phaser.Scene {
 
             // Play the animation
             dialogueBg.play('Dialouge-SpriteSheet');
-            this.escPrompt = this.add.bitmapText(460, 300, bitmapFonts.PressStart2P, `Click mouse to Continue\nor press ESC to skip`, fonts.small.sizes[bitmapFonts.PressStart2P])
+            this.escPrompt = this.add.bitmapText(460, 300, fonts.small.fontName, `Click mouse to Continue\nor press ESC to skip`, fonts.small.size)
         }
 
         this.sounds = this.registry.get('sound_bank');
@@ -279,7 +279,7 @@ class Dialogue extends Phaser.Scene {
     return_to_caller_scene() {
         // console.log(`TYPE: ${this.dialogue_type}`)
         if (this.dialogue_type === "story") {
-            this.startPrompt = this.add.bitmapText(450, 180, bitmapFonts.PressStart2P, `Press spacebar to start!`, fonts.small.sizes[bitmapFonts.PressStart2P])
+            this.startPrompt = this.add.bitmapText(375, 180, fonts.middle.fontName, `Press spacebar to start!`, fonts.middle.size)
         }
 
         if (this.escPrompt) {
