@@ -179,11 +179,12 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(time, delta, keys, controls) {
+        this.setRotation(0); // TODO: It would be nice to find the real solution to this
         if (window.IS_MOBILE && controls) {
             const pointer = this.scene.input.activePointer;
             const screenWidth = this.scene.sys.game.config.width;
             const touchZoneWidth = screenWidth * 0.3;
-    
+
             if (pointer.isDown) {
                 if (pointer.x < touchZoneWidth) {
                     this.move(false); // Move left
@@ -192,33 +193,33 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 }
             }
         }
-            
+
         // Only display shield bar if we have shields
         (this.shield_bar.value) ?
             this.shield_bar.setVisible(true) :
             this.shield_bar.setVisible(false);
-    
+
         // Only display powerup bar if we have powerups
         (this.powerup_bar.value) ?
             this.powerup_bar.setVisible(true) :
             this.powerup_bar.setVisible(false);
-    
+
         this.#update_bars();
         this.#update_powerup_icon();
-    
+
         // Update global player pos
         this.player_vars.x = this.x + this.dialogue_offset.x;
         this.player_vars.y = this.y + this.dialogue_offset.y;
-    
+
         let x, y;
         if (this.scene) {
             x = this.scene.game.input.mousePointer.x.toFixed(1);
             y = this.scene.game.input.mousePointer.y.toFixed(1);
         }
         this.#mouse_pos = { x: x, y: y };
-        
+
         // respawn the player
-        if (this.is_dead) {    
+        if (this.is_dead) {
             if (this.player_vars.lives > 0 && !this.is_inbounds()) {
                 this.is_dead = false;
                 this.resetPlayer();
@@ -226,10 +227,10 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             }
             return;
         }
-    
+
         this.updateShield();
         this.updateHitbox();
-    
+
 
         if (keys.d.isDown || keys.right.isDown || (controls && controls.right)) {
             this.move(true);
@@ -242,19 +243,19 @@ class Player extends Phaser.Physics.Arcade.Sprite {
             this.anims.currentAnim.key !== "shermie_shoot"
         )
             this.play("shermie_idle");
-    
+
         if (window.IS_MOBILE && controls) {
             if ((keys.space.isDown || keys.w.isDown || controls.shoot) && !this.is_dead) this.shoot(time);
         } else {
             if ((keys.space.isDown || keys.w.isDown) && !this.is_dead) this.shoot(time);
         }
-    
+
         if (!keys.d.isDown && !keys.right.isDown &&
             !keys.a.isDown && !keys.left.isDown &&
             (!controls || (!controls.right && !controls.left)))
             this.setVelocity(0);
     }
-        
+
     /**
      * @public
      * @description When the player should die, this is called. 
