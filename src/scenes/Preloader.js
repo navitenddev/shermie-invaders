@@ -260,6 +260,7 @@ export class Preloader extends Scene {
         this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');
 
         this.load.image('pause', 'controls/pause.png');
+        this.load.image('controls', 'controls/controls.png');
         this.load.bitmapFont('PressStart2P-Large', 'fonts/PressStart2P-Large.png', 'fonts/PressStart2P-Large.xml');
         this.load.bitmapFont('PressStart2P-Medium', 'fonts/PressStart2P-Medium.png', 'fonts/PressStart2P-Medium.xml');
         this.load.bitmapFont('PressStart2P-Middle', 'fonts/PressStart2P-Middle.png', 'fonts/PressStart2P-Middle.xml');
