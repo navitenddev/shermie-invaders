@@ -13,20 +13,22 @@ const STAT_MIN = 1;
 // Change these values here to change the shop prices.
 export const SHOP_PRICES = {
     move_speed: [
-        150, 200, 250, 300, 350,
+        150, 300, 500, 700, 1000,
     ],
     bullet_speed: [
-        100, 150, 200, 250, 300,
-        350, 500, 600, 750, 1000,
+        200, 250, 300, 350, 500,
+        700, 1000, 2400, 2800, 3000,
     ],
     fire_rate: [
-        100, 150, 200, 300, 400,
-        500, 600, 850, 1000, 1250
+        200, 250, 300, 400, 500,
+        1000, 1500, 2000, 2500, 3500
     ],
     shield: [
-        300, 300, 300, 300, 300,
-        300, 300, 300, 300, 300
-    ]
+        400, 400, 400, 400, 400,
+        400, 400, 400, 400, 400
+    ],
+    perm_spread:[5000],
+    perm_pierce:[5000]
 };
 
 class MenuSpinner {
@@ -115,7 +117,6 @@ class MenuSpinner {
             this.scene.refundUpgrade(this.statKey, this.stats[this.statKey]);
         }
         console.log(`Modified ${this.displayName} to ${this.stats[this.statKey]}`);
-
         this.updateStatDisplay();
         this.scene.updateAllSpinners(); // Ensure other spinners are also updated if necessary
     }
@@ -152,7 +153,11 @@ export class Store extends Scene {
 
     create() {
         this.scene.remove('Game'); // I am sorry for my sins
-
+        let sum = SHOP_PRICES["move_speed"].reduce((partialSum, a) => partialSum + a, 0);
+        sum+=SHOP_PRICES["bullet_speed"].reduce((partialSum, a) => partialSum + a, 0);
+        sum+=SHOP_PRICES["fire_rate"].reduce((partialSum, a) => partialSum + a, 0);
+        sum+=SHOP_PRICES["shield"].reduce((partialSum, a) => partialSum + a, 0);
+        console.log("shop total: "+sum);
         this.player_vars = this.registry.get('player_vars');
         //Background
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'upgradeTilemap')
@@ -173,6 +178,8 @@ export class Store extends Scene {
         
         //Sets initial Character stats or replaces them with current player stats. 
         this.initialStats = Object.assign({}, this.stats);
+        this.initialperm_buff = Object.assign([], this.perm_buff);
+
         const playerVars = this.registry.get('player_vars');
         this.stats = playerVars && playerVars.stats ? playerVars.stats : {
             bullet_speed: 1,
@@ -180,6 +187,7 @@ export class Store extends Scene {
             move_speed: 1,
             shield: 1,
         };
+        this.perm_buff = playerVars && playerVars.perm_power ? playerVars.perm_power : [];
 
         this.add.bitmapText(this.cameras.main.width / 2, 40, fonts.large.fontName, "Shermie Store", fonts.large.size).setOrigin(0.5, 0);
         this.add.bitmapText(715, 190, fonts.medium.fontName, "Cost", fonts.medium.size).setOrigin(0.5, 0.5);
@@ -211,7 +219,38 @@ export class Store extends Scene {
                 spinner.makePermanent();
             }
         });
-
+        this.PermPowerSpreadCost = this.add.bitmapText(274, 530, bitmapFonts.PressStart2P_Stroke, SHOP_PRICES["perm_spread"][0], fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0.5, 0).setScale(0.75).setTint(this.perm_buff.includes("spread") ? 0xFFD700:(this.canAffordUpgrade("perm_spread", 0) ? 0x00ff00 : 0xFF0000));
+        this.add.image(274, 575, 'spreadshot_icon').setInteractive()
+        .on('pointerdown', () => {
+            if (!this.perm_buff.includes("spread") && this.canAffordUpgrade("perm_spread", 0)) {
+                this.perm_buff.push("spread");
+                this.purchaseUpgrade("perm_spread", 1);
+                this.PermPowerSpreadCost.setText("SOLD")
+            }
+            else if (this.perm_buff.includes("spread") && !this.initialperm_buff.includes("spread")) {
+                this.perm_buff.splice(this.perm_buff.indexOf("spread"),1);
+                this.refundUpgrade("perm_spread", 0);
+                this.PermPowerSpreadCost.setText(SHOP_PRICES["perm_spread"][0]);
+            }
+        })
+        .on('pointerup', () => {
+        });
+        this.PermPowerPierceCost = this.add.bitmapText(750, 530, bitmapFonts.PressStart2P_Stroke, SHOP_PRICES["perm_pierce"][0], fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0.5, 0).setScale(0.75).setTint(this.perm_buff.includes("pierce") ? 0xFFD700:(this.canAffordUpgrade("perm_pierce", 0) ?  0x00ff00:0xFF0000 ));
+        this.add.image(750, 575, 'pierceshot_icon').setInteractive()
+        .on('pointerdown', () => {
+            if (!this.perm_buff.includes("pierce") && this.canAffordUpgrade("perm_pierce", 0)) {
+                this.perm_buff.push("pierce");
+                this.purchaseUpgrade("perm_pierce", 1);
+                this.PermPowerPierceCost.setText("SOLD");
+            }
+            else if (this.perm_buff.includes("pierce") && !this.initialperm_buff.includes("pierce")) {                
+                this.perm_buff.splice(this.perm_buff.indexOf("pierce"),1);
+                this.refundUpgrade("perm_pierce", 0);
+                this.PermPowerPierceCost.setText(SHOP_PRICES["perm_pierce"][0]);
+            }
+        })
+        .on('pointerup', () => {
+        });
         //Show Shermie Bux here
         const moneyIconX = 270;
         const moneyIconY = 190;
@@ -229,6 +268,7 @@ export class Store extends Scene {
                 this.registry.set('playerPermanentStats', Object.assign({}, this.stats));
                 let playerVars = this.registry.get('player_vars');
                 playerVars.stats = this.stats;
+                playerVars.perm_power =this.perm_buff;
                 this.registry.set('player_vars', playerVars);
                 this.registry.set('level', this.registry.get('level') + 1);
                 restart_scenes(this.scene);
@@ -269,12 +309,16 @@ export class Store extends Scene {
         const cost = this.getUpgradeCost(statKey, currentLevel - 1);
         this.player_vars.wallet -= cost;
         this.moneyText.setText(`${this.player_vars.wallet}`);
+        this.PermPowerPierceCost.setTint(this.perm_buff.includes("pierce") ? 0xFFD700:(this.canAffordUpgrade("perm_pierce", 0) ?  0x00ff00: 0xFF0000));
+        this.PermPowerSpreadCost.setTint(this.perm_buff.includes("spread") ? 0xFFD700:(this.canAffordUpgrade("perm_spread", 0) ? 0x00ff00  : 0xFF0000));
     }
 
     refundUpgrade(statKey, currentLevel) {
         const refundAmount = this.getRefundAmount(statKey, currentLevel + 1);
         this.player_vars.wallet += refundAmount;
         this.moneyText.setText(`${this.player_vars.wallet}`);
+        this.PermPowerPierceCost.setTint(this.perm_buff.includes("pierce") ? 0xFFD700:(this.canAffordUpgrade("perm_pierce", 0) ?  0x00ff00: 0xFF0000));
+        this.PermPowerSpreadCost.setTint(this.perm_buff.includes("spread") ? 0xFFD700:(this.canAffordUpgrade("perm_spread", 0) ? 0x00ff00  : 0xFF0000));
     }
 
     getRefundAmount(statKey, level) {

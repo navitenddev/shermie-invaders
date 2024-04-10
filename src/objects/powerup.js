@@ -27,6 +27,7 @@ class Powerups extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         this.body.onOverlap = true;
         this.speed = PowerupsConstDefs.speed.y;
+        this.setActive(false)
     }
 
     /* It's important to add this to every subclass that extends a phaser object.
@@ -41,7 +42,7 @@ class Powerups extends Phaser.Physics.Arcade.Sprite {
         * See:`ObjectSpawner.js`
         */
         if (this.active) {
-            this.move();
+            //this.move();
             this.check_bounds();
             this.debugBodyColor = this.body?.touching.none ? 0x0099ff : 0xff9900;
         }
@@ -59,10 +60,10 @@ class Powerups extends Phaser.Physics.Arcade.Sprite {
      */
     check_bounds() {
         if (this.y < -16 ||
-            this.y > this.scene.game.config.height ||
+            this.y > this.scene.game.config.height-90 ||
             this.x < 0 ||
             this.x > this.scene.game.config.width)
-            this.deactivate();
+            this.setVelocity(0,0);
     }
     /**
      * @public
@@ -76,6 +77,7 @@ class Powerups extends Phaser.Physics.Arcade.Sprite {
         this.setPosition(x, y);
         this.setVisible(true);
         this.setActive(true);
+        this.setVelocity(0, 200);
     }
 
     /** 

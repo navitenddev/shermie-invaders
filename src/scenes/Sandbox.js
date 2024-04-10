@@ -194,6 +194,8 @@ export class Sandbox extends Scene {
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
         this.powerup_stats = this.registry.get('powerup_stats');
+        this.player_vars = this.registry.get('player_vars');
+        this.player_stats = this.player_vars.stats;
         this.objs.init_all(false);
         this.sounds = this.registry.get('sound_bank');
 
@@ -206,8 +208,7 @@ export class Sandbox extends Scene {
         this.level_transition_flag = false;
         this.level_text = this.add.bitmapText(this.sys.game.config.width * (2.9 / 4), 16, fonts.medium.fontName, `LEVEL:${this.level}`, fonts.medium.size);
 
-        this.player_vars = this.registry.get('player_vars');
-        this.player_stats = this.player_vars.stats;
+        
 
         // Player lives text and sprites
         this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, fonts.middle.fontName, '---', fonts.middle.size);

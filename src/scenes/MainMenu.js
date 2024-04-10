@@ -48,6 +48,7 @@ export class MainMenu extends BaseMenu {
         this.player_vars.active_bullets = 0;
         this.player_vars.wallet = 0;
         this.player_vars.power = "";
+        this.player_vars.perm_power = [];
 
         // check if cheat codes are already activated
         if (localStorage.getItem('cheatCodesActivated') === 'true') {

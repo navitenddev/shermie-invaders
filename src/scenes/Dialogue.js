@@ -282,11 +282,13 @@ class Dialogue extends Phaser.Scene {
             this.startPrompt = this.add.bitmapText(375, 180, fonts.middle.fontName, `Press spacebar to start!`, fonts.middle.size)
         }
     
+    
         if (this.escPrompt) {
             this.escPrompt.destroy();
             this.escPrompt = null;
         }
         if (this.dialogue_type === "story") {
+            const startGame = () => {
             const startGame = () => {
                 this.sounds.stop_all_music();
                 this.sounds.bank.music.bg.play();
@@ -298,11 +300,15 @@ class Dialogue extends Phaser.Scene {
             this.keys.space.on('down', startGame);
     
             this.input.on('pointerdown', startGame);
+            };
+            this.keys.space.on('down', startGame);
+    
+            this.input.on('pointerdown', startGame);
         } else if (this.dialogue_type === "game_blocking") {
             this.scene.resume(this.prev_scene);
         }
     }
-}    
+}        
 
 
 export { Dialogue, DialogueManager, start_dialogue };

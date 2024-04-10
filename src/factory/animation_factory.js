@@ -59,6 +59,15 @@ class AnimationFactory {
                 end: 0,
             }),
         });
+        this.scene.anims.create({
+            key: "pierce_bullet",
+            frames: this.scene.anims.generateFrameNumbers("pierceshot_icon", {
+                start: 0,
+                end: 5,
+            }),
+            frameRate: 16,
+            repeat:-1
+        });
 
         for (let i = 1; i <= 18; i++) {
             this.scene.anims.create({

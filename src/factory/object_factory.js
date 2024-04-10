@@ -91,8 +91,16 @@ Phaser.GameObjects.GameObjectFactory.register(
 Phaser.GameObjects.GameObjectFactory.register(
     "powerup",
     function (scene) {
-        let temp = this.scene.powerup_stats.power_bank[Phaser.Math.Between(0, this.scene.powerup_stats.power_bank.length - 1)];
-        console.log(temp);
+        let temp = this.scene.powerup_stats.power_bank[this.scene.objs.powers.countActive(false)%2];
+        if(this.scene.player_vars.perm_power.includes("spread") && this.scene.player_vars.perm_power.includes("pierce")){
+            return new Powerups(scene, temp);
+        }
+        else if(this.scene.player_vars.perm_power.includes("spread")){
+            return new Powerups(scene, "pierce");;
+        }
+        else if(this.scene.player_vars.perm_power.includes("pierce")){
+            return new Powerups(scene, "spread");;
+        }
         return new Powerups(scene, temp);
     }
 );
