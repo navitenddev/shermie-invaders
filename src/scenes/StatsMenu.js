@@ -155,7 +155,7 @@ export class StatsMenu extends Scene {
                     this.scene.start('Player Win')
             },
             [], // callback function's arguments
-            fonts.tiny.fontName,                    // font type
+            fonts.small.fontName,                    // font type
             fonts.small.size, // font size
             0xFF0000, // color of button
             0xB02A07, // color of hovered
