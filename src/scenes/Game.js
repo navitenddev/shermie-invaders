@@ -9,6 +9,7 @@ import { EventDispatcher } from '../utils/event_dispatcher';
 import { start_dialogue } from './Dialogue';
 import { init_collision_events, restart_scenes } from '../main';
 import { SoundBank } from '../utils/sounds';
+import Controls from '../controls/controls';
 
 /**
  * @description The scene in which gameplay will occur.
@@ -121,6 +122,14 @@ export class Game extends Scene {
         this.player_stats = this.player_vars.stats;
         this.player_vars.power = "";
 
+        this.pauseSprite = this.add.sprite(this.sys.game.config.width / 2, 32, 'pause')
+        .setOrigin(0.5)
+        .setInteractive();
+    
+        this.pauseSprite.on('pointerdown', () => {
+            this.pause();
+        });
+
         // Player lives text and sprites
         this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, bitmapFonts.PressStart2P, '3', fonts.medium.sizes[bitmapFonts.PressStart2P]);
         this.livesSprites = this.add.group({
@@ -144,6 +153,10 @@ export class Game extends Scene {
             this.toggleDebug();
         });
 
+        if (window.IS_MOBILE) {
+            this.controls = new Controls(this);
+          }
+        
         // Event to kill all enemies
         this.emitter.on('kill_all_enemies', this.#kill_all_enemies, this);
         this.emitter.once('player_lose', this.goto_scene, this)
@@ -200,7 +213,7 @@ export class Game extends Scene {
     update(time, delta) {
         // console.log(`scene active: ${this.scene.isActive()}`);
         if (this.objs.player)
-            this.objs.player.update(time, delta, this.keys)
+            this.objs.player.update(time, delta, this.keys, this.controls);
         // Update lives text and sprites
         this.livesText.setText(this.player_vars.lives);
         this.updateLivesSprites();
