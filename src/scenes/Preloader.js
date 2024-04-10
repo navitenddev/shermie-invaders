@@ -300,7 +300,8 @@ export class Preloader extends Scene {
             wallet: 0, // holds shermie bux
             active_bullets: 0, // the number of bullets that the player currently has on screen
             score: 0, // player score
-            power: "None", //powerup
+            power: "", //powerup
+            perm_power: [], //powerup
         });
         //  Move to the MainMenu. You could also swap this for a Scene
         //  Transition, such as a camera fade.

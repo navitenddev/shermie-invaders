@@ -295,10 +295,11 @@ class Player extends Phaser.Physics.Arcade.Sprite {
      * @description changes powerup
     */
     changePower(pow) {
-        this.player_vars.power = pow;
-        this.powerup.ammo = (pow) ? this.powerup.max : 0;
-        if (!pow)
-            this.power
+        if(!this.player_vars.perm_power.includes(pow))
+            this.player_vars.power = pow;
+            this.powerup.ammo = (pow) ? this.powerup.max : 0;
+            if (!pow)
+                this.power
     }
 
     /**
@@ -348,15 +349,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                     }
                 }
 
-                if (this.player_vars.power == "spread") {
+                if (this.player_vars.power == "spread"  || this.player_vars.perm_power.includes("spread")) {
                     let bulletr = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
                     if (bulletr !== null) {
                         this.player_vars.active_bullets++;
-                        bulletr.activate(this.x, this.y, 50, bullet_speed * 100);
+                        bulletr.activate(this.x, this.y, 50/4 * bullet_speed, bullet_speed * 100);
                         let bulletl = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
                         if (bulletl !== null) {
                             this.player_vars.active_bullets++;
-                            bulletl.activate(this.x, this.y, -50, bullet_speed * 100);
+                            bulletl.activate(this.x, this.y, -50/4 * bullet_speed, bullet_speed * 100);
                         }
                     }
                 }

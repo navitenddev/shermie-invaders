@@ -109,7 +109,7 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
             .setAngle(Math.atan2(-vy, vx) * (180 / Math.PI) + 90)
             .setVisible(true)
             .setActive(true);
-        if(this.player_vars.power == "pierce"){
+        if(this.player_vars.power == "pierce"  || this.player_vars.perm_power.includes("pierce")){
             console.log("hey")
             this.setTexture("pierceshot_icon");
             this.setSize(48, 48);

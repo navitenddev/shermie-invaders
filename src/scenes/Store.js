@@ -26,7 +26,9 @@ export const SHOP_PRICES = {
     shield: [
         300, 300, 300, 300, 300,
         300, 300, 300, 300, 300
-    ]
+    ],
+    perm_spread:[3000],
+    perm_pierce:[3000]
 };
 
 class MenuSpinner {
@@ -163,7 +165,7 @@ export class Store extends Scene {
         const borderX = this.cameras.main.width / 5;
         const borderY = startY - 120;
         const borderWidth = 620;
-        const borderHeight = 450;
+        const borderHeight = 500;
         borderGraphics.fillStyle(0x808080, .9);
         borderGraphics.fillRoundedRect(borderX, borderY, borderWidth, borderHeight, 20);
 
@@ -176,6 +178,7 @@ export class Store extends Scene {
             move_speed: 1,
             shield: 1,
         };
+        this.perm_buff = playerVars && playerVars.perm_power ? playerVars.perm_power : [];
 
         this.add.bitmapText(this.cameras.main.width / 2, 40, bitmapFonts.PressStart2P_Stroke, "Shermie Store", fonts.large.sizes[bitmapFonts.PressStart2P]).setOrigin(0.5, 0);
         this.add.bitmapText(715, 190, bitmapFonts.PressStart2P_Stroke, "Cost", fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0.5, 0.5);
@@ -207,7 +210,33 @@ export class Store extends Scene {
                 spinner.makePermanent();
             }
         });
-
+        this.add.image(274, 575, 'spreadshot_icon').setInteractive()
+        .on('pointerdown', () => {
+            if (!this.perm_buff.includes("spread") && this.canAffordUpgrade("perm_spread", 0)) {
+                this.perm_buff.push("spread");
+                this.purchaseUpgrade("perm_spread", 1);
+            }
+            else if (this.perm_buff.includes("spread")) {
+                this.perm_buff.splice(this.perm_buff.indexOf("spread"),1);
+                this.refundUpgrade("perm_spread", 0);
+            }
+        })
+        .on('pointerup', () => {
+        });
+        this.add.image(750, 570, 'pierceshot_icon').setInteractive()
+        .on('pointerdown', () => {
+            console.log(this.canAffordUpgrade("perm_pierce", 1));
+            if (!this.perm_buff.includes("pierce") && this.canAffordUpgrade("perm_pierce", 0)) {
+                this.perm_buff.push("pierce");
+                this.purchaseUpgrade("perm_pierce", 1);
+            }
+            else if (this.perm_buff.includes("pierce")) {
+                this.perm_buff.splice(this.perm_buff.indexOf("pierce"),1);
+                this.refundUpgrade("perm_pierce", 0);
+            }
+        })
+        .on('pointerup', () => {
+        });
         //Show Shermie Bux here
         const moneyIconX = 270;
         const moneyIconY = 190;
@@ -225,6 +254,7 @@ export class Store extends Scene {
                 this.registry.set('playerPermanentStats', Object.assign({}, this.stats));
                 let playerVars = this.registry.get('player_vars');
                 playerVars.stats = this.stats;
+                playerVars.perm_power =this.perm_buff;
                 this.registry.set('player_vars', playerVars);
                 this.registry.set('level', this.registry.get('level') + 1);
                 restart_scenes(this.scene);
