@@ -149,7 +149,11 @@ export class Store extends Scene {
 
     create() {
         this.scene.remove('Game'); // I am sorry for my sins
-
+        let sum = SHOP_PRICES["move_speed"].reduce((partialSum, a) => partialSum + a, 0);
+        sum+=SHOP_PRICES["bullet_speed"].reduce((partialSum, a) => partialSum + a, 0);
+        sum+=SHOP_PRICES["fire_rate"].reduce((partialSum, a) => partialSum + a, 0);
+        sum+=SHOP_PRICES["shield"].reduce((partialSum, a) => partialSum + a, 0);
+        console.log("shop total: "+sum);
         this.player_vars = this.registry.get('player_vars');
         //Background
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'upgradeTilemap')

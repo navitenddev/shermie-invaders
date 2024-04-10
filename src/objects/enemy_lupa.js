@@ -3,7 +3,7 @@ import { FillBar } from "../ui/fill_bar";
 
 class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     scoreValue = 200;
-    moneyValue = 100;
+    moneyValue = 12;
     static Y_NORMAL = 300;
     static ANGLE_VEL = 500;
     hp = 40;
