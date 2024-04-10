@@ -113,7 +113,6 @@ class MenuSpinner {
             this.scene.refundUpgrade(this.statKey, this.stats[this.statKey]);
         }
         console.log(`Modified ${this.displayName} to ${this.stats[this.statKey]}`);
-
         this.updateStatDisplay();
         this.scene.updateAllSpinners(); // Ensure other spinners are also updated if necessary
     }
@@ -171,6 +170,8 @@ export class Store extends Scene {
 
         //Sets initial Character stats or replaces them with current player stats. 
         this.initialStats = Object.assign({}, this.stats);
+        this.initialperm_buff = Object.assign([], this.perm_buff);
+
         const playerVars = this.registry.get('player_vars');
         this.stats = playerVars && playerVars.stats ? playerVars.stats : {
             bullet_speed: 1,
@@ -216,7 +217,7 @@ export class Store extends Scene {
                 this.perm_buff.push("spread");
                 this.purchaseUpgrade("perm_spread", 1);
             }
-            else if (this.perm_buff.includes("spread")) {
+            else if (this.perm_buff.includes("spread") && !this.initialperm_buff.includes("spread")) {
                 this.perm_buff.splice(this.perm_buff.indexOf("spread"),1);
                 this.refundUpgrade("perm_spread", 0);
             }
@@ -225,12 +226,12 @@ export class Store extends Scene {
         });
         this.add.image(750, 570, 'pierceshot_icon').setInteractive()
         .on('pointerdown', () => {
-            console.log(this.canAffordUpgrade("perm_pierce", 1));
             if (!this.perm_buff.includes("pierce") && this.canAffordUpgrade("perm_pierce", 0)) {
                 this.perm_buff.push("pierce");
                 this.purchaseUpgrade("perm_pierce", 1);
             }
-            else if (this.perm_buff.includes("pierce")) {
+            else if (this.perm_buff.includes("pierce") && !this.initialperm_buff.includes("pierce")) {
+                
                 this.perm_buff.splice(this.perm_buff.indexOf("pierce"),1);
                 this.refundUpgrade("perm_pierce", 0);
             }
