@@ -8,9 +8,11 @@ export default class Controls {
         this.leftZoneWidth = screenWidth * 0.4; // 40% left touch zone
         this.rightZoneWidth = screenWidth * 0.4; // 40% right touch zone
 
-        const shootButtonX = screenWidth - 65;
-        const shootButtonY = screenHeight - 65;
-        this.shootButton = scene.add.sprite(shootButtonX, shootButtonY, 'controls').setInteractive();
+        const shootButtonX = screenWidth - 85;
+        const shootButtonY = screenHeight - 85;
+        this.shootButton = scene.add.sprite(shootButtonX, shootButtonY, 'controls')
+            .setScale(1.5, 1.5)
+            .setInteractive();
 
         // exclusion zone
         this.shootButtonBounds = {
