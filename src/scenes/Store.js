@@ -74,20 +74,20 @@ class MenuSpinner {
             .setInteractive()
             .on('pointerdown', () => {
                 this.updateStat(-1);
-                this.minusButton.setScale(1.2);
+                this.minusButton.setScale(0.9);
             })
             .on('pointerup', () => {
-                this.minusButton.setScale(1.5);
+                this.minusButton.setScale(1);
             });
 
         this.plusButton
             .setInteractive()
             .on('pointerdown', () => {
                 this.updateStat(1);
-                this.plusButton.setScale(1.2);
+                this.plusButton.setScale(0.9);
             })
             .on('pointerup', () => {
-                this.plusButton.setScale(1.5);
+                this.plusButton.setScale(1);
             });
 
         // Initial display update

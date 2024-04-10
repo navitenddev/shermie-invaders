@@ -11,9 +11,6 @@ export class Boot extends Scene {
         this.load.setPath("assets");
 
         this.load.image("bg_navitend", "backgrounds/bg_navitend.png");
-
-        this.load.svg('animatedbg', 'ui/animatedbg.svg');
-
     }
 
     create() {

@@ -12,7 +12,7 @@ const baseFontConfig = {
 };
 
 function selectFont(size) {
-    if (size <= 10) {
+    if (size <= 12) {
         return bitmapFonts.PressStart2P_Tiny;
     } else if (size <= 15) {
         return bitmapFonts.PressStart2P_Small;
@@ -28,8 +28,8 @@ function selectFont(size) {
 const fonts = {
     tiny: {
         ...baseFontConfig,
-        fontName: selectFont(10),
-        size: 10
+        fontName: selectFont(12),
+        size: 12
     },
     small: {
         ...baseFontConfig,

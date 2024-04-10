@@ -36,9 +36,10 @@ class StartWithMoneyDialog extends Phaser.GameObjects.Container {
 
         this.text = scene.add.bitmapText(border_sz, border_sz,
             fonts.small.fontName,
-            "Do you wish to start level "+level+" with money?",
+            "Do you wish to start\nLevel "+level+" with money?",
             fonts.small.size)
-            .setMaxWidth(w - (border_sz * 2));
+            .setMaxWidth(w - (border_sz * 2))
+            .setLineSpacing(5);
 
         this.text.setPosition(-(this.text.width / 2), -(this.text.height / 2));
 
@@ -139,8 +140,8 @@ export class LevelSelect extends BaseMenu {
                                 .setDepth(3);
                         },
                         [this, level++],
-                        fonts.small.fontName,
-                        12,
+                        fonts.tiny.fontName,
+                        fonts.tiny.size,
                         color,
                         color_hover)
                         .setDepth(3);

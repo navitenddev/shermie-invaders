@@ -57,10 +57,6 @@ export class Preloader extends Scene {
 
         this.load.image('titlelogo', 'ui/logo_main.png');
 
-        this.load.image('levelSelectlogo', 'ui/Level_Select.png');
-
-        this.load.image('howToPlayLogo', 'ui/How_to_play.png');
-
         this.load.image("background", "backgrounds/leveloneBG.png");
 
         this.load.image("BG1", "backgrounds/BG1.png");
@@ -159,11 +155,10 @@ export class Preloader extends Scene {
 
         this.load.audio('sandbox_music', 'SFX/8 Bit Adventure - David Fesliyan.mp3');
 
-
-        this.load.spritesheet("necromancer", "characters/necromancer.png", {
-            frameWidth: 160,
-            frameHeight: 128,
-        });
+        // this.load.spritesheet("necromancer", "characters/necromancer.png", {
+        //     frameWidth: 160,
+        //     frameHeight: 128,
+        // });
 
         // this.load.spritesheet("bullet", "projectiles/bullet-shoot.png", {
         //     frameWidth: 32,
@@ -264,6 +259,7 @@ export class Preloader extends Scene {
 
         this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');
 
+        this.load.image('pause', 'controls/pause.png');
         this.load.bitmapFont('PressStart2P-Large', 'fonts/PressStart2P-Large.png', 'fonts/PressStart2P-Large.xml');
         this.load.bitmapFont('PressStart2P-Medium', 'fonts/PressStart2P-Medium.png', 'fonts/PressStart2P-Medium.xml');
         this.load.bitmapFont('PressStart2P-Middle', 'fonts/PressStart2P-Middle.png', 'fonts/PressStart2P-Middle.xml');
