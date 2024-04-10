@@ -3,7 +3,7 @@ import { EventDispatcher } from '../utils/event_dispatcher';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { start_dialogue } from './Dialogue.js';
 import { restart_scenes } from '../main.js';
-import { TextButton } from '../ui/text_button.js';
+import { TextboxButton } from '../ui/textbox_button.js';
 
 export class PlayerLose extends Scene {
     emitter = EventDispatcher.getInstance();
@@ -34,6 +34,25 @@ export class PlayerLose extends Scene {
         this.player_vars = this.registry.get('player_vars');
         const score = this.player_vars.score;
 
+        let bg = this.add.image(0, 0, 'losescreen').setAlpha(0.85);
+        bg.setOrigin(0, 0);
+        bg.displayWidth = this.sys.game.config.width;
+        bg.scaleY = bg.scaleX;
+        bg.y = 0;
+
+        this.continue_btn = new TextboxButton(this, this.game.config.width / 2, 600, 150, 50, 'Continue',
+            () => { // callback function
+                this.emitter.emit('force_dialogue_stop');
+                this.scene.start("Main Menu")
+            },
+            [], // callback function's arguments
+            bitmapFonts.PressStart2P,                    // font type
+            fonts.small.sizes[bitmapFonts.PressStart2P], // font size
+            0x2B2D31, // color of button
+            0x383A40, // color of hovered
+            0xFEFEFE, // color of clicked
+            0x879091// color of border
+        );
         // let bg = this.add.image(0, 0, 'losescreen').setAlpha(0.85);
         // bg.setOrigin(0, 0);
         // bg.displayWidth = this.sys.game.config.width;

@@ -14,6 +14,21 @@ export class Preloader extends Scene {
         //  A simple progress bar. This is the outline of the bar.
         this.add.rectangle(512, 384, 468, 32).setStrokeStyle(1, 0x000000);
 
+        this.text = this.add.text(
+            this.game.config.width / 2, this.game.config.height / 2,
+            "Loading...", {
+            fontFamily: 'Arial Black',
+            fontSize: 20,
+            color: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 5,
+            align: 'left',
+            wordWrap: {
+                width: this.sys.game.config.width - 200,
+                useAdvancedWrap: true
+            }
+        });
+
         //  This is the progress bar itself. It will increase in size from the left based on the % of progress.
         const bar = this.add.rectangle(512 - 230, 384, 4, 28, 0x000000);
 
@@ -22,9 +37,19 @@ export class Preloader extends Scene {
             //  Update the progress bar (our bar is 464px wide, so 100% = 464px)
             bar.width = 4 + 460 * progress;
         });
+
+        this.load.on('fileprogress', (file) => {
+            var output = `Loading asset: ${file.key}`;
+            this.text
+                .setText(output)
+                .setPosition((this.game.config.width / 2) - (this.text.width / 2),
+                    420);
+            console.log(output);
+        });
     }
     /* preload all your assets here! */
     preload() {
+
         //  Load the assets for the game - Replace with your own assets
         this.load.setPath("assets");
 
@@ -42,7 +67,7 @@ export class Preloader extends Scene {
 
         this.load.image("BG2", "backgrounds/BG2.png");
 
-        this.load.image("BG3", "backgrounds/BG3Scroller.png");
+        this.load.image("BG3", "backgrounds/BG3.png");
 
         this.load.image("BG4", "backgrounds/BG4.png");
 
@@ -118,6 +143,10 @@ export class Preloader extends Scene {
 
         this.load.audio('click', ['SFX/click.wav']);
 
+        this.load.audio('hover', ['SFX/hover.wav']);
+
+        this.load.audio('story_music', 'SFX/8 Bit Presentation - David Fesliyan.mp3');
+
         this.load.audio('story_music', 'SFX/8 Bit Presentation - David Fesliyan.mp3');
 
         this.load.audio('shop_music', 'SFX/Retro Forest - David Fesliyan.mp3');
@@ -186,6 +215,11 @@ export class Preloader extends Scene {
             frameHeight: 80,
         });
 
+        this.load.spritesheet("Shermie-runshoot", "characters/Shermie-runshoot.png", {
+            frameWidth: 80,
+            frameHeight: 80,
+        });
+
         this.load.spritesheet("cottonball_explosion_sheet", "projectiles/cottonball_explode.png", {
             frameWidth: 32,
             frameHeight: 32,
@@ -214,6 +248,18 @@ export class Preloader extends Scene {
         this.load.spritesheet("shermie_bg", "misc/shermie_bg.png", {
             frameWidth: 60,
             frameHeight: 60,
+        });
+        this.load.spritesheet("Dialouge-SpriteSheet", "backgrounds/Dialouge-SpriteSheet.png", {
+            frameWidth: 1024,
+            frameHeight: 768,
+        });
+        this.load.spritesheet("BG6-SpriteSheet", "backgrounds/BG6-SpriteSheet.png", {
+            frameWidth: 1024,
+            frameHeight: 768,
+        });
+        this.load.spritesheet("BG7-SpriteSheet", "backgrounds/BG7-SpriteSheet.png", {
+            frameWidth: 1024,
+            frameHeight: 768,
         });
 
         this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');

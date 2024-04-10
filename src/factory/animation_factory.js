@@ -34,6 +34,16 @@ class AnimationFactory {
         });
 
         this.scene.anims.create({
+            key: "shermie_walkshoot",
+            frames: this.scene.anims.generateFrameNumbers("Shermie-runshoot", {
+                start: 0,
+                end: 5, // Adjust to use only 4 frames (0 to 3 inclusive)
+            }),
+            frameRate: 16,
+            repeat: 0, // Ensures the animation plays only once
+        });
+
+        this.scene.anims.create({
             key: "shermie_shoot",
             frames: this.scene.anims.generateFrameNumbers("shermie", {
                 start: 12,
@@ -146,6 +156,33 @@ class AnimationFactory {
             frames: this.scene.anims.generateFrameNumbers("shermie_bg", {
                 start: 0, end: 0,
             }),
+        });
+
+        this.scene.anims.create({
+            key: "Dialouge-SpriteSheet",
+            frames: this.scene.anims.generateFrameNumbers("Dialouge-SpriteSheet", {
+                start: 0, end: 2,
+            }),
+            frameRate: 5,
+            repeat: -1,
+        });
+
+        this.scene.anims.create({
+            key: "BG7-SpriteSheet",
+            frames: this.scene.anims.generateFrameNumbers("BG7-SpriteSheet", {
+                start: 0, end: 7,
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });
+
+        this.scene.anims.create({
+            key: "BG6-SpriteSheet",
+            frames: this.scene.anims.generateFrameNumbers("BG6-SpriteSheet", {
+                start: 0, end: 7,
+            }),
+            frameRate: 4,
+            repeat: -1,
         });
     }
 }

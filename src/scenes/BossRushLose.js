@@ -2,7 +2,7 @@ import { EventDispatcher } from '../utils/event_dispatcher';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { restart_scenes } from '../main.js';
 import { start_dialogue } from './Dialogue.js';
-import { TextButton } from '../ui/text_button.js';
+import { TextboxButton } from '../ui/textbox_button.js';
 
 export class BossRushLose extends Phaser.Scene {
     emitter = EventDispatcher.getInstance();
@@ -41,7 +41,7 @@ export class BossRushLose extends Phaser.Scene {
 
         this.sounds.bank.sfx.win.play();
 
-        this.continue_btn = new TextButton(this, this.game.config.width / 2, 600, 150, 50, 'Main Menu',
+        this.continue_btn = new TextboxButton(this, this.game.config.width / 2, 600, 150, 50, 'Main Menu',
             () => { // callback function
                 this.emitter.emit('force_dialogue_stop');
                 this.scene.start("Main Menu")

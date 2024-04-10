@@ -3,7 +3,7 @@ import { EventDispatcher } from '../utils/event_dispatcher';
 import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { restart_scenes } from '../main.js';
 import { start_dialogue } from './Dialogue.js';
-import { TextButton } from '../ui/text_button.js';
+import { TextboxButton } from '../ui/textbox_button.js';
 
 export class TechTipTest extends Scene {
     emitter = EventDispatcher.getInstance();
@@ -25,8 +25,6 @@ export class TechTipTest extends Scene {
 
         this.add.image(512, 384, 'background').setAlpha(0.5);
         this.sounds = this.registry.get('sound_bank');
-
-        this.sounds.bank.sfx.win.play();
 
         this.add.text(512, 50,
             "Click on the buttons to show their tips.", {
@@ -54,7 +52,7 @@ export class TechTipTest extends Scene {
             const btn_x = start_x + col * (btn_w + x_gap);
             const btn_y = start_y + row * (btn_h + y_gap);
 
-            new TextButton(
+            new TextboxButton(
                 this,
                 btn_x, btn_y,
                 btn_w, btn_h,
@@ -64,7 +62,7 @@ export class TechTipTest extends Scene {
         }
 
 
-        this.back_btn = new TextButton(this, this.game.config.width / 2, 600, 150, 50, 'Back',
+        this.back_btn = new TextboxButton(this, this.game.config.width / 2, 600, 150, 50, 'Back',
             () => { // callback function
                 this.emitter.emit('force_dialogue_stop');
                 this.scene.start("Main Menu");
