@@ -181,7 +181,7 @@ export class Store extends Scene {
         };
         this.perm_buff = playerVars && playerVars.perm_power ? playerVars.perm_power : [];
 
-        this.add.bitmapText(this.cameras.main.width / 2, 40, bitmapFonts.PressStart2P_Stroke, "Shermie Store", fonts.large.sizes[bitmapFonts.PressStart2P]).setOrigin(0.5, 0);
+        this.add.bitmapText(this.cameras.main.width / 2, 40, bitmapFonts.PressStart2P_Stroke, "Shermie Store", fonts.large.sizes[bitmapFonts.PressStart2P]);
         this.add.bitmapText(715, 190, bitmapFonts.PressStart2P_Stroke, "Cost", fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0.5, 0.5);
 
         //Link Player stat key to display name
@@ -211,29 +211,34 @@ export class Store extends Scene {
                 spinner.makePermanent();
             }
         });
+        this.PermPowerSpreadCost = this.add.bitmapText(274, 530, bitmapFonts.PressStart2P_Stroke, SHOP_PRICES["perm_spread"][0], fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0.5, 0).setScale(0.75).setTint(this.perm_buff.includes("spread") ? 0xFFD700:(this.canAffordUpgrade("perm_spread", 0) ? 0x00ff00 : 0xFF0000));
         this.add.image(274, 575, 'spreadshot_icon').setInteractive()
         .on('pointerdown', () => {
             if (!this.perm_buff.includes("spread") && this.canAffordUpgrade("perm_spread", 0)) {
                 this.perm_buff.push("spread");
                 this.purchaseUpgrade("perm_spread", 1);
+                this.PermPowerSpreadCost.setText("SOLD")
             }
             else if (this.perm_buff.includes("spread") && !this.initialperm_buff.includes("spread")) {
                 this.perm_buff.splice(this.perm_buff.indexOf("spread"),1);
                 this.refundUpgrade("perm_spread", 0);
+                this.PermPowerSpreadCost.setText(SHOP_PRICES["perm_spread"][0]);
             }
         })
         .on('pointerup', () => {
         });
-        this.add.image(750, 570, 'pierceshot_icon').setInteractive()
+        this.PermPowerPierceCost = this.add.bitmapText(750, 530, bitmapFonts.PressStart2P_Stroke, SHOP_PRICES["perm_pierce"][0], fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setOrigin(0.5, 0).setScale(0.75).setTint(this.perm_buff.includes("pierce") ? 0xFFD700:(this.canAffordUpgrade("perm_pierce", 0) ?  0x00ff00:0xFF0000 ));
+        this.add.image(750, 575, 'pierceshot_icon').setInteractive()
         .on('pointerdown', () => {
             if (!this.perm_buff.includes("pierce") && this.canAffordUpgrade("perm_pierce", 0)) {
                 this.perm_buff.push("pierce");
                 this.purchaseUpgrade("perm_pierce", 1);
+                this.PermPowerPierceCost.setText("SOLD");
             }
-            else if (this.perm_buff.includes("pierce") && !this.initialperm_buff.includes("pierce")) {
-                
+            else if (this.perm_buff.includes("pierce") && !this.initialperm_buff.includes("pierce")) {                
                 this.perm_buff.splice(this.perm_buff.indexOf("pierce"),1);
                 this.refundUpgrade("perm_pierce", 0);
+                this.PermPowerPierceCost.setText(SHOP_PRICES["perm_pierce"][0]);
             }
         })
         .on('pointerup', () => {
@@ -296,12 +301,16 @@ export class Store extends Scene {
         const cost = this.getUpgradeCost(statKey, currentLevel - 1);
         this.player_vars.wallet -= cost;
         this.moneyText.setText(`${this.player_vars.wallet}`);
+        this.PermPowerPierceCost.setTint(this.perm_buff.includes("pierce") ? 0xFFD700:(this.canAffordUpgrade("perm_pierce", 0) ?  0x00ff00: 0xFF0000));
+        this.PermPowerSpreadCost.setTint(this.perm_buff.includes("spread") ? 0xFFD700:(this.canAffordUpgrade("perm_spread", 0) ? 0x00ff00  : 0xFF0000));
     }
 
     refundUpgrade(statKey, currentLevel) {
         const refundAmount = this.getRefundAmount(statKey, currentLevel + 1);
         this.player_vars.wallet += refundAmount;
         this.moneyText.setText(`${this.player_vars.wallet}`);
+        this.PermPowerPierceCost.setTint(this.perm_buff.includes("pierce") ? 0xFFD700:(this.canAffordUpgrade("perm_pierce", 0) ?  0x00ff00: 0xFF0000));
+        this.PermPowerSpreadCost.setTint(this.perm_buff.includes("spread") ? 0xFFD700:(this.canAffordUpgrade("perm_spread", 0) ? 0x00ff00  : 0xFF0000));
     }
 
     getRefundAmount(statKey, level) {
