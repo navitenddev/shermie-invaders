@@ -179,7 +179,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(time, delta, keys, controls) {
-        this.setRotation(0); // TODO: It would be nice to find the real solution to this
         if (window.IS_MOBILE && controls) {
             const pointer = this.scene.input.activePointer;
             const screenWidth = this.scene.sys.game.config.width;
@@ -226,6 +225,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                 this.flashPlayer();
             }
             return;
+        } else {
+            this.#normalize_player();
         }
 
         this.updateShield();
@@ -423,6 +424,15 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
+    /**
+     * @description On lower refresh rates, the player's positioning and
+     * orientation seems to behave unusually. This should fix it, but there
+     * should be a better way to do this.
+     */
+    #normalize_player() {
+        this.setRotation(0)
+            .setPosition(this.x, this.scene.game.config.height - 96);
+    }
 }
 
 export { Player }
