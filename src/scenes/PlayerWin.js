@@ -46,7 +46,7 @@ export class PlayerWin extends Scene {
 
             this.add.bitmapText(512, 200,
                 fonts.middle.fontName,
-                `You beat level ${this.registry.get("level")}! \nYou can now shop for upgrades.`,
+                `You beat level ${this.registry.get("level")}!`,
                 fonts.middle.size)
                 .setOrigin(0.5, 0.5)
                 .setCenterAlign()

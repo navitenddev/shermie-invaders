@@ -43,23 +43,25 @@ class MenuSpinner {
         const boxWidth = 30;
         const boxSpacing = 2;
         const totalBoxesWidth = 10 * (boxWidth + boxSpacing);
-        const firstBoxX = centerX - totalBoxesWidth / 2 - 15;
+        const firstBoxX = centerX - totalBoxesWidth / 2 - 8;
 
         // Position the buttons relative to the center
         const minusButtonX = centerX - totalBoxesWidth / 2 - 30; // 30 is an arbitrary offset for the button
         const plusButtonX = centerX + totalBoxesWidth / 2 - 10 ; // 10 is an arbitrary offset for the button
 
         // Stat Name Text positioned above the boxes
-        this.statText = scene.add.bitmapText(firstBoxX, y - 3, fonts.middle.fontName, `${displayName}:`, fonts.middle .size).setOrigin(0, 0);
+        this.statText = scene.add.bitmapText(firstBoxX, y, fonts.small.fontName, `${displayName}:`, fonts.small .size)
+            .setOrigin(0, 0)
+            .setLetterSpacing(1);
 
         // Display the current upgrade cost
         this.upgradeCostText = scene.add.bitmapText(plusButtonX + 100, y + 15, fonts.medium.fontName, '', fonts.medium.size).setOrigin(0.5, 0);
 
         // Minus Button
-        this.minusButton = scene.add.bitmapText(minusButtonX, y + 25, fonts.medium.fontName, '-', fonts.medium.size).setOrigin(0.5, 0).setInteractive();
+        this.minusButton = scene.add.bitmapText(minusButtonX, y + 42 , fonts.medium.fontName, '-', fonts.medium.size).setOrigin(0.5, 0.5).setInteractive();
 
         // Plus Button
-        this.plusButton = scene.add.bitmapText(plusButtonX, y + 25, fonts.medium.fontName, '+', fonts.medium.size).setOrigin(0.5, 0).setInteractive();
+        this.plusButton = scene.add.bitmapText(plusButtonX, y + 42, fonts.medium.fontName, '+', fonts.medium.size).setOrigin(0.5, 0.5).setInteractive();
 
         // Stat Boxes below the stat text
         const boxesStartX = centerX - totalBoxesWidth;
@@ -89,6 +91,11 @@ class MenuSpinner {
             .on('pointerup', () => {
                 this.plusButton.setScale(1);
             });
+
+        scene.input.on('pointerup', () => {
+            this.minusButton.setScale(1);
+            this.plusButton.setScale(1);
+        });
 
         // Initial display update
         this.updateStatDisplay();
@@ -151,19 +158,19 @@ export class Store extends Scene {
         this.animatedBg = this.add.tileSprite(400, 300, 1500, 1000, 'upgradeTilemap')
             .setOrigin(0.5, 0.5);
 
-
         const startY = 250;
         const spinnerGap = 70;
 
         let borderGraphics = this.add.graphics();
-        borderGraphics.lineStyle(2, 0xffffff, 1);
         const borderX = this.cameras.main.width / 5;
         const borderY = startY - 120;
         const borderWidth = 620;
         const borderHeight = 450;
-        borderGraphics.fillStyle(0x808080, .9);
-        borderGraphics.fillRoundedRect(borderX, borderY, borderWidth, borderHeight, 20);
-
+        borderGraphics.fillStyle(0x2B2D31);
+        borderGraphics.fillRect(borderX, borderY, borderWidth, borderHeight);
+        borderGraphics.lineStyle(2, 0x808888, 1);
+        borderGraphics.strokeRect(borderX, borderY, borderWidth, borderHeight);
+        
         //Sets initial Character stats or replaces them with current player stats. 
         this.initialStats = Object.assign({}, this.stats);
         const playerVars = this.registry.get('player_vars');
@@ -208,9 +215,9 @@ export class Store extends Scene {
         //Show Shermie Bux here
         const moneyIconX = 270;
         const moneyIconY = 190;
-        const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_bux').setOrigin(0.5, 0.5).setScale(0.25);
-        const moneyTextX = moneyIconX + moneyIcon.displayWidth / 2 + 5;
-        const moneyTextY = moneyIconY;
+        const moneyIcon = this.add.image(moneyIconX, moneyIconY, 'shermie_bux').setOrigin(0.5, 0.5);
+        const moneyTextX = moneyIconX + moneyIcon.displayWidth / 2 + 10;
+        const moneyTextY = moneyIconY + 2;
         this.moneyText = this.add.bitmapText(moneyTextX, moneyTextY, fonts.medium.fontName, `${this.player_vars.wallet}`, fonts.medium.size).setOrigin(0, 0.5);
 
         this.next_level_btn = new TextboxButton(this,

@@ -9,8 +9,7 @@ export default class ScoreManager {
         this.player_vars = this.scene.registry.get('player_vars');
         this.highScore = this.loadHighScore();
         this.initText();
-        this.scene.add.image(30, 94, "shermie_bux") // shermie coin image
-            .setScale(0.24, 0.24);
+        this.scene.add.image(30, 94, "shermie_bux");
     }
 
     initText() {

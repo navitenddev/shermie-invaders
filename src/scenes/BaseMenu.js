@@ -32,13 +32,12 @@ export class BaseMenu extends Scene {
             if (Math.random() < 0.33) {
                 sprite = this.add.sprite(randomX, randomY, 'shermie_bg')
                     .setOrigin(0.5, 0.5)
-                    .setScale(0.5)
+                    .setScale(0.66)
                     .play('shermie_bg_idle');
             } else {
                 const randomFrame = Phaser.Math.Between(1, 18);
                 sprite = this.add.sprite(randomX, randomY, `enemy${randomFrame}`)
                     .setOrigin(0.5, 0.5)
-                    .setScale(0.5)
                     .play(`enemy${randomFrame}_idle`);
             }
 

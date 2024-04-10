@@ -24,7 +24,6 @@ export class MainMenu extends BaseMenu {
         this.sounds.bank.music.start.play();
 
         this.add.image(512, 250, 'titlelogo')
-            .setScale(0.5, 0.5)
             .setDepth(3);
 
         this.registry.set({ 'sandbox_mode': false });
