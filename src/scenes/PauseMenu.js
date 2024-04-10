@@ -1,6 +1,5 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs } from '../utils/keyboard_input';
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { TextButton } from '../ui/text_button.js';
 
@@ -15,11 +14,12 @@ export class PauseMenu extends Scene {
 
         const menuItems = [
             { text: 'Resume', callback: () => this.unpause() },
+            { text: 'Mute', callback: () => this.toggleMute() }, 
             { text: 'Quit', callback: () => this.quitGame() },
         ];
 
-        if (this.registry.get('debug_mode') === true) { // add cheats menu item
-            menuItems.splice(1, 0, { // insert at index 1
+        if (this.registry.get('debug_mode') === true) {
+            menuItems.splice(2, 0, {
                 text: 'Cheats',
                 callback: () => {
                     this.scene.stop('PauseMenu');
@@ -71,5 +71,10 @@ export class PauseMenu extends Scene {
             this.scene.stop(this.prev_scene);
             this.scene.start('Main Menu');
         });
+    }
+
+    toggleMute() {
+        const isMuted = this.sounds.toggle_mute();
+        localStorage.setItem('muted', isMuted ? 'true' : 'false');
     }
 }
