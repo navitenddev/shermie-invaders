@@ -110,12 +110,12 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
             .setVisible(true)
             .setActive(true);
         if(this.player_vars.power == "pierce"  || this.player_vars.perm_power.includes("pierce")){
-            console.log("hey")
             this.setTexture("pierceshot_icon");
             this.setSize(48, 48);
             this.anims.stop();
             this.anims.play('pierce_bullet');
         }
+        this.health = 3;
     }
 
     /** 

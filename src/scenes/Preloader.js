@@ -57,10 +57,6 @@ export class Preloader extends Scene {
 
         this.load.image('titlelogo', 'ui/logo_main.png');
 
-        this.load.image('levelSelectlogo', 'ui/Level_Select.png');
-
-        this.load.image('howToPlayLogo', 'ui/How_to_play.png');
-
         this.load.image("background", "backgrounds/leveloneBG.png");
 
         this.load.image("BG1", "backgrounds/BG1.png");
@@ -159,11 +155,10 @@ export class Preloader extends Scene {
 
         this.load.audio('sandbox_music', 'SFX/8 Bit Adventure - David Fesliyan.mp3');
 
-
-        this.load.spritesheet("necromancer", "characters/necromancer.png", {
-            frameWidth: 160,
-            frameHeight: 128,
-        });
+        // this.load.spritesheet("necromancer", "characters/necromancer.png", {
+        //     frameWidth: 160,
+        //     frameHeight: 128,
+        // });
 
         // this.load.spritesheet("bullet", "projectiles/bullet-shoot.png", {
         //     frameWidth: 32,
@@ -203,8 +198,8 @@ export class Preloader extends Scene {
 
         for (let i = 1; i <= 22; i++) {
             this.load.spritesheet(`enemy${i}`, `characters/enemies/enemyspritesheet.png`, {
-                frameWidth: 60,
-                frameHeight: 60,
+                frameWidth: 39,
+                frameHeight: 39,
             });
         }
 
@@ -264,12 +259,13 @@ export class Preloader extends Scene {
 
         this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');
 
-        this.load.bitmapFont('GlassTTY', 'fonts/GlassTTY.png', 'fonts/GlassTTY.xml');
-        this.load.bitmapFont('PressStart2P', 'fonts/PressStart2P.png', 'fonts/PressStart2P.xml');
-        this.load.bitmapFont('PressStart2P-Stroke', 'fonts/PressStart2P-Stroke.png', 'fonts/PressStart2P-Stroke.xml');
-        this.load.image('controls', 'controls/controls.png');
         this.load.image('pause', 'controls/pause.png');
-
+        this.load.image('controls', 'controls/controls.png');
+        this.load.bitmapFont('PressStart2P-Large', 'fonts/PressStart2P-Large.png', 'fonts/PressStart2P-Large.xml');
+        this.load.bitmapFont('PressStart2P-Medium', 'fonts/PressStart2P-Medium.png', 'fonts/PressStart2P-Medium.xml');
+        this.load.bitmapFont('PressStart2P-Middle', 'fonts/PressStart2P-Middle.png', 'fonts/PressStart2P-Middle.xml');
+        this.load.bitmapFont('PressStart2P-Small', 'fonts/PressStart2P-Small.png', 'fonts/PressStart2P-Small.xml');
+        this.load.bitmapFont('PressStart2P-Tiny', 'fonts/PressStart2P-Tiny.png', 'fonts/PressStart2P-Tiny.xml');
     }
     create() {
         //  When all the assets have loaded, it's often worth creating global

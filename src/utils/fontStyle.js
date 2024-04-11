@@ -1,7 +1,9 @@
 const bitmapFonts = {
-    PressStart2P: 'PressStart2P',
-    PressStart2P_Stroke: 'PressStart2P-Stroke',
-    GlassTTY: 'GlassTTY'
+    PressStart2P_Tiny: 'PressStart2P-Tiny',
+    PressStart2P_Small: 'PressStart2P-Small',
+    PressStart2P_Middle: 'PressStart2P-Middle',
+    PressStart2P_Medium: 'PressStart2P-Medium', 
+    PressStart2P_Large: 'PressStart2P-Large',  
 };
 
 const baseFontConfig = {
@@ -9,40 +11,46 @@ const baseFontConfig = {
     align: 'center'
 };
 
+function selectFont(size) {
+    if (size <= 12) {
+        return bitmapFonts.PressStart2P_Tiny;
+    } else if (size <= 15) {
+        return bitmapFonts.PressStart2P_Small;
+    } else if (size <= 20) {
+        return bitmapFonts.PressStart2P_Middle;
+    } else if (size <= 30) {
+        return bitmapFonts.PressStart2P_Medium;
+    } else {
+        return bitmapFonts.PressStart2P_Large;
+    }
+}
+
 const fonts = {
     tiny: {
         ...baseFontConfig,
-        align: 'left',
-        sizes: {
-            [bitmapFonts.PressStart2P]: 10,
-            [bitmapFonts.GlassTTY]: 10,
-            [bitmapFonts.PressStart2P_Stroke]: 10
-        }
+        fontName: selectFont(12),
+        size: 12
     },
     small: {
         ...baseFontConfig,
-        sizes: {
-            [bitmapFonts.PressStart2P]: 15,
-            [bitmapFonts.GlassTTY]: 15,
-            [bitmapFonts.PressStart2P_Stroke]: 15
-        }
+        fontName: selectFont(15),
+        size: 15
+    },
+    middle: {
+        ...baseFontConfig,
+        fontName: selectFont(20),
+        size: 20
     },
     medium: {
         ...baseFontConfig,
-        sizes: {
-            [bitmapFonts.PressStart2P]: 30,
-            [bitmapFonts.GlassTTY]: 30,
-            [bitmapFonts.PressStart2P_Stroke]: 30
-        }
+        fontName: selectFont(30),
+        size: 30
     },
     large: {
         ...baseFontConfig,
-        sizes: {
-            [bitmapFonts.PressStart2P]: 45,
-            [bitmapFonts.GlassTTY]: 45,
-            [bitmapFonts.PressStart2P_Stroke]: 45
-        }
+        fontName: selectFont(45),
+        size: 45
     }
 };
 
-export { bitmapFonts, fonts };
+export { fonts };

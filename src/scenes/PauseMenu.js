@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs } from '../utils/keyboard_input';
+import { fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { TextButton } from '../ui/text_button.js';
 

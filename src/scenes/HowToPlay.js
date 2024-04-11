@@ -1,5 +1,5 @@
 import { BaseMenu } from "./BaseMenu";
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { fonts } from '../utils/fontStyle.js';
 
 export class HowToPlay extends BaseMenu {
   constructor() {
@@ -41,17 +41,18 @@ Goal:
         
 Good luck and have fun!`;
 
-    this.add.bitmapText(this.game.config.width / 3, 125, bitmapFonts.PressStart2P_Stroke, 'HOW TO PLAY', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]).setDepth(3);
+      this.add.bitmapText(this.game.config.width / 3, 75, fonts.medium.fontName, 'HOW TO PLAY', fonts.medium.size).setDepth(3);
 
-    this.add
-      .bitmapText(
-        width / 4,
-        250,
-        bitmapFonts.PressStart2P_Stroke,
-        instructionsText,
-        fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
-      )
-      .setDepth(3);
+      this.add
+        .bitmapText(
+          width / 4,
+          140,
+          fonts.small.fontName,
+          instructionsText,
+          fonts.small.size
+        )
+        .setDepth(3)
+        .setLineSpacing(5);
 
     this.setupBackButton();
   }

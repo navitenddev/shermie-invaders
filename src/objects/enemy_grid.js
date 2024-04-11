@@ -8,8 +8,8 @@ import { Powerups, PowerupsConstDefs } from "../objects/powerup";
  */
 class GridEnemy extends Phaser.Physics.Arcade.Sprite {
     static const_defs = {
-        dims: { w: 60, h: 60 },
-        scale: { w: .66, h: .66 },
+        dims: { w: 39, h: 39 },
+        scale: { w: 1, h: 1 },
         spawn_start: { x: 80, y: 140 },
         grid_gap: { x: 28, y: 12 },
     };

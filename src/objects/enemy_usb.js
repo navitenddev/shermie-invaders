@@ -63,7 +63,7 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
     }
 
     die() {
-        if (!this.dead) {
+        if (!this.dead && (!this.scene.player_vars.perm_power.includes("spread") || !this.scene.player_vars.perm_power.includes("pierce"))) {
             this.dead = true;
             let power = this.scene.objs.powers.getFirstNth(Phaser.Math.Between(0, this.scene.objs.powers.countActive(false)), false, false, 0, 0, "powerup");
             if (power !== null) {
