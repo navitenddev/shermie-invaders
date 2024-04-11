@@ -1,4 +1,4 @@
-import { bitmapFonts, fonts } from "../utils/fontStyle";
+import { fonts } from "../utils/fontStyle";
 import { FillBar } from "../ui/fill_bar";
 
 class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
@@ -41,8 +41,8 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
 
         this.path = new Phaser.Curves.Path();
 
-        this.state_text = this.scene.add.bitmapText(this.x, this.y, bitmapFonts.PressStart2P, this.ai_state, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
-        this.t_text = this.scene.add.bitmapText(this.follower.vec.x, this.follower.vec.y - 32, bitmapFonts.PressStart2P, this.follower.t.toFixed(2), fonts.tiny.sizes[bitmapFonts.PressStart2P]);
+        this.state_text = this.scene.add.bitmapText(this.x, this.y, fonts.tiny.fontName, this.ai_state, fonts.tiny.size);
+        this.t_text = this.scene.add.bitmapText(this.follower.vec.x, this.follower.vec.y - 32, fonts.tiny.fontName, this.follower.t.toFixed(2), fonts.tiny.size);
         this.#change_state("ROAMING"); // do the sweep
         this.hp = hp;
         this.hp_bar_offset = {

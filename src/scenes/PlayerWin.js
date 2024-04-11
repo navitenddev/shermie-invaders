@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { EventDispatcher } from '../utils/event_dispatcher';
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { fonts } from '../utils/fontStyle.js';
 import { restart_scenes } from '../main.js';
 import { start_dialogue } from './Dialogue.js';
 import { TextboxButton } from '../ui/textbox_button.js';
@@ -36,12 +36,21 @@ export class PlayerWin extends Scene {
 
         this.sounds.bank.sfx.win.play();
 
-        this.add.bitmapText(512, 200,
-            bitmapFonts.PressStart2P_Stroke,
-            `Congratulations, you beat level ${this.registry.get("level")}! You can now shop for upgrades.`,
-            fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+        this.add.bitmapText(512, 150,
+            fonts.medium.fontName,
+            `Congratulations!`,
+            fonts.medium.size)
             .setOrigin(0.5, 0.5)
+            .setCenterAlign()
             .setMaxWidth(this.game.config.width * 0.75);
+
+            this.add.bitmapText(512, 200,
+                fonts.middle.fontName,
+                `You beat level ${this.registry.get("level")}!`,
+                fonts.middle.size)
+                .setOrigin(0.5, 0.5)
+                .setCenterAlign()
+                .setMaxWidth(this.game.config.width * 0.75);
 
         this.continue_btn = new TextboxButton(this, this.game.config.width / 2, 600, 150, 50, 'Continue',
             () => { // callback function
@@ -49,8 +58,8 @@ export class PlayerWin extends Scene {
                 this.scene.start("Store")
             },
             [], // callback function's arguments
-            bitmapFonts.PressStart2P,                    // font type
-            fonts.small.sizes[bitmapFonts.PressStart2P], // font size
+            fonts.small.fontName,                    // font type
+            fonts.small.size, // font size
             0x2B2D31, // color of button
             0x383A40, // color of hovered
             0xFEFEFE, // color of clicked
@@ -60,9 +69,9 @@ export class PlayerWin extends Scene {
         this.add.bitmapText(
             16,
             16,
-            bitmapFonts.PressStart2P_Stroke,
+            fonts.medium.fontName,
             `CURRENT SCORE:${score}`,
-            fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]
+            fonts.medium.size
         );
     }
 }

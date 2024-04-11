@@ -1,13 +1,14 @@
 import { Scene } from 'phaser';
 import { EventDispatcher } from '../utils/event_dispatcher';
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { fonts } from '../utils/fontStyle.js';
 import { start_dialogue } from './Dialogue.js';
 import { restart_scenes } from '../main.js';
 import { TextboxButton } from '../ui/textbox_button.js';
 
 export class PlayerLose extends Scene {
     emitter = EventDispatcher.getInstance();
-    constructor() { 
+
+    constructor() {
         super('Player Lose');
     }
 
@@ -33,33 +34,84 @@ export class PlayerLose extends Scene {
         this.player_vars = this.registry.get('player_vars');
         const score = this.player_vars.score;
 
-        let bg = this.add.image(0, 0, 'losescreen').setAlpha(0.85);
-        bg.setOrigin(0, 0);
-        bg.displayWidth = this.sys.game.config.width;
-        bg.scaleY = bg.scaleX;
-        bg.y = 0;
+        // let bg = this.add.image(0, 0, 'losescreen').setAlpha(0.85);
+        // bg.setOrigin(0, 0);
+        // bg.displayWidth = this.sys.game.config.width;
+        // bg.scaleY = bg.scaleX;
+        // bg.y = 0;
 
-        this.continue_btn = new TextboxButton(this, this.game.config.width / 2, 600, 150, 50, 'Continue',
-            () => { // callback function
-                this.emitter.emit('force_dialogue_stop');
-                this.scene.start("Main Menu")
-            },
-            [], // callback function's arguments
-            bitmapFonts.PressStart2P,                    // font type
-            fonts.small.sizes[bitmapFonts.PressStart2P], // font size
-            0x2B2D31, // color of button
-            0x383A40, // color of hovered
-            0xFEFEFE, // color of clicked
-            0x879091// color of border
+        const titleText = this.add.bitmapText(
+            this.game.config.width / 2,
+            100,
+            fonts.large.fontName,
+            'GAME OVER',
+            fonts.large.size
         );
+        titleText.setOrigin(0.5);
 
         this.final_score = this.add.bitmapText(
-            0,
-            0,
-            bitmapFonts.PressStart2P_Stroke,
-            `FINAL SCORE:${score}`,
-            fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]
+            this.game.config.width / 2,
+            titleText.y + titleText.height + 50,
+            fonts.medium.fontName,
+            `FINAL SCORE: ${score}`,
+            fonts.medium.size
         );
-        this.final_score.setPosition((this.game.config.width / 2) - (this.final_score.width / 2), this.game.config.height / 3.35);
+        this.final_score.setOrigin(0.5);
+
+        const { totalShotsFired, totalHits } = this.player_vars;
+        const hitMissRatio = totalHits / (totalShotsFired || 1);
+
+        const statsX = this.game.config.width / 2;
+        const statsY = this.final_score.y + this.final_score.height + 350;
+        const statsSpacing = 35;
+
+        const shotsFiredText = this.add.bitmapText(
+            statsX,
+            statsY,
+            fonts.small.fontName,
+            `SHOTS FIRED: ${totalShotsFired}`,
+            fonts.small.size
+        );
+        shotsFiredText.setOrigin(0.5)
+            .setTint(0xade6ff);
+
+        const hitsText = this.add.bitmapText(
+            statsX,
+            statsY + statsSpacing,
+            fonts.small.fontName,
+            `HITS: ${totalHits}`,
+            fonts.small.size
+        );
+        hitsText.setOrigin(0.5)
+
+        const hitMissRatioText = this.add.bitmapText(
+            statsX,
+            statsY + statsSpacing * 2,
+            fonts.small.fontName,
+            `HIT-MISS RATIO: ${(hitMissRatio * 100).toFixed(0)}%`,
+            fonts.small.size
+        );
+        hitMissRatioText.setOrigin(0.5)
+            .setTint(0xe0de2c);
+
+        this.continue_btn = new TextboxButton(
+            this,
+            this.game.config.width / 2,
+            statsY + statsSpacing * 4,
+            200,
+            50,
+            'Continue',
+            () => {
+                this.emitter.emit('force_dialogue_stop');
+                this.scene.start("Main Menu");
+            },
+            [],
+            fonts.small.fontName,
+            fonts.small.size,
+            0x2B2D31,
+            0x383A40,
+            0xFEFEFE,
+            0x879091
+        );
     }
 }

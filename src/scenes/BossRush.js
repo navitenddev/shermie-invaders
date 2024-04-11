@@ -1,6 +1,6 @@
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../utils/keyboard_input.js';
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { fonts } from '../utils/fontStyle.js';
 import { Barrier } from '../objects/barrier.js';
 import { GridEnemy } from '../objects/enemy_grid';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
@@ -19,7 +19,7 @@ class BossClock extends Phaser.GameObjects.Container {
         super(scene, 0, 0);
         scene.add.existing(this);
 
-        this.text = scene.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, `00:00:000`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]);
+        this.text = scene.add.bitmapText(0, 0, fonts.medium.fontName, `00:00:000`, fonts.medium.size);
         this.timer = scene.time.addEvent({ delay: 6000000, callback: this.onClockEvent, callbackScope: this, repeat: 1 });
 
         this.add([this.text]);
@@ -134,7 +134,7 @@ export class BossRush extends Phaser.Scene {
         this.keys = InitKeyDefs(this);
 
         // Player lives text and sprites
-        this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, bitmapFonts.PressStart2P, '3', fonts.medium.sizes[bitmapFonts.PressStart2P]);
+        this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, fonts.medium.fontName, '3', fonts.medium.size);
         this.livesSprites = this.add.group({
             key: 'lives',
             repeat: this.player_vars.lives - 2

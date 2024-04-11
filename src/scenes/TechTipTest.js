@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { EventDispatcher } from '../utils/event_dispatcher';
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { fonts } from '../utils/fontStyle.js';
 import { restart_scenes } from '../main.js';
 import { start_dialogue } from './Dialogue.js';
 import { TextboxButton } from '../ui/textbox_button.js';
@@ -68,8 +68,8 @@ export class TechTipTest extends Scene {
                 this.scene.start("Main Menu");
             },
             [], // callback function's arguments
-            bitmapFonts.PressStart2P,                    // font type
-            fonts.small.sizes[bitmapFonts.PressStart2P], // font size
+            fonts.small.fontName,                    // font type
+            fonts.small.size, // font size
             0x2B2D31, // color of button
             0x383A40, // color of hovered
             0xFEFEFE, // color of clicked

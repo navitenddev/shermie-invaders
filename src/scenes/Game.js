@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../utils/keyboard_input';
-import { bitmapFonts, fonts } from '../utils/fontStyle';
+import { fonts } from '../utils/fontStyle';
 import { Barrier } from '../objects/barrier';
 import ScoreManager from '../utils/ScoreManager';
 import { GridEnemy } from '../objects/enemy_grid';
@@ -120,7 +120,7 @@ export class Game extends Scene {
 
         this.level = this.registry.get('level');
         this.level_transition_flag = false;
-        this.level_text = this.add.bitmapText(0, 16, bitmapFonts.PressStart2P, `LEVEL:${this.level}`, fonts.medium.sizes[bitmapFonts.PressStart2P])
+        this.level_text = this.add.bitmapText(0, 16, fonts.medium.fontName, `LEVEL:${this.level}`, fonts.medium.size)
             .setOrigin(1, 0)
             .setPosition(this.sys.game.config.width - 16, 16);
 
@@ -133,8 +133,16 @@ export class Game extends Scene {
             this.pause();
         });
 
+        this.pauseSprite = this.add.sprite(this.sys.game.config.width / 2, 32, 'pause')
+        .setOrigin(0.5)
+        .setInteractive();
+    
+        this.pauseSprite.on('pointerdown', () => {
+            this.pause();
+        });
+
         // Player lives text and sprites
-        this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, bitmapFonts.PressStart2P, '3', fonts.medium.sizes[bitmapFonts.PressStart2P]);
+        this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, fonts.medium.fontName, '3', fonts.medium.size);
         this.livesSprites = this.add.group({
             key: 'lives',
             repeat: this.player_vars.lives - 2
@@ -287,6 +295,10 @@ export class Game extends Scene {
         if (!cheatModeEnabled) {
             this.scoreManager.checkAndUpdateHighScore();
         }
+
+        this.player_vars.totalShotsFired = this.objs.player.totalShotsFired;
+        this.player_vars.totalHits = this.objs.player.totalHits;
+
 
         this.cameras.main.fade(500, 0, 0, 0);
 

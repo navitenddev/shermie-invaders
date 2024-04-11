@@ -1,4 +1,4 @@
-import { bitmapFonts, fonts } from "../utils/fontStyle";
+import { fonts } from "../utils/fontStyle";
 import { FillBar } from "../ui/fill_bar";
 
 class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
@@ -53,7 +53,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
             this.scene.time.delayedCall(clone_delay * 1000, this.#clone_self, [], this);
         }
         this.scene = scene;
-        this.state_text = this.scene.add.bitmapText(-42069, -42069, bitmapFonts.PressStart2P, this.ai_state, fonts.tiny.sizes[bitmapFonts.PressStart2P]);
+        this.state_text = this.scene.add.bitmapText(-42069, -42069, fonts.tiny.fontName, this.ai_state, fonts.tiny.size);
 
         this.hp_bar_offset = {
             x: -50,

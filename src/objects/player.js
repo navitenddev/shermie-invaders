@@ -59,6 +59,9 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.player_vars = scene.registry.get('player_vars');
         this.stats = this.player_vars.stats;
 
+        this.totalShotsFired = 0;
+        this.totalHits = 0;
+
         scene.physics.add.existing(this);
         scene.add.existing(this);
 
@@ -356,6 +359,8 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         if (time > timer.last_fired) {
             let bullet = this.scene.objs.bullets.player.getFirstDead(false, 0, 0, "player_bullet");
             if (bullet !== null) {
+                this.totalShotsFired++;
+
                 timer.last_fired = time + STAT_MAP.fire_rate[this.stats.fire_rate - 1];
                 this.player_vars.active_bullets++;
                 let bullet_speed = STAT_MAP.bullet_speed[this.stats.bullet_speed - 1];
