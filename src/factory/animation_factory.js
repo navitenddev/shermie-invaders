@@ -193,6 +193,38 @@ class AnimationFactory {
             frameRate: 4,
             repeat: -1,
         });
+        this.scene.anims.create({
+            key: "Birds",
+            frames: this.scene.anims.generateFrameNumbers("BGSmallObjects", {
+                start: 3, end: 5,
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });
+        this.scene.anims.create({
+            key: "Meteor",
+            frames: this.scene.anims.generateFrameNumbers("BGSmallObjects", {
+                start: 6, end: 8,
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });
+        this.scene.anims.create({
+            key: "Ship",
+            frames: this.scene.anims.generateFrameNumbers("BGSmallObjects", {
+                start: 12, end: 14,
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });
+        this.scene.anims.create({
+            key: "Minions",
+            frames: this.scene.anims.generateFrameNumbers("BGSmallObjects", {
+                start: 15, end: 17,
+            }),
+            frameRate: 3,
+            repeat: -1,
+        });
     }
 }
 
