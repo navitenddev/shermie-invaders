@@ -4,7 +4,6 @@ import { fonts } from '../utils/fontStyle.js';
 import { start_dialogue } from './Dialogue.js';
 import { restart_scenes } from '../main.js';
 import { TextboxButton } from '../ui/textbox_button.js';
-import { TextButton } from '../ui/text_button.js';
 
 export class PlayerLose extends Scene {
     emitter = EventDispatcher.getInstance();
@@ -73,7 +72,8 @@ export class PlayerLose extends Scene {
             `SHOTS FIRED: ${totalShotsFired}`,
             fonts.small.size
         );
-        shotsFiredText.setOrigin(0.5);
+        shotsFiredText.setOrigin(0.5)
+            .setTint(0xade6ff);
 
         const hitsText = this.add.bitmapText(
             statsX,
@@ -82,16 +82,17 @@ export class PlayerLose extends Scene {
             `HITS: ${totalHits}`,
             fonts.small.size
         );
-        hitsText.setOrigin(0.5);
+        hitsText.setOrigin(0.5)
 
         const hitMissRatioText = this.add.bitmapText(
             statsX,
             statsY + statsSpacing * 2,
             fonts.small.fontName,
-            `HIT/MISS RATIO: ${hitMissRatio.toFixed(2)}`,
+            `HIT-MISS RATIO: ${(hitMissRatio * 100).toFixed(0)}%`,
             fonts.small.size
         );
-        hitMissRatioText.setOrigin(0.5);
+        hitMissRatioText.setOrigin(0.5)
+            .setTint(0xe0de2c);
 
         this.continue_btn = new TextboxButton(
             this,
