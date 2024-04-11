@@ -256,6 +256,14 @@ export class Preloader extends Scene {
             frameWidth: 1024,
             frameHeight: 768,
         });
+        this.load.spritesheet("BGSmallObjects", "backgrounds/backgroundobjects-Sheet.png", {
+            frameWidth: 64,
+            frameHeight: 64,
+        });
+        this.load.spritesheet("BGLargeObjects", "backgrounds/clouds-Sheet.png", {
+            frameWidth: 200,
+            frameHeight: 100,
+        });
 
         this.load.atlas('flares', 'particles/flares.png', 'particles/flares.json');
 
