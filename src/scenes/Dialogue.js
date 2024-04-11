@@ -152,13 +152,13 @@ class DialogueManager extends Phaser.GameObjects.Container {
             this.lines = this.text_data[key].lines;
         }
 
-        console.log(`started dialogue: "${key}"`)
+        // console.log(`started dialogue: "${key}"`)
         this.line_index = 0;
         this.char_index = 0;
 
         if (this.dialogue_type === "techtip"
             // don't ask, but this is needed to stop this from very rarely appearing twice
-            && !this.lines[0].startsWith("Shermie's tech tips:"))
+            && !this.lines[0].startsWith("Shermie's Tech Tips:"))
             this.lines[0] = "Shermie's Tech Tips:\n" + this.lines[0]; // prepend string
 
         this.#load_next_line();
