@@ -103,7 +103,6 @@ export function init_collision_events(scene, scene_key) {
     scene.level = scene.registry.get('level');
     // player bullet hits grid enemy
     scene.physics.add.overlap(scene.objs.bullets.player, scene.objs.enemies.grid, (player_bullet, enemy) => {
-        scene.objs.explode_at(enemy.x, enemy.y);
         if (scene.player_vars.power == "pierce" || scene.player_vars.perm_power.includes("pierce")) player_bullet.hurt_bullet();
         else player_bullet.deactivate();
         enemy.die();
