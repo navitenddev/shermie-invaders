@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../utils/keyboard_input.js';
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { fonts } from '../utils/fontStyle.js';
 import { Barrier } from '../objects/barrier.js';
 import ScoreManager from '../utils/ScoreManager.js';
 import { GridEnemy } from '../objects/enemy_grid';
@@ -29,8 +29,8 @@ class LevelSelector extends Phaser.GameObjects.Container {
                 emitter.emit('kill_all_enemies', false);
                 scene.objs.init_enemy_grid();
             }, [],
-            bitmapFonts.PressStart2P_Stroke,
-            fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
+            fonts.small.fontName,
+            fonts.small.size
         );
 
         this.btn_down1 = new TextButton(scene, x + 50, y + 10,
@@ -41,8 +41,8 @@ class LevelSelector extends Phaser.GameObjects.Container {
                 emitter.emit('kill_all_enemies', false);
                 scene.objs.init_enemy_grid();
             }, [],
-            bitmapFonts.PressStart2P_Stroke,
-            fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
+            fonts.small.fontName,
+            fonts.small.size
         );
 
         this.btn_up1 = new TextButton(scene, x + 90, y + 10,
@@ -53,8 +53,8 @@ class LevelSelector extends Phaser.GameObjects.Container {
                 emitter.emit('kill_all_enemies', false);
                 scene.objs.init_enemy_grid();
             }, [],
-            bitmapFonts.PressStart2P_Stroke,
-            fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
+            fonts.small.fontName,
+            fonts.small.size
         );
 
         this.btn_up5 = new TextButton(scene, x + 130, y + 10,
@@ -65,8 +65,8 @@ class LevelSelector extends Phaser.GameObjects.Container {
                 emitter.emit('kill_all_enemies', false);
                 scene.objs.init_enemy_grid();
             }, [],
-            bitmapFonts.PressStart2P_Stroke,
-            fonts.small.sizes[bitmapFonts.PressStart2P_Stroke]
+            fonts.small.fontName,
+            fonts.small.size
         );
     }
 
@@ -206,12 +206,12 @@ export class Sandbox extends Scene {
 
         this.level = this.registry.get('level');
         this.level_transition_flag = false;
-        this.level_text = this.add.bitmapText(this.sys.game.config.width * (2.9 / 4), 16, bitmapFonts.PressStart2P_Stroke, `LEVEL:${this.level}`, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]);
+        this.level_text = this.add.bitmapText(this.sys.game.config.width * (2.9 / 4), 16, fonts.medium.fontName, `LEVEL:${this.level}`, fonts.medium.size);
 
         
 
         // Player lives text and sprites
-        this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, bitmapFonts.PressStart2P_Stroke, '---', fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke]);
+        this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, fonts.middle.fontName, '---', fonts.middle.size);
         this.livesSprites = this.add.group({
             key: 'lives',
             repeat: 2
@@ -230,8 +230,8 @@ export class Sandbox extends Scene {
             this.toggleDebug();
         });
 
-        this.mouse_pos_text = this.add.bitmapText(750, 75, bitmapFonts.PressStart2P_Stroke, `(0,0)`, fonts.small.sizes[bitmapFonts.PressStart2P]);
-        this.legend_text = this.add.bitmapText(this.game.config.width - 64, 300, bitmapFonts.PressStart2P_Stroke, "Click to Spawn", fonts.small.sizes[bitmapFonts.PressStart2P]);
+        this.mouse_pos_text = this.add.bitmapText(750, 75, fonts.small.fontName, `(0,0)`, fonts.small.size);
+        this.legend_text = this.add.bitmapText(this.game.config.width - 64, 300, fonts.small.fontName, "Click to Spawn", fonts.small.size);
         this.legend_text.setAngle(-90);
 
         this.lvl_select = new LevelSelector(this, this.game.config.width * (3 / 4), 48, this.level_text, this.kill_all_enemies);

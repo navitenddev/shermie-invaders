@@ -1,4 +1,4 @@
-import { bitmapFonts, fonts } from "../utils/fontStyle";
+import { fonts } from "../utils/fontStyle";
 
 export class TextboxButton extends Phaser.GameObjects.Container {
     /**
@@ -16,7 +16,7 @@ export class TextboxButton extends Phaser.GameObjects.Container {
     * @param {string} text The text to display on the button
     * @param {function(any): any} callback The function that is called when the button is clicked
     * @param {Array<any>} args An array of arguments to be passed to the callback function
-    * @param {string} font_type The type of the font.
+    * @param {string} font_type The type of the fonts.
     * @param {number} font_size The size of the font text.
     * @param {string | number} color The color of the button.
     * @param {string | number} color_hover The color of the button when mouse hovers over it.
@@ -49,8 +49,8 @@ export class TextboxButton extends Phaser.GameObjects.Container {
         text,
         callback,
         args = [],
-        font_type = bitmapFonts.PressStart2P,
-        font_size = 16,
+        font_type = fonts.small.fontName,
+        font_size = fonts.small.size,
         color = 0x2B2D31,
         color_hover = 0x383A40,
         color_clicked = 0xFEFEFE,

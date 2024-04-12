@@ -1,6 +1,6 @@
 import { BaseMenu } from './BaseMenu.js';
 import { InitKeyDefs, CHEAT_CODE_SEQUENCE as CheatCode } from '../utils/keyboard_input';
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { restart_scenes } from '../main.js';
 import { TextButton } from '../ui/text_button.js';
@@ -24,7 +24,6 @@ export class MainMenu extends BaseMenu {
         this.sounds.bank.music.start.play();
 
         this.add.image(512, 250, 'titlelogo')
-            .setScale(0.5, 0.5)
             .setDepth(3);
 
         this.registry.set({ 'sandbox_mode': false });

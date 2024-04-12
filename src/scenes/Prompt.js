@@ -1,6 +1,6 @@
 import { Scene } from 'phaser';
 import { InitKeyDefs } from '../utils/keyboard_input.js';
-import { bitmapFonts, fonts } from '../utils/fontStyle.js';
+import { fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 
 export class Prompt extends Scene {
@@ -33,7 +33,7 @@ export class Prompt extends Scene {
 
         this.sounds = this.registry.get('sound_bank');
         this.keys = InitKeyDefs(this);
-        const menu = this.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, prompt_text , fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+        const menu = this.add.bitmapText(0, 0, fonts.medium.fontName, prompt_text , fonts.medium.size)
                 .setOrigin(0.5)
                 .setInteractive()
                 .on('pointerdown', () => {
@@ -43,7 +43,7 @@ export class Prompt extends Scene {
                 .setPosition(boxX + boxWidth / 2, boxY+40);
         let menuY = boxY + 80;
         menuItems.forEach((item) => {
-            const menuItem = this.add.bitmapText(0, 0, bitmapFonts.PressStart2P_Stroke, item.text, fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke])
+            const menuItem = this.add.bitmapText(0, 0, fonts.medium.fontName, item.text, fonts.medium.size)
                 .setOrigin(0.5)
                 .setInteractive()
                 .on('pointerdown', () => {

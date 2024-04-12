@@ -1,7 +1,7 @@
 import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../utils/keyboard_input';
-import { bitmapFonts, fonts } from '../utils/fontStyle';
+import { fonts } from '../utils/fontStyle';
 import { Barrier } from '../objects/barrier';
 import ScoreManager from '../utils/ScoreManager';
 import { GridEnemy } from '../objects/enemy_grid';
@@ -70,7 +70,8 @@ export class Game extends Scene {
         if (this.level <= 7) {
             start_dialogue(this.scene, `level${(this.level)}`, "story", "Game", 23);
         }
-
+        this.visualobject = this.add.sprite(-100, -100, 'BGSmallObjects'); 
+        this.visualobject.setVisible(false);
         let bgKey = `BG${this.level}`;
         if (this.level > 7)
             bgKey = 'BG5'; // Default to BG5 for levels above 7
@@ -94,7 +95,9 @@ export class Game extends Scene {
             this.bgScrollSpeed = 2;
         }
         this.bg.setScrollFactor(0);
+        this.bg.setDepth(-1);
 
+        this.initBackgroundObject();
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
         this.powerup_stats = this.registry.get('powerup_stats');
@@ -117,7 +120,7 @@ export class Game extends Scene {
 
         this.level = this.registry.get('level');
         this.level_transition_flag = false;
-        this.level_text = this.add.bitmapText(0, 16, bitmapFonts.PressStart2P, `LEVEL:${this.level}`, fonts.medium.sizes[bitmapFonts.PressStart2P])
+        this.level_text = this.add.bitmapText(0, 16, fonts.medium.fontName, `LEVEL:${this.level}`, fonts.medium.size)
             .setOrigin(1, 0)
             .setPosition(this.sys.game.config.width - 16, 16);
 
@@ -130,8 +133,16 @@ export class Game extends Scene {
             this.pause();
         });
 
+        this.pauseSprite = this.add.sprite(this.sys.game.config.width / 2, 32, 'pause')
+        .setOrigin(0.5)
+        .setInteractive();
+    
+        this.pauseSprite.on('pointerdown', () => {
+            this.pause();
+        });
+
         // Player lives text and sprites
-        this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, bitmapFonts.PressStart2P, '3', fonts.medium.sizes[bitmapFonts.PressStart2P]);
+        this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, fonts.medium.fontName, '3', fonts.medium.size);
         this.livesSprites = this.add.group({
             key: 'lives',
             repeat: this.player_vars.lives - 2
@@ -221,6 +232,16 @@ export class Game extends Scene {
         this.check_gameover();
 
         this.bg.tilePositionY -= this.bgScrollSpeed;
+
+        if (this.visualobject.visible) {
+            this.visualobject.x += this.visualobject.velocityX;  // Move based on velocityX
+            this.visualobject.y += this.visualobject.velocityY;  // Move based on velocityY
+            if ((this.visualobject.velocityX > 0 && this.visualobject.x > this.sys.game.config.width + 100) ||
+                (this.visualobject.velocityX < 0 && this.visualobject.x < -100) ||
+                this.visualobject.y < -100 || this.visualobject.y > this.sys.game.config.height + 100) {
+                this.visualobject.visible = false;  // Hide when it moves out of bounds
+            }
+        }
     }
 
 
@@ -275,11 +296,68 @@ export class Game extends Scene {
             this.scoreManager.checkAndUpdateHighScore();
         }
 
+        this.player_vars.totalShotsFired = this.objs.player.totalShotsFired;
+        this.player_vars.totalHits = this.objs.player.totalHits;
+
+
         this.cameras.main.fade(500, 0, 0, 0);
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
             this.sounds.stop_all_music();
             this.scene.start(targetScene);
         });
+    }
+
+    initBackgroundObject() {
+        // Create the visual object once with basic setup
+        this.visualobject = this.add.sprite(850, 300, 'BGSmallObjects');
+        this.visualobject.setDepth(0);
+        this.visualobject.setVisible(false); 
+        this.visualobject.setAlpha(0.8);
+
+        this.time.addEvent({
+            delay: 16000,  
+            callback: () => {
+                let objectKey = this.chooseObjectKey();
+                let randomScale = 0.6 + (1.0 - 0.6) * Math.random();
+                let randomY = Math.random() * 350;
+                let direction = Math.random() < 0.5 ? -1 : 1;  // Random direction: -1 for left, 1 for right
+                let yDirection = Math.random() < 0.5 ? 1 : -1; // Randomly decide Y direction
+
+                this.visualobject.setScale(randomScale);
+                this.visualobject.setPosition(direction === 1 ? -100 : this.sys.game.config.width + 100, randomY);
+                this.visualobject.flipX = direction === 1;  // Flip horizontally if moving right
+                this.visualobject.visible = true;
+                this.visualobject.velocityX = (4 + Math.random() * 3) * direction;  // Set random speed and direction
+                this.visualobject.velocityY = yDirection * (0.3 + Math.random());  // Set random vertical speed and direction
+
+                if (this.anims.exists(objectKey)) {
+                    this.visualobject.play(objectKey);
+                } else {
+                    console.error("Animation key not found:", objectKey);
+                }
+            },
+            callbackScope: this,
+            loop: true
+        });
+    }
+
+    chooseObjectKey() {
+        let modLevel = this.level % 7;
+        switch (modLevel) {
+            case 0:
+                return "Minions";
+            case 1:
+                return "Birds";
+            case 2:
+            case 3:
+                return Math.random() < 0.8 ? "Birds" : "Minions";
+            case 4:
+                return Math.random() < 0.5 ? "Ship" : "Meteor";
+            case 5:
+                return Math.random() < 0.5 ? "Minions" : "Ship";
+            case 6:
+                return Math.random() < 0.5 ? "Minions" : "Meteor";
+        }
     }
 }

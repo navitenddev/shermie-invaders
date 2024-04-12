@@ -15,7 +15,7 @@ export class TextButton extends Phaser.GameObjects.Container {
     * @param {string} text The text to display on the button
     * @param {function(any): any} callback The function that is called when the button is clicked
     * @param {Array<any>} args An array of arguments to be passed to the callback function
-    * @param {string} font_type The type of the font.
+    * @param {string} font_type The type of the fonts.
     * @param {number} font_size The size of the font text.
     * @param {string | number} color The color of the text.
     * @param {string | number} color_hover The color of the text when mouse hovers over it.
@@ -46,8 +46,8 @@ export class TextButton extends Phaser.GameObjects.Container {
         text,
         callback,
         args = [],
-        font_type = bitmapFonts.PressStart2P_Stroke,
-        font_size = fonts.medium.sizes[bitmapFonts.PressStart2P_Stroke],
+        font_type = fonts.medium.fontName,
+        font_size = fonts.medium.size,
         color = 0xF3F3F3,
         color_hover = 0x929292,
         color_clicked = 0x373737,

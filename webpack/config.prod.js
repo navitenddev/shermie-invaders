@@ -70,7 +70,12 @@ module.exports = {
             patterns: [
                 { from: 'public/assets', to: 'assets' },
                 { from: 'public/favicon.png', to: 'favicon.png' },
-                { from: 'public/style.css', to: 'style.css' }
+                { from: 'public/style.css', to: 'style.css' },
+                { from: 'public/manifest.json', to: 'manifest.json' },
+                { from: 'public/icon-192.png', to: 'icon-192.png' },
+                { from: 'public/icon-256.png', to: 'icon-256.png' },
+                { from: 'public/icon-512.png', to: 'icon-512.png' },
+                { from: 'public/logo.png', to: 'logo.png' },
             ],
         }),
     ]
