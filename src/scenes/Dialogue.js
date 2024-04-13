@@ -204,7 +204,12 @@ class DialogueManager extends Phaser.GameObjects.Container {
                 }, this.scene.scene)
             }
             this.scene.input.once('pointerdown', () => {
-                this.text.setText(""); // 4 hours to fix this bug :)
+                if (this.dialogue_type === "menu"
+                    && this.line_index === this.lines.length) {
+                    // don't clear last line for menu and techtip
+                } else {
+                    this.text.setText(""); // 4 hours to fix this bug :)
+                }
                 this.auto_emit_flag = false;
                 this.#load_next_line();
             });
