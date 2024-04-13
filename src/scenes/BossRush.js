@@ -65,7 +65,7 @@ export class BossRush extends Phaser.Scene {
     #boss_queue = [];
     #bosses_beaten = -1;
 
-    #BOSS_HP = 50; // The HP that each boss will spawn with
+    #BOSS_HP = 40; // The HP that each boss will spawn with
 
     #clock;
 
@@ -114,18 +114,13 @@ export class BossRush extends Phaser.Scene {
         // fade in from black
         this.cameras.main.fadeIn(500, 0, 0, 0);
 
-        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
-            () => {
-                // start_dialogue(this.scene, "sandbox_tips", "game");
-            }
-        );
-
         this.player_vars = this.registry.get('player_vars');
-        // player will have only level 1 stats and 1 life, except move speed = 2 just to be fair
+        // player will have only level 2 stats (except shield) and 1 life, 
         this.player_vars.lives = 1;
         this.player_vars.stats.move_speed = 2;
+        this.player_vars.stats.fire_rate = 2;
+        this.player_vars.stats.move_speed = 2;
 
-        // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
         this.powerup_stats = this.registry.get('powerup_stats');
         this.objs.init_all(false);
@@ -189,7 +184,7 @@ export class BossRush extends Phaser.Scene {
 
     update(time, delta) {
         if (this.objs.player.update)
-        this.objs.player.update(time, delta, this.keys, this.controls);
+            this.objs.player.update(time, delta, this.keys, this.controls);
         // Update lives text and sprites
         // this.livesText.setText('-');
         this.updateLives();
