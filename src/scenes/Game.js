@@ -234,12 +234,11 @@ export class Game extends Scene {
         this.bg.tilePositionY -= this.bgScrollSpeed;
 
         if (this.visualobject.visible) {
-            this.visualobject.x += this.visualobject.velocityX;  // Move based on velocityX
-            this.visualobject.y += this.visualobject.velocityY;  // Move based on velocityY
-            if ((this.visualobject.velocityX > 0 && this.visualobject.x > this.sys.game.config.width + 100) ||
-                (this.visualobject.velocityX < 0 && this.visualobject.x < -100) ||
-                this.visualobject.y < -100 || this.visualobject.y > this.sys.game.config.height + 100) {
-                this.visualobject.visible = false;  // Hide when it moves out of bounds
+            if (this.visualobject.x > this.sys.game.config.width + 100 ||
+                this.visualobject.x < -100 ||
+                this.visualobject.y < -100 ||
+                this.visualobject.y > this.sys.game.config.height + 100) {
+                this.visualobject.visible = false;
             }
         }
     }
@@ -310,7 +309,7 @@ export class Game extends Scene {
 
     initBackgroundObject() {
         // Create the visual object once with basic setup
-        this.visualobject = this.add.sprite(850, 300, 'BGSmallObjects');
+        this.visualobject = this.physics.add.sprite(850, 300, 'BGSmallObjects');
         this.visualobject.setDepth(0);
         this.visualobject.setVisible(false); 
         this.visualobject.setAlpha(0.8);
@@ -319,6 +318,10 @@ export class Game extends Scene {
             delay: 16000,  
             callback: () => {
                 let objectKey = this.chooseObjectKey();
+                if (!objectKey) {
+                    this.visualobject.setVisible(false);
+                    return;  
+                }
                 let randomScale = 0.6 + (1.0 - 0.6) * Math.random();
                 let randomY = Math.random() * 350;
                 let direction = Math.random() < 0.5 ? -1 : 1;  // Random direction: -1 for left, 1 for right
@@ -328,8 +331,8 @@ export class Game extends Scene {
                 this.visualobject.setPosition(direction === 1 ? -100 : this.sys.game.config.width + 100, randomY);
                 this.visualobject.flipX = direction === 1;  // Flip horizontally if moving right
                 this.visualobject.visible = true;
-                this.visualobject.velocityX = (4 + Math.random() * 3) * direction;  // Set random speed and direction
-                this.visualobject.velocityY = yDirection * (0.3 + Math.random());  // Set random vertical speed and direction
+                this.visualobject.setVelocityX((4 + Math.random() * 3) * direction * 20);  
+                this.visualobject.setVelocityY(yDirection * (0.3 + Math.random()) * 20);  
 
                 if (this.anims.exists(objectKey)) {
                     this.visualobject.play(objectKey);
@@ -343,21 +346,18 @@ export class Game extends Scene {
     }
 
     chooseObjectKey() {
-        let modLevel = this.level % 7;
-        switch (modLevel) {
-            case 0:
-                return "Minions";
+        switch (this.level) {
             case 1:
-                return "Birds";
             case 2:
             case 3:
-                return Math.random() < 0.8 ? "Birds" : "Minions";
+                return "Birds";
             case 4:
                 return Math.random() < 0.5 ? "Ship" : "Meteor";
             case 5:
-                return Math.random() < 0.5 ? "Minions" : "Ship";
             case 6:
-                return Math.random() < 0.5 ? "Minions" : "Meteor";
+                return Math.random() < 0.7 ? "Ship" : "Minions"; 
+            default:
+                return null;  
         }
     }
 }
