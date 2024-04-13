@@ -55,6 +55,18 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
             100, 10,
             hp
         );
+
+        this.deathEmitter = scene.add.particles(0, 0, 'flares', {
+            frame: ['white'],
+            color: [0xFFFF00, 0x008000, 0x0000FF, 0x4B0082, 0x8A2BE2, 0xFF0000, 0xFFA500],
+            scale: { start: 0.3, end: 0, ease: 'exp.out' },
+            alpha: { start: 1, end: .5, ease: 'exp.out' },
+            lifespan: 4000,
+            speed: { min: 150, max: 300 },
+            gravityY: 900,
+            blendMode: 'COLOR',
+            emitting: false
+        });
     }
 
     #clear_path() {
@@ -322,6 +334,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
             this.state_text.destroy();
             this.hp_bar.destroy();
             this.graphics.destroy();
+            this.deathEmitter.explode(50, this.x, this.y);
             this.destroy();
             this.is_dead = true;
             return;

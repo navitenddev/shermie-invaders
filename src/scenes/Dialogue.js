@@ -203,14 +203,8 @@ class DialogueManager extends Phaser.GameObjects.Container {
                         this.scene.input.emit('pointerdown');
                 }, this.scene.scene)
             }
-
-            this.scene.input.on('pointerdown', () => {
-                if (this.dialogue_type === "menu"
-                    && this.line_index === this.lines.length) {
-                    // don't clear last line for menu and techtip
-                } else {
-                    this.text.setText(""); // 4 hours to fix this bug :)
-                }
+            this.scene.input.once('pointerdown', () => {
+                this.text.setText(""); // 4 hours to fix this bug :)
                 this.auto_emit_flag = false;
                 this.#load_next_line();
             });
@@ -281,34 +275,34 @@ class Dialogue extends Phaser.Scene {
         if (this.dialogue_type === "story") {
             this.startPrompt = this.add.bitmapText(375, 180, fonts.middle.fontName, `Press spacebar to start!`, fonts.middle.size)
         }
-    
-    
+
+
         if (this.escPrompt) {
             this.escPrompt.destroy();
             this.escPrompt = null;
         }
         if (this.dialogue_type === "story") {
             const startGame = () => {
-            const startGame = () => {
-                this.sounds.stop_all_music();
-                this.sounds.bank.music.bg.play();
-                this.startPrompt.destroy();
-                this.startPrompt = null;
-                this.scene.stop('Dialogue');
-                this.scene.resume(this.prev_scene);
+                const startGame = () => {
+                    this.sounds.stop_all_music();
+                    this.sounds.bank.music.bg.play();
+                    this.startPrompt.destroy();
+                    this.startPrompt = null;
+                    this.scene.stop('Dialogue');
+                    this.scene.resume(this.prev_scene);
+                };
+                this.keys.space.on('down', startGame);
+
+                this.input.on('pointerdown', startGame);
             };
             this.keys.space.on('down', startGame);
-    
-            this.input.on('pointerdown', startGame);
-            };
-            this.keys.space.on('down', startGame);
-    
+
             this.input.on('pointerdown', startGame);
         } else if (this.dialogue_type === "game_blocking") {
             this.scene.resume(this.prev_scene);
         }
     }
-}        
+}
 
 
 export { Dialogue, DialogueManager, start_dialogue };
