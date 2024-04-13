@@ -75,7 +75,7 @@ export class Preloader extends Scene {
 
         this.load.image("upgradeTilemap", "backgrounds/leveloneTilemap.png");
 
-        this.load.image("losescreen", "backgrounds/losescreen.png");
+        // this.load.image("losescreen", "backgrounds/losescreen.png");
 
         this.load.image("cottonball", "projectiles/cottonball.png");
 
@@ -100,8 +100,6 @@ export class Preloader extends Scene {
         this.load.image("nuke_icon", "ui/nuke-icon.png");
 
         this.load.image("firewall_icon", "ui/firewall-icon.png");
-
-        this.load.image("story_bg", "backgrounds/Dialouge.png");
 
         this.load.image("brick_tileset", "misc/brick-tileset.png");
 

@@ -32,6 +32,7 @@ export class Game extends Scene {
 
     create() {
         this.level = this.registry.get('level');
+        
 
         this.PUPA_PATHS = {
             LEMNISCATE: this.cache.json.get('PUPA_LEMNISCATE'),
@@ -79,14 +80,11 @@ export class Game extends Scene {
         this.player_vars.power = "";
         this.objs.init_all();
 
-        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
-            () => {
-                this.keys.p.on('down', () => this.pause());
-                this.keys.esc.on('down', () => this.pause());
-            }
-        );
         this.sounds = this.registry.get('sound_bank');
         this.keys = InitKeyDefs(this);
+        
+        this.keys.p.on('down', () => this.pause());
+        this.keys.esc.on('down', () => this.pause());
 
         // Score and high score
         this.scoreManager = new ScoreManager(this);
