@@ -2,13 +2,10 @@ import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../utils/keyboard_input';
 import { fonts } from '../utils/fontStyle';
-import { Barrier } from '../objects/barrier';
 import ScoreManager from '../utils/ScoreManager';
-import { GridEnemy } from '../objects/enemy_grid';
 import { EventDispatcher } from '../utils/event_dispatcher';
 import { start_dialogue } from './Dialogue';
 import { init_collision_events, restart_scenes } from '../main';
-import { SoundBank } from '../utils/sounds';
 import Controls from '../controls/controls';
 
 /**
@@ -41,9 +38,9 @@ export class Game extends Scene {
             ILLUMINATI: this.cache.json.get('PUPA_ILLUMINATI'),
         }
 
-        // if (this.level <= 7) {
-        //     start_dialogue(this.scene, `level${(this.level)}`, "story", "Game", 23);
-        // }
+        if (this.level <= 7) {
+            start_dialogue(this.scene, `level${(this.level)}`, "story", "Game", 23);
+        }
         this.visualobject = this.add.sprite(-100, -100, 'BGSmallObjects'); 
         this.visualobject.setVisible(false);
         let bgKey = `BG${this.level}`;
