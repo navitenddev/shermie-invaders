@@ -1,11 +1,13 @@
 import { fonts } from "../utils/fontStyle";
 import { FillBar } from "../ui/fill_bar";
 
+/* I am the second boss */
 class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     scoreValue = 200;
     moneyValue = 12;
     static Y_NORMAL = 300;
-    static ANGLE_VEL = 500;
+    static ANGLE_VEL = 400;
+    static BULLET_VEL = 400;
     hp = 40;
     shoot_cd = 85;
     last_fired = 0;
@@ -216,7 +218,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         let bullet = this.scene.objs.bullets.enemy.getFirstDead(false, 0, 0, "enemy_bullet");
 
         let angle = this.angle + 90;
-        const V = 600,
+        const V = EnemyLupa.BULLET_VEL,
             vx = V * Math.cos(angle * Math.PI / 180),
             vy = V * Math.sin(angle * Math.PI / 180);
 

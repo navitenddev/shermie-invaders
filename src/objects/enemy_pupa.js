@@ -1,11 +1,12 @@
 import { fonts } from "../utils/fontStyle";
 import { FillBar } from "../ui/fill_bar";
 
+/* I am the third boss */
 class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     scoreValue = 200;
     moneyValue = 15;
     static Y_NORMAL = 300;
-    static ANGLE_VEL = 550;
+    static ANGLE_VEL = 400;
     hp = 40;
     shoot_cd = 50;
     last_fired = 0;
