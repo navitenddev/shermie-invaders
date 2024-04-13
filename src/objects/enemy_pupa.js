@@ -6,9 +6,10 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     scoreValue = 200;
     moneyValue = 15;
     static Y_NORMAL = 300;
+    static BULLET_VEL = 450;
     static ANGLE_VEL = 400;
     hp = 40;
-    shoot_cd = 50;
+    shoot_cd = 125;
     last_fired = 0;
     shots_fired = 0;
 
@@ -137,12 +138,15 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
                     this.path = new Phaser.Curves.Path(this.scene.PUPA_PATHS.ILLUMINATI);
                     // choose random point in illuminati path to start
                     this.illum_count = 0; // when we finish visiting all 3 points in triangle, stop
-                    this.illum_idx = Phaser.Math.Between(0, 2);
+                    // Either choose top left or top right of triangle
+                    // I'm finding bottom of triangle to be too much of a surprise for players.`
+                    this.illum_idx = Phaser.Math.Between(0, 1) ? 0 : 2;
                     this.illum_t = this.scene.PUPA_PATHS.ILLUMINATI.t_vals[this.illum_idx];
 
                     this.target_pos = this.path.getPoint(this.illum_t);
                     this.scene.physics.moveTo(this, this.target_pos.x, this.target_pos.y, 350)
                 }
+            // fall through
             case "ILLUM_NEXT": // pick next point in ILLUM triangle and traverse while shooting
                 {
                     this.tween.resume();
@@ -157,10 +161,8 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
                 {
                     this.tween.pause();
                     this.shots_fired = 0;
-                    // if on left-side, rot cw. If on right, rot ccw
-                    (this.x < this.scene.game.config.width / 2) ?
-                        this.setAngularVelocity(-EnemyPupa.ANGLE_VEL) :
-                        this.setAngularVelocity(EnemyPupa.ANGLE_VEL);
+                    // always do a CW rotation
+                    // this.setAngularVelocity(EnemyPupa.ANGLE_VEL);
                 }
                 break;
             default:
@@ -255,7 +257,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
             this.shots_fired++;
             let bullet = this.scene.objs.bullets.enemy.getFirstDead(false, 0, 0, "enemy_bullet");
             let angle = this.angle + 90;
-            const V = 600, // enemy bullet velocity
+            const V = EnemyPupa.BULLET_VEL, // enemy bullet velocity
                 vx = V * Math.cos(angle * Math.PI / 180), // x vel given angle
                 vy = V * Math.sin(angle * Math.PI / 180); // y vel given angle
 
