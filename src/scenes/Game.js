@@ -70,6 +70,7 @@ export class Game extends Scene {
         if (this.level <= 7) {
             start_dialogue(this.scene, `level${(this.level)}`, "story", "Game", 23);
         }
+        
         this.visualobject = this.add.sprite(-100, -100, 'BGSmallObjects');
         this.visualobject.setVisible(false);
         let bgKey = `BG${this.level}`;
@@ -94,6 +95,9 @@ export class Game extends Scene {
             this.bg = this.add.tileSprite(0, 0, this.sys.game.config.width, this.sys.game.config.height, bgKey).setOrigin(0, 0);
             this.bgScrollSpeed = 2;
         }
+        
+        GridEnemy.initDestructionEmitter(this);
+
         this.bg.setScrollFactor(0);
         this.bg.setDepth(-1);
 
