@@ -127,6 +127,7 @@ export function init_collision_events(scene, scene_key) {
 
     // enemy bullet hits player
     scene.physics.add.overlap(scene.objs.bullets.enemy, scene.objs.player, (player, enemy_bullet) => {
+        scene.cameras.main.shake(200, 0.02);
         if (!player.is_dead) {
             enemy_bullet.deactivate();
             let dialogue_key;
