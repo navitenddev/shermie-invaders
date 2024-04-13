@@ -30,6 +30,8 @@ export default class Controls {
 
         scene.input.on('pointerdown', this.onPointerDown, this);
         scene.input.on('pointerup', this.onPointerUp, this);
+
+        scene.input.addPointer(1);
     }
 
     onPointerDown(pointer) {
@@ -40,15 +42,16 @@ export default class Controls {
 
         if (pointer.x < this.leftZoneWidth) {
             this.left = true;
-            this.right = false;
         } else if (pointer.x > this.scene.cameras.main.width - this.rightZoneWidth) {
             this.right = true;
-            this.left = false;
         }
     }
 
     onPointerUp(pointer) {
-        this.left = false;
-        this.right = false;
+        if (pointer.x < this.leftZoneWidth) {
+            this.left = false;
+        } else if (pointer.x > this.scene.cameras.main.width - this.rightZoneWidth) {
+            this.right = false;
+        }
     }
 }

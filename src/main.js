@@ -37,6 +37,9 @@ const config = {
             debug: true,
         },
     },
+    input: {
+        activePointers: 3,
+    },
     scene: [
         Boot,
         Preloader,
