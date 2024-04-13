@@ -7,6 +7,7 @@ import { TextboxButton } from '../ui/textbox_button.js';
 
 export class PlayerWin extends Scene {
     emitter = EventDispatcher.getInstance();
+    
     constructor() {
         super('Player Win');
     }

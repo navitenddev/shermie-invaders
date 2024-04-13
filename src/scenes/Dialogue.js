@@ -98,9 +98,16 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
         if (["story", "techtip", "game_blocking", "menu"].includes(dialogue_type)) this.follow_player = false;
 
+
+        if (["story"].includes(dialogue_type)) {
+        this.text = scene.add.bitmapText(-100, 120, fonts.middle.fontName, '', fonts.middle.size).setMaxWidth(this.w)
+            .setLineSpacing(14)
+            .setOrigin(0, 0);
+        } else {
         this.text = scene.add.bitmapText(25, 15, fonts.small.fontName, '', fonts.small.size).setMaxWidth(this.w - (2 * this.border_w))
             .setLineSpacing(14)
             .setTint(0xFFFFFF);
+        }
 
         if (this.bg)
             this.add([this.bg, this.bg_border])
