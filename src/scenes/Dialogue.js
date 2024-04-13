@@ -203,7 +203,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
                         this.scene.input.emit('pointerdown');
                 }, this.scene.scene)
             }
-            this.scene.input.keyboard.on('keydown', () => {
+            const nextLine = () => {
                 if (this.dialogue_type === "menu" && this.line_index === this.lines.length) {
                     // don't clear last line for menu and techtip
                 } else {
@@ -211,7 +211,10 @@ class DialogueManager extends Phaser.GameObjects.Container {
                 }
                 this.auto_emit_flag = false;
                 this.#load_next_line();
-            });
+            };
+
+            this.scene.input.keyboard.on('keydown', nextLine);
+            this.scene.input.on('pointerdown', nextLine);
         }
     }
 }
@@ -237,6 +240,8 @@ class Dialogue extends Phaser.Scene {
         this.sounds = this.registry.get('sound_bank');
         // show story dialogue background if this is for story dialogue 
         if (this.dialogue_type === "story") {
+            this.cameras.main.fadeIn(1000, 0, 0, 0);
+
             this.sounds.stop_all_music();
             this.sounds.bank.music.story.play();
     
@@ -255,25 +260,29 @@ class Dialogue extends Phaser.Scene {
                 this.bg.setDisplaySize(this.sys.game.config.width, this.sys.game.config.height);
             }
     
-            this.escPrompt = this.add.bitmapText(275, 745, fonts.small.fontName, `Tap to continue or ESC to skip`, fonts.small.size)
-    
+            let promptText;
+            if (window.IS_MOBILE) {
+                promptText = 'TAP TO CONTINUE';
+            } else {
+                promptText = 'PRESS ANY KEY TO CONTINUE OR ESC TO SKIP';
+            }
+            this.escPrompt = this.add.bitmapText(this.game.config.width / 2, 730, fonts.small.fontName, promptText, fonts.small.size)
+                .setOrigin(0.5, 0.5);
+
             this.shermie = this.add.sprite(
                 -100,
                 this.game.config.height - 96,
                 "shermie_spritesheet"
             );
         
-            // Play the walking animation
             this.shermie.play("shermie_walk");
         
-            // Move Shermie to the middle of the scene
             this.tweens.add({
                 targets: this.shermie,
                 x: this.game.config.width / 2.5,
                 duration: 3000,
                 ease: "Linear",
                 onComplete: () => {
-                    // Play the idle animation when Shermie reaches the middle
                     this.shermie.play("shermie_idle");
                 },
             });
@@ -314,7 +323,14 @@ class Dialogue extends Phaser.Scene {
     return_to_caller_scene() {
         // console.log(`TYPE: ${this.dialogue_type}`)
         if (this.dialogue_type === "story") {
-            this.startPrompt = this.add.bitmapText(285, 384, fonts.middle.fontName, `PRESS ANY KEY TO START`, fonts.middle.size)
+            let promptText;
+            if (window.IS_MOBILE) {
+                promptText = 'TAP TO START';
+            } else {
+                promptText = 'PRESS ANY KEY TO START';
+            }
+            this.startPrompt = this.add.bitmapText(this.game.config.width / 2, this.game.config.height / 2, fonts.middle.fontName, promptText, fonts.middle.size)
+                .setOrigin(0.5, 0.5);
         }
 
         if (this.escPrompt) {
