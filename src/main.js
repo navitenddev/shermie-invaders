@@ -133,7 +133,13 @@ export function init_collision_events(scene, scene_key) {
             let dialogue_key;
             if (player.stats.shield > 1) {
                 player.shieldParticles.explode(10, player.x, scene.sys.game.config.height - 135);
-                dialogue_key = (--player.stats.shield === 1) ? 'shermie_shieldgone' : 'shermie_shieldhurt';
+                if (--player.stats.shield === 1) {
+                    dialogue_key = 'shermie_shieldgone';
+                    scene.sounds.bank.sfx.shield_destroy.play();
+                } else {
+                    dialogue_key = 'shermie_shieldhurt';
+                    scene.sounds.bank.sfx.shield_hurt.play();
+                }
                 player.updateHitbox();
                 start_dialogue(scene.scene, dialogue_key, "game", scene_key);
             } else {

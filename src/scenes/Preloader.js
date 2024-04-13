@@ -147,6 +147,10 @@ export class Preloader extends Scene {
 
         this.load.audio('powerup', 'SFX/powerup.wav');
 
+        this.load.audio('shield_hurt', 'SFX/shield_hurt.wav');
+
+        this.load.audio('shield_destroy', 'SFX/shield_destroy.wav');
+
         this.load.audio('story_music', 'SFX/8 Bit Presentation - David Fesliyan.mp3');
 
         this.load.audio('story_music', 'SFX/8 Bit Presentation - David Fesliyan.mp3');
