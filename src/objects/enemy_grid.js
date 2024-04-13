@@ -76,7 +76,7 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
             bullet.activate(this.x, this.y, 0, vy);
         }
     }
-    
+
 
     /**
      * @public
@@ -110,7 +110,7 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
                 }
                 temp++;
                 power = this.scene.objs.powers.getFirstNth(temp, false, false, 0, 0, "powerup");
-                
+
             }//while there is at least one inactive powerup available, finds a random inactive powerup to take
             if (power !== null) {
                 let fall_speed = PowerupsConstDefs.speed.y;
@@ -122,7 +122,7 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
         if (GridEnemy.destructionEmitter !== null) {
             GridEnemy.destructionEmitter.explode(20, this.x, this.y);
         }
-    
+
         this.destroy();
     }
     // return true if this enemy is overlapping an x boundary
@@ -135,17 +135,19 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     static initDestructionEmitter(scene) {
-        GridEnemy.destructionEmitter = scene.add.particles(0, 0, 'flares', {
-            frame: ['white'],
-            color: [0x39FF14],
-            scale: { start: 0.5, end: 0, ease: 'exp.out' },
-            alpha: { start: 1, end: .5, ease: 'exp.out' },
-            lifespan: 750,
-            speed: { min: 150, max: 350 },
-            gravityY: 1000,
-            blendMode: 'COLOR',
-            emitting: false
-        });
+        if (!GridEnemy.destructionEmitter) { // singleton
+            GridEnemy.destructionEmitter = scene.add.particles(0, 0, 'flares', {
+                frame: ['white'],
+                color: [0x39FF14],
+                scale: { start: 0.5, end: 0, ease: 'exp.out' },
+                alpha: { start: 1, end: .5, ease: 'exp.out' },
+                lifespan: 750,
+                speed: { min: 150, max: 350 },
+                gravityY: 1000,
+                blendMode: 'COLOR',
+                emitting: false
+            });
+        }
     }
 
 }
