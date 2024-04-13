@@ -342,6 +342,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
             return;
         }
         this.hp--;
+        this.deathEmitter.explode(10, this.x, this.y);
     }
 }
 
