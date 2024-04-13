@@ -131,6 +131,8 @@ export class Preloader extends Scene {
 
         this.load.audio('shoot', ['SFX/shoot.wav']);
 
+        this.load.audio('enemy_shoot', 'SFX/shoot_enemy1.wav');
+
         this.load.audio('win', ['SFX/win.wav']);
 
         this.load.audio('lose', ['SFX/defeat.wav']);
@@ -140,6 +142,8 @@ export class Preloader extends Scene {
         this.load.audio('click', ['SFX/click.wav']);
 
         this.load.audio('hover', ['SFX/hover.wav']);
+
+        this.load.audio('powerup', 'SFX/powerup.wav');
 
         this.load.audio('story_music', 'SFX/8 Bit Presentation - David Fesliyan.mp3');
 

@@ -163,6 +163,8 @@ export class BossRush extends Phaser.Scene {
             }
         ];
 
+        this.total_bosses = this.#boss_queue.length;
+
         if (window.IS_MOBILE) {
             this.controls = new Controls(this);
         }
@@ -193,10 +195,9 @@ export class BossRush extends Phaser.Scene {
 
         // check if boss should spawn
         if (this.objs.enemies.special.children.entries.length === 0) {
-            this.#bosses_beaten++;
             if (this.#boss_queue.length === 0) {
                 // transition to win scene
-                this.goto_scene('Boss Rush Win', { time: this.#clock.dump_time(), bosses_beaten: this.#bosses_beaten });
+                this.goto_scene('Boss Rush Win', { time: this.#clock.dump_time(), bosses_beaten: this.total_bosses - this.#boss_queue.length - 1 });
             }
             const cb = this.#boss_queue.shift();
             if (cb) cb.func(...cb.args);
@@ -206,7 +207,7 @@ export class BossRush extends Phaser.Scene {
 
     check_gameover() {
         if (!this.objs.player.is_inbounds() && this.player_vars.lives <= 0) {
-            this.goto_scene('Boss Rush Lose', { time: this.#clock.dump_time(), bosses_beaten: this.#bosses_beaten });
+            this.goto_scene('Boss Rush Lose', { time: this.#clock.dump_time(), bosses_beaten: this.total_bosses - this.#boss_queue.length - 1 });
         }
     }
 

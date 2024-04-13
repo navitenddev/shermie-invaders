@@ -31,6 +31,7 @@ class SoundBank {
         this.bank = {
             sfx: {
                 shoot: this.scene.game.sound.add('shoot', { volume: 0.2, loop: false }),
+                enemy_shoot: this.scene.game.sound.add('enemy_shoot', { volume: 0.1, loop: false }),
                 explosion: [
                     this.scene.game.sound.add('explosion', { volume: 0.1, loop: false }),
                     this.scene.game.sound.add('explosion2', { volume: 0.1, loop: false }),
@@ -42,6 +43,7 @@ class SoundBank {
                 lose: this.scene.game.sound.add('lose', { volume: 0.1, loop: false }),
                 click: this.scene.game.sound.add('click', { volume: 0.1, loop: false }),
                 hover: this.scene.game.sound.add('hover', { volume: 0.1, loop: false }),
+                powerup: this.scene.game.sound.add('powerup', { volume: 0.2, loop: false }),
             },
             music: {
                 bg: this.scene.game.sound.add('bgmusic', { volume: 0.2, loop: true }),
