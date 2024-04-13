@@ -30,35 +30,8 @@ export class Game extends Scene {
         this.debugMode = false;
     }
 
-    preload() {
-        this.load.json({
-            key: "PUPA_LEMNISCATE",
-            url: "assets/paths/pupa.json",
-            dataKey: "LEMNISCATE",
-        });
-        this.load.json({
-            key: "PUPA_TRIANGLE",
-            url: "assets/paths/pupa.json",
-            dataKey: "TRIANGLE",
-        });
-        this.load.json({
-            key: "PUPA_SPLINE",
-            url: "assets/paths/pupa.json",
-            dataKey: "SPLINE1",
-        });
-        this.load.json({
-            key: "PUPA_ILLUMINATI",
-            url: "assets/paths/pupa.json",
-            dataKey: "ILLUMINATI",
-        });
-    }
-
-
     create() {
         this.level = this.registry.get('level');
-        // fade in from black
-        this.cameras.main.fadeIn(500, 0, 0, 0);
-        // For now, the level dialogues will repeat after it exceeds the final level dialogue.
 
         this.PUPA_PATHS = {
             LEMNISCATE: this.cache.json.get('PUPA_LEMNISCATE'),
@@ -67,9 +40,9 @@ export class Game extends Scene {
             ILLUMINATI: this.cache.json.get('PUPA_ILLUMINATI'),
         }
 
-        if (this.level <= 7) {
-            start_dialogue(this.scene, `level${(this.level)}`, "story", "Game", 23);
-        }
+        // if (this.level <= 7) {
+        //     start_dialogue(this.scene, `level${(this.level)}`, "story", "Game", 23);
+        // }
         this.visualobject = this.add.sprite(-100, -100, 'BGSmallObjects'); 
         this.visualobject.setVisible(false);
         let bgKey = `BG${this.level}`;

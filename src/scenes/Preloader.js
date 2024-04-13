@@ -274,6 +274,28 @@ export class Preloader extends Scene {
         this.load.bitmapFont('PressStart2P-Middle', 'fonts/PressStart2P-Middle.png', 'fonts/PressStart2P-Middle.xml');
         this.load.bitmapFont('PressStart2P-Small', 'fonts/PressStart2P-Small.png', 'fonts/PressStart2P-Small.xml');
         this.load.bitmapFont('PressStart2P-Tiny', 'fonts/PressStart2P-Tiny.png', 'fonts/PressStart2P-Tiny.xml');
+
+        
+        this.load.json({
+            key: "PUPA_LEMNISCATE",
+            url: "paths/pupa.json",
+            dataKey: "LEMNISCATE",
+        });
+        this.load.json({
+            key: "PUPA_TRIANGLE",
+            url: "paths/pupa.json",
+            dataKey: "TRIANGLE",
+        });
+        this.load.json({
+            key: "PUPA_SPLINE",
+            url: "paths/pupa.json",
+            dataKey: "SPLINE1",
+        });
+        this.load.json({
+            key: "PUPA_ILLUMINATI",
+            url: "paths/pupa.json",
+            dataKey: "ILLUMINATI",
+        });
     }
     create() {
         //  When all the assets have loaded, it's often worth creating global

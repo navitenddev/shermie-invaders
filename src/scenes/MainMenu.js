@@ -4,6 +4,7 @@ import { fonts } from '../utils/fontStyle.js';
 import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { restart_scenes } from '../main.js';
 import { TextButton } from '../ui/text_button.js';
+import { GameIntro } from './GameIntro.js';
 
 export class MainMenu extends BaseMenu {
     emitter = EventDispatcher.getInstance();
@@ -70,12 +71,12 @@ export class MainMenu extends BaseMenu {
                 console.log('Pressed');
                 this.cameras.main.fadeOut(200, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-                    this.scene.start('Game');
+                    this.scene.start('GameIntro');
                 });
-                this.start_btn.disable(); // disallow spamming
+                this.start_btn.disable();
             },
         ).setDepth(3);
-
+    
         // Controls Button
         menuY += menuSpacing;
         this.controls_btn = new TextButton(this, 512, menuY, "CONTROLS",
