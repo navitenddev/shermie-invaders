@@ -30,7 +30,7 @@ class SoundBank {
     init_sounds() {
         this.bank = {
             sfx: {
-                shoot: this.scene.game.sound.add('shoot', { volume: 0.1, loop: false }),
+                shoot: this.scene.game.sound.add('shoot', { volume: 0.2, loop: false }),
                 explosion: [
                     this.scene.game.sound.add('explosion', { volume: 0.1, loop: false }),
                     this.scene.game.sound.add('explosion2', { volume: 0.1, loop: false }),
@@ -45,13 +45,13 @@ class SoundBank {
             },
             music: {
                 bg: this.scene.game.sound.add('bgmusic', { volume: 0.2, loop: true }),
-                boss: this.scene.game.sound.add('boss_music', { volume: 0.2, loop: true }),
-                boss_rush: this.scene.game.sound.add('boss_rush_music', { volume: 0.2, loop: true }),
-                champion: this.scene.game.sound.add('champion_music', { volume: 0.3, loop: false }),
+                boss: this.scene.game.sound.add('boss_music', { volume: 0.1, loop: true }),
+                boss_rush: this.scene.game.sound.add('boss_rush_music', { volume: 0.1, loop: true }),
+                champion: this.scene.game.sound.add('champion_music', { volume: 0.2, loop: false }),
                 story: this.scene.game.sound.add('story_music', { volume: 0.2, loop: true }),
-                shop: this.scene.game.sound.add('shop_music', { volume: 0.2, loop: true }),
+                shop: this.scene.game.sound.add('shop_music', { volume: 0.1, loop: true }),
                 start: this.scene.game.sound.add('start', { volume: 0.2, loop: true }),
-                sandbox: this.scene.game.sound.add('sandbox_music', { volume: 0.2, loop: true })
+                sandbox: this.scene.game.sound.add('sandbox_music', { volume: 0.1, loop: true })
             }
         }
     }
