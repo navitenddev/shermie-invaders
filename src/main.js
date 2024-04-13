@@ -103,10 +103,8 @@ export function init_collision_events(scene, scene_key) {
     scene.level = scene.registry.get('level');
     // player bullet hits grid enemy
     scene.physics.add.overlap(scene.objs.bullets.player, scene.objs.enemies.grid, (player_bullet, enemy) => {
-        scene.objs.explode_at(enemy.x, enemy.y);
         if (scene.player_vars.power == "pierce" || scene.player_vars.perm_power.includes("pierce")) player_bullet.hurt_bullet();
         else player_bullet.deactivate();
-        scene.objs.player.totalHits++;
         enemy.die();
         if (scene.scoreManager) {
             scene.scoreManager.addScore(Math.round(enemy.scoreValue * scene.level));
@@ -116,7 +114,6 @@ export function init_collision_events(scene, scene_key) {
 
     // player bullet hits special enemy
     scene.physics.add.overlap(scene.objs.bullets.player, scene.objs.enemies.special, (player_bullet, enemy) => {
-        scene.objs.explode_at(enemy.x, enemy.y);
         scene.objs.player.totalHits++;
         player_bullet.deactivate();
         enemy.die();
@@ -157,7 +154,20 @@ export function init_collision_events(scene, scene_key) {
     // enemy bullet collides with player bullet
     scene.physics.add.overlap(scene.objs.bullets.enemy, scene.objs.bullets.player, (enemy_bullet, player_bullet) => {
         if (player_bullet.active && enemy_bullet.active) {
-            scene.objs.explode_at(player_bullet.x, player_bullet.y);
+            const bulletCollisionEmitter = scene.add.particles(0, 0, 'flares', {
+                frame: ['white'],
+                color: [0xFF3131],
+                colorEase: 'quad.out',
+                scale: { start: 0.2, end: 0, ease: 'exp.out' },
+                alpha: { start: 1, end: .5, ease: 'exp.out' },
+                lifespan: 500,
+                speed: 350,
+                gravityY: 1000,
+                blendMode: 'COLOR',
+                emitting: false
+            });
+            bulletCollisionEmitter.explode(10, player_bullet.x, player_bullet.y);
+
             if (scene.player_vars.power == "pierce"  || scene.player_vars.perm_power.includes("pierce")) player_bullet.hurt_bullet();
             else player_bullet.deactivate();
             enemy_bullet.deactivate();
