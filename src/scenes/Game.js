@@ -70,7 +70,7 @@ export class Game extends Scene {
         if (this.level <= 7) {
             start_dialogue(this.scene, `level${(this.level)}`, "story", "Game", 23);
         }
-        this.visualobject = this.add.sprite(-100, -100, 'BGSmallObjects'); 
+        this.visualobject = this.add.sprite(-100, -100, 'BGSmallObjects');
         this.visualobject.setVisible(false);
         let bgKey = `BG${this.level}`;
         if (this.level > 7)
@@ -126,17 +126,17 @@ export class Game extends Scene {
 
 
         this.pauseSprite = this.add.sprite(this.sys.game.config.width / 2, 32, 'pause')
-        .setOrigin(0.5)
-        .setInteractive();
-    
+            .setOrigin(0.5)
+            .setInteractive();
+
         this.pauseSprite.on('pointerdown', () => {
             this.pause();
         });
 
         this.pauseSprite = this.add.sprite(this.sys.game.config.width / 2, 32, 'pause')
-        .setOrigin(0.5)
-        .setInteractive();
-    
+            .setOrigin(0.5)
+            .setInteractive();
+
         this.pauseSprite.on('pointerdown', () => {
             this.pause();
         });
@@ -166,8 +166,8 @@ export class Game extends Scene {
 
         if (window.IS_MOBILE) {
             this.controls = new Controls(this);
-          }
-        
+        }
+
         // Event to kill all enemies
         this.emitter.on('kill_all_enemies', this.#kill_all_enemies, this);
         this.emitter.once('player_lose', this.goto_scene, this)
@@ -259,7 +259,7 @@ export class Game extends Scene {
             if (this.level % 7 === 0) {
                 if (!this.boss_spawned) {
                     this.boss_spawned = true;
-                    const boss_hp = (100 * (Math.floor((this.registry.get('level') / 7)) + 1));
+                    const boss_hp = (40 * Math.floor(this.registry.get('level') / 7));
                     // spawn boss type based on different multiples of 7
                     if (this.level % 21 === 0)
                         this.add.enemy_pupa(this, 0, 0, boss_hp);
@@ -311,16 +311,16 @@ export class Game extends Scene {
         // Create the visual object once with basic setup
         this.visualobject = this.physics.add.sprite(850, 300, 'BGSmallObjects');
         this.visualobject.setDepth(0);
-        this.visualobject.setVisible(false); 
+        this.visualobject.setVisible(false);
         this.visualobject.setAlpha(0.8);
 
         this.time.addEvent({
-            delay: 16000,  
+            delay: 16000,
             callback: () => {
                 let objectKey = this.chooseObjectKey();
                 if (!objectKey) {
                     this.visualobject.setVisible(false);
-                    return;  
+                    return;
                 }
                 let randomScale = 0.6 + (1.0 - 0.6) * Math.random();
                 let randomY = Math.random() * 350;
@@ -331,8 +331,8 @@ export class Game extends Scene {
                 this.visualobject.setPosition(direction === 1 ? -100 : this.sys.game.config.width + 100, randomY);
                 this.visualobject.flipX = direction === 1;  // Flip horizontally if moving right
                 this.visualobject.visible = true;
-                this.visualobject.setVelocityX((4 + Math.random() * 3) * direction * 20);  
-                this.visualobject.setVelocityY(yDirection * (0.3 + Math.random()) * 20);  
+                this.visualobject.setVelocityX((4 + Math.random() * 3) * direction * 20);
+                this.visualobject.setVelocityY(yDirection * (0.3 + Math.random()) * 20);
 
                 if (this.anims.exists(objectKey)) {
                     this.visualobject.play(objectKey);
@@ -355,9 +355,9 @@ export class Game extends Scene {
                 return Math.random() < 0.5 ? "Ship" : "Meteor";
             case 5:
             case 6:
-                return Math.random() < 0.7 ? "Ship" : "Minions"; 
+                return Math.random() < 0.7 ? "Ship" : "Minions";
             default:
-                return null;  
+                return null;
         }
     }
 }
