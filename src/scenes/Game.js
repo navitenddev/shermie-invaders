@@ -71,9 +71,6 @@ export class Game extends Scene {
 
         GridEnemy.initDestructionEmitter(this);
 
-        this.bg.setScrollFactor(0);
-        this.bg.setDepth(-1);
-
         this.initBackgroundObject();
         // Object spawner only needed during gameplay, so we initialize it in this scene.
         this.objs = new ObjectSpawner(this);
