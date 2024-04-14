@@ -30,7 +30,7 @@ export class Game extends Scene {
 
     create() {
         this.level = this.registry.get('level');
-        
+
 
         this.PUPA_PATHS = {
             LEMNISCATE: this.cache.json.get('PUPA_LEMNISCATE'),
@@ -42,7 +42,7 @@ export class Game extends Scene {
         if (this.level <= 7) {
             start_dialogue(this.scene, `level${(this.level)}`, "story", "Game", 23);
         }
-        
+
         this.visualobject = this.add.sprite(-100, -100, 'BGSmallObjects');
         this.visualobject.setVisible(false);
         let bgKey = `BG${this.level}`;
@@ -51,7 +51,7 @@ export class Game extends Scene {
 
         if (this.level === 3 || this.level === 5) {
             this.bg = this.add.tileSprite(0, 0, this.sys.game.config.width, this.sys.game.config.height, bgKey).setOrigin(0, 0);
-            this.bgScrollSpeed = 2;
+            this.bgScrollSpeed = 1;
         } else {
             this.bg = this.add.image(0, 0, bgKey).setOrigin(0, 0).setAlpha(1);
             this.bg.setDisplaySize(this.sys.game.config.width, this.sys.game.config.height);
@@ -60,18 +60,16 @@ export class Game extends Scene {
         if (this.level % 7 === 0) {
             this.bg = this.add.sprite(0, 0, 'BG7').setOrigin(0, 0);
             this.bg.play('BG7-SpriteSheet'); //can remove bg7 anim if annoying
+            console.log("bg7 started")
         } else if ((this.level + 1) % 7 === 0) {
             this.bg = this.add.sprite(0, 0, 'BG6').setOrigin(0, 0);
             this.bg.play('BG6-SpriteSheet'); //can remove bg6 anim if annoying
         } else if (this.level > 7) {
             this.bg = this.add.tileSprite(0, 0, this.sys.game.config.width, this.sys.game.config.height, bgKey).setOrigin(0, 0);
-            this.bgScrollSpeed = 2;
+            this.bgScrollSpeed = 1;
         }
-        
-        GridEnemy.initDestructionEmitter(this);
 
-        this.bg.setScrollFactor(0);
-        this.bg.setDepth(-1);
+        GridEnemy.initDestructionEmitter(this);
 
         this.initBackgroundObject();
         // Object spawner only needed during gameplay, so we initialize it in this scene.
@@ -84,7 +82,7 @@ export class Game extends Scene {
 
         this.sounds = this.registry.get('sound_bank');
         this.keys = InitKeyDefs(this);
-        
+
         this.keys.p.on('down', () => this.pause());
         this.keys.esc.on('down', () => this.pause());
 
