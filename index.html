@@ -13,6 +13,16 @@
     <title>Shermie Invaders</title>
   </head>
   <style type="text/css">
+        body {
+        overflow: hidden; /* Disables scrolling */
+    }
+    @media (max-width: 768px) {
+        /* Specific styles for mobile devices */
+        body {
+            overflow: hidden; /* Ensures no scrolling on mobile */
+        }
+    }
+
     .modal {
       display: none;
       position: fixed;
@@ -82,7 +92,6 @@
       window.addEventListener("touchstart", function () {
         IS_MOBILE = true;
       });
-      // IS_MOBILE = true; // TODO: Do not push me while uncommented
     </script>
   </body>
 </html>
