@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../utils/keyboard_input';
 import { fonts } from '../utils/fontStyle';
+import { GridEnemy } from '../objects/enemy_grid';
 import ScoreManager from '../utils/ScoreManager';
 import { EventDispatcher } from '../utils/event_dispatcher';
 import { start_dialogue } from './Dialogue';
