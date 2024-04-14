@@ -98,9 +98,16 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
         if (["story", "techtip", "game_blocking", "menu"].includes(dialogue_type)) this.follow_player = false;
 
+
+        if (["story"].includes(dialogue_type)) {
+        this.text = scene.add.bitmapText(-100, 120, fonts.middle.fontName, '', fonts.middle.size).setMaxWidth(this.w)
+            .setLineSpacing(14)
+            .setOrigin(0, 0);
+        } else {
         this.text = scene.add.bitmapText(25, 15, fonts.small.fontName, '', fonts.small.size).setMaxWidth(this.w - (2 * this.border_w))
             .setLineSpacing(14)
             .setTint(0xFFFFFF);
+        }
 
         if (this.bg)
             this.add([this.bg, this.bg_border])
@@ -191,7 +198,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
         const curr_text = this.text.text;
         const new_text = curr_text + this.line[this.char_index++];
         this.text.setText(new_text);
-
+    
         if (this.char_index === this.line.length) {
             // console.log("Line is done, waiting on player to click again")
             this.auto_emit_flag = true;
@@ -203,16 +210,18 @@ class DialogueManager extends Phaser.GameObjects.Container {
                         this.scene.input.emit('pointerdown');
                 }, this.scene.scene)
             }
-            this.scene.input.once('pointerdown', () => {
-                if (this.dialogue_type === "menu"
-                    && this.line_index === this.lines.length) {
+            const nextLine = () => {
+                if (this.dialogue_type === "menu" && this.line_index === this.lines.length) {
                     // don't clear last line for menu and techtip
                 } else {
                     this.text.setText(""); // 4 hours to fix this bug :)
                 }
                 this.auto_emit_flag = false;
                 this.#load_next_line();
-            });
+            };
+
+            this.scene.input.keyboard.on('keydown', nextLine);
+            this.scene.input.on('pointerdown', nextLine);
         }
     }
 }
@@ -234,40 +243,83 @@ class Dialogue extends Phaser.Scene {
 
     create(data) {
         this.dialogue_type = data.dialogue_type;
-
+    
         this.sounds = this.registry.get('sound_bank');
         // show story dialogue background if this is for story dialogue 
         if (this.dialogue_type === "story") {
+            this.cameras.main.fadeIn(1000, 0, 0, 0);
+
             this.sounds.stop_all_music();
             this.sounds.bank.music.story.play();
-            let dialogueBg = this.add.sprite(0, 0, 'Dialouge-SpriteSheet').setOrigin(0, 0);
+    
+            const level = this.registry.get('level');
+            let bgKey = `BG${level}`;
+            if (level > 7) {
+                bgKey = 'BG5';
+            }
+            this.add.image(512, 384, bgKey);            
+            
+            if (this.level === 3 || this.level === 5) {
+                this.bg = this.add.tileSprite(0, 0, this.sys.game.config.width, this.sys.game.config.height, bgKey).setOrigin(0, 0);
+                this.bgScrollSpeed = 2;
+            } else {
+                this.bg = this.add.image(0, 0, bgKey).setOrigin(0, 0).setAlpha(1);
+                this.bg.setDisplaySize(this.sys.game.config.width, this.sys.game.config.height);
+            }
+    
+            let promptText;
+            if (window.IS_MOBILE) {
+                promptText = 'TAP TO CONTINUE';
+            } else {
+                promptText = 'PRESS ANY KEY TO CONTINUE OR ESC TO SKIP';
+            }
+            this.escPrompt = this.add.bitmapText(this.game.config.width / 2, 730, fonts.small.fontName, promptText, fonts.small.size)
+                .setOrigin(0.5, 0.5);
 
-            // Play the animation
-            dialogueBg.play('Dialouge-SpriteSheet');
-            this.escPrompt = this.add.bitmapText(400, 275, fonts.small.fontName, `Tap to continue or ESC to skip`, fonts.small.size)
+            this.shermie = this.add.sprite(
+                -100,
+                this.game.config.height - 96,
+                "shermie_spritesheet"
+            );
+        
+            this.shermie.play("shermie_walk");
+        
+            this.tweens.add({
+                targets: this.shermie,
+                x: this.game.config.width / 2.5,
+                duration: 3000,
+                ease: "Linear",
+                onComplete: () => {
+                    this.shermie.play("shermie_idle");
+                },
+            });
         }
-
         this.sounds = this.registry.get('sound_bank');
-
+    
         this.dialogue_mgr = new DialogueManager(this, this.dialogue_data, this.dialogue_type, data.font_size);
-
+    
         this.keys = InitKeyDefs(this);
-        // console.log(`prev scene: ${data.prev_scene}`)
-        // console.log("Initialized Dialogue Scene")
         this.prev_scene = data.prev_scene;
-
+    
         this.emitter.emit('dialogue_start', data.dialogue_key);
-        this.emitter.once('dialogue_stop', () => { this.return_to_caller_scene(this.dialogue_type) });
-
+        this.emitter.once('dialogue_stop', () => {
+            if (data.dialogue_key !== "shermie_boss") {
+                if (this.dialogue_type === "story") {
+                    this.spawnEnemies();
+                }
+            }
+            this.return_to_caller_scene(this.dialogue_type);
+        });
+        
+    
         if (this.dialogue_type !== "game") { // ingame dialogue should not be skippable
             this.keys.esc.once('down', () => {
                 console.log('Player skipped the dialogue');
                 this.emitter.emit('force_dialogue_stop');
             });
         }
-
+    
         this.keys.m.on('down', this.sounds.toggle_mute)
-
     }
 
     update(time, delta) {
@@ -278,9 +330,15 @@ class Dialogue extends Phaser.Scene {
     return_to_caller_scene() {
         // console.log(`TYPE: ${this.dialogue_type}`)
         if (this.dialogue_type === "story") {
-            this.startPrompt = this.add.bitmapText(375, 180, fonts.middle.fontName, `Press spacebar to start!`, fonts.middle.size)
+            let promptText;
+            if (window.IS_MOBILE) {
+                promptText = 'TAP TO START';
+            } else {
+                promptText = 'PRESS ANY KEY TO START';
+            }
+            this.startPrompt = this.add.bitmapText(this.game.config.width / 2, this.game.config.height / 2, fonts.middle.fontName, promptText, fonts.middle.size)
+                .setOrigin(0.5, 0.5);
         }
-
 
         if (this.escPrompt) {
             this.escPrompt.destroy();
@@ -296,16 +354,59 @@ class Dialogue extends Phaser.Scene {
                     this.scene.stop('Dialogue');
                     this.scene.resume(this.prev_scene);
                 };
-                this.keys.space.on('down', startGame);
-
+                this.input.keyboard.on('keydown', startGame);
                 this.input.on('pointerdown', startGame);
             };
-            this.keys.space.on('down', startGame);
-
+            this.input.keyboard.on('keydown', startGame);
             this.input.on('pointerdown', startGame);
         } else if (this.dialogue_type === "game_blocking") {
             this.scene.resume(this.prev_scene);
         }
+    }
+
+    spawnEnemies() {
+        this.enemies = this.add.group();
+        const level = this.registry.get('level');
+        const enemySet = (level - 1) % 6;
+
+        const enemyAnimKeys = [
+            ["enemy3_idle", "enemy2_idle", "enemy1_idle"],
+            ["enemy4_idle", "enemy5_idle", "enemy6_idle"],
+            ["enemy7_idle", "enemy8_idle", "enemy9_idle"],
+            ["enemy10_idle", "enemy11_idle", "enemy12_idle"],
+            ["enemy13_idle", "enemy14_idle", "enemy15_idle"],
+            ["enemy16_idle", "enemy17_idle", "enemy18_idle"],
+        ];
+
+        const enemyKeys = enemyAnimKeys[enemySet];
+
+        for (let i = 0; i < 5; i++) {
+            for (let j = 0; j < 12; j++) {
+                let enemyKey;
+                if (i === 4) {
+                    enemyKey = enemyKeys[0];
+                } else if (i === 2 || i === 3) {
+                    enemyKey = enemyKeys[1];
+                } else {
+                    enemyKey = enemyKeys[2];
+                }
+                const enemy = this.add.sprite(
+                    j * 67 + 80,
+                    -255 - i * 51,
+                    "enemy_spritesheet",
+                    0
+                );
+                enemy.play(enemyKey);
+                this.enemies.add(enemy);
+            }
+        }
+
+        this.tweens.add({
+            targets: this.enemies.getChildren(),
+            y: "+= 600",
+            duration: 2000,
+            ease: "Power2",
+        });
     }
 }
 

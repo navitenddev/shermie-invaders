@@ -75,7 +75,7 @@ export class Preloader extends Scene {
 
         this.load.image("upgradeTilemap", "backgrounds/leveloneTilemap.png");
 
-        this.load.image("losescreen", "backgrounds/losescreen.png");
+        // this.load.image("losescreen", "backgrounds/losescreen.png");
 
         this.load.image("cottonball", "projectiles/cottonball.png");
 
@@ -101,8 +101,6 @@ export class Preloader extends Scene {
 
         this.load.image("firewall_icon", "ui/firewall-icon.png");
 
-        this.load.image("story_bg", "backgrounds/Dialouge.png");
-
         this.load.image("brick_tileset", "misc/brick-tileset.png");
 
         // process tilemap after load is complete
@@ -116,6 +114,8 @@ export class Preloader extends Scene {
         })
 
         //this.load.audio(['bgmusic','shoot','explosion'], ['SFX/spacebg.wav','SFX/shoot.wav', 'SFX/explosion.wav']);
+
+        this.load.plugin('rexvirtualjoystickplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js', true);
 
         this.load.audio('bgmusic', 'SFX/bgmusic.mp3');
 
@@ -279,11 +279,35 @@ export class Preloader extends Scene {
 
         this.load.image('pause', 'controls/pause.png');
         this.load.image('controls', 'controls/controls.png');
+        this.load.image('joystick_split', 'controls/joystick_split.png');
+        this.load.image('joystick_handle', 'controls/joystick_handle.png');
         this.load.bitmapFont('PressStart2P-Large', 'fonts/PressStart2P-Large.png', 'fonts/PressStart2P-Large.xml');
         this.load.bitmapFont('PressStart2P-Medium', 'fonts/PressStart2P-Medium.png', 'fonts/PressStart2P-Medium.xml');
         this.load.bitmapFont('PressStart2P-Middle', 'fonts/PressStart2P-Middle.png', 'fonts/PressStart2P-Middle.xml');
         this.load.bitmapFont('PressStart2P-Small', 'fonts/PressStart2P-Small.png', 'fonts/PressStart2P-Small.xml');
         this.load.bitmapFont('PressStart2P-Tiny', 'fonts/PressStart2P-Tiny.png', 'fonts/PressStart2P-Tiny.xml');
+
+        
+        this.load.json({
+            key: "PUPA_LEMNISCATE",
+            url: "paths/pupa.json",
+            dataKey: "LEMNISCATE",
+        });
+        this.load.json({
+            key: "PUPA_TRIANGLE",
+            url: "paths/pupa.json",
+            dataKey: "TRIANGLE",
+        });
+        this.load.json({
+            key: "PUPA_SPLINE",
+            url: "paths/pupa.json",
+            dataKey: "SPLINE1",
+        });
+        this.load.json({
+            key: "PUPA_ILLUMINATI",
+            url: "paths/pupa.json",
+            dataKey: "ILLUMINATI",
+        });
     }
     create() {
         //  When all the assets have loaded, it's often worth creating global

@@ -17,7 +17,7 @@ import { Sandbox } from './scenes/Sandbox';
 import { TechTipTest } from './scenes/TechTipTest';
 import { Barrier } from './objects/barrier';
 import { start_dialogue } from './scenes/Dialogue';
-
+import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -37,6 +37,16 @@ const config = {
             gravity: { y: 0 },
             debug: true,
         },
+    },
+    input: {
+        activePointers: 3,
+    },
+    plugins: {
+        global: [{
+            key: 'rexVirtualJoystick',
+            plugin: VirtualJoystickPlugin,
+            start: true
+        }]
     },
     scene: [
         Boot,
@@ -106,6 +116,7 @@ export function init_collision_events(scene, scene_key) {
         scene.sounds.bank.sfx.explosion[3].play();
         if (scene.player_vars.power == "pierce" || scene.player_vars.perm_power.includes("pierce")) player_bullet.hurt_bullet();
         else player_bullet.deactivate();
+        scene.objs.player.totalHits++;
         enemy.die();
         if (scene.scoreManager) {
             scene.scoreManager.addScore(Math.round(enemy.scoreValue * scene.level));

@@ -2,13 +2,11 @@ import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../utils/keyboard_input';
 import { fonts } from '../utils/fontStyle';
-import { Barrier } from '../objects/barrier';
-import ScoreManager from '../utils/ScoreManager';
 import { GridEnemy } from '../objects/enemy_grid';
+import ScoreManager from '../utils/ScoreManager';
 import { EventDispatcher } from '../utils/event_dispatcher';
 import { start_dialogue } from './Dialogue';
 import { init_collision_events, restart_scenes } from '../main';
-import { SoundBank } from '../utils/sounds';
 import Controls from '../controls/controls';
 
 /**
@@ -30,35 +28,9 @@ export class Game extends Scene {
         this.debugMode = false;
     }
 
-    preload() {
-        this.load.json({
-            key: "PUPA_LEMNISCATE",
-            url: "assets/paths/pupa.json",
-            dataKey: "LEMNISCATE",
-        });
-        this.load.json({
-            key: "PUPA_TRIANGLE",
-            url: "assets/paths/pupa.json",
-            dataKey: "TRIANGLE",
-        });
-        this.load.json({
-            key: "PUPA_SPLINE",
-            url: "assets/paths/pupa.json",
-            dataKey: "SPLINE1",
-        });
-        this.load.json({
-            key: "PUPA_ILLUMINATI",
-            url: "assets/paths/pupa.json",
-            dataKey: "ILLUMINATI",
-        });
-    }
-
-
     create() {
         this.level = this.registry.get('level');
-        // fade in from black
-        this.cameras.main.fadeIn(500, 0, 0, 0);
-        // For now, the level dialogues will repeat after it exceeds the final level dialogue.
+        
 
         this.PUPA_PATHS = {
             LEMNISCATE: this.cache.json.get('PUPA_LEMNISCATE'),
@@ -110,14 +82,11 @@ export class Game extends Scene {
         this.player_vars.power = "";
         this.objs.init_all();
 
-        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
-            () => {
-                this.keys.p.on('down', () => this.pause());
-                this.keys.esc.on('down', () => this.pause());
-            }
-        );
         this.sounds = this.registry.get('sound_bank');
         this.keys = InitKeyDefs(this);
+        
+        this.keys.p.on('down', () => this.pause());
+        this.keys.esc.on('down', () => this.pause());
 
         // Score and high score
         this.scoreManager = new ScoreManager(this);
@@ -301,10 +270,10 @@ export class Game extends Scene {
         this.player_vars.totalShotsFired = this.objs.player.totalShotsFired;
         this.player_vars.totalHits = this.objs.player.totalHits;
 
-
         this.cameras.main.fade(500, 0, 0, 0);
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+            this.scene.setVisible(false);
             this.sounds.stop_all_music();
             this.scene.start(targetScene);
         });
