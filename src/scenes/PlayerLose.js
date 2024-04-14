@@ -15,24 +15,23 @@ export class PlayerLose extends Scene {
     create() {
         this.sounds = this.registry.get('sound_bank');
         this.sounds.stop_all_music();
+        this.sounds.bank.sfx.lose.play();
+        const num_tips = this.cache.json.get("dialogue").techtips.quantity;
+        const rand_idx = Phaser.Math.Between(1, num_tips);
+        restart_scenes(this.scene);
 
         this.cameras.main.setBackgroundColor(0x000000);
         this.cameras.main.fadeIn(1000, 0, 0, 0);
 
-        const num_tips = this.cache.json.get("dialogue").techtips.quantity;
-        const rand_idx = Phaser.Math.Between(1, num_tips);
-        restart_scenes(this.scene);
+        this.player_vars = this.registry.get('player_vars');
+        const score = this.player_vars.score;
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE, () => {
             start_dialogue(this.scene, `techtip${rand_idx}`, "techtip");
         });
 
-        this.sounds = this.registry.get('sound_bank');
-        this.sounds.bank.sfx.lose.play();
         this.emitter.removeAllListeners();
 
-        this.player_vars = this.registry.get('player_vars');
-        const score = this.player_vars.score;
 
         // let bg = this.add.image(0, 0, 'losescreen').setAlpha(0.85);
         // bg.setOrigin(0, 0);

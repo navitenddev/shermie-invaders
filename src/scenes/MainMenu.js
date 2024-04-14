@@ -72,10 +72,10 @@ export class MainMenu extends BaseMenu {
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                     this.scene.start('Game');
                 });
-                this.start_btn.disable(); // disallow spamming
+                this.start_btn.disable();
             },
         ).setDepth(3);
-
+    
         // Controls Button
         menuY += menuSpacing;
         this.controls_btn = new TextButton(this, 512, menuY, "CONTROLS",

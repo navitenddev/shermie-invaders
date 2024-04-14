@@ -2,13 +2,11 @@ import { Scene } from 'phaser';
 import { ObjectSpawner } from "../objects/spawner";
 import { InitKeyDefs } from '../utils/keyboard_input';
 import { fonts } from '../utils/fontStyle';
-import { Barrier } from '../objects/barrier';
-import ScoreManager from '../utils/ScoreManager';
 import { GridEnemy } from '../objects/enemy_grid';
+import ScoreManager from '../utils/ScoreManager';
 import { EventDispatcher } from '../utils/event_dispatcher';
 import { start_dialogue } from './Dialogue';
 import { init_collision_events, restart_scenes } from '../main';
-import { SoundBank } from '../utils/sounds';
 import Controls from '../controls/controls';
 
 /**
@@ -30,35 +28,9 @@ export class Game extends Scene {
         this.debugMode = false;
     }
 
-    preload() {
-        this.load.json({
-            key: "PUPA_LEMNISCATE",
-            url: "assets/paths/pupa.json",
-            dataKey: "LEMNISCATE",
-        });
-        this.load.json({
-            key: "PUPA_TRIANGLE",
-            url: "assets/paths/pupa.json",
-            dataKey: "TRIANGLE",
-        });
-        this.load.json({
-            key: "PUPA_SPLINE",
-            url: "assets/paths/pupa.json",
-            dataKey: "SPLINE1",
-        });
-        this.load.json({
-            key: "PUPA_ILLUMINATI",
-            url: "assets/paths/pupa.json",
-            dataKey: "ILLUMINATI",
-        });
-    }
-
-
     create() {
         this.level = this.registry.get('level');
-        // fade in from black
-        this.cameras.main.fadeIn(500, 0, 0, 0);
-        // For now, the level dialogues will repeat after it exceeds the final level dialogue.
+
 
         this.PUPA_PATHS = {
             LEMNISCATE: this.cache.json.get('PUPA_LEMNISCATE'),
@@ -70,6 +42,7 @@ export class Game extends Scene {
         if (this.level <= 7) {
             start_dialogue(this.scene, `level${(this.level)}`, "story", "Game", 23);
         }
+
         this.visualobject = this.add.sprite(-100, -100, 'BGSmallObjects');
         this.visualobject.setVisible(false);
         let bgKey = `BG${this.level}`;
@@ -78,7 +51,7 @@ export class Game extends Scene {
 
         if (this.level === 3 || this.level === 5) {
             this.bg = this.add.tileSprite(0, 0, this.sys.game.config.width, this.sys.game.config.height, bgKey).setOrigin(0, 0);
-            this.bgScrollSpeed = 2;
+            this.bgScrollSpeed = 1;
         } else {
             this.bg = this.add.image(0, 0, bgKey).setOrigin(0, 0).setAlpha(1);
             this.bg.setDisplaySize(this.sys.game.config.width, this.sys.game.config.height);
@@ -87,15 +60,16 @@ export class Game extends Scene {
         if (this.level % 7 === 0) {
             this.bg = this.add.sprite(0, 0, 'BG7').setOrigin(0, 0);
             this.bg.play('BG7-SpriteSheet'); //can remove bg7 anim if annoying
+            console.log("bg7 started")
         } else if ((this.level + 1) % 7 === 0) {
             this.bg = this.add.sprite(0, 0, 'BG6').setOrigin(0, 0);
             this.bg.play('BG6-SpriteSheet'); //can remove bg6 anim if annoying
         } else if (this.level > 7) {
             this.bg = this.add.tileSprite(0, 0, this.sys.game.config.width, this.sys.game.config.height, bgKey).setOrigin(0, 0);
-            this.bgScrollSpeed = 2;
+            this.bgScrollSpeed = 1;
         }
-        this.bg.setScrollFactor(0);
-        this.bg.setDepth(-1);
+
+        GridEnemy.initDestructionEmitter(this);
 
         this.initBackgroundObject();
         // Object spawner only needed during gameplay, so we initialize it in this scene.
@@ -106,14 +80,11 @@ export class Game extends Scene {
         this.player_vars.power = "";
         this.objs.init_all();
 
-        this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE,
-            () => {
-                this.keys.p.on('down', () => this.pause());
-                this.keys.esc.on('down', () => this.pause());
-            }
-        );
         this.sounds = this.registry.get('sound_bank');
         this.keys = InitKeyDefs(this);
+
+        this.keys.p.on('down', () => this.pause());
+        this.keys.esc.on('down', () => this.pause());
 
         // Score and high score
         this.scoreManager = new ScoreManager(this);
@@ -267,7 +238,6 @@ export class Game extends Scene {
                         this.add.enemy_lupa(this, this.game.config.width, 525, boss_hp);
                     else
                         this.add.enemy_reaper(this, 0, 0, boss_hp);
-                    // TODO: start boss music here
                     this.sounds.stop_all_music();
                     this.sounds.bank.music.boss.play();
                     start_dialogue(this.scene, "shermie_boss", "game_blocking", "Game");
@@ -298,10 +268,10 @@ export class Game extends Scene {
         this.player_vars.totalShotsFired = this.objs.player.totalShotsFired;
         this.player_vars.totalHits = this.objs.player.totalHits;
 
-
         this.cameras.main.fade(500, 0, 0, 0);
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
+            this.scene.setVisible(false);
             this.sounds.stop_all_music();
             this.scene.start(targetScene);
         });
