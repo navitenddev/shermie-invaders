@@ -75,13 +75,15 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
     }
 
     die() {
-        if (!this.dead && (!this.scene.player_vars.perm_power.includes("spread") || !this.scene.player_vars.perm_power.includes("pierce"))) {
+        if (!this.dead) {
             this.dead = true;
-            let power = this.scene.objs.powers.getFirstNth(Phaser.Math.Between(0, this.scene.objs.powers.countActive(false)), false, false, 0, 0, "powerup");
-            if (power !== null) {
-                let fall_speed = PowerupsConstDefs.speed.y;
-                power.activate(this.x, this.y, -fall_speed);
-                this.scene.powerup_stats.active_powerups++;
+            if(!this.scene.player_vars.perm_power.includes("spread") || !this.scene.player_vars.perm_power.includes("pierce")){
+                let power = this.scene.objs.powers.getFirstNth(Phaser.Math.Between(0, this.scene.objs.powers.countActive(false)), false, false, 0, 0, "powerup");
+                if (power !== null) {
+                    let fall_speed = PowerupsConstDefs.speed.y;
+                    power.activate(this.x, this.y, -fall_speed);
+                    this.scene.powerup_stats.active_powerups++;
+                }
             }
             this.play("usb_explode")
                 .on('animationcomplete', () => {
