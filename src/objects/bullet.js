@@ -108,10 +108,10 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
             .setPosition(x, y)
             .setAngle(Math.atan2(-vy, vx) * (180 / Math.PI) + 90)
             .setVisible(true)
-            .setActive(true);
+            .setActive(true).setScale(0.75);
         if (this.player_vars.power == "pierce" || this.player_vars.perm_power.includes("pierce")) {
             this.setTexture("pierceshot_icon");
-            this.setSize(48, 48);
+            this.setSize(20, 32).setScale(1);
             this.anims.stop();
             this.anims.play('pierce_bullet');
         }
@@ -122,18 +122,19 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
      * @public
      * @description Deactivate the bullet and move it offscreen
      */
-    deactivate() {
-        if (this.active) this.player_vars.active_bullets--;
-        this.setPosition(-1024, -1024);
-        this.setVisible(false);
-        this.setActive(false);
-        this.setVelocity(0, 0);
-        this.setTexture("bullet");
-        this.setSize(PlayerBulletConstDefs.dims.w, PlayerBulletConstDefs.dims.h);
-        this.anims.stop();
-        this.anims.play('cottonBullet');
+    deactivate(){
+        if (this.active){
+            this.player_vars.active_bullets--;
+            this.setPosition(-1024, -1024);
+            this.setVisible(false);
+            this.setActive(false);
+            this.setVelocity(0, 0);
+            this.setTexture("bullet");
+            this.setSize(PlayerBulletConstDefs.dims.w, PlayerBulletConstDefs.dims.h);
+            this.anims.stop();
+            this.anims.play('cottonBullet');
+        }
     }
-
 }
 
 /** 
