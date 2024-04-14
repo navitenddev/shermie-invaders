@@ -113,6 +113,7 @@ export function init_collision_events(scene, scene_key) {
     scene.level = scene.registry.get('level');
     // player bullet hits grid enemy
     scene.physics.add.overlap(scene.objs.bullets.player, scene.objs.enemies.grid, (player_bullet, enemy) => {
+        scene.sounds.bank.sfx.explosion[3].play();
         if (scene.player_vars.power == "pierce" || scene.player_vars.perm_power.includes("pierce")) player_bullet.hurt_bullet();
         else player_bullet.deactivate();
         scene.objs.player.totalHits++;
@@ -125,6 +126,7 @@ export function init_collision_events(scene, scene_key) {
 
     // player bullet hits special enemy
     scene.physics.add.overlap(scene.objs.bullets.player, scene.objs.enemies.special, (player_bullet, enemy) => {
+        scene.sounds.bank.sfx.explosion[3].play();
         scene.objs.player.totalHits++;
         player_bullet.deactivate();
         enemy.die();
@@ -136,12 +138,19 @@ export function init_collision_events(scene, scene_key) {
 
     // enemy bullet hits player
     scene.physics.add.overlap(scene.objs.bullets.enemy, scene.objs.player, (player, enemy_bullet) => {
+        scene.cameras.main.shake(200, 0.02);
         if (!player.is_dead) {
             enemy_bullet.deactivate();
             let dialogue_key;
             if (player.stats.shield > 1) {
                 player.shieldParticles.explode(10, player.x, scene.sys.game.config.height - 135);
-                dialogue_key = (--player.stats.shield === 1) ? 'shermie_shieldgone' : 'shermie_shieldhurt';
+                if (--player.stats.shield === 1) {
+                    dialogue_key = 'shermie_shieldgone';
+                    scene.sounds.bank.sfx.shield_destroy.play();
+                } else {
+                    dialogue_key = 'shermie_shieldhurt';
+                    scene.sounds.bank.sfx.shield_hurt.play();
+                }
                 player.updateHitbox();
                 start_dialogue(scene.scene, dialogue_key, "game", scene_key);
             } else {
@@ -158,6 +167,7 @@ export function init_collision_events(scene, scene_key) {
 
     // player collides with powerup 
     scene.physics.add.overlap(scene.objs.powers, scene.objs.player, (player, powerup) => {
+        scene.sounds.bank.sfx.powerup.play();
         player.changePower(powerup.buff);
         powerup.deactivate();
     });
@@ -179,7 +189,7 @@ export function init_collision_events(scene, scene_key) {
             });
             bulletCollisionEmitter.explode(10, player_bullet.x, player_bullet.y);
 
-            if (scene.player_vars.power == "pierce"  || scene.player_vars.perm_power.includes("pierce")) player_bullet.hurt_bullet();
+            if (scene.player_vars.power == "pierce" || scene.player_vars.perm_power.includes("pierce")) player_bullet.hurt_bullet();
             else player_bullet.deactivate();
             enemy_bullet.deactivate();
         }

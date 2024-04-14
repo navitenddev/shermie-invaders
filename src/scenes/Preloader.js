@@ -119,17 +119,21 @@ export class Preloader extends Scene {
 
         this.load.audio('bgmusic', 'SFX/bgmusic.mp3');
 
-        this.load.audio('explosion', ['SFX/explosion.wav']);
+        this.load.audio('explosion1', ['SFX/explode1.wav']);
 
         this.load.audio('explosion2', ['SFX/explode2.wav']);
 
         this.load.audio('explosion3', ['SFX/explode3.wav']);
+
+        this.load.audio('explosion4', ['SFX/explode4.wav']);
 
         this.load.audio('reload', ['SFX/reload.wav']);
 
         this.load.audio('hurt', ['SFX/hurt.wav']);
 
         this.load.audio('shoot', ['SFX/shoot.wav']);
+
+        this.load.audio('enemy_shoot', 'SFX/shoot_enemy1.wav');
 
         this.load.audio('win', ['SFX/win.wav']);
 
@@ -140,6 +144,12 @@ export class Preloader extends Scene {
         this.load.audio('click', ['SFX/click.wav']);
 
         this.load.audio('hover', ['SFX/hover.wav']);
+
+        this.load.audio('powerup', 'SFX/powerup.wav');
+
+        this.load.audio('shield_hurt', 'SFX/shield_hurt.wav');
+
+        this.load.audio('shield_destroy', 'SFX/shield_destroy.wav');
 
         this.load.audio('story_music', 'SFX/8 Bit Presentation - David Fesliyan.mp3');
 

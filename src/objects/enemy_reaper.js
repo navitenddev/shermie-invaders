@@ -64,7 +64,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
             100, 10,
             this.hp
         );
-        
+
         this.deathEmitter = scene.add.particles(0, 0, 'flares', {
             frame: ['white'],
             color: [0xFFFF00, 0x008000, 0x0000FF, 0x4B0082, 0x8A2BE2, 0xFF0000, 0xFFA500],
@@ -269,6 +269,7 @@ class EnemyReaper extends Phaser.Physics.Arcade.Sprite {
             this.destroy();
         }
         this.hp--;
+        this.deathEmitter.explode(10, this.x, this.y);
     }
 
     #shoot() {
