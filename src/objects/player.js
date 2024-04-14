@@ -182,20 +182,6 @@ class Player extends Phaser.Physics.Arcade.Sprite {
     }
 
     update(time, delta, keys, controls) {
-        if (window.IS_MOBILE && controls) {
-            const pointer = this.scene.input.activePointer;
-            const screenWidth = this.scene.sys.game.config.width;
-            const touchZoneWidth = screenWidth * 0.3;
-
-            if (pointer.isDown) {
-                if (pointer.x < touchZoneWidth) {
-                    this.move(false); // Move left
-                } else if (pointer.x > screenWidth - touchZoneWidth) {
-                    this.move(true); // Move right
-                }
-            }
-        }
-
         // Only display shield bar if we have shields
         (this.shield_bar.value) ?
             this.shield_bar.setVisible(true) :
@@ -224,7 +210,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.is_dead) {
             if (this.player_vars.lives > 0 && !this.is_inbounds()) {
                 this.is_dead = false;
-                this.resetPlayer();
+                this.resetPlayer();                
                 this.flashPlayer();
             }
             return;
@@ -235,29 +221,47 @@ class Player extends Phaser.Physics.Arcade.Sprite {
         this.updateShield();
         this.updateHitbox();
 
-
-        if (keys.d.isDown || keys.right.isDown || (controls && controls.right)) {
-            this.move(true);
-        } else if (keys.a.isDown || keys.left.isDown || (controls && controls.left)) {
-            this.move(false);
-        } else if (
-            this.anims &&
-            this.anims.isPlaying &&
-            this.anims.currentAnim.key !== "shermie_idle" &&
-            this.anims.currentAnim.key !== "shermie_shoot"
-        )
-            this.play("shermie_idle");
+        let isMoving = false;
 
         if (window.IS_MOBILE && controls) {
-            if ((keys.space.isDown || keys.w.isDown || controls.shoot) && !this.is_dead) this.shoot(time);
-        } else {
-            if ((keys.space.isDown || keys.w.isDown) && !this.is_dead) this.shoot(time);
+            const cursorKeys = controls.joyStick.createCursorKeys();
+
+            if (cursorKeys.left.isDown) {
+                this.move(false);
+                isMoving = true;
+            } else if (cursorKeys.right.isDown) {
+                this.move(true);
+                isMoving = true;
+            }
+
+            if (controls.shoot && !this.is_dead) {
+                this.shoot(time);
+            }
         }
 
-        if (!keys.d.isDown && !keys.right.isDown &&
-            !keys.a.isDown && !keys.left.isDown &&
-            (!controls || (!controls.right && !controls.left)))
-            this.setVelocity(0);
+        if (keys.d.isDown || keys.right.isDown) {
+            this.move(true);
+            isMoving = true;
+        } else if (keys.a.isDown || keys.left.isDown) {
+            this.move(false);
+            isMoving = true;
+        }
+
+        if ((keys.space.isDown || keys.w.isDown) && !this.is_dead) {
+            this.shoot(time);
+        }
+
+        if (!isMoving) {
+            this.setVelocityX(0);
+            if (
+                this.anims &&
+                this.anims.isPlaying &&
+                this.anims.currentAnim.key !== "shermie_idle" &&
+                this.anims.currentAnim.key !== "shermie_shoot"
+            ) {
+                this.play("shermie_idle");
+            }
+        }
     }
 
     /**

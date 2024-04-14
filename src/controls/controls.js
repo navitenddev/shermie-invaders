@@ -28,10 +28,16 @@ export default class Controls {
         this.shootButton.on('pointerup', () => this.shoot = false);
         this.shootButton.on('pointerout', () => this.shoot = false);
 
-        scene.input.on('pointerdown', this.onPointerDown, this);
-        scene.input.on('pointerup', this.onPointerUp, this);
+        this.joyStick = scene.plugins.get('rexVirtualJoystick').add(scene, {
+            x: 120,
+            y: screenHeight - 120,
+            radius: 100,
+            base: scene.add.sprite(0, 0, 'joystick_split', 0.75).setScale(.66),
+            thumb: scene.add.sprite(0, 0, 'joystick_handle', 0.75).setScale(.66),
+        });
 
-        scene.input.addPointer(1);
+        this.left = this.joyStick.left;
+        this.right = this.joyStick.right;
     }
 
     onPointerDown(pointer) {

@@ -115,6 +115,8 @@ export class Preloader extends Scene {
 
         //this.load.audio(['bgmusic','shoot','explosion'], ['SFX/spacebg.wav','SFX/shoot.wav', 'SFX/explosion.wav']);
 
+        this.load.plugin('rexvirtualjoystickplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js', true);
+
         this.load.audio('bgmusic', 'SFX/bgmusic.mp3');
 
         this.load.audio('explosion', ['SFX/explosion.wav']);
@@ -267,6 +269,8 @@ export class Preloader extends Scene {
 
         this.load.image('pause', 'controls/pause.png');
         this.load.image('controls', 'controls/controls.png');
+        this.load.image('joystick_split', 'controls/joystick_split.png');
+        this.load.image('joystick_handle', 'controls/joystick_handle.png');
         this.load.bitmapFont('PressStart2P-Large', 'fonts/PressStart2P-Large.png', 'fonts/PressStart2P-Large.xml');
         this.load.bitmapFont('PressStart2P-Medium', 'fonts/PressStart2P-Medium.png', 'fonts/PressStart2P-Medium.xml');
         this.load.bitmapFont('PressStart2P-Middle', 'fonts/PressStart2P-Middle.png', 'fonts/PressStart2P-Middle.xml');
