@@ -6,10 +6,10 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     scoreValue = 200;
     moneyValue = 15;
     static Y_NORMAL = 300;
-    static BULLET_VEL = 450;
-    static ANGLE_VEL = 400;
+    static BULLET_VEL = 500;
+    static ANGLE_VEL = 500;
     hp = 40;
-    shoot_cd = 125;
+    shoot_cd = 85;
     last_fired = 0;
     shots_fired = 0;
 
