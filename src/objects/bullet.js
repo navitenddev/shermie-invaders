@@ -109,7 +109,7 @@ class PlayerBullet extends Phaser.Physics.Arcade.Sprite {
             .setAngle(Math.atan2(-vy, vx) * (180 / Math.PI) + 90)
             .setVisible(true)
             .setActive(true);
-        if(this.player_vars.power == "pierce"  || this.player_vars.perm_power.includes("pierce")){
+        if (this.player_vars.power == "pierce" || this.player_vars.perm_power.includes("pierce")) {
             this.setTexture("pierceshot_icon");
             this.setSize(48, 48);
             this.anims.stop();
@@ -197,11 +197,12 @@ class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
      * @param {number} vy The velocity in the y-direction
      */
     activate(x, y, vx = 0, vy = 300) {
+        this.scene.sounds.bank.sfx.enemy_shoot.play();
         this.setVelocity(vx, vy)
             .setPosition(x, y)
             .setAngle(Math.atan2(vy, vx) * (180 / Math.PI))
             .setVisible(true)
-            .setActive(true);        
+            .setActive(true);
     }
 
     /** 

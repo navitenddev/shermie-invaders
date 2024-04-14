@@ -31,17 +31,22 @@ class SoundBank {
         this.bank = {
             sfx: {
                 shoot: this.scene.game.sound.add('shoot', { volume: 0.2, loop: false }),
+                enemy_shoot: this.scene.game.sound.add('enemy_shoot', { volume: 0.1, loop: false }),
                 explosion: [
-                    this.scene.game.sound.add('explosion', { volume: 0.1, loop: false }),
+                    this.scene.game.sound.add('explosion1', { volume: 0.1, loop: false }),
                     this.scene.game.sound.add('explosion2', { volume: 0.1, loop: false }),
-                    this.scene.game.sound.add('explosion3', { volume: 0.1, loop: false })
+                    this.scene.game.sound.add('explosion3', { volume: 0.1, loop: false }),
+                    this.scene.game.sound.add('explosion4', { volume: 0.1, loop: false }),
                 ],
                 reload: this.scene.game.sound.add('reload', { volume: 0.1, loop: false }),
                 hurt: this.scene.game.sound.add('hurt', { volume: 0.3, loop: false }),
+                shield_hurt: this.scene.game.sound.add('shield_hurt', { volume: 0.3, loop: false }),
+                shield_destroy: this.scene.game.sound.add('shield_destroy', { volume: 0.3, loop: false }),
                 win: this.scene.game.sound.add('win', { volume: 0.1, loop: false }),
                 lose: this.scene.game.sound.add('lose', { volume: 0.1, loop: false }),
                 click: this.scene.game.sound.add('click', { volume: 0.1, loop: false }),
                 hover: this.scene.game.sound.add('hover', { volume: 0.1, loop: false }),
+                powerup: this.scene.game.sound.add('powerup', { volume: 0.2, loop: false }),
             },
             music: {
                 bg: this.scene.game.sound.add('bgmusic', { volume: 0.2, loop: true }),

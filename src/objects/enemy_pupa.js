@@ -235,6 +235,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
             this.is_dead = true;
             return;
         }
+        this.deathEmitter.explode(10, this.x, this.y);
         this.hp--;
     }
 

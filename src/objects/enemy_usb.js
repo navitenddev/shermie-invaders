@@ -46,7 +46,7 @@ class EnemyUSB extends Phaser.Physics.Arcade.Sprite {
             min: -32,
             max: scene.game.config.width + 32
         };
-        
+
         this.deathEmitter = scene.add.particles(0, 0, 'flares', {
             frame: ['white'],
             color: [0xFFFF00, 0x008000, 0x0000FF, 0x4B0082, 0x8A2BE2, 0xFF0000, 0xFFA500],
