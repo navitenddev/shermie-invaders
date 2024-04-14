@@ -135,19 +135,17 @@ class GridEnemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     static initDestructionEmitter(scene) {
-        if (!GridEnemy.destructionEmitter) { // singleton
-            GridEnemy.destructionEmitter = scene.add.particles(0, 0, 'flares', {
-                frame: ['white'],
-                color: [0x39FF14],
-                scale: { start: 0.5, end: 0, ease: 'exp.out' },
-                alpha: { start: 1, end: .5, ease: 'exp.out' },
-                lifespan: 750,
-                speed: { min: 150, max: 350 },
-                gravityY: 1000,
-                blendMode: 'COLOR',
-                emitting: false
-            });
-        }
+        GridEnemy.destructionEmitter = scene.add.particles(0, 0, 'flares', {
+            frame: ['white'],
+            color: [0x39FF14],
+            scale: { start: 0.5, end: 0, ease: 'exp.out' },
+            alpha: { start: 1, end: .5, ease: 'exp.out' },
+            lifespan: 750,
+            speed: { min: 150, max: 350 },
+            gravityY: 1000,
+            blendMode: 'COLOR',
+            emitting: false
+        });
     }
 
 }
