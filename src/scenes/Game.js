@@ -60,6 +60,7 @@ export class Game extends Scene {
         if (this.level % 7 === 0) {
             this.bg = this.add.sprite(0, 0, 'BG7').setOrigin(0, 0);
             this.bg.play('BG7-SpriteSheet'); //can remove bg7 anim if annoying
+            console.log("bg7 started")
         } else if ((this.level + 1) % 7 === 0) {
             this.bg = this.add.sprite(0, 0, 'BG6').setOrigin(0, 0);
             this.bg.play('BG6-SpriteSheet'); //can remove bg6 anim if annoying
@@ -69,9 +70,6 @@ export class Game extends Scene {
         }
 
         GridEnemy.initDestructionEmitter(this);
-
-        this.bg.setScrollFactor(0);
-        this.bg.setDepth(-1);
 
         this.initBackgroundObject();
         // Object spawner only needed during gameplay, so we initialize it in this scene.
