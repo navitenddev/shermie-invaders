@@ -6,9 +6,10 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
     scoreValue = 200;
     moneyValue = 15;
     static Y_NORMAL = 300;
-    static BULLET_VEL = 500;
+    static BULLET_VEL = 600;
     static ANGLE_VEL = 650;
     hp = 40;
+    hp_rage = 10;
     shoot_cd = 65;
     last_fired = 0;
     shots_fired = 0;
@@ -47,6 +48,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
         this.t_text = this.scene.add.bitmapText(this.follower.vec.x, this.follower.vec.y - 32, fonts.tiny.fontName, this.follower.t.toFixed(2), fonts.tiny.size);
         this.#change_state("ROAMING"); // do the sweep
         this.hp = hp;
+        this.hp_rage = hp / 2; // boss will enrage after having < half health
         this.hp_bar_offset = {
             x: -47,
             y: -(this.height / 1.8),
@@ -132,9 +134,14 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
             case "ILLUM_START": // pick random point in ILLUM triangle to start at
                 {
                     this.#clear_path();
+                    let ang_vel = EnemyPupa.ANGLE_VEL;
+                    if (this.hp < this.hp_rage) {
+                        // when enraged, add randomness to the direction of shooting rotation
+                        ang_vel = (Phaser.Math.Between(0, 1)) ? EnemyPupa.ANGLE_VEL : -EnemyPupa.ANGLE_VEL;
+                    }
 
                     this.setAngle(0)
-                        .setAngularVelocity(EnemyPupa.ANGLE_VEL);
+                        .setAngularVelocity(ang_vel);
                     this.path = new Phaser.Curves.Path(this.scene.PUPA_PATHS.ILLUMINATI);
                     // choose random point in illuminati path to start
                     this.illum_count = 0; // when we finish visiting all 3 points in triangle, stop
@@ -161,8 +168,6 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
                 {
                     this.tween.pause();
                     this.shots_fired = 0;
-                    // always do a CW rotation
-                    // this.setAngularVelocity(EnemyPupa.ANGLE_VEL);
                 }
                 break;
             default:
@@ -197,7 +202,8 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
                 break;
             // IL_START -> IL_SHOOT -> IL_NEXT -> IL_SHOOT -> IL_NEXT -> IL_SHOOT -> ROAMING 
             case "ILLUM_NEXT":
-                this.#shoot(time);
+                if (this.hp < this.hp_rage)
+                    this.#shoot(time);
             case "ILLUM_START": // FALL THROUGH
                 {
                     if (this.#dist_from_target_pos() < 5) {
@@ -210,7 +216,7 @@ class EnemyPupa extends Phaser.Physics.Arcade.Sprite {
             case "ILLUM_PAUSE":
                 {
                     this.#shoot(time);
-                    if (this.shots_fired >= 25) {
+                    if (this.shots_fired >= 35) {
                         (this.illum_count < 3) ?
                             this.#change_state("ILLUM_NEXT") :
                             this.#change_state("ROAMING");
