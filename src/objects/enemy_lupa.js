@@ -51,6 +51,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         this.state_text = this.scene.add.bitmapText(this.x, this.y, fonts.tiny.fontName, this.ai_state, fonts.tiny.size);
 
         this.hp = hp;
+        this.hp_rage = hp / 3; // enrage after being dropped < 1/3 max hp
         this.hp_bar_offset = {
             x: -47,
             y: -(this.height / 1.8),
@@ -258,9 +259,11 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         this.#update_text();
         this.#update_bar();
 
+        if (this.hp < this.hp_rage) {
+            this.rain_cd = 350; // slow er down
+            this.#rain_bullet(time);
+        }
 
-        // console.log(this.follower.t);
-        let player = this.scene.objs.player;
         let dist = Phaser.Math.Distance.BetweenPoints({ x: this.x, y: this.y }, this.target_pos); // dist from target
 
         this.path.getPoint(this.follower.t, this.follower.vec);
@@ -275,7 +278,10 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                     if (dist <= 10) {
                         this.setVelocity(0, 0);
                         this.#clear_path();
-                        this.#change_state(["SHOOT_INPLACE", "RAIN_DANCE"]);
+                        if (this.hp < this.hp_rage) // no rain_dance state after enraged
+                            this.#change_state("SHOOT_INPLACE");
+                        else
+                            this.#change_state(["SHOOT_INPLACE", "RAIN_DANCE"]);
                     }
                     this.scene.physics.moveTo(this, this.target_pos.x, this.target_pos.y, 450);
 
