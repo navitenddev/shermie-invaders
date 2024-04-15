@@ -49,20 +49,20 @@
   },
   "ILLUMINATI": {
     "type": "Path",
-    "x": 195,
-    "y": 110,
+    "x": 296,
+    "y": 240,
     "curves": [
       {
         "type": "LineCurve",
-        "points": [195, 110, 840, 110]
+        "points": [296, 240, 750, 240]
       },
       {
         "type": "LineCurve",
-        "points": [840, 110, 508, 420]
+        "points": [750, 240, 518, 487]
       },
       {
         "type": "LineCurve",
-        "points": [508, 420, 195, 110]
+        "points": [518, 487, 296, 240]
       }
     ],
     "t_vals": [0.0, 0.41, 0.72]

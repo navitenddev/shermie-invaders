@@ -6,12 +6,15 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
     scoreValue = 200;
     moneyValue = 12;
     static Y_NORMAL = 300;
-    static ANGLE_VEL = 400;
-    static BULLET_VEL = 400;
+    static ANGLE_VEL = 500;
+    static BULLET_VEL = 500;
     hp = 40;
     shoot_cd = 85;
     last_fired = 0;
     shots_fired = 0;
+
+    last_rained = 0;
+    rain_cd = 100;
 
     // though BARRIER_SWEEP is a state, we only want to use it in the beginning, so don't add it here
     state_list = ["ROAMING", "SHOOT1", "SHOOT2"];
@@ -48,6 +51,7 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         this.state_text = this.scene.add.bitmapText(this.x, this.y, fonts.tiny.fontName, this.ai_state, fonts.tiny.size);
 
         this.hp = hp;
+        this.hp_rage = hp / 3; // enrage after being dropped < 1/3 max hp
         this.hp_bar_offset = {
             x: -47,
             y: -(this.height / 1.8),
@@ -156,6 +160,11 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
 
                     break;
                 }
+            case "RAIN_DANCE":
+                {
+                    this.shots_fired = 0;
+                    break;
+                }
             case "SHOOT1": // Go to left or right side, then shoot inplace
                 {
                     this.shots_fired = 0;
@@ -250,8 +259,11 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         this.#update_text();
         this.#update_bar();
 
-        // console.log(this.follower.t);
-        let player = this.scene.objs.player;
+        if (this.hp < this.hp_rage) {
+            this.rain_cd = 350; // slow er down
+            this.#rain_bullet(time);
+        }
+
         let dist = Phaser.Math.Distance.BetweenPoints({ x: this.x, y: this.y }, this.target_pos); // dist from target
 
         this.path.getPoint(this.follower.t, this.follower.vec);
@@ -266,7 +278,10 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                     if (dist <= 10) {
                         this.setVelocity(0, 0);
                         this.#clear_path();
-                        this.#change_state("SHOOT_INPLACE");
+                        if (this.hp < this.hp_rage) // no rain_dance state after enraged
+                            this.#change_state("SHOOT_INPLACE");
+                        else
+                            this.#change_state(["SHOOT_INPLACE", "RAIN_DANCE"]);
                     }
                     this.scene.physics.moveTo(this, this.target_pos.x, this.target_pos.y, 450);
 
@@ -322,6 +337,16 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
                     }
                 }
                 break;
+            case "RAIN_DANCE":
+                {
+                    this.#rain_bullet(time);
+                    this.setVelocity(0, 0)
+                        .setAngularVelocity(0)
+                        .setAngle(0);
+                    if (this.shots_fired >= 100)
+                        this.#change_state("ROAMING");
+                    break;
+                }
             default:
                 {
                     console.error(`Invalid state ${this.ai_state}`);
@@ -343,6 +368,16 @@ class EnemyLupa extends Phaser.Physics.Arcade.Sprite {
         }
         this.hp--;
         this.deathEmitter.explode(10, this.x, this.y);
+    }
+
+    #rain_bullet(time) {
+        if (time > this.last_rained) {
+            this.shots_fired++;
+            this.last_rained = time + this.rain_cd;
+            const rand_x = Phaser.Math.Between(50, this.scene.game.config.width - 50);
+            let bullet = this.scene.objs.bullets.enemy.getFirstDead(false, 0, 0, "enemy_bullet");
+            if (bullet) bullet.activate(rand_x, 0, 0, 750);
+        }
     }
 }
 
