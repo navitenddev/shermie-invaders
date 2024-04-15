@@ -95,6 +95,7 @@ export class BossRush extends Phaser.Scene {
         this.player_vars.lives = 1;
         this.player_vars.stats.move_speed = 2;
         this.player_vars.stats.fire_rate = 2;
+        this.player_vars.stats.bullet_speed = 2;
 
         this.objs = new ObjectSpawner(this);
         this.powerup_stats = this.registry.get('powerup_stats');
