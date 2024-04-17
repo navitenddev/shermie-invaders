@@ -24,6 +24,28 @@ export class BossRushWin extends Phaser.Scene {
 
         const time_str = `${data.time.mm}:${data.time.ss}:${data.time.ms}`;
 
+        const MAX_TIMES = 5; // The maximum number of best times we'll store
+        let br_times = JSON.parse(localStorage.getItem('br_times')) || [];
+        br_times.push(time_str);
+        // sort br_times (fastest -> slowest)
+        br_times.sort((a, b) => {
+            // split times by delim
+            const aa = a.split(':').map(Number);
+            const bb = b.split(':').map(Number);
+            // convert times to ms
+            const ams = aa[0] * 60000 + aa[1] * 1000 + aa[2];
+            const bms = bb[0] * 60000 + bb[1] * 1000 + bb[2];
+            if (ams < bms)
+                return -1;
+            else if (ams > bms)
+                return 1;
+            else
+                return 0;
+        });
+        // slice off any extra times that we have size(times) > MAX_TIMES
+        br_times = br_times.slice(0, MAX_TIMES);
+        localStorage.setItem('br_times', JSON.stringify(br_times));
+
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE, () => {
             start_dialogue(this.scene, [`Congratulations, you've beaten the hardest challenge in the game and it only took you ${time_str}! You are the champion! Type navitend in the main menu to activate cheats!`], "menu", 18);
         });
