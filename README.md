@@ -1,25 +1,25 @@
 # Shermie Invaders
 
-Shermie Invaders is a Phaser-based 2D vertical scrolling shooter game featuring Shermie, a brave sheep defending against evil tech enemies. The game includes multiple levels, upgradable player stats, and a variety of enemy types.
+Shermie Invaders is a Phaser game featuring Shermie, a brave sheep defending against tech enemies. The game includes multiple levels, upgradable player stats, and a variety of enemy types.
 
 ## Features
 
-- Infinite levels with increasing difficulty
+- 150 levels with increasing difficulty
 - Upgradable player stats (movement speed, bullet speed, fire rate, shields)
-- Various enemy types (grid enemies, special enemies like USB, Reaper, Lupa, and Pupa)
-- Powerups (spread shot, piercing shot)
-- In-game store to spend earned currency on upgrades
+- Various enemy types 
+- Boss Rush mode where the player times how long they can survive against bosses
+- Powerups that drop from enemies 
+- In-game store to spend Shermie Bucks on upgrades
 - High score tracking
 - Cheat codes for debugging and testing
 - Dialogue system for story and character interactions
-- Pause menu with options to resume, quit, or access cheats (if enabled)
-- Win and lose screens with dialogue and appropriate sound effects
+- Mobile PWA support
 
 ## Getting Started
 
 1. Clone the repository
 2. Install dependencies with `npm install`
-3. Run the game with `npm start`
+3. Run the game with `npm run dev`
 
 ## Gameplay
 
