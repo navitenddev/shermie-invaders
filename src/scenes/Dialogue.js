@@ -100,13 +100,13 @@ class DialogueManager extends Phaser.GameObjects.Container {
 
 
         if (["story"].includes(dialogue_type)) {
-        this.text = scene.add.bitmapText(-100, 120, fonts.middle.fontName, '', fonts.middle.size).setMaxWidth(this.w)
-            .setLineSpacing(14)
-            .setOrigin(0, 0);
+            this.text = scene.add.bitmapText(-100, 120, fonts.middle.fontName, '', fonts.middle.size).setMaxWidth(this.w)
+                .setLineSpacing(14)
+                .setOrigin(0, 0);
         } else {
-        this.text = scene.add.bitmapText(25, 15, fonts.small.fontName, '', fonts.small.size).setMaxWidth(this.w - (2 * this.border_w))
-            .setLineSpacing(14)
-            .setTint(0xFFFFFF);
+            this.text = scene.add.bitmapText(25, 15, fonts.small.fontName, '', fonts.small.size).setMaxWidth(this.w - (2 * this.border_w))
+                .setLineSpacing(14)
+                .setTint(0xFFFFFF);
         }
 
         if (this.bg)
@@ -198,7 +198,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
         const curr_text = this.text.text;
         const new_text = curr_text + this.line[this.char_index++];
         this.text.setText(new_text);
-    
+
         if (this.char_index === this.line.length) {
             // console.log("Line is done, waiting on player to click again")
             this.auto_emit_flag = true;
@@ -211,7 +211,8 @@ class DialogueManager extends Phaser.GameObjects.Container {
                 }, this.scene.scene)
             }
             const nextLine = () => {
-                if (this.dialogue_type === "menu" && this.line_index === this.lines.length) {
+                if (this.dialogue_type === "menu"
+                    && this.line_index === this.lines.length) {
                     // don't clear last line for menu and techtip
                 } else {
                     this.text.setText(""); // 4 hours to fix this bug :)
@@ -220,8 +221,8 @@ class DialogueManager extends Phaser.GameObjects.Container {
                 this.#load_next_line();
             };
 
-            this.scene.input.keyboard.on('keydown', nextLine);
-            this.scene.input.on('pointerdown', nextLine);
+            this.scene.input.keyboard.once('keydown', nextLine);
+            this.scene.input.once('pointerdown', nextLine);
         }
     }
 }
@@ -243,7 +244,7 @@ class Dialogue extends Phaser.Scene {
 
     create(data) {
         this.dialogue_type = data.dialogue_type;
-    
+
         this.sounds = this.registry.get('sound_bank');
         // show story dialogue background if this is for story dialogue 
         if (this.dialogue_type === "story") {
@@ -251,14 +252,14 @@ class Dialogue extends Phaser.Scene {
 
             this.sounds.stop_all_music();
             this.sounds.bank.music.story.play();
-    
+
             const level = this.registry.get('level');
             let bgKey = `BG${level}`;
             if (level > 7) {
                 bgKey = 'BG5';
             }
-            this.add.image(512, 384, bgKey);            
-            
+            this.add.image(512, 384, bgKey);
+
             if (this.level === 3 || this.level === 5) {
                 this.bg = this.add.tileSprite(0, 0, this.sys.game.config.width, this.sys.game.config.height, bgKey).setOrigin(0, 0);
                 this.bgScrollSpeed = 2;
@@ -266,7 +267,7 @@ class Dialogue extends Phaser.Scene {
                 this.bg = this.add.image(0, 0, bgKey).setOrigin(0, 0).setAlpha(1);
                 this.bg.setDisplaySize(this.sys.game.config.width, this.sys.game.config.height);
             }
-    
+
             let promptText;
             if (window.IS_MOBILE) {
                 promptText = 'TAP TO CONTINUE';
@@ -281,9 +282,9 @@ class Dialogue extends Phaser.Scene {
                 this.game.config.height - 96,
                 "shermie_spritesheet"
             );
-        
+
             this.shermie.play("shermie_walk");
-        
+
             this.tweens.add({
                 targets: this.shermie,
                 x: this.game.config.width / 2.5,
@@ -295,12 +296,12 @@ class Dialogue extends Phaser.Scene {
             });
         }
         this.sounds = this.registry.get('sound_bank');
-    
+
         this.dialogue_mgr = new DialogueManager(this, this.dialogue_data, this.dialogue_type, data.font_size);
-    
+
         this.keys = InitKeyDefs(this);
         this.prev_scene = data.prev_scene;
-    
+
         this.emitter.emit('dialogue_start', data.dialogue_key);
         this.emitter.once('dialogue_stop', () => {
             if (data.dialogue_key !== "shermie_boss") {
@@ -310,15 +311,15 @@ class Dialogue extends Phaser.Scene {
             }
             this.return_to_caller_scene(this.dialogue_type);
         });
-        
-    
+
+
         if (this.dialogue_type !== "game") { // ingame dialogue should not be skippable
             this.keys.esc.once('down', () => {
                 console.log('Player skipped the dialogue');
                 this.emitter.emit('force_dialogue_stop');
             });
         }
-    
+
         this.keys.m.on('down', this.sounds.toggle_mute)
     }
 
