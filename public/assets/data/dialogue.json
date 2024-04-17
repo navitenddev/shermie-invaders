@@ -24,22 +24,37 @@
     ]
   },
   "test2": {
-    "lines": [ "Yo what's goodie", "Okay cool beans", "buh bye dood" ]
+    "lines": [
+      "Yo what's goodie",
+      "Okay cool beans",
+      "buh bye dood"
+    ]
   },
   "win1": {
-    "lines": [ "AYOOOOOO, SHERMIE IN DA HOUSE" ]
+    "lines": [
+      "AYOOOOOO, SHERMIE IN DA HOUSE"
+    ]
   },
   "lose1": {
-    "lines": [ "We may have lost the battle...", "but not the war..." ]
+    "lines": [
+      "We may have lost the battle...",
+      "but not the war..."
+    ]
   },
   "shermie_hurt": {
-    "lines": [ "ouch! that hurt!" ]
+    "lines": [
+      "ouch! that hurt!"
+    ]
   },
   "shermie_shieldhurt": {
-    "lines": [ "Hey, watch it! They're breaking my shield!" ]
+    "lines": [
+      "Hey, watch it! They're breaking my shield!"
+    ]
   },
   "shermie_shieldgone": {
-    "lines": [ "Ah! Blasted right through the shield!" ]
+    "lines": [
+      "Ah! Blasted right through the shield!"
+    ]
   },
   "shermie_start": {
     "lines": [
@@ -48,10 +63,14 @@
     ]
   },
   "shermie_dead": {
-    "lines": [ "NoooooOOOOoOOOoOOOO!!!" ]
+    "lines": [
+      "NoooooOOOOoOOOoOOOO!!!"
+    ]
   },
   "shermie_boss": {
-    "lines": [ "Why do I hear boss music?" ]
+    "lines": [
+      "Why do I hear boss music?"
+    ]
   },
   "sandbox_tips": {
     "lines": [
@@ -61,62 +80,69 @@
   },
   "level1": {
     "lines": [
-      "I, Shermie, will recall an epic tale...",
-      "My adventure begins at the Navitend headquarters, where powerful minds work.",
-      "I was an engineering marvel meant to one day save this brittle earth.",
-      "little did I know it would be like this...",
-      "As dusk took hold, a sudden silence fell.",
-      "Looking into the night sky, a terrifying feeling washed over the air.",
-      "But little did it know, I was no ordinary being...",
-      "I, Shermie, was ready for the fight to come."
+      "Hey there, I'm Shermie from Navitend! We've got a situation on our hands.",
+      "A wave of malware is attempting to breach our client's network defenses.",
+      "As our new security specialist, we need your skills to identify and neutralize these threats.",
+      "Let's dive in and show these malicious invaders who's in charge!",
+      "Blast those corrupted files into oblivion. The integrity of our network depends on you."
     ]
   },
   "level2": {
     "lines": [
-      "Luckily my creator left me upgrade capabilites before leaving...",
-      "With the Navitend headquarters now safe, I ran quickly to my home town.",
-      "The heart of our community, where streets filled with laughter, now lay in flames.",
-      "Confronted by enemy cyber minions, every corner turned into a fight for survival.",
-      "With each step I Shermie take, pledge to reclaim Shermie Towns vigor."
+      "Wow, impressive work on that first level! Your debugging skills are razor-sharp.",
+      "Just when we thought we could catch our breath, the malware is evolving.",
+      "These sneaky invaders are using polymorphic code to slip past our defenses.",
+      "But I know you've got the skills to outsmart them and keep our network secure.",
+      "Time to show these threats what our cutting-edge anti-malware strategies can do!"
     ]
   },
   "level3": {
     "lines": [
-      "Having pushed back the initial wave, I knew  the battle was far from over...",
-      "As my strength grew, so did my hope in reclaiming the peace on earth.",
-      "I ascended towards the heavens, Intercepting the invaders.",
-      "Allied with the gusting winds, I danced among the hoard of choas."
+      "You're on fire! Your network monitoring skills are second to none.",
+      "Looks like we've caught the attention of a botnet. They're trying to flood our network with a DDoS attack.",
+      "But with you at the helm, I have no doubt we can weather this storm and keep our systems stable.",
+      "Our clients are counting on us for uninterrupted service. Your sys-admin expertise is our secret weapon.",
+      "Let's optimize our network configuration and show this botnet what real uptime looks like!"
     ]
   },
   "level4": {
     "lines": [
-      "Dark space turned cold, Still leading the charge against our adversaries.",
-      "Now, I Shermie, stood as Earth's last bastion against the Nexsus...",
-      "I was not sure I could do it, but my creator deemed me fit.",
-      "With Earth's fate hanging by a thread, I drew upon every resource I could."
+      "Incredible work in level three! Your defense strategies are top-notch.",
+      "Looks like our adversaries have a new trick up their sleeve - a zero-day exploit.",
+      "We need your keen eye for malware analysis and threat hunting to unravel this mystery.",
+      "The integrity of our network hangs in the balance, but I have full faith in your abilities.",
+      "Navitend prides itself on delivering the highest standards of security. With you on the case, I know we're in good hands.",
+      "Ready to investigate this threat and fortify our SIEM rules? Let's get to work!"
     ]
   },
   "level5": {
     "lines": [
-      "After fierce battle upon Earth, I detected the enemy's dark heart, looming in the cold expanse of space.",
-      "As I stealthily approached the dark stronghold, I understood that this was no mere physical battle",
-      "Realizing my fate, I gave myself for a confrontation that could change destiny.",
-      "my resolve echoed louder than ever, a stark reminder of what was at stake should I fail."
+      "Your threat hunting skills are in a league of their own.",
+      "Just when we thought we had a handle on things, a polymorphic virus enters the fray.",
+      "This slippery code is constantly shapeshifting to evade our detection methods.",
+      "To stay one step ahead, we need you to work your magic and develop an advanced AI model.",
+      "Your data science prowess is the key to locking down our defenses and protecting our clients.",
+      "Ready to train this cutting-edge AI and take our security to the next level? Let's push the boundaries of what's possible!"
     ]
   },
   "level6": {
     "lines": [
-      "Surrounded by the void of space, the enemy's elite forces formed a blockade,",
-      "Each confrontation was a test of my power. With every foe defeated, my power weakened.",
-      "The battles raged on and on, a relentless dance of strength and endurance.",
-      "Allies, distant yet ever-present on earth, with raised hands, lent me their strength..."
+      "I'm in awe of your AI-powered defenses! They're an absolute game-changer.",
+      "But the threats keep coming. Now we're facing a highly targeted spear-phishing campaign.",
+      "These crafty attackers are after our employee login credentials.",
+      "To thwart their plans, we need you to fortify our email filters and implement ironclad multi-factor authentication.",
+      "Your social engineering prevention skills and access management expertise are vital to keeping our team's identities secure.",
+      "Ready to send these phishing attempts packing and lock down our authentication protocols? Let's do this!"
     ]
   },
   "level7": {
     "lines": [
-      "As space dust settled, a path to the dark heart opened, its presence bestowing a heavy fear",
-      "In a battle that would be seen beyond the galaxies, ",
-      "face to face I challenged darkness..."
+      "Your security measures have been nothing short of instrumental in keeping us safe.",
+      "As we gear up for the final push, the cyber threats are reaching a fever pitch.",
+      "But with your IT security expertise in our corner, I have unwavering confidence in our success.",
+      "Your tireless dedication and unparalleled skills have made all the difference.",
+      "As we stand united against these relentless digital foes, know that your efforts are the backbone of our defense.",
+      "Together, we'll vanquish these cyber threats and ensure Navitend remains a bastion of security. Charge!"
     ]
   },
   "techtip1": {
