@@ -73,35 +73,11 @@ export class BossRush extends Phaser.Scene {
         super('Boss Rush');
     }
 
-    preload() {
-        this.load.json({
-            key: "PUPA_LEMNISCATE",
-            url: "assets/paths/pupa.json",
-            dataKey: "LEMNISCATE",
-        });
-        this.load.json({
-            key: "PUPA_TRIANGLE",
-            url: "assets/paths/pupa.json",
-            dataKey: "TRIANGLE",
-        });
-        this.load.json({
-            key: "PUPA_SPLINE",
-            url: "assets/paths/pupa.json",
-            dataKey: "SPLINE1",
-        });
-        this.load.json({
-            key: "PUPA_ILLUMINATI",
-            url: "assets/paths/pupa.json",
-            dataKey: "ILLUMINATI",
-        });
-    }
-
     create() {
         // create/scale BG image 
-        let bg = this.add.image(0, 0, 'BG7').setAlpha(0.85);
-        bg.setOrigin(0, 0);
-        bg.displayWidth = this.sys.game.config.width;
-        bg.setScale(bg.scaleX, bg.scaleX);
+        let bg = this.add.sprite(0, 0, 'BG7')
+            .setOrigin(0, 0)
+            .play('BG7-SpriteSheet'); //can remove bg7 anim if annoying
 
         this.#clock = new BossClock(this);
 
@@ -119,7 +95,7 @@ export class BossRush extends Phaser.Scene {
         this.player_vars.lives = 1;
         this.player_vars.stats.move_speed = 2;
         this.player_vars.stats.fire_rate = 2;
-        this.player_vars.stats.move_speed = 2;
+        this.player_vars.stats.bullet_speed = 2;
 
         this.objs = new ObjectSpawner(this);
         this.powerup_stats = this.registry.get('powerup_stats');
