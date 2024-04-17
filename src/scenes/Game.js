@@ -80,6 +80,12 @@ export class Game extends Scene {
         this.player_vars = this.registry.get('player_vars');
         this.player_stats = this.player_vars.stats;
         this.player_vars.power = "";
+
+        const maxLevelReached = localStorage.getItem('maxLevelReached') || 1;
+        if (this.level + 1 > maxLevelReached) {
+            localStorage.setItem('maxLevelReached', this.level + 1);
+        }
+        
         this.objs.init_all();
 
         this.sounds = this.registry.get('sound_bank');
