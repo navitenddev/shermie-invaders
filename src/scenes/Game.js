@@ -265,9 +265,6 @@ export class Game extends Scene {
             this.scoreManager.checkAndUpdateHighScore();
         }
 
-        this.player_vars.totalShotsFired = this.objs.player.totalShotsFired;
-        this.player_vars.totalHits = this.objs.player.totalHits;
-
         this.cameras.main.fade(500, 0, 0, 0);
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {

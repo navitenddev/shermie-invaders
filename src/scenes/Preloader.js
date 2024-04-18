@@ -337,6 +337,10 @@ export class Preloader extends Scene {
                 shield: 1,
                 // ...more to be added
             },
+            game_stats: {
+                shots_fired: 0,
+                shots_hit: 0,
+            },
             wallet: 0, // holds shermie bux
             active_bullets: 0, // the number of bullets that the player currently has on screen
             score: 0, // player score

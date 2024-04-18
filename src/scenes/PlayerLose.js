@@ -50,8 +50,8 @@ export class PlayerLose extends Scene {
         );
         this.final_score.setOrigin(0.5);
 
-        const { totalShotsFired, totalHits } = this.player_vars;
-        const hitMissRatio = totalHits / (totalShotsFired || 1);
+        const { shots_fired, shots_hit } = this.player_vars.game_stats;
+        const hitMissRatio = shots_hit / (shots_fired || 1);
 
         const statsX = this.game.config.width / 2;
         const statsY = this.final_score.y + this.final_score.height + 350;
@@ -61,7 +61,7 @@ export class PlayerLose extends Scene {
             statsX,
             statsY,
             fonts.small.fontName,
-            `SHOTS FIRED: ${totalShotsFired}`,
+            `SHOTS FIRED: ${shots_fired}`,
             fonts.small.size
         );
         shotsFiredText.setOrigin(0.5)
@@ -71,7 +71,7 @@ export class PlayerLose extends Scene {
             statsX,
             statsY + statsSpacing,
             fonts.small.fontName,
-            `HITS: ${totalHits}`,
+            `HITS: ${shots_hit}`,
             fonts.small.size
         );
         hitsText.setOrigin(0.5)

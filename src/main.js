@@ -116,7 +116,7 @@ export function init_collision_events(scene, scene_key) {
         scene.sounds.bank.sfx.explosion[3].play();
         if (scene.player_vars.power == "pierce" || scene.player_vars.perm_power.includes("pierce")) player_bullet.hurt_bullet();
         else player_bullet.deactivate();
-        scene.objs.player.totalHits++;
+        scene.player_vars.game_stats.shots_hit++;
         enemy.die();
         if (scene.scoreManager) {
             scene.scoreManager.addScore(Math.round(enemy.scoreValue * scene.level));
@@ -127,7 +127,7 @@ export function init_collision_events(scene, scene_key) {
     // player bullet hits special enemy
     scene.physics.add.overlap(scene.objs.bullets.player, scene.objs.enemies.special, (player_bullet, enemy) => {
         scene.sounds.bank.sfx.explosion[3].play();
-        scene.objs.player.totalHits++;
+        scene.player_vars.game_stats.shots_hit++;
         player_bullet.deactivate();
         enemy.die();
         if (scene.scoreManager) {
