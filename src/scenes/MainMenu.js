@@ -16,6 +16,7 @@ export class MainMenu extends BaseMenu {
             key: "dialogue",
             url: "assets/data/dialogue.json"
         })
+        this.load.scenePlugin('rexuiplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexuiplugin.min.js', 'rexUI', 'rexUI');
     }
 
     create() {
@@ -75,7 +76,7 @@ export class MainMenu extends BaseMenu {
                 this.start_btn.disable();
             },
         ).setDepth(3);
-    
+
         // Controls Button
         menuY += menuSpacing;
         this.controls_btn = new TextButton(this, 512, menuY, "CONTROLS",
@@ -142,7 +143,6 @@ export class MainMenu extends BaseMenu {
         this.input.keyboard.on('keycombomatch', () => {
             this.#activate_cheats();
         });
-
     }
 
     #activate_cheats() {

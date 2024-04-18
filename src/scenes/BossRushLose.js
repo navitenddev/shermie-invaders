@@ -3,6 +3,7 @@ import { fonts } from '../utils/fontStyle.js';
 import { restart_scenes } from '../main.js';
 import { start_dialogue } from './Dialogue.js';
 import { TextboxButton } from '../ui/textbox_button.js';
+import { ListContainer } from '../ui/list_container.js';
 
 export class BossRushLose extends Phaser.Scene {
     emitter = EventDispatcher.getInstance();
@@ -54,5 +55,27 @@ export class BossRushLose extends Phaser.Scene {
             0xFEFEFE, // color of clicked
             0x879091  // color of border
         );
+
+        const MAX_TIMES = 5; // The maximum number of loss times to display
+        let br_loss_times = JSON.parse(localStorage.getItem('br_loss_times')) || [];
+        br_loss_times.push(time_str);
+        // sort br_loss_times (longest > shortest)
+        br_loss_times.sort((a, b) => {
+            // split times by delim
+            const aa = a.split(':').map(Number);
+            const bb = b.split(':').map(Number);
+            // convert times to ms
+            const ams = aa[0] * 60000 + aa[1] * 1000 + aa[2];
+            const bms = bb[0] * 60000 + bb[1] * 1000 + bb[2];
+            if (ams < bms)
+                return 1;
+            else if (ams > bms)
+                return -1;
+            else
+                return 0;
+        });
+        const lc = new ListContainer(this, 200, 200, 400, 400, br_loss_times, "Fallen Players");
+        // store the new hiscores list
+        localStorage.setItem('br_loss_times', JSON.stringify(br_loss_times));
     }
 }

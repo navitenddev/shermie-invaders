@@ -206,7 +206,10 @@ export class BossRush extends Phaser.Scene {
     }
 
     check_gameover() {
-        if (!this.objs.player.is_inbounds() && this.player_vars.lives <= 0) {
+        if (!this.objs.player.is_inbounds()
+            && this.player_vars.lives <= 0 &&
+            !this.#end_flag) {
+            this.#end_flag = true;
             this.goto_scene('Boss Rush Lose', { time: this.#clock.dump_time(), bosses_beaten: this.total_bosses - this.#boss_queue.length - 1 });
         }
     }
