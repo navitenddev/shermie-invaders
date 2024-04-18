@@ -53,13 +53,9 @@ class ListContainer extends Phaser.GameObjects.Container {
         this.arrow_up = this.scene.add.image(0, -(this.display_text.height / 2) - ListContainer.ARROW_OFFSET, 'arrow')
             .setScale(0.5)
             .setVisible(false);
-        // .setInteractive()
-        // .on('pointerdown', () => { this.#scroll_up(); });
         this.arrow_down = this.scene.add.image(0, +(this.display_text.height / 2) + ListContainer.ARROW_OFFSET, 'arrow')
             .setAngle(180)
             .setScale(0.5);
-        // .setInteractive()
-        // .on('pointerdown', () => { this.#scroll_down(); });
 
 
         if (this.#scroll_y + ListContainer.MAX_LINES_DISPLAYED < this.entries.length)

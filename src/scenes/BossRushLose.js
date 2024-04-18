@@ -65,7 +65,10 @@ export class BossRushLose extends Phaser.Scene {
 
 
         let br_win_times = JSON.parse(localStorage.getItem('br_win_times')) || [];
-        br_win_times = br_win_times.map((s, i) => { return `${i + 1}. ${s}`; });
+        if (br_win_times.length === 0)
+            br_win_times = ["No Champions"];
+        else
+            br_win_times = br_win_times.map((s, i) => { return `${i + 1}. ${s}`; });
         new ListContainer(this, 675, 200, 300, 380, br_win_times, "Champions");
         // store the new hiscores list
     }

@@ -151,7 +151,7 @@ export class BossRush extends Phaser.Scene {
             localStorage.setItem('br_total_attempts', 1);
             localStorage.setItem('br_victories', 0);
             // create array to store best times
-            localStorage.setItem('br_times', JSON.stringify([]));
+            localStorage.setItem('br_win_times', JSON.stringify([]));
         }
 
         this.total_bosses = this.#boss_queue.length;
