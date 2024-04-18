@@ -19,6 +19,7 @@ export class MainMenu extends BaseMenu {
     }
 
     create() {
+        this.registry.set('valid_hiscore', false);
         super.create();
         this.sounds.stop_all_music();
         this.sounds.bank.music.start.play();
@@ -66,7 +67,7 @@ export class MainMenu extends BaseMenu {
 
         const menuSpacing = 50; // spacing between menu items
         let menuY = 480; // starting Y position for menu items
-
+        const games_played = parseInt(localStorage.getItem('games_played')) || 0;
         // Start Button
         this.start_btn = new TextButton(this, 512, menuY, "PLAY",
             () => {
@@ -74,6 +75,9 @@ export class MainMenu extends BaseMenu {
                 this.cameras.main.fadeOut(200, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                     this.scene.start('Game');
+                    // only games that start at level 1 and/or no money will be eligible for hiscore
+                    this.registry.set('valid_hiscore', true);
+                    localStorage.setItem('games_played', games_played+1);
                 });
                 this.start_btn.disable();
             },

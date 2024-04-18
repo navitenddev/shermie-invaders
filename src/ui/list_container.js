@@ -4,21 +4,23 @@ import { EventDispatcher } from "../utils/event_dispatcher";
 class ListContainer extends Phaser.GameObjects.Container {
     emitter = EventDispatcher.getInstance();
     static MARGINS = 10;
-    static MAX_LINES_DISPLAYED = 10;
     static ARROW_OFFSET = 15;
     static SCROLL_INTERVAL = 100;
     #last_scroll_time = 0;
     #scroll_y = 0;
+    #MAX_ENTRIES = 0;
     constructor(scene,
         x, y,
         w, h,
         entries,
         title = "",
+        max_entries = 10,
         bg_color = 0x2B2D31,
-        border_color = 0x879091
+        border_color = 0x879091,
     ) {
         super(scene, x, y);
         scene.add.existing(this);
+        this.#MAX_ENTRIES = max_entries;
         this.bg = this.scene.add.rectangle(0, 0, w, h, bg_color);
         this.border = this.scene.add.graphics();
         this.border
@@ -58,7 +60,7 @@ class ListContainer extends Phaser.GameObjects.Container {
             .setScale(0.5);
 
 
-        if (this.#scroll_y + ListContainer.MAX_LINES_DISPLAYED < this.entries.length)
+        if (this.#scroll_y + this.#MAX_ENTRIES < this.entries.length)
             this.arrow_down.setVisible(false);
         this.#update_text();
 
@@ -69,7 +71,7 @@ class ListContainer extends Phaser.GameObjects.Container {
     }
 
     #scroll_down() {
-        if (this.#scroll_y + ListContainer.MAX_LINES_DISPLAYED >= this.entries.length) {
+        if (this.#scroll_y + this.#MAX_ENTRIES >= this.entries.length) {
             // we've reached the bottom
             return;
         }
@@ -91,7 +93,7 @@ class ListContainer extends Phaser.GameObjects.Container {
 
         let i, start;
         i = start = this.#scroll_y;
-        while (i < this.#scroll_y + ListContainer.MAX_LINES_DISPLAYED) {
+        while (i < this.#scroll_y + this.#MAX_ENTRIES) {
             if (i === this.entries.length) // no more to display
                 break;
             output += this.entries[i] + "\n\n";
@@ -103,7 +105,7 @@ class ListContainer extends Phaser.GameObjects.Container {
         else
             this.arrow_up.setVisible(true);
 
-        if (this.#scroll_y + ListContainer.MAX_LINES_DISPLAYED < this.entries.length)
+        if (this.#scroll_y + this.#MAX_ENTRIES < this.entries.length)
             this.arrow_down.setVisible(true);
         else
             this.arrow_down.setVisible(false);

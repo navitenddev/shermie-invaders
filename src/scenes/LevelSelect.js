@@ -53,6 +53,8 @@ class StartWithMoneyDialog extends Phaser.GameObjects.Container {
             () => {
                 // edge case, level 1 always starts with no money and in the game scene
                 if (level === 1) {
+                    // allow hiscore to be saved if we pick level 1
+                    this.registry.set('valid_hiscore', true); 
                     scene.registry.set({ level: level });
                     scene.scene.start('Game');
                 } else {
@@ -69,6 +71,8 @@ class StartWithMoneyDialog extends Phaser.GameObjects.Container {
             BTN_W, BTN_H,
             "No",
             () => {
+                // allow hiscore to be saved (no money advantage)
+                this.registry.set('valid_hiscore', true); 
                 // start with no money
                 scene.registry.set({ level: level });
                 scene.scene.start('Game');

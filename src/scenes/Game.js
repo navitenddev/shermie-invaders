@@ -221,7 +221,10 @@ export class Game extends Scene {
 
     check_gameover() {
         if (this.player_vars.lives <= 0 &&
-            !this.objs.player.is_inbounds()) {
+            !this.objs.player.is_inbounds() &&
+            !this.level_transition_flag) {
+
+            this.level_transition_flag = true;
             this.player_vars.power = "";
             this.gameover = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
