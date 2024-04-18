@@ -83,7 +83,7 @@ export class Game extends Scene {
         if (this.level + 1 > maxLevelReached) {
             localStorage.setItem('maxLevelReached', this.level + 1);
         }
-        
+
         this.objs.init_all();
 
         this.sounds = this.registry.get('sound_bank');
@@ -148,11 +148,14 @@ export class Game extends Scene {
     }
 
     toggleDebug() {
-        this.debugMode = !this.debugMode;
-        this.physics.world.drawDebug = this.debugMode;
-        // Clear debug graphics when debug mode is turned off
-        if (!this.debugMode) {
-            this.physics.world.debugGraphic.clear()
+        // only allow debug visuals if debug mode is turned oon
+        if (this.registry.get('debug_mode') === true) {
+            this.debugMode = !this.debugMode;
+            this.physics.world.drawDebug = this.debugMode;
+            // Clear debug graphics when debug mode is turned off
+            if (!this.debugMode) {
+                this.physics.world.debugGraphic.clear()
+            }
         }
     }
 

@@ -326,11 +326,14 @@ export class Sandbox extends Scene {
     }
 
     toggleDebug() {
-        this.debugMode = !this.debugMode;
-        this.physics.world.drawDebug = this.debugMode;
+        // only allow debug visuals if debug mode is turned oon
+        if (this.registry.get('debug_mode')) {
+            this.debugMode = !this.debugMode;
+            this.physics.world.drawDebug = this.debugMode;
 
-        if (!this.debugMode) {
-            this.physics.world.debugGraphic.clear();
+            if (!this.debugMode) {
+                this.physics.world.debugGraphic.clear();
+            }
         }
     }
 
