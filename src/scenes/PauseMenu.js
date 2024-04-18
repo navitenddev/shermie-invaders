@@ -76,6 +76,6 @@ export class PauseMenu extends Scene {
 
     toggleMute() {
         const isMuted = this.sounds.toggle_mute();
-        localStorage.setItem('muted', isMuted ? 'true' : 'false');
+        localStorage.setItem('mute', isMuted ? 'true' : 'false');
     }
 }
