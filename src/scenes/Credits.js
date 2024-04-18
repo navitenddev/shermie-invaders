@@ -69,7 +69,7 @@ export class Credits extends BaseMenu {
 
            Main Menu Music - Jonathan Le 
 
-           Main Game Music - Jonathan Le
+          Main Game Music - Dream-Protocol
 
         Retro Platforming - David Fesliyan
 
