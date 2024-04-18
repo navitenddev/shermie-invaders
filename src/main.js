@@ -138,6 +138,8 @@ export function init_collision_events(scene, scene_key) {
 
     // enemy bullet hits player
     scene.physics.add.overlap(scene.objs.bullets.enemy, scene.objs.player, (player, enemy_bullet) => {
+        if (player.isInvincible)
+            return;
         scene.cameras.main.shake(200, 0.02);
         if (!player.is_dead) {
             enemy_bullet.deactivate();
@@ -152,7 +154,6 @@ export function init_collision_events(scene, scene_key) {
                     scene.sounds.bank.sfx.shield_hurt.play();
                 }
                 player.updateHitbox();
-                start_dialogue(scene.scene, dialogue_key, "game", scene_key);
             } else {
                 scene.objs.explode_at(player.x, player.y);
                 player.die();
