@@ -76,9 +76,9 @@ export class BossRushWin extends Phaser.Scene {
         );
 
         let br_loss_times = JSON.parse(localStorage.getItem('br_loss_times')) || [];
-        new ListContainer(this, 350, 200, 300, 380, br_loss_times, "Fallen Players");
+        new ListContainer(this, 325, 200, 350, 380, br_loss_times, "Fallen Players");
 
         br_win_times = br_win_times.map((s, i) => { return `${i + 1}. ${s}`; });
-        new ListContainer(this, 675, 200, 300, 380, br_win_times, "Champions");
+        new ListContainer(this, 700, 200, 350, 380, br_win_times, "Champions");
     }
 }

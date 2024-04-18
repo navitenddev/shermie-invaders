@@ -63,7 +63,6 @@ export class BossRush extends Phaser.Scene {
     emitter = EventDispatcher.getInstance();
     PUPA_PATHS = {};
     #boss_queue = [];
-    #bosses_beaten = -1;
 
     #BOSS_HP = 40; // The HP that each boss will spawn with
 
