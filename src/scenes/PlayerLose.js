@@ -58,8 +58,7 @@ export class PlayerLose extends Scene {
         const statsSpacing = 35;
 
         const shotsFiredText = this.add.bitmapText(
-            statsX,
-            statsY,
+            0, 0,
             fonts.small.fontName,
             `SHOTS FIRED: ${shots_fired}`,
             fonts.small.size
@@ -68,8 +67,8 @@ export class PlayerLose extends Scene {
             .setTint(0xade6ff);
 
         const hitsText = this.add.bitmapText(
-            statsX,
-            statsY + statsSpacing,
+            0,
+            1 * statsSpacing,
             fonts.small.fontName,
             `HITS: ${shots_hit}`,
             fonts.small.size
@@ -77,14 +76,18 @@ export class PlayerLose extends Scene {
         hitsText.setOrigin(0.5)
 
         const hitMissRatioText = this.add.bitmapText(
-            statsX,
-            statsY + statsSpacing * 2,
+            0,
+            statsSpacing * 2,
             fonts.small.fontName,
             `HIT-MISS RATIO: ${(hitMissRatio * 100).toFixed(0)}%`,
             fonts.small.size
         );
         hitMissRatioText.setOrigin(0.5)
             .setTint(0xe0de2c);
+
+        const stats_container = this.add.container(
+            this.game.config.width / 2, (this.game.config.height / 2) - 100,
+            [shotsFiredText, hitsText, hitMissRatioText]);
 
         this.continue_btn = new TextboxButton(
             this,
