@@ -31,10 +31,14 @@ export class PlayerLose extends Scene {
         let game_hiscores = JSON.parse(localStorage.getItem('game_hiscores')) || [];
         const games_played = parseInt(localStorage.getItem('games_played')) || 1;
 
+        var score_invalidated = true;
         // only save score if we started level 1, or started with no money
-        if (this.registry.get('valid_hiscore') === true) {
+        if (this.registry.get('debug_mode') === false &&
+            this.registry.get('valid_hiscore') === true) {
             game_hiscores.push(`#${games_played} ${score}`);
+            score_invalidated = false;
         }
+
         game_hiscores.sort((og_a, og_b) => {
             const a = parseInt(og_a.split(' ')[1]);
             const b = parseInt(og_b.split(' ')[1]);
@@ -47,8 +51,7 @@ export class PlayerLose extends Scene {
         });
 
         const text_gameover = this.add.bitmapText(
-            0,
-            10,
+            0, 0,
             fonts.medium.fontName,
             "GAME OVER",
             fonts.medium.size,
@@ -61,8 +64,7 @@ export class PlayerLose extends Scene {
         );
 
         const text_score = this.add.bitmapText(
-            0, 
-            50,
+            0, 0,
             fonts.middle.fontName,
             `FINAL SCORE: ${score}`,
             fonts.middle.size,
@@ -71,8 +73,11 @@ export class PlayerLose extends Scene {
 
         text_score.setPosition(
             (this.game.config.width / 2) - (text_score.width / 2),
-            40
+            50
         );
+        
+        if(score_invalidated) 
+            text_score.setTint(0x940018);
 
         localStorage.setItem('game_hiscores', JSON.stringify(game_hiscores));
 
@@ -80,7 +85,14 @@ export class PlayerLose extends Scene {
         new ListContainer(this, 325, 240, 350, 325, game_hiscores, "Hiscores", 8);
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE, () => {
-            start_dialogue(this.scene, `techtip${rand_idx}`, "techtip");
+            if (score_invalidated){
+                start_dialogue(this.scene, 'score_invalidated', "menu");
+                this.emitter.once('dialogue_stop', () => {
+                    start_dialogue(this.scene, `techtip${rand_idx}`, "techtip");
+                });
+            } else {
+                start_dialogue(this.scene, `techtip${rand_idx}`, "techtip");
+            }
         });
 
         this.emitter.removeAllListeners();

@@ -75,7 +75,6 @@ export class MainMenu extends BaseMenu {
                 this.cameras.main.fadeOut(200, 0, 0, 0);
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                     this.scene.start('Game');
-                    // only games that start at level 1 and/or no money will be eligible for hiscore
                     this.registry.set('valid_hiscore', true);
                     localStorage.setItem('games_played', games_played+1);
                 });

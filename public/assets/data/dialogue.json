@@ -78,6 +78,11 @@
       "Click the buttons on the top right to spawn enemies!"
     ]
   },
+  "score_invalidated": {
+    "lines": [
+      "Hey! Your score was invalidated. You must start the game at level 1 or start any other level with no money. Cheats must also be disabled!"
+    ]
+  },
   "level1": {
     "lines": [
       "Hey there, I'm Shermie from Navitend! We've got a situation on our hands.",
