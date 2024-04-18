@@ -83,7 +83,7 @@ export class Game extends Scene {
         if (this.level + 1 > maxLevelReached) {
             localStorage.setItem('maxLevelReached', this.level + 1);
         }
-        
+
         this.objs.init_all();
 
         this.sounds = this.registry.get('sound_bank');
@@ -161,7 +161,7 @@ export class Game extends Scene {
 
     pause() {
         this.scene.pause('Game');
-        this.scene.launch('PauseMenu', { prev_scene: 'Game' });
+        this.scene.launch('Pause Menu', { prev_scene: 'Game' });
     }
 
     #kill_all_enemies() {
@@ -228,7 +228,7 @@ export class Game extends Scene {
             this.player_vars.power = "";
             this.gameover = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
-            this.goto_scene("Player Lose");
+            this.goto_scene("Game Lose");
         }
 
         if (this.objs.enemies.grid.children.entries.length == 0 &&
@@ -253,7 +253,7 @@ export class Game extends Scene {
                 // is boss dead?
                 if (this.objs.enemies.special.children.entries.length === 0) {
                     this.objs.player.isInvincible = true;
-                    this.goto_scene("Player Win");
+                    this.goto_scene("Game Win");
                 }
                 return;
             }
@@ -261,7 +261,7 @@ export class Game extends Scene {
             this.level_transition_flag = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.player_vars.power = "";
-            this.goto_scene("Player Win");
+            this.goto_scene("Game Win");
         }
     }
 

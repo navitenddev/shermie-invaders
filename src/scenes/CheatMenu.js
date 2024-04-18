@@ -88,10 +88,10 @@ class MenuSpinner {
 }
 
 
-export class StatsMenu extends Scene {
+export class CheatMenu extends Scene {
     emitter = EventDispatcher.getInstance();
     constructor() {
-        super('StatsMenu');
+        super('Cheat Menu');
     }
 
     create() {
@@ -175,7 +175,7 @@ export class StatsMenu extends Scene {
     }
 
     go_back() {
-        this.scene.stop('StatsMenu');
-        this.scene.start('PauseMenu');
+        this.scene.stop('Cheat Menu');
+        this.scene.start('Pause Menu');
     }
 }

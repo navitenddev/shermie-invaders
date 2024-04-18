@@ -1,16 +1,14 @@
 import { Boot } from './scenes/Boot';
 import { Game } from './scenes/Game';
-import { BossRush } from './scenes/BossRush';
-import { BossRushLose } from './scenes/BossRushLose';
-import { BossRushWin } from './scenes/BossRushWin';
-import { PlayerWin } from './scenes/PlayerWin';
-import { PlayerLose } from './scenes/PlayerLose';
+import { ChallengeMode, ChallengeModeLose, ChallengeModeWin } from './scenes/ChallegeMode';
+import { GameWin } from './scenes/GameWin';
+import { GameLose } from './scenes/GameLose';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
 import { LevelSelect } from './scenes/LevelSelect';
 import { HowToPlay } from './scenes/HowToPlay';
 import { PauseMenu } from './scenes/PauseMenu';
-import { StatsMenu } from './scenes/StatsMenu';
+import { CheatMenu } from './scenes/CheatMenu';
 import { Store } from './scenes/Store';
 import { Dialogue } from './scenes/Dialogue';
 import { Sandbox } from './scenes/Sandbox';
@@ -53,18 +51,18 @@ const config = {
         Preloader,
         MainMenu,
         Game,
-        BossRush,
+        GameWin,
+        GameLose,
+        ChallengeMode,
+        ChallengeModeWin,
+        ChallengeModeLose,
         Sandbox,
-        PlayerWin,
-        PlayerLose,
         LevelSelect,
         HowToPlay,
         PauseMenu,
-        StatsMenu,
+        CheatMenu,
         Store,
         TechTipTest,
-        BossRushLose,
-        BossRushWin,
         // Dialogue,
     ]
 };
@@ -87,17 +85,17 @@ export function restart_scenes(scene) {
     scene.add('Game', Game);
     scene.bringToTop('Game');
 
-    scene.remove('Boss Rush');
-    scene.add('Boss Rush', BossRush);
-    scene.bringToTop('Boss Rush');
+    scene.remove('Challenge Mode');
+    scene.add('Challenge Mode', ChallengeMode);
+    scene.bringToTop('Challenge Mode');
 
-    scene.remove('PauseMenu');
-    scene.add('PauseMenu', PauseMenu);
-    scene.bringToTop('PauseMenu');
+    scene.remove('Pause Menu');
+    scene.add('Pause Menu', PauseMenu);
+    scene.bringToTop('Pause Menu');
 
-    scene.remove('StatsMenu');
-    scene.add('StatsMenu', StatsMenu);
-    scene.bringToTop('StatsMenu');
+    scene.remove('Cheat Menu');
+    scene.add('Cheat Menu', CheatMenu);
+    scene.bringToTop('Cheat Menu');
 
     scene.remove('Dialogue');
     scene.add('Dialogue', Dialogue);

@@ -76,7 +76,7 @@ export class MainMenu extends BaseMenu {
                 this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
                     this.scene.start('Game');
                     this.registry.set('valid_hiscore', true);
-                    localStorage.setItem('games_played', games_played+1);
+                    localStorage.setItem('games_played', games_played + 1);
                 });
                 this.start_btn.disable();
             },
@@ -131,11 +131,11 @@ export class MainMenu extends BaseMenu {
             // all menu items here are shown when cheats are off
             menuY += menuSpacing;
             this.boss_rush_btn = new TextButton(this, 512, menuY,
-                "BOSS RUSH",
+                "CHALLENGE MODE",
                 () => {
                     this.cameras.main.fadeOut(200, 0, 0, 0);
                     this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-                        this.scene.start('Boss Rush');
+                        this.scene.start('Challenge Mode');
                     });
                     this.boss_rush_btn.disable();
                 }

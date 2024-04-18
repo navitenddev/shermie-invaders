@@ -339,7 +339,7 @@ export class Sandbox extends Scene {
 
     pause() {
         this.scene.pause('Sandbox');
-        this.scene.launch('PauseMenu', { prev_scene: 'Sandbox' });
+        this.scene.launch('Pause Menu', { prev_scene: 'Sandbox' });
     }
 
     update(time, delta) {

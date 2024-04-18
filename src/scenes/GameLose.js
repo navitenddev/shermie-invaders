@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { EventDispatcher } from '../utils/event_dispatcher';
+import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { fonts } from '../utils/fontStyle.js';
 import { start_dialogue } from './Dialogue.js';
 import { restart_scenes } from '../main.js';
@@ -8,11 +8,11 @@ import { ListContainer } from '../ui/list_container.js';
 import { StatsContainer } from '../ui/stats_container.js';
 
 
-export class PlayerLose extends Scene {
+export class GameLose extends Scene {
     emitter = EventDispatcher.getInstance();
 
     constructor() {
-        super('Player Lose');
+        super('Game Lose');
     }
 
     create() {
@@ -59,7 +59,7 @@ export class PlayerLose extends Scene {
         );
 
         text_gameover.setPosition(
-            (this.game.config.width / 2) - (text_gameover.width / 2), 
+            (this.game.config.width / 2) - (text_gameover.width / 2),
             10
         );
 
@@ -75,17 +75,17 @@ export class PlayerLose extends Scene {
             (this.game.config.width / 2) - (text_score.width / 2),
             50
         );
-        
-        if(score_invalidated) 
+
+        if (score_invalidated)
             text_score.setTint(0x940018);
 
         localStorage.setItem('game_hiscores', JSON.stringify(game_hiscores));
 
-        game_hiscores = game_hiscores.map((s, i) => { return `${i + 1} ${s}`; });
+        game_hiscores = game_hiscores.map((s, i) => { return `${i + 1}. ${s}`; });
         new ListContainer(this, 325, 240, 350, 325, game_hiscores, "Hiscores", 8);
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE, () => {
-            if (score_invalidated){
+            if (score_invalidated) {
                 start_dialogue(this.scene, 'score_invalidated', "menu");
                 this.emitter.once('dialogue_stop', () => {
                     start_dialogue(this.scene, `techtip${rand_idx}`, "techtip");
