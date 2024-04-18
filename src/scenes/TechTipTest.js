@@ -62,7 +62,7 @@ export class TechTipTest extends Scene {
         }
 
 
-        this.back_btn = new TextboxButton(this, this.game.config.width / 2, 600, 150, 50, 'Back',
+        this.back_btn = new TextboxButton(this, this.game.config.width / 2, 700, 150, 50, 'Back',
             () => { // callback function
                 this.emitter.emit('force_dialogue_stop');
                 this.scene.start("Main Menu");

@@ -215,6 +215,8 @@ export class Preloader extends Scene {
 
         this.load.image('enemy_icon', 'characters/enemies/enemy-icon.png');
 
+        this.load.image('arrow', 'ui/arrow.png');
+
         this.load.spritesheet("shermie", "characters/shermie.png", {
             frameWidth: 80,
             frameHeight: 80,
@@ -287,7 +289,7 @@ export class Preloader extends Scene {
         this.load.bitmapFont('PressStart2P-Small', 'fonts/PressStart2P-Small.png', 'fonts/PressStart2P-Small.xml');
         this.load.bitmapFont('PressStart2P-Tiny', 'fonts/PressStart2P-Tiny.png', 'fonts/PressStart2P-Tiny.xml');
 
-        
+
         this.load.json({
             key: "PUPA_LEMNISCATE",
             url: "paths/pupa.json",

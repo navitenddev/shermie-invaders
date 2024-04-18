@@ -5,6 +5,7 @@ class ListContainer extends Phaser.GameObjects.Container {
     emitter = EventDispatcher.getInstance();
     static MARGINS = 10;
     static MAX_LINES_DISPLAYED = 10;
+    static ARROW_OFFSET = 15;
     #scroll_y = 0;
     constructor(scene,
         x, y,
@@ -25,12 +26,10 @@ class ListContainer extends Phaser.GameObjects.Container {
             fonts.small.fontName, "", fonts.small.size, 'left');
 
         this.title = this.scene.add.bitmapText(0, 0, fonts.small.fontName, title, fonts.small.size, 'Center');
-        this.title.setPosition(-(this.title.width / 2), -(w / 2) + ListContainer.MARGINS);
+        this.title.setPosition(-(this.title.width / 2), -(h / 2) + ListContainer.MARGINS);
         this.display_text
             .setPosition(-(this.display_text.width / 2), -(this.display_text.height / 2));
         this.entries = entries
-
-        this.#update_text();
 
         this.bg
             .setInteractive()
@@ -41,7 +40,18 @@ class ListContainer extends Phaser.GameObjects.Container {
                     this.#scroll_up();
             });
 
-        this.add([this.bg, this.border, this.title, this.display_text]);
+        this.arrow_up = this.scene.add.image(0, -(this.display_text.height / 2) - ListContainer.ARROW_OFFSET, 'arrow')
+            .setScale(0.5)
+            .setVisible(false);
+        this.arrow_down = this.scene.add.image(0, +(this.display_text.height / 2) + ListContainer.ARROW_OFFSET, 'arrow')
+            .setAngle(180)
+            .setScale(0.5)
+            .setVisible(false);
+
+        this.arrow_up.setPosition(0, -(this.display_text.height / 2) - ListContainer.ARROW_OFFSET);
+        this.arrow_down.setPosition(0, +(this.display_text.height / 2) + ListContainer.ARROW_OFFSET);
+        this.#update_text();
+        this.add([this.bg, this.border, this.title, this.display_text, this.arrow_up, this.arrow_down]);
     }
 
     #scroll_down() {
@@ -64,13 +74,34 @@ class ListContainer extends Phaser.GameObjects.Container {
 
     #update_text() {
         let output = "";
-        for (let i = this.#scroll_y; i < this.#scroll_y + ListContainer.MAX_LINES_DISPLAYED; ++i) {
-            if (i === this.entries.length) { // no more to display
-                // will probably need to do more here (fill remaining lines with newlines?)
-                return;
-            }
+
+        let i, start;
+        i = start = this.#scroll_y;
+        while (i < this.#scroll_y + ListContainer.MAX_LINES_DISPLAYED) {
+            if (i === this.entries.length) // no more to display
+                break;
             output += this.entries[i] + "\n\n";
+            ++i;
         }
+
+        if (this.#scroll_y === 0)
+            this.arrow_up
+                .setVisible(false)
+                .setPosition(0, -(this.display_text.height / 2) - ListContainer.ARROW_OFFSET);
+        else
+            this.arrow_up
+                .setVisible(true)
+                .setPosition(0, -(this.display_text.height / 2) - ListContainer.ARROW_OFFSET);
+
+        if (this.#scroll_y + ListContainer.MAX_LINES_DISPLAYED < this.entries.length)
+            this.arrow_down
+                .setVisible(true)
+                .setPosition(0, +(this.display_text.height / 2) + ListContainer.ARROW_OFFSET);
+        else
+            this.arrow_down
+                .setVisible(false)
+                .setPosition(0, +(this.display_text.height / 2) + ListContainer.ARROW_OFFSET);
+
         this.display_text.setText(output)
             .setPosition(-(this.display_text.width / 2), -(this.display_text.height / 2));
     }

@@ -42,7 +42,7 @@ export class BossRushLose extends Phaser.Scene {
 
         this.sounds.bank.sfx.win.play();
 
-        this.continue_btn = new TextboxButton(this, this.game.config.width / 2, 600, 150, 50, 'Main Menu',
+        this.continue_btn = new TextboxButton(this, this.game.config.width / 2, 700, 150, 50, 'Main Menu',
             () => { // callback function
                 this.emitter.emit('force_dialogue_stop');
                 this.scene.start("Main Menu")
@@ -56,15 +56,17 @@ export class BossRushLose extends Phaser.Scene {
             0x879091  // color of border
         );
 
+        const br_total_attempts = parseInt(localStorage.getItem('br_total_attempts')) || 1;
+
         let br_loss_times = JSON.parse(localStorage.getItem('br_loss_times')) || [];
-        br_loss_times.push(time_str);
-        br_loss_times = br_loss_times.map((time_str, index) => {
-            const entry_num = br_loss_times.length - index;
-            return `${entry_num}. ${time_str}`;
-        });
+        br_loss_times.unshift("#" + br_total_attempts + ": " + time_str);
         localStorage.setItem('br_loss_times', JSON.stringify(br_loss_times));
-        // sort br_loss_times (longest > shortest)
-        const lc = new ListContainer(this, 200, 200, 400, 400, br_loss_times, "Fallen Players");
+        new ListContainer(this, 350, 200, 300, 400, br_loss_times, "Fallen Players");
+
+
+        let br_win_times = JSON.parse(localStorage.getItem('br_win_times')) || [];
+        br_win_times = br_win_times.map((s, i) => { return `${i + 1}. ${s}`; });
+        new ListContainer(this, 675, 200, 300, 400, br_win_times, "Champions");
         // store the new hiscores list
     }
 }

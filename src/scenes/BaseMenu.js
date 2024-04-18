@@ -61,14 +61,14 @@ export class BaseMenu extends Scene {
 
     setupBackButton() {
         this.backButton =
-            new TextboxButton(this, this.game.config.width / 2, 675, 150, 50, "Back",
+            new TextboxButton(this, this.game.config.width / 2, 700, 150, 50, "Back",
                 () => {
                     this.sounds.bank.sfx.click.play();
                     this.scene.start('Main Menu');
-                }, 
+                },
                 [],
                 fonts.small.fontName,
-                fonts.small.size, 
+                fonts.small.size,
                 0x2B2D31, // color of button
                 0x383A40, // color of hovered
                 0xFEFEFE, // color of clicked
