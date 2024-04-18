@@ -81,8 +81,9 @@ export class GameLose extends Scene {
 
         localStorage.setItem('game_hiscores', JSON.stringify(game_hiscores));
 
-        game_hiscores = game_hiscores.map((s, i) => { return `${i + 1}. ${s}`; });
-        new ListContainer(this, 325, 240, 350, 325, game_hiscores, "Hiscores", 8);
+        game_hiscores = game_hiscores.map((s, i) => { return `${i + 1}. ${s}`.padEnd(20, ' '); });
+
+        new ListContainer(this, 380, 240, 350, 325, game_hiscores, "Hiscores", 8);
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE, () => {
             if (score_invalidated) {
@@ -97,7 +98,7 @@ export class GameLose extends Scene {
 
         this.emitter.removeAllListeners();
 
-        new StatsContainer(this, 700, 240, 250, 325);
+        new StatsContainer(this, 695, 240, 250, 325);
 
         this.continue_btn = new TextboxButton(
             this,
