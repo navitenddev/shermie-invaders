@@ -18,6 +18,7 @@ import { TechTipTest } from './scenes/TechTipTest';
 import { Barrier } from './objects/barrier';
 import { start_dialogue } from './scenes/Dialogue';
 import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
+import { Credits } from './scenes/Credits';
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -65,6 +66,7 @@ const config = {
         TechTipTest,
         BossRushLose,
         BossRushWin,
+        Credits,
         // Dialogue,
     ]
 };
