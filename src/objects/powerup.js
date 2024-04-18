@@ -64,10 +64,21 @@ class Powerups extends Phaser.Physics.Arcade.Sprite {
      * @param {number} speed The movement speed of the powerup
      */
     activate(x, y, speed, power) {
-        if (!power || !["spread", "pierce"].includes(power))
-            power = ["spread", "pierce"][Phaser.Math.Between(0, 1)] // choose random
-        this.power = power;
-        this.setTexture(`${power}shot_icon`);
+        if (!power) {
+            let opts = ["spread", "pierce"];
+            // if we have perm, make powerup unobtainable
+            opts = opts.filter((item) => {
+                return !this.scene.player_vars.perm_power.includes(item);
+            });
+            let opt;
+            if (opts.length > 0)
+                opt = opts[Phaser.Math.Between(0, opts.length - 1)];
+            this.power = opt;
+        } else {
+            this.power = power;
+        }
+
+        this.setTexture(`${this.power}shot_icon`);
 
         this.speed = speed;
         this.setPosition(x, y);
