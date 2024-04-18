@@ -56,26 +56,15 @@ export class BossRushLose extends Phaser.Scene {
             0x879091  // color of border
         );
 
-        const MAX_TIMES = 5; // The maximum number of loss times to display
         let br_loss_times = JSON.parse(localStorage.getItem('br_loss_times')) || [];
         br_loss_times.push(time_str);
-        // sort br_loss_times (longest > shortest)
-        br_loss_times.sort((a, b) => {
-            // split times by delim
-            const aa = a.split(':').map(Number);
-            const bb = b.split(':').map(Number);
-            // convert times to ms
-            const ams = aa[0] * 60000 + aa[1] * 1000 + aa[2];
-            const bms = bb[0] * 60000 + bb[1] * 1000 + bb[2];
-            if (ams < bms)
-                return 1;
-            else if (ams > bms)
-                return -1;
-            else
-                return 0;
+        br_loss_times = br_loss_times.map((time_str, index) => {
+            const entry_num = br_loss_times.length - index;
+            return `${entry_num}. ${time_str}`;
         });
+        localStorage.setItem('br_loss_times', JSON.stringify(br_loss_times));
+        // sort br_loss_times (longest > shortest)
         const lc = new ListContainer(this, 200, 200, 400, 400, br_loss_times, "Fallen Players");
         // store the new hiscores list
-        localStorage.setItem('br_loss_times', JSON.stringify(br_loss_times));
     }
 }
