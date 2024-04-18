@@ -141,18 +141,8 @@ export class BossRush extends Phaser.Scene {
             }
         ];
 
-        let total_attempts = localStorage.getItem('br_total_attempts');
-        if (total_attempts) {
-            // already exists? modify the existing.
-            total_attempts = parseInt(total_attempts);
-            localStorage.setItem('br_total_attempts', total_attempts + 1);
-        } else {
-            // does not exist? create the variables
-            localStorage.setItem('br_total_attempts', 1);
-            localStorage.setItem('br_victories', 0);
-            // create array to store best times
-            localStorage.setItem('br_win_times', JSON.stringify([]));
-        }
+        let total_attempts = parseInt(localStorage.getItem('br_total_attempts')) || 0;
+        localStorage.setItem('br_total_attempts', total_attempts + 1);
 
         this.total_bosses = this.#boss_queue.length;
 
@@ -190,8 +180,6 @@ export class BossRush extends Phaser.Scene {
                 // transition to win scene
                 if (!this.#end_flag) {
                     this.#end_flag = true; // ensure we don't try to transition again
-                    let num_victories = parseInt(localStorage.getItem('br_victories'));
-                    localStorage.setItem('br_victories', num_victories + 1);
                     this.goto_scene('Boss Rush Win',
                         {
                             time: this.#clock.dump_time(),
