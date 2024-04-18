@@ -65,7 +65,7 @@ export class BossRush extends Phaser.Scene {
     #boss_queue = [];
     #bosses_beaten = -1;
 
-    #BOSS_HP = 1; // The HP that each boss will spawn with
+    #BOSS_HP = 40; // The HP that each boss will spawn with
 
     #clock;
 
