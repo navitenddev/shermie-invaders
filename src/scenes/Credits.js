@@ -16,33 +16,86 @@ export class Credits extends BaseMenu {
     this.keys.esc.on('down', () => this.exitCredits());
 
     const creditsText = `
-                      DEVELOPERS
-____________________________________________________________________________________________
+                    LEAD DEVELOPER
+_____________________________________________________
 
 
 
 
-                      Joshua Ortiga
-
-
-
-                      MEHMET BAYRAM
-
-
-
-                      JUAN PABLO GUTIERREZ
-
-
-
-                      XIN LI
-
-
-
-                      JONATHAN LE
+                    JOSHUA ORTIGA
 
 
 
 
+
+
+                    DEVELOPERS
+_____________________________________________________
+
+
+
+                    
+                    MEHMET BAYRAM
+
+
+                    
+                    XIN LI
+
+
+
+                    JONATHAN LE
+
+
+
+
+
+
+                    GAME DESIGNER
+_____________________________________________________
+
+
+
+
+                    JOSHUA ORTIGA
+
+
+
+
+
+
+                  AI ENEMY DESIGNER
+_____________________________________________________
+
+
+
+
+                    JOSHUA ORTIGA
+
+
+
+
+
+
+                  ARTWORK AND DESIGN
+_____________________________________________________
+
+
+
+
+                 JUAN PABLO GUTIERREZ
+
+
+
+
+
+
+              GAME AND MAIN MENU MUSIC
+_____________________________________________________
+
+
+
+
+                    JONATHAN LE
 
 
 
@@ -50,28 +103,28 @@ ________________________________________________________________________________
 
 
                         MUSIC
-____________________________________________________________________________________________
+_____________________________________________________
 
 
 
 
-            Retro Platforming - David Fesliyan
+        Retro Platforming - David Fesliyan
 
 
 
-            8 Bit Presentation - David Fesliyan
+        8 Bit Presentation - David Fesliyan
 
 
 
-            Retro Forest - David Fesliyan
+        Retro Forest - David Fesliyan
 
 
 
-            8 Bit Adventure - David Fesliyan
+        8 Bit Adventure - David Fesliyan
 
 
 
-    Epic Boss Battle (Dark Action Music) - Rafael Krux
+  Epic Boss Battle (Dark Action Music) - Rafael Krux
 
 
 
@@ -82,15 +135,14 @@ Creative Commons / Attribution-ShareAlike 3.0 Unported
 https://creativecommons.org/licenses/by-sa/3.0/deed.en_US`;
 
     const scrollingText = this.add.bitmapText(
-      width / 12,
+      width/10,
       this.game.config.height, 
       fonts.small.fontName,
       creditsText,
       fonts.small.size
     ).setDepth(3).setLineSpacing(5);
 
-
-    const speed = 30;
+    const speed = 100;
     const duration = (scrollingText.height + this.game.config.height) / speed * 1000;
 
     this.tweens.add({
