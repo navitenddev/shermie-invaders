@@ -161,6 +161,7 @@ export function init_collision_events(scene, scene_key) {
                 if (scene.sandbox_mode)
                     scene.player_vars.lives = 3; // disable lives in sandbox mode
             }
+            player.flashPlayer(); // trigger i frames
             start_dialogue(scene.scene, dialogue_key, "game", scene_key);
         }
     });

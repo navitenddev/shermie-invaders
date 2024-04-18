@@ -145,8 +145,19 @@ export class BossRush extends Phaser.Scene {
 
         this.total_bosses = this.#boss_queue.length;
 
+        this.pauseSprite = this.add.sprite(32, 32, 'pause')
+            .setOrigin(0.5)
+            .setScale(1.5)
+            .setAlpha(0.75)
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.pause();
+            })
+            .setVisible(false);
+
         if (window.IS_MOBILE) {
             this.controls = new Controls(this);
+            this.pauseSprite.setVisible(true);
         }
     }
 
