@@ -142,7 +142,7 @@ https://creativecommons.org/licenses/by-sa/3.0/deed.en_US`;
       fonts.small.size
     ).setDepth(3).setLineSpacing(5);
 
-    const speed = 100;
+    const speed = 30;
     const duration = (scrollingText.height + this.game.config.height) / speed * 1000;
 
     this.tweens.add({
