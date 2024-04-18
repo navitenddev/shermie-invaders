@@ -3,6 +3,7 @@ import { fonts } from '../utils/fontStyle.js';
 import { restart_scenes } from '../main.js';
 import { start_dialogue } from './Dialogue.js';
 import { TextboxButton } from '../ui/textbox_button.js';
+import { ListContainer } from '../ui/list_container.js';
 
 export class BossRushLose extends Phaser.Scene {
     emitter = EventDispatcher.getInstance();
@@ -41,7 +42,7 @@ export class BossRushLose extends Phaser.Scene {
 
         this.sounds.bank.sfx.win.play();
 
-        this.continue_btn = new TextboxButton(this, this.game.config.width / 2, 600, 150, 50, 'Main Menu',
+        this.continue_btn = new TextboxButton(this, this.game.config.width / 2, 700, 150, 50, 'Main Menu',
             () => { // callback function
                 this.emitter.emit('force_dialogue_stop');
                 this.scene.start("Main Menu")
@@ -54,5 +55,21 @@ export class BossRushLose extends Phaser.Scene {
             0xFEFEFE, // color of clicked
             0x879091  // color of border
         );
+
+        const br_total_attempts = parseInt(localStorage.getItem('br_total_attempts')) || 1;
+
+        let br_loss_times = JSON.parse(localStorage.getItem('br_loss_times')) || [];
+        br_loss_times.unshift(`#${br_total_attempts} ${time_str} ${data.bosses_beaten}/3`);
+        localStorage.setItem('br_loss_times', JSON.stringify(br_loss_times));
+        new ListContainer(this, 325, 200, 350, 380, br_loss_times, "Fallen Players");
+
+
+        let br_win_times = JSON.parse(localStorage.getItem('br_win_times')) || [];
+        if (br_win_times.length === 0)
+            br_win_times = ["No Champions"];
+        else
+            br_win_times = br_win_times.map((s, i) => { return `${i + 1}. ${s}`; });
+        new ListContainer(this, 700, 200, 350, 380, br_win_times, "Champions");
+        // store the new hiscores list
     }
 }

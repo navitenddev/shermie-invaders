@@ -65,7 +65,7 @@ class DialogueManager extends Phaser.GameObjects.Container {
             h = (scene.game.config.height / 4.5);
         if (["techtip", "game_blocking", "menu"].includes(dialogue_type)) {
             x = (scene.game.config.width / 2) - (w / 2);
-            y = scene.game.config.height / 2.8;
+            y = scene.game.config.height / 1.85;
             h = (scene.game.config.height / 3.1)
         } else if (dialogue_type === "game") {
             w = 310;

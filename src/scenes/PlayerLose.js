@@ -32,13 +32,6 @@ export class PlayerLose extends Scene {
 
         this.emitter.removeAllListeners();
 
-
-        // let bg = this.add.image(0, 0, 'losescreen').setAlpha(0.85);
-        // bg.setOrigin(0, 0);
-        // bg.displayWidth = this.sys.game.config.width;
-        // bg.scaleY = bg.scaleX;
-        // bg.y = 0;
-
         const titleText = this.add.bitmapText(
             this.game.config.width / 2,
             100,
@@ -57,35 +50,34 @@ export class PlayerLose extends Scene {
         );
         this.final_score.setOrigin(0.5);
 
-        const { totalShotsFired, totalHits } = this.player_vars;
-        const hitMissRatio = totalHits / (totalShotsFired || 1);
+        const { shots_fired, shots_hit } = this.player_vars.game_stats;
+        const hitMissRatio = shots_hit / (shots_fired || 1);
 
         const statsX = this.game.config.width / 2;
         const statsY = this.final_score.y + this.final_score.height + 350;
         const statsSpacing = 35;
 
         const shotsFiredText = this.add.bitmapText(
-            statsX,
-            statsY,
+            0, 0,
             fonts.small.fontName,
-            `SHOTS FIRED: ${totalShotsFired}`,
+            `SHOTS FIRED: ${shots_fired}`,
             fonts.small.size
         );
         shotsFiredText.setOrigin(0.5)
             .setTint(0xade6ff);
 
         const hitsText = this.add.bitmapText(
-            statsX,
-            statsY + statsSpacing,
+            0,
+            1 * statsSpacing,
             fonts.small.fontName,
-            `HITS: ${totalHits}`,
+            `HITS: ${shots_hit}`,
             fonts.small.size
         );
         hitsText.setOrigin(0.5)
 
         const hitMissRatioText = this.add.bitmapText(
-            statsX,
-            statsY + statsSpacing * 2,
+            0,
+            statsSpacing * 2,
             fonts.small.fontName,
             `HIT-MISS RATIO: ${(hitMissRatio * 100).toFixed(0)}%`,
             fonts.small.size
@@ -93,10 +85,14 @@ export class PlayerLose extends Scene {
         hitMissRatioText.setOrigin(0.5)
             .setTint(0xe0de2c);
 
+        const stats_container = this.add.container(
+            this.game.config.width / 2, (this.game.config.height / 2) - 100,
+            [shotsFiredText, hitsText, hitMissRatioText]);
+
         this.continue_btn = new TextboxButton(
             this,
             this.game.config.width / 2,
-            statsY + statsSpacing * 4,
+            700,
             200,
             50,
             'Continue',

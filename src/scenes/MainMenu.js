@@ -45,10 +45,13 @@ export class MainMenu extends BaseMenu {
         // reset player stats to defaults
         for (let [key, value] of Object.entries(this.player_vars.stats))
             this.player_vars.stats[key] = 1;
+
         this.player_vars.active_bullets = 0;
         this.player_vars.wallet = 0;
         this.player_vars.power = "";
         this.player_vars.perm_power = [];
+        this.player_vars.game_stats.shots_fired = 0;
+        this.player_vars.game_stats.shots_hit = 0;
 
         // check if cheat codes are already activated
         if (localStorage.getItem('cheatCodesActivated') === 'true') {
@@ -75,7 +78,7 @@ export class MainMenu extends BaseMenu {
                 this.start_btn.disable();
             },
         ).setDepth(3);
-    
+
         // Controls Button
         menuY += menuSpacing;
         this.controls_btn = new TextButton(this, 512, menuY, "CONTROLS",
@@ -142,7 +145,6 @@ export class MainMenu extends BaseMenu {
         this.input.keyboard.on('keycombomatch', () => {
             this.#activate_cheats();
         });
-
     }
 
     #activate_cheats() {

@@ -63,11 +63,12 @@ export class BossRush extends Phaser.Scene {
     emitter = EventDispatcher.getInstance();
     PUPA_PATHS = {};
     #boss_queue = [];
-    #bosses_beaten = -1;
 
     #BOSS_HP = 40; // The HP that each boss will spawn with
 
     #clock;
+
+    #end_flag = false; // ensure localStorage is only modified once
 
     constructor() {
         super('Boss Rush');
@@ -139,19 +140,36 @@ export class BossRush extends Phaser.Scene {
             }
         ];
 
+        let total_attempts = parseInt(localStorage.getItem('br_total_attempts')) || 0;
+        localStorage.setItem('br_total_attempts', total_attempts + 1);
+
         this.total_bosses = this.#boss_queue.length;
+
+        this.pauseSprite = this.add.sprite(32, 32, 'pause')
+            .setOrigin(0.5)
+            .setScale(1.5)
+            .setAlpha(0.75)
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.pause();
+            })
+            .setVisible(false);
 
         if (window.IS_MOBILE) {
             this.controls = new Controls(this);
+            this.pauseSprite.setVisible(true);
         }
     }
 
     toggleDebug() {
-        this.debugMode = !this.debugMode;
-        this.physics.world.drawDebug = this.debugMode;
+        // only allow debug visuals if debug mode is turned oon
+        if (this.registry.get('debug_mode') === true) {
+            this.debugMode = !this.debugMode;
+            this.physics.world.drawDebug = this.debugMode;
 
-        if (!this.debugMode) {
-            this.physics.world.debugGraphic.clear();
+            if (!this.debugMode) {
+                this.physics.world.debugGraphic.clear();
+            }
         }
     }
 
@@ -173,7 +191,14 @@ export class BossRush extends Phaser.Scene {
         if (this.objs.enemies.special.children.entries.length === 0) {
             if (this.#boss_queue.length === 0) {
                 // transition to win scene
-                this.goto_scene('Boss Rush Win', { time: this.#clock.dump_time(), bosses_beaten: this.total_bosses - this.#boss_queue.length - 1 });
+                if (!this.#end_flag) {
+                    this.#end_flag = true; // ensure we don't try to transition again
+                    this.goto_scene('Boss Rush Win',
+                        {
+                            time: this.#clock.dump_time(),
+                            bosses_beaten: this.total_bosses - this.#boss_queue.length - 1
+                        });
+                }
             }
             const cb = this.#boss_queue.shift();
             if (cb) cb.func(...cb.args);
@@ -182,7 +207,10 @@ export class BossRush extends Phaser.Scene {
     }
 
     check_gameover() {
-        if (!this.objs.player.is_inbounds() && this.player_vars.lives <= 0) {
+        if (!this.objs.player.is_inbounds()
+            && this.player_vars.lives <= 0 &&
+            !this.#end_flag) {
+            this.#end_flag = true;
             this.goto_scene('Boss Rush Lose', { time: this.#clock.dump_time(), bosses_beaten: this.total_bosses - this.#boss_queue.length - 1 });
         }
     }

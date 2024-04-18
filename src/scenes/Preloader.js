@@ -53,8 +53,6 @@ export class Preloader extends Scene {
         //  Load the assets for the game - Replace with your own assets
         this.load.setPath("assets");
 
-        this.load.image("logo", "ui/logo.png");
-
         this.load.image('titlelogo', 'ui/logo_main.png');
 
         this.load.image("background", "backgrounds/leveloneBG.png");
@@ -215,6 +213,8 @@ export class Preloader extends Scene {
 
         this.load.image('enemy_icon', 'characters/enemies/enemy-icon.png');
 
+        this.load.image('arrow', 'ui/arrow.png');
+
         this.load.spritesheet("shermie", "characters/shermie.png", {
             frameWidth: 80,
             frameHeight: 80,
@@ -287,7 +287,7 @@ export class Preloader extends Scene {
         this.load.bitmapFont('PressStart2P-Small', 'fonts/PressStart2P-Small.png', 'fonts/PressStart2P-Small.xml');
         this.load.bitmapFont('PressStart2P-Tiny', 'fonts/PressStart2P-Tiny.png', 'fonts/PressStart2P-Tiny.xml');
 
-        
+
         this.load.json({
             key: "PUPA_LEMNISCATE",
             url: "paths/pupa.json",
@@ -336,6 +336,10 @@ export class Preloader extends Scene {
                 move_speed: 1,
                 shield: 1,
                 // ...more to be added
+            },
+            game_stats: {
+                shots_fired: 0,
+                shots_hit: 0,
             },
             wallet: 0, // holds shermie bux
             active_bullets: 0, // the number of bullets that the player currently has on screen

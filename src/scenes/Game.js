@@ -104,19 +104,18 @@ export class Game extends Scene {
 
         this.pauseSprite = this.add.sprite(this.sys.game.config.width / 2, 32, 'pause')
             .setOrigin(0.5)
-            .setInteractive();
+            .setScale(1.5)
+            .setAlpha(0.75)
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.pause();
+            })
+            .setVisible(false);
 
-        this.pauseSprite.on('pointerdown', () => {
-            this.pause();
-        });
-
-        this.pauseSprite = this.add.sprite(this.sys.game.config.width / 2, 32, 'pause')
-            .setOrigin(0.5)
-            .setInteractive();
-
-        this.pauseSprite.on('pointerdown', () => {
-            this.pause();
-        });
+        if (window.IS_MOBILE) {
+            this.controls = new Controls(this);
+            this.pauseSprite.setVisible(true); // only show pause btn on mobile
+        }
 
         // Player lives text and sprites
         this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, fonts.medium.fontName, '3', fonts.medium.size);
@@ -141,10 +140,6 @@ export class Game extends Scene {
             this.toggleDebug();
         });
 
-        if (window.IS_MOBILE) {
-            this.controls = new Controls(this);
-        }
-
         // Event to kill all enemies
         this.emitter.on('kill_all_enemies', this.#kill_all_enemies, this);
         this.emitter.once('player_lose', this.goto_scene, this)
@@ -153,11 +148,14 @@ export class Game extends Scene {
     }
 
     toggleDebug() {
-        this.debugMode = !this.debugMode;
-        this.physics.world.drawDebug = this.debugMode;
-        // Clear debug graphics when debug mode is turned off
-        if (!this.debugMode) {
-            this.physics.world.debugGraphic.clear()
+        // only allow debug visuals if debug mode is turned oon
+        if (this.registry.get('debug_mode') === true) {
+            this.debugMode = !this.debugMode;
+            this.physics.world.drawDebug = this.debugMode;
+            // Clear debug graphics when debug mode is turned off
+            if (!this.debugMode) {
+                this.physics.world.debugGraphic.clear()
+            }
         }
     }
 
@@ -270,9 +268,6 @@ export class Game extends Scene {
         if (!cheatModeEnabled) {
             this.scoreManager.checkAndUpdateHighScore();
         }
-
-        this.player_vars.totalShotsFired = this.objs.player.totalShotsFired;
-        this.player_vars.totalHits = this.objs.player.totalHits;
 
         this.cameras.main.fade(500, 0, 0, 0);
 
