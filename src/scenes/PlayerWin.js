@@ -7,7 +7,7 @@ import { TextboxButton } from '../ui/textbox_button.js';
 
 export class PlayerWin extends Scene {
     emitter = EventDispatcher.getInstance();
-    
+
     constructor() {
         super('Player Win');
     }
@@ -45,15 +45,18 @@ export class PlayerWin extends Scene {
             .setCenterAlign()
             .setMaxWidth(this.game.config.width * 0.75);
 
-            this.add.bitmapText(512, 200,
-                fonts.middle.fontName,
-                `You beat level ${this.registry.get("level")}!`,
-                fonts.middle.size)
-                .setOrigin(0.5, 0.5)
-                .setCenterAlign()
-                .setMaxWidth(this.game.config.width * 0.75);
+        this.add.bitmapText(512, 200,
+            fonts.middle.fontName,
+            `You beat level ${this.registry.get("level")}!`,
+            fonts.middle.size)
+            .setOrigin(0.5, 0.5)
+            .setCenterAlign()
+            .setMaxWidth(this.game.config.width * 0.75);
 
-        this.continue_btn = new TextboxButton(this, this.game.config.width / 2, 600, 150, 50, 'Continue',
+        this.continue_btn = new TextboxButton(this,
+            this.game.config.width / 2, 700,
+            150, 50,
+            'Continue',
             () => { // callback function
                 this.emitter.emit('force_dialogue_stop');
                 this.scene.start("Store")

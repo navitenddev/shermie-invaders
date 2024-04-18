@@ -32,13 +32,6 @@ export class PlayerLose extends Scene {
 
         this.emitter.removeAllListeners();
 
-
-        // let bg = this.add.image(0, 0, 'losescreen').setAlpha(0.85);
-        // bg.setOrigin(0, 0);
-        // bg.displayWidth = this.sys.game.config.width;
-        // bg.scaleY = bg.scaleX;
-        // bg.y = 0;
-
         const titleText = this.add.bitmapText(
             this.game.config.width / 2,
             100,
@@ -96,7 +89,7 @@ export class PlayerLose extends Scene {
         this.continue_btn = new TextboxButton(
             this,
             this.game.config.width / 2,
-            statsY + statsSpacing * 4,
+            700,
             200,
             50,
             'Continue',
