@@ -80,8 +80,11 @@ export class Game extends Scene {
         this.player_vars.power = "";
 
         const maxLevelReached = localStorage.getItem('maxLevelReached') || 1;
-        if (this.level + 1 > maxLevelReached) {
-            localStorage.setItem('maxLevelReached', this.level + 1);
+
+        // do not store max level if cheats are on
+        if (this.registry.get('debug_mode') === false &&
+            this.level > maxLevelReached) {
+            localStorage.setItem('maxLevelReached', this.level);
         }
 
         this.objs.init_all();
