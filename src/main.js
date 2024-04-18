@@ -168,7 +168,7 @@ export function init_collision_events(scene, scene_key) {
     // player collides with powerup 
     scene.physics.add.overlap(scene.objs.powers, scene.objs.player, (player, powerup) => {
         scene.sounds.bank.sfx.powerup.play();
-        player.changePower(powerup.buff);
+        player.changePower(powerup.power);
         powerup.deactivate();
     });
 

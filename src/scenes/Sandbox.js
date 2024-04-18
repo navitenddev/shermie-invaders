@@ -12,6 +12,7 @@ import { init_collision_events } from '../main.js';
 import { TextButton } from '../ui/text_button.js';
 import { TextboxButton } from '../ui/textbox_button.js';
 import Controls from '../controls/controls.js';
+import { Powerups, PowerupsConstDefs } from '../objects/powerup.js';
 
 class LevelSelector extends Phaser.GameObjects.Container {
     emitter = EventDispatcher.getInstance();
@@ -142,29 +143,6 @@ export class Sandbox extends Scene {
         this.debugMode = false;
     }
 
-    preload() {
-        this.load.json({
-            key: "PUPA_LEMNISCATE",
-            url: "assets/paths/pupa.json",
-            dataKey: "LEMNISCATE",
-        });
-        this.load.json({
-            key: "PUPA_TRIANGLE",
-            url: "assets/paths/pupa.json",
-            dataKey: "TRIANGLE",
-        });
-        this.load.json({
-            key: "PUPA_SPLINE",
-            url: "assets/paths/pupa.json",
-            dataKey: "SPLINE1",
-        });
-        this.load.json({
-            key: "PUPA_ILLUMINATI",
-            url: "assets/paths/pupa.json",
-            dataKey: "ILLUMINATI",
-        });
-    }
-
     create() {
 
         this.registry.set({ 'sandbox_mode': true });
@@ -208,7 +186,7 @@ export class Sandbox extends Scene {
         this.level_transition_flag = false;
         this.level_text = this.add.bitmapText(this.sys.game.config.width * (2.9 / 4), 16, fonts.medium.fontName, `LEVEL:${this.level}`, fonts.medium.size);
 
-        
+
 
         // Player lives text and sprites
         this.livesText = this.add.bitmapText(16, this.sys.game.config.height - 48, fonts.middle.fontName, '---', fonts.middle.size);
@@ -236,6 +214,32 @@ export class Sandbox extends Scene {
 
         this.lvl_select = new LevelSelector(this, this.game.config.width * (3 / 4), 48, this.level_text, this.kill_all_enemies);
 
+        // LHS Buttons
+        this.pierce_btn = new IconButton(this, "pierceshot_icon",
+            20, 172,
+            (scene, x, y) => {
+                let power = scene.objs.powers.getFirstDead(false, 0, 0, "powerup");
+                if (power) {
+                    power.activate(x, y, -PowerupsConstDefs.speed.y, "pierce")
+                    scene.powerup_stats.active_powerups++;
+                }
+            },
+            [this, this.game.config.width / 2, 0]
+        );
+
+        this.pierce_btn = new IconButton(this, "spreadshot_icon",
+            20, 208,
+            (scene, x, y) => {
+                let power = scene.objs.powers.getFirstDead(false, 0, 0, "powerup");
+                if (power) {
+                    power.activate(x, y, -PowerupsConstDefs.speed.y, "spread");
+                    scene.powerup_stats.active_powerups++;
+                }
+            },
+            [this, this.game.config.width / 2, 0]
+        );
+
+        // RHS buttons
         this.grid_btn = new IconButton(this, "enemy_icon",
             this.game.config.width - 20, 100,
             () => {
@@ -244,7 +248,6 @@ export class Sandbox extends Scene {
             }
         );
 
-        // RHS buttons
         this.usb_btn = new IconButton(this, "usb_icon",
             this.game.config.width - 20, 136,
             () => {
@@ -333,7 +336,7 @@ export class Sandbox extends Scene {
 
     update(time, delta) {
         if (this.objs.player.update)
-        this.objs.player.update(time, delta, this.keys, this.controls);
+            this.objs.player.update(time, delta, this.keys, this.controls);
 
         // Update lives text and sprites
         this.livesText.setText('-');
