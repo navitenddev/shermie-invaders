@@ -6,6 +6,8 @@ class ListContainer extends Phaser.GameObjects.Container {
     static MARGINS = 10;
     static MAX_LINES_DISPLAYED = 10;
     static ARROW_OFFSET = 15;
+    static SCROLL_INTERVAL = 100;
+    #last_scroll_time = 0;
     #scroll_y = 0;
     constructor(scene,
         x, y,
@@ -38,6 +40,10 @@ class ListContainer extends Phaser.GameObjects.Container {
                     this.#scroll_up();
             })
             .on('drag', (pointer, dx, dy) => {
+                const curr_time = Date.now();
+                if (curr_time - this.#last_scroll_time < ListContainer.SCROLL_INTERVAL)
+                    return;
+                this.#last_scroll_time = curr_time;
                 if (dy > 0)
                     this.#scroll_up();
                 else if (dy < 0)

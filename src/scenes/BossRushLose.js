@@ -61,12 +61,12 @@ export class BossRushLose extends Phaser.Scene {
         let br_loss_times = JSON.parse(localStorage.getItem('br_loss_times')) || [];
         br_loss_times.unshift("#" + br_total_attempts + ": " + time_str);
         localStorage.setItem('br_loss_times', JSON.stringify(br_loss_times));
-        new ListContainer(this, 350, 200, 300, 400, br_loss_times, "Fallen Players");
+        new ListContainer(this, 350, 200, 300, 380, br_loss_times, "Fallen Players");
 
 
         let br_win_times = JSON.parse(localStorage.getItem('br_win_times')) || [];
         br_win_times = br_win_times.map((s, i) => { return `${i + 1}. ${s}`; });
-        new ListContainer(this, 675, 200, 300, 400, br_win_times, "Champions");
+        new ListContainer(this, 675, 200, 300, 380, br_win_times, "Champions");
         // store the new hiscores list
     }
 }

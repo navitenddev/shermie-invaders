@@ -3,6 +3,7 @@ import { fonts } from '../utils/fontStyle.js';
 import { restart_scenes } from '../main.js';
 import { start_dialogue } from './Dialogue.js';
 import { TextboxButton } from '../ui/textbox_button.js';
+import { ListContainer } from '../ui/list_container.js';
 
 export class BossRushWin extends Phaser.Scene {
     emitter = EventDispatcher.getInstance();
@@ -26,7 +27,6 @@ export class BossRushWin extends Phaser.Scene {
         const br_total_attempts = parseInt(localStorage.getItem('br_total_attempts')) || 1;
         const time_str = `${data.time.mm}:${data.time.ss}:${data.time.ms}`;
 
-        const MAX_TIMES = 5; // The maximum number of best times we'll store
         let br_win_times = JSON.parse(localStorage.getItem('br_win_times')) || [];
         br_win_times.push(`#${br_total_attempts} ${time_str}`);
         // sort br_win_times (fastest -> slowest)
@@ -47,8 +47,7 @@ export class BossRushWin extends Phaser.Scene {
             else
                 return 0;
         });
-        // slice off any extra times that we have size(times) > MAX_TIMES
-        br_win_times = br_win_times.slice(0, MAX_TIMES);
+
         // store the new hiscores list
         localStorage.setItem('br_win_times', JSON.stringify(br_win_times));
 
@@ -75,5 +74,11 @@ export class BossRushWin extends Phaser.Scene {
             0xFEFEFE, // color of clicked
             0x879091  // color of border
         );
+
+        let br_loss_times = JSON.parse(localStorage.getItem('br_loss_times')) || [];
+        new ListContainer(this, 350, 200, 300, 380, br_loss_times, "Fallen Players");
+
+        br_win_times = br_win_times.map((s, i) => { return `${i + 1}. ${s}`; });
+        new ListContainer(this, 675, 200, 300, 380, br_win_times, "Champions");
     }
 }
