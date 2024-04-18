@@ -97,7 +97,7 @@ export class GameLose extends Scene {
 
         this.emitter.removeAllListeners();
 
-        new StatsContainer(this, 700, 240, 350, 325);
+        new StatsContainer(this, 700, 240, 250, 325);
 
         this.continue_btn = new TextboxButton(
             this,

@@ -142,7 +142,7 @@ export class Game extends Scene {
 
         // Event to kill all enemies
         this.emitter.on('kill_all_enemies', this.#kill_all_enemies, this);
-        this.emitter.once('player_lose', this.goto_scene, this)
+        this.emitter.once('game_lose', this.goto_scene, this)
 
         this.physics.world.drawDebug = this.debugMode;
     }

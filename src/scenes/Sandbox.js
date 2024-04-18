@@ -321,7 +321,7 @@ export class Sandbox extends Scene {
 
         GridEnemy.initDestructionEmitter(this);
 
-        this.emitter.on('player_lose', this.kill_all_enemies, this);
+        this.emitter.on('game_lose', this.kill_all_enemies, this);
         this.emitter.on('kill_all_enemies', this.kill_all_enemies, this);
     }
 

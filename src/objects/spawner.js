@@ -299,7 +299,7 @@ class ObjectSpawner {
                 break;
             }
             if (!enemy.is_y_inbounds())
-                this.emitter.emit('player_lose', 'Player Lose')
+                this.emitter.emit('game_lose', 'Game Lose')
         }
 
         // Move left or right if it's time to do so

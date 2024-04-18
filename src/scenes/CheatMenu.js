@@ -152,7 +152,7 @@ export class CheatMenu extends Scene {
                 if (!this.registry.get('sandbox_mode')
                     // it shouldnt happen on boss levels either
                     && this.registry.get('level') % 7)
-                    this.scene.start('Player Win')
+                    this.scene.start('Game Win')
             },
             [], // callback function's arguments
             fonts.small.fontName,                    // font type
