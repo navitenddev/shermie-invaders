@@ -154,7 +154,6 @@ export function init_collision_events(scene, scene_key) {
                     scene.sounds.bank.sfx.shield_hurt.play();
                 }
                 player.updateHitbox();
-                start_dialogue(scene.scene, dialogue_key, "game", scene_key);
             } else {
                 scene.objs.explode_at(player.x, player.y);
                 player.die();
