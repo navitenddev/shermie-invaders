@@ -15,143 +15,96 @@ export class Credits extends BaseMenu {
     let width = this.game.config.width;
     this.keys.esc.on('down', () => this.exitCredits());
 
+    const credits_list = [
+
+    ]
     const creditsText = `
-                    LEAD DEVELOPER
-_____________________________________________________
+                   SHERMIE INVADERS
 
 
 
 
-                    JOSHUA ORTIGA
+                   LEAD PROGRAMMER
+
+                    Joshua Ortiga
 
 
 
 
-
-
-                    DEVELOPERS
-_____________________________________________________
-
-
-
+                     PROGRAMMERS
                     
-                    MEHMET BAYRAM
-
-
+                    Mehmet Bayram
                     
-                    XIN LI
+                        Xin Li
 
-
-
-                    JONATHAN LE
-
-
-
+                     Jonathan Le
 
 
 
                     GAME DESIGNER
-_____________________________________________________
+
+                    Joshua Ortiga
 
 
 
+                   AI ENEMY DESIGNER
 
-                    JOSHUA ORTIGA
-
-
-
+                    Joshua Ortiga
 
 
 
-                  AI ENEMY DESIGNER
-_____________________________________________________
+                  PARTICLE FX DESIGNER
+
+                    Mehmet Bayram
 
 
 
+                   GRAPHIC DESIGNER
 
-                    JOSHUA ORTIGA
-
-
-
-
-
-
-                  ARTWORK AND DESIGN
-_____________________________________________________
-
-
-
-
-                 JUAN PABLO GUTIERREZ
-
-
-
-
-
-
-              GAME AND MAIN MENU MUSIC
-_____________________________________________________
-
-
-
-
-                    JONATHAN LE
-
-
-
+                 Juan Pablo Gutierrez
 
 
 
                         MUSIC
-_____________________________________________________
 
+           Main Menu Music - Jonathan Le 
 
-
+           Main Game Music - Jonathan Le
 
         Retro Platforming - David Fesliyan
 
-
-
         8 Bit Presentation - David Fesliyan
 
-
-
-        Retro Forest - David Fesliyan
-
-
+          Retro Forest - David Fesliyan
 
         8 Bit Adventure - David Fesliyan
 
-
-
   Epic Boss Battle (Dark Action Music) - Rafael Krux
 
-
-
-You’re The Champion by MaxKoMusic | https://maxkomusic.com/
+Youre The Champion by MaxKoMusic | https://maxkomusic.com/
 Music promoted by https://www.free-stock-music.com
 Creative Commons / Attribution-ShareAlike 3.0 Unported 
                 (CC BY-SA 3.0)
 https://creativecommons.org/licenses/by-sa/3.0/deed.en_US`;
 
     const scrollingText = this.add.bitmapText(
-      width/10,
-      this.game.config.height, 
+      width / 10,
+      this.game.config.height,
       fonts.small.fontName,
       creditsText,
       fonts.small.size
     ).setDepth(3).setLineSpacing(5);
 
-    const speed = 30;
+    const speed = 50;
     const duration = (scrollingText.height + this.game.config.height) / speed * 1000;
 
     this.tweens.add({
       targets: scrollingText,
-      y: -scrollingText.height, 
+      y: -scrollingText.height,
       duration: duration,
       ease: 'Linear',
       onComplete: () => {
-        scrollingText.destroy(); 
+        scrollingText.destroy();
         this.scene.start('Main Menu');
       }
     });
