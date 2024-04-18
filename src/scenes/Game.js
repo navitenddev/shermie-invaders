@@ -83,7 +83,7 @@ export class Game extends Scene {
         if (this.level + 1 > maxLevelReached) {
             localStorage.setItem('maxLevelReached', this.level + 1);
         }
-
+        
         this.objs.init_all();
 
         this.sounds = this.registry.get('sound_bank');
