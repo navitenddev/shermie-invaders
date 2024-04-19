@@ -396,7 +396,7 @@ class Player extends Phaser.Physics.Arcade.Sprite {
                         }
                     }
                 }
-                if ((--this.powerup.ammo) <= 0)
+                if ((this.powerup.ammo) <= 0)
                     this.changePower();
                 this.sounds.bank.sfx.shoot.play();
             }
