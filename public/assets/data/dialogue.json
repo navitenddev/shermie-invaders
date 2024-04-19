@@ -24,37 +24,22 @@
     ]
   },
   "test2": {
-    "lines": [
-      "Yo what's goodie",
-      "Okay cool beans",
-      "buh bye dood"
-    ]
+    "lines": ["Yo what's goodie", "Okay cool beans", "buh bye dood"]
   },
   "win1": {
-    "lines": [
-      "AYOOOOOO, SHERMIE IN DA HOUSE"
-    ]
+    "lines": ["AYOOOOOO, SHERMIE IN DA HOUSE"]
   },
   "lose1": {
-    "lines": [
-      "We may have lost the battle...",
-      "but not the war..."
-    ]
+    "lines": ["We may have lost the battle...", "but not the war..."]
   },
   "shermie_hurt": {
-    "lines": [
-      "ouch! that hurt!"
-    ]
+    "lines": ["ouch! that hurt!"]
   },
   "shermie_shieldhurt": {
-    "lines": [
-      "Hey, watch it! They're breaking my shield!"
-    ]
+    "lines": ["Hey, watch it! They're breaking my shield!"]
   },
   "shermie_shieldgone": {
-    "lines": [
-      "Ah! Blasted right through the shield!"
-    ]
+    "lines": ["Ah! Blasted right through the shield!"]
   },
   "shermie_start": {
     "lines": [
@@ -63,14 +48,10 @@
     ]
   },
   "shermie_dead": {
-    "lines": [
-      "NoooooOOOOoOOOoOOOO!!!"
-    ]
+    "lines": ["NoooooOOOOoOOOoOOOO!!!"]
   },
   "shermie_boss": {
-    "lines": [
-      "Why do I hear boss music?"
-    ]
+    "lines": ["Why do I hear boss music?"]
   },
   "sandbox_tips": {
     "lines": [
@@ -80,7 +61,7 @@
   },
   "score_invalidated": {
     "lines": [
-      "Hey! Your score was invalidated. You must start the game at level 1 or start any other level with no money. Cheats must also be disabled!"
+      "Hey! Your score was invalidated. To be eligible to set a highscore, cheats must be disabled and you must either start the game at level 1, or start any level with no money."
     ]
   },
   "level1": {
