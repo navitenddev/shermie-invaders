@@ -137,7 +137,12 @@ export class MainMenu extends BaseMenu {
                     this.boss_rush_btn.disable();
                 }
             ).setDepth(3);
-
+            menuY += menuSpacing;
+            this.level_select_btn = new TextButton(this, 512, menuY, "CREDITS",
+                () => {
+                    this.scene.start('Credits');
+                }
+            ).setDepth(3);
         }
 
         this.keys.m.on('down', this.sounds.toggle_mute);
