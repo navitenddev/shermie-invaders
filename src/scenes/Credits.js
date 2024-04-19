@@ -69,7 +69,7 @@ export class Credits extends BaseMenu {
 
            Main Menu Music - Jonathan Le 
 
-          Main Game Music - Dream-Protocol
+         Main Game Music - Dream-Protocol
 
         Retro Platforming - David Fesliyan
 
@@ -82,7 +82,10 @@ export class Credits extends BaseMenu {
   Epic Boss Battle (Dark Action Music) - Rafael Krux
 
 Youre The Champion by MaxKoMusic | https://maxkomusic.com/
-Music promoted by https://www.free-stock-music.com
+                Music promoted by: 
+          https://www.free-stock-music.com
+               https://pixabay.com/
+
 Creative Commons / Attribution-ShareAlike 3.0 Unported 
                 (CC BY-SA 3.0)
 https://creativecommons.org/licenses/by-sa/3.0/deed.en_US`;
