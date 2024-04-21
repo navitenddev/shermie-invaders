@@ -74,6 +74,9 @@ class StartWithMoneyDialog extends Phaser.GameObjects.Container {
             () => {
                 // allow hiscore to be saved (no money advantage)
                 scene.registry.set('valid_hiscore', true);
+                // increment games played
+                const games_played = parseInt(localStorage.getItem('games_played')) || 0;
+                localStorage.setItem('games_played', games_played + 1);
                 // start with no money
                 scene.registry.set({ level: level });
                 scene.scene.start('Game');
@@ -146,6 +149,9 @@ export class LevelSelect extends BaseMenu {
                                 // starting at level 1 will mean that this score is valid, provided that cheats are disabled (this is checked in GameLose.js)
                                 scene.registry.set('valid_hiscore', true);
                                 scene.registry.set({ level: level });
+                                // increment games played
+                                const games_played = parseInt(localStorage.getItem('games_played')) || 0;
+                                localStorage.setItem('games_played', games_played + 1);
                                 scene.scene.start('Game');
                             }
                             new StartWithMoneyDialog(scene,

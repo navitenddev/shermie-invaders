@@ -18,8 +18,8 @@ import { start_dialogue } from './scenes/Dialogue';
 import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
 import { Credits } from './scenes/Credits';
 
-import { genSampleData } from './utils/test_funcs'; // REMOVE ME BEFORE PUSHING
-genSampleData();
+// import { genSampleData } from './utils/test_funcs'; // REMOVE ME BEFORE PUSHING
+// genSampleData();
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
