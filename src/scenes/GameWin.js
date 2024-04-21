@@ -1,15 +1,15 @@
 import { Scene } from 'phaser';
-import { EventDispatcher } from '../utils/event_dispatcher';
+import { EventDispatcher } from '../utils/event_dispatcher.js';
 import { fonts } from '../utils/fontStyle.js';
 import { restart_scenes } from '../main.js';
 import { start_dialogue } from './Dialogue.js';
 import { TextboxButton } from '../ui/textbox_button.js';
 
-export class PlayerWin extends Scene {
+export class GameWin extends Scene {
     emitter = EventDispatcher.getInstance();
 
     constructor() {
-        super('Player Win');
+        super('Game Win');
     }
 
     create() {
@@ -27,7 +27,7 @@ export class PlayerWin extends Scene {
         const score = this.player_vars.score;
 
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_IN_COMPLETE, () => {
-            start_dialogue(this.scene, `techtip${rand_idx}`, "techtip", "Player Win");
+            start_dialogue(this.scene, `techtip${rand_idx}`, "techtip", "Game Win");
         });
 
         this.emitter.removeAllListeners(); // clean up event listeners

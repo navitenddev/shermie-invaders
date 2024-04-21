@@ -88,10 +88,10 @@ class MenuSpinner {
 }
 
 
-export class StatsMenu extends Scene {
+export class CheatMenu extends Scene {
     emitter = EventDispatcher.getInstance();
     constructor() {
-        super('StatsMenu');
+        super('Cheat Menu');
     }
 
     create() {
@@ -152,7 +152,7 @@ export class StatsMenu extends Scene {
                 if (!this.registry.get('sandbox_mode')
                     // it shouldnt happen on boss levels either
                     && this.registry.get('level') % 7)
-                    this.scene.start('Player Win')
+                    this.scene.start('Game Win')
             },
             [], // callback function's arguments
             fonts.small.fontName,                    // font type
@@ -175,7 +175,7 @@ export class StatsMenu extends Scene {
     }
 
     go_back() {
-        this.scene.stop('StatsMenu');
-        this.scene.start('PauseMenu');
+        this.scene.stop('Cheat Menu');
+        this.scene.start('Pause Menu');
     }
 }

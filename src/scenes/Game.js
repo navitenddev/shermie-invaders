@@ -80,10 +80,13 @@ export class Game extends Scene {
         this.player_vars.power = "";
 
         const maxLevelReached = localStorage.getItem('maxLevelReached') || 1;
-        if (this.level + 1 > maxLevelReached) {
-            localStorage.setItem('maxLevelReached', this.level + 1);
+
+        // do not store max level if cheats are on
+        if (this.registry.get('debug_mode') === false &&
+            this.level > maxLevelReached) {
+            localStorage.setItem('maxLevelReached', this.level);
         }
-        
+
         this.objs.init_all();
 
         this.sounds = this.registry.get('sound_bank');
@@ -142,7 +145,7 @@ export class Game extends Scene {
 
         // Event to kill all enemies
         this.emitter.on('kill_all_enemies', this.#kill_all_enemies, this);
-        this.emitter.once('player_lose', this.goto_scene, this)
+        this.emitter.once('game_lose', this.goto_scene, this)
 
         this.physics.world.drawDebug = this.debugMode;
     }
@@ -161,7 +164,7 @@ export class Game extends Scene {
 
     pause() {
         this.scene.pause('Game');
-        this.scene.launch('PauseMenu', { prev_scene: 'Game' });
+        this.scene.launch('Pause Menu', { prev_scene: 'Game' });
     }
 
     #kill_all_enemies() {
@@ -221,11 +224,14 @@ export class Game extends Scene {
 
     check_gameover() {
         if (this.player_vars.lives <= 0 &&
-            !this.objs.player.is_inbounds()) {
+            !this.objs.player.is_inbounds() &&
+            !this.level_transition_flag) {
+
+            this.level_transition_flag = true;
             this.player_vars.power = "";
             this.gameover = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
-            this.goto_scene("Player Lose");
+            this.goto_scene("Game Lose");
         }
 
         if (this.objs.enemies.grid.children.entries.length == 0 &&
@@ -250,7 +256,7 @@ export class Game extends Scene {
                 // is boss dead?
                 if (this.objs.enemies.special.children.entries.length === 0) {
                     this.objs.player.isInvincible = true;
-                    this.goto_scene("Player Win");
+                    this.goto_scene("Game Win");
                 }
                 return;
             }
@@ -258,7 +264,7 @@ export class Game extends Scene {
             this.level_transition_flag = true;
             this.emitter.emit('force_dialogue_stop'); // ensure dialogue cleans up before scene transition
             this.player_vars.power = "";
-            this.goto_scene("Player Win");
+            this.goto_scene("Game Win");
         }
     }
 

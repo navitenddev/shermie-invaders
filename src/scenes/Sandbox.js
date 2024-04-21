@@ -321,7 +321,7 @@ export class Sandbox extends Scene {
 
         GridEnemy.initDestructionEmitter(this);
 
-        this.emitter.on('player_lose', this.kill_all_enemies, this);
+        this.emitter.on('game_lose', this.kill_all_enemies, this);
         this.emitter.on('kill_all_enemies', this.kill_all_enemies, this);
     }
 
@@ -339,7 +339,7 @@ export class Sandbox extends Scene {
 
     pause() {
         this.scene.pause('Sandbox');
-        this.scene.launch('PauseMenu', { prev_scene: 'Sandbox' });
+        this.scene.launch('Pause Menu', { prev_scene: 'Sandbox' });
     }
 
     update(time, delta) {

@@ -16,7 +16,7 @@ class StartWithMoneyDialog extends Phaser.GameObjects.Container {
      * @param {number} level The level to start on
      * @param {number} border_sz The x distance that buttons and text will be from the border
      */
-    constructor(scene, x, y, w, h, level, border_sz = 5) {
+    constructor(scene, x, y, w, h, level, border_sz = 25) {
         super(scene, x, y);
         scene.add.existing(this);
         const BG_COLOR = 0x2B2D31;
@@ -36,23 +36,25 @@ class StartWithMoneyDialog extends Phaser.GameObjects.Container {
 
         this.text = scene.add.bitmapText(border_sz, border_sz,
             fonts.small.fontName,
-            "Do you wish to start\nLevel "+level+" with money?",
+            `Do you wish to start level ${level} with money?\n\nPlease note that you will be ineligible to submit a hiscore if you start this level with money!`,
             fonts.small.size)
-            .setMaxWidth(w - (border_sz * 2))
+            .setMaxWidth(w - border_sz)
             .setLineSpacing(5);
 
-        this.text.setPosition(-(this.text.width / 2), -(this.text.height / 2));
 
-        const BTN_W = (w / 3) - (border_sz * 2);
+        const BTN_W = (w / 3) - border_sz;
         const BTN_H = 35;
-        const X_OFFSET = -(w / 2) + (BTN_W / 2)
+        const X_OFFSET = -(w / 2) + (BTN_W / 2.5);
 
-        this.yes_btn = new TextboxButton(scene, X_OFFSET + 1 * border_sz, 50,
+        this.yes_btn = new TextboxButton(scene,
+            X_OFFSET + 1 * border_sz, 150,
             BTN_W, BTN_H,
             "Yes",
             () => {
                 // edge case, level 1 always starts with no money and in the game scene
                 if (level === 1) {
+                    // allow hiscore to be saved if we pick level 1
+                    scene.registry.set('valid_hiscore', true);
                     scene.registry.set({ level: level });
                     scene.scene.start('Game');
                 } else {
@@ -65,16 +67,23 @@ class StartWithMoneyDialog extends Phaser.GameObjects.Container {
                 }
             }
         );
-        this.no_btn = new TextboxButton(scene, X_OFFSET + BTN_W + 2 * border_sz, 50,
+        this.no_btn = new TextboxButton(scene,
+            X_OFFSET + BTN_W + 2 * border_sz, 150,
             BTN_W, BTN_H,
             "No",
             () => {
+                // allow hiscore to be saved (no money advantage)
+                scene.registry.set('valid_hiscore', true);
+                // increment games played
+                const games_played = parseInt(localStorage.getItem('games_played')) || 0;
+                localStorage.setItem('games_played', games_played + 1);
                 // start with no money
                 scene.registry.set({ level: level });
                 scene.scene.start('Game');
             }
         );
-        this.cancel_btn = new TextboxButton(scene, X_OFFSET + 2 * BTN_W + 3 * border_sz, 50,
+        this.cancel_btn = new TextboxButton(scene,
+            X_OFFSET + 2 * BTN_W + 3 * border_sz, 150,
             BTN_W, BTN_H,
             "Cancel",
             () => {
@@ -84,6 +93,7 @@ class StartWithMoneyDialog extends Phaser.GameObjects.Container {
         );
 
         this.add([this.bg, this.bg_border, this.text, this.yes_btn, this.no_btn, this.cancel_btn]);
+        this.text.setPosition(-(this.text.width / 2), -(this.text.height / 2));
         this.setPosition(x, y);
     }
 }
@@ -115,7 +125,7 @@ export class LevelSelect extends BaseMenu {
         this.keys.m.on('down', this.sounds.toggle_mute);
 
         const DIALOG_W = 400;
-        const DIALOG_H = 150;
+        const DIALOG_H = 350;
 
         var color, color_hover;
         for (let y = 1; y <= 10; y++) {
@@ -134,6 +144,16 @@ export class LevelSelect extends BaseMenu {
                         40, 40,
                         level.toString(),
                         (scene, level) => {
+                            // level 1 will not give the player money anyway, so just start it
+                            if (level === 1) {
+                                // starting at level 1 will mean that this score is valid, provided that cheats are disabled (this is checked in GameLose.js)
+                                scene.registry.set('valid_hiscore', true);
+                                scene.registry.set({ level: level });
+                                // increment games played
+                                const games_played = parseInt(localStorage.getItem('games_played')) || 0;
+                                localStorage.setItem('games_played', games_played + 1);
+                                scene.scene.start('Game');
+                            }
                             new StartWithMoneyDialog(scene,
                                 (scene.game.config.width / 2), 300,
                                 DIALOG_W, DIALOG_H, level)

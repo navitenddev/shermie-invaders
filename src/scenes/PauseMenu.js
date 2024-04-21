@@ -7,7 +7,7 @@ import { TextButton } from '../ui/text_button.js';
 export class PauseMenu extends Scene {
     emitter = EventDispatcher.getInstance();
     constructor() {
-        super('PauseMenu');
+        super('Pause Menu');
     }
 
     create(data) {
@@ -15,7 +15,7 @@ export class PauseMenu extends Scene {
 
         const menuItems = [
             { text: 'Resume', callback: () => this.unpause() },
-            { text: 'Mute', callback: () => this.toggleMute() }, 
+            { text: 'Mute', callback: () => this.toggleMute() },
             { text: 'Quit', callback: () => this.quitGame() },
         ];
 
@@ -23,8 +23,8 @@ export class PauseMenu extends Scene {
             menuItems.splice(2, 0, {
                 text: 'Cheats',
                 callback: () => {
-                    this.scene.stop('PauseMenu');
-                    this.scene.start('StatsMenu');
+                    this.scene.stop('Pause Menu');
+                    this.scene.start('Cheat Menu');
                 },
             });
         }
@@ -58,7 +58,7 @@ export class PauseMenu extends Scene {
     }
 
     unpause() {
-        this.scene.stop('PauseMenu');
+        this.scene.stop('Pause Menu');
         this.scene.resume(this.prev_scene);
     }
 
@@ -68,7 +68,7 @@ export class PauseMenu extends Scene {
         this.sounds.bank.music.start.play();
         this.cameras.main.fadeOut(200, 0, 0, 0);
         this.cameras.main.once(Phaser.Cameras.Scene2D.Events.FADE_OUT_COMPLETE, () => {
-            this.scene.stop('PauseMenu');
+            this.scene.stop('Pause Menu');
             this.scene.stop(this.prev_scene);
             this.scene.start('Main Menu');
         });

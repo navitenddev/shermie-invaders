@@ -1,16 +1,14 @@
 import { Boot } from './scenes/Boot';
 import { Game } from './scenes/Game';
-import { BossRush } from './scenes/BossRush';
-import { BossRushLose } from './scenes/BossRushLose';
-import { BossRushWin } from './scenes/BossRushWin';
-import { PlayerWin } from './scenes/PlayerWin';
-import { PlayerLose } from './scenes/PlayerLose';
+import { ChallengeMode, ChallengeModeLose, ChallengeModeWin } from './scenes/ChallegeMode';
+import { GameWin } from './scenes/GameWin';
+import { GameLose } from './scenes/GameLose';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
 import { LevelSelect } from './scenes/LevelSelect';
 import { HowToPlay } from './scenes/HowToPlay';
 import { PauseMenu } from './scenes/PauseMenu';
-import { StatsMenu } from './scenes/StatsMenu';
+import { CheatMenu } from './scenes/CheatMenu';
 import { Store } from './scenes/Store';
 import { Dialogue } from './scenes/Dialogue';
 import { Sandbox } from './scenes/Sandbox';
@@ -19,6 +17,9 @@ import { Barrier } from './objects/barrier';
 import { start_dialogue } from './scenes/Dialogue';
 import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
 import { Credits } from './scenes/Credits';
+
+// import { genSampleData } from './utils/test_funcs'; // REMOVE ME BEFORE PUSHING
+// genSampleData();
 
 //  Find out more information about the Game Config at:
 //  https://newdocs.phaser.io/docs/3.70.0/Phaser.Types.Core.GameConfig
@@ -54,19 +55,20 @@ const config = {
         Preloader,
         MainMenu,
         Game,
-        BossRush,
+        GameWin,
+        GameLose,
+        ChallengeMode,
+        ChallengeModeWin,
+        ChallengeModeLose,
         Sandbox,
-        PlayerWin,
-        PlayerLose,
         LevelSelect,
         HowToPlay,
         PauseMenu,
-        StatsMenu,
+        CheatMenu,
         Store,
         TechTipTest,
-        BossRushLose,
-        BossRushWin,
         Credits,
+
         // Dialogue,
     ]
 };
@@ -89,17 +91,17 @@ export function restart_scenes(scene) {
     scene.add('Game', Game);
     scene.bringToTop('Game');
 
-    scene.remove('Boss Rush');
-    scene.add('Boss Rush', BossRush);
-    scene.bringToTop('Boss Rush');
+    scene.remove('Challenge Mode');
+    scene.add('Challenge Mode', ChallengeMode);
+    scene.bringToTop('Challenge Mode');
 
-    scene.remove('PauseMenu');
-    scene.add('PauseMenu', PauseMenu);
-    scene.bringToTop('PauseMenu');
+    scene.remove('Pause Menu');
+    scene.add('Pause Menu', PauseMenu);
+    scene.bringToTop('Pause Menu');
 
-    scene.remove('StatsMenu');
-    scene.add('StatsMenu', StatsMenu);
-    scene.bringToTop('StatsMenu');
+    scene.remove('Cheat Menu');
+    scene.add('Cheat Menu', CheatMenu);
+    scene.bringToTop('Cheat Menu');
 
     scene.remove('Dialogue');
     scene.add('Dialogue', Dialogue);
@@ -140,6 +142,8 @@ export function init_collision_events(scene, scene_key) {
 
     // enemy bullet hits player
     scene.physics.add.overlap(scene.objs.bullets.enemy, scene.objs.player, (player, enemy_bullet) => {
+        if (player.isInvincible)
+            return;
         scene.cameras.main.shake(200, 0.02);
         if (!player.is_dead) {
             enemy_bullet.deactivate();
@@ -154,7 +158,6 @@ export function init_collision_events(scene, scene_key) {
                     scene.sounds.bank.sfx.shield_hurt.play();
                 }
                 player.updateHitbox();
-                start_dialogue(scene.scene, dialogue_key, "game", scene_key);
             } else {
                 scene.objs.explode_at(player.x, player.y);
                 player.die();
