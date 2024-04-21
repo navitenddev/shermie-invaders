@@ -16,6 +16,7 @@ import { TechTipTest } from './scenes/TechTipTest';
 import { Barrier } from './objects/barrier';
 import { start_dialogue } from './scenes/Dialogue';
 import VirtualJoystickPlugin from 'phaser3-rex-plugins/plugins/virtualjoystick-plugin.js';
+import { Credits } from './scenes/Credits';
 
 import { genSampleData } from './utils/test_funcs'; // REMOVE ME BEFORE PUSHING
 genSampleData();
@@ -66,6 +67,8 @@ const config = {
         CheatMenu,
         Store,
         TechTipTest,
+        Credits,
+
         // Dialogue,
     ]
 };
