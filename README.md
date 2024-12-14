@@ -17,9 +17,13 @@ Shermie Invaders is a Phaser game featuring Shermie, a brave sheep defending aga
 
 ## Getting Started
 
+To play locally...
+
 1. Clone the repository
 2. Install dependencies with `npm install`
 3. Run the game with `npm run dev`
+
+Alternatively, you can play the game online [here](https://www.navitend.com/games/individual_game/shermie-invaders).
 
 ## Gameplay
 
